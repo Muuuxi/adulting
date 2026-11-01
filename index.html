@@ -1246,6 +1246,105 @@ table.debts { width: 100%; border-collapse: collapse; font-size: .82rem; } table
 .ty-mo .mo-cash { font-size: .64rem; font-weight: 700; color: var(--muted); line-height: 1.1; }
 .rv-past { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 800; color: var(--ink-2); }
 .rv-past svg { width: 16px; height: 16px; } .rv-past select { font: inherit; border: 2px solid var(--ink); border-radius: 8px; padding: 2px 6px; background: #fff; }
+
+/* =========================================================
+   Round 11 · fewer words, more pictures; tutorials; sound buttons
+   ========================================================= */
+/* sound buttons (HUD and setup header) */
+.snd-btns { display: inline-flex; gap: 6px; }
+.icon-btn.snd { width: 34px; height: 34px; border-width: 2.5px; box-shadow: none; color: var(--muted); }
+.icon-btn.snd .ico { width: 18px; height: 18px; } .icon-btn.snd.on { background: var(--sun-2); color: var(--ink); }
+.wiz-head .snd-btns { margin-left: auto; }
+
+/* sidebar: picture tiles */
+.side-item .ico { width: 26px; height: 26px; padding: 4px; border-radius: 50%; border: 2px solid var(--ink); background: var(--sky-2); color: var(--ink); flex: none; }
+.side-item[data-id="payday"] .ico { background: var(--grass-2); } .side-item[data-id="accounts"] .ico { background: var(--blue-2); }
+.side-item[data-id="goals"] .ico { background: var(--gold-2); } .side-item[data-id="journal"] .ico { background: var(--a3); }
+.side-item { padding: 2px 6px; }
+
+/* shared pictures */
+.segbar { display: flex; height: 16px; border: 2px solid var(--ink); border-radius: 8px; overflow: hidden; background: var(--quiet-2); }
+.segbar i { display: block; height: 100%; border-right: 1.5px solid rgba(29, 43, 79, .35); } .segbar i:last-child { border-right: 0; }
+.segbar .tax, .k-tax i { background: var(--red); } .segbar .save, .k-save i { background: var(--blue); } .segbar .net { background: #7fd3a6; }
+.segbar .ess, .k-ess i { background: #f6a46a; } .segbar .fun, .k-fun i { background: #c79bf2; } .segbar .min, .k-min i { background: #ff8a8a; }
+.segbar .avail { background: var(--grass); } .k-plus i { background: #7fd0fb; }
+.segbar .pay, .k-pay i { background: var(--grass); } .segbar .grant, .k-grant i { background: #7fd3a6; } .segbar .other, .k-other i { background: #7fd0fb; }
+.segbar .int, .k-int i { background: #b23a3a; } .segbar .tui, .k-tui i { background: var(--gold); } .segbar .one, .k-one i { background: var(--quiet); }
+.meter { display: inline-block; vertical-align: middle; width: 70px; height: 9px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--quiet-2); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--gold); } .meter.ok i { background: var(--grass); } .meter.tax i { background: var(--red); } .meter.held i { background: var(--blue); }
+.chip { display: inline-flex; gap: 3px; align-items: center; font-size: .7rem; font-weight: 800; border: 1.5px solid var(--ink); border-radius: 999px; padding: 0 7px; background: var(--sky-3); margin-left: 4px; white-space: nowrap; }
+.chip .ico { width: 13px; height: 13px; } .chip.ok { background: var(--grass-2); } .chip.warn { background: var(--gold-2); } .chip.hot { background: var(--red-2); color: var(--neg); }
+p.chip { margin: 0 0 6px; }
+.bubble-art { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid var(--ink); background: var(--sky-2); flex: none; }
+.bubble-art .ico { width: 26px; height: 26px; }
+.bubble-art.t-green { background: var(--grass-2); } .bubble-art.t-blue { background: var(--blue-2); } .bubble-art.t-gold { background: var(--gold-2); } .bubble-art.t-red { background: var(--red-2); } .bubble-art.t-purple { background: var(--a3); }
+.ba { display: inline-grid; gap: 2px; width: 64px; vertical-align: middle; } .ba i { display: block; height: 6px; border-radius: 3px; min-width: 2px; }
+.ba .ba-a { background: var(--quiet); opacity: .55; } .ba.good .ba-b { background: var(--grass); } .ba.bad .ba-b { background: var(--red); } .ba.same .ba-b { background: var(--quiet); }
+.ba-dir .ico { width: 14px; height: 14px; vertical-align: middle; } .ba-dir.good { color: var(--pos); } .ba-dir.bad { color: var(--neg); }
+.ba-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 6px; align-items: center; font-weight: 700; font-size: .84rem; padding: 2px 0; }
+.ba-row b { text-align: right; white-space: nowrap; min-width: 62px; } .ba-lab { display: flex; gap: 4px; align-items: center; min-width: 0; } .ba-lab .ico, .kv > span > .ico { width: 16px; height: 16px; flex: none; vertical-align: -3px; margin-right: 3px; }
+details.more { margin-top: 6px; } details.more summary { cursor: pointer; font-weight: 800; font-size: .78rem; color: var(--blue); list-style: none; }
+details.more summary::before { content: '▸ '; } details.more[open] summary::before { content: '▾ '; } details.more summary::-webkit-details-marker { display: none; }
+
+/* payday money flow */
+.wf { display: grid; gap: 6px; margin: 4px 0 6px; } .wf-row { display: grid; gap: 2px; }
+.wf-lab { display: flex; align-items: center; gap: 5px; font-weight: 800; font-size: .8rem; } .wf-lab .ico { width: 17px; height: 17px; } .wf-lab b { margin-left: auto; }
+.wf-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; font-size: .8rem; font-weight: 700; }
+.wf-legend li, .io-legend li { display: flex; align-items: center; gap: 5px; } .wf-legend li > i, .io-legend li > i { width: 10px; height: 10px; border-radius: 3px; border: 1.5px solid var(--ink); flex: none; }
+.wf-legend li b, .io-legend li b { margin-left: auto; } .wf-legend .q { width: 15px; height: 15px; font-size: .58rem; }
+.alloc-t small .chip:first-child { margin-left: 0; } .alloc-t td small { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; margin-top: 1px; }
+.ladder-steps { margin-top: 8px; border-top: 2px dashed var(--quiet-2); padding-top: 6px; } .ladder-steps small { font-weight: 800; color: var(--muted); font-size: .74rem; }
+.ladder-steps ol { list-style: none; display: flex; gap: 4px; margin: 4px 0; padding: 0; }
+.ladder-steps li { width: 32px; height: 32px; border-radius: 9px; border: 2px solid var(--ink); display: grid; place-items: center; background: #fff; opacity: .55; }
+.ladder-steps li .ico { width: 18px; height: 18px; } .ladder-steps li.done { background: var(--grass-2); opacity: 1; } .ladder-steps li.now { background: var(--sun-2); opacity: 1; transform: translateY(-3px); box-shadow: var(--lift-sm); }
+.ls-now { font-size: .8rem; font-weight: 800; margin: 2px 0 0; }
+
+/* big decision cards */
+.dc-top { display: flex; gap: 8px; align-items: center; }
+.dc-art { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; border: 2.5px solid var(--ink); background: var(--sky-2); flex: none; }
+.dc-art .ico { width: 26px; height: 26px; } .dc-art.t-gold { background: var(--gold-2); } .dc-art.t-green { background: var(--grass-2); } .dc-art.t-red { background: var(--red-2); } .dc-art.t-purple { background: var(--a3); }
+.dec-card .dc-text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.dec-card .why { display: flex; gap: 4px; align-items: center; } .dec-card .why .ico { width: 14px; height: 14px; flex: none; }
+
+/* job board cards */
+.jobcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; max-height: 320px; overflow: auto; padding: 2px 2px 6px; margin-bottom: 8px; }
+.jobcard { position: relative; display: grid; gap: 4px; border: 2.5px solid var(--ink); border-radius: 12px; background: #fff; padding: 8px 10px; cursor: pointer; }
+.jobcard input { position: absolute; top: 9px; right: 9px; } .jobcard.on { background: var(--sun-2); box-shadow: var(--lift-sm); } .jobcard.blocked { background: var(--quiet-2); cursor: not-allowed; opacity: .8; }
+.jc-head { display: flex; gap: 6px; align-items: center; padding-right: 20px; } .jc-ico { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--ink); background: var(--sky-2); flex: none; } .jc-ico .ico { width: 17px; height: 17px; }
+.jc-pay { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; } .jc-pay .meter { width: 100%; height: 8px; } .jc-pay small { color: var(--muted); font-weight: 700; font-size: .7rem; }
+.jc-tags { display: flex; flex-wrap: wrap; gap: 3px; } .jc-tags em { font-style: normal; display: inline-flex; gap: 2px; align-items: center; font-size: .68rem; font-weight: 800; border-radius: 999px; padding: 0 6px; background: var(--sky-3); border: 1.5px solid var(--ink-2); }
+.jc-tags em .ico { width: 12px; height: 12px; } .jc-tags em.warn { background: var(--gold-2); } .jc-tags em.why { background: var(--red-2); color: var(--neg); } .jc-tags em.ben { background: var(--grass-2); } .jc-tags em.ben.no { background: var(--quiet-2); }
+.diestrip { margin-top: 4px; } .ds-cells { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 2px; }
+.ds-cells i { font-style: normal; text-align: center; font-weight: 900; font-size: .75rem; border: 1.5px solid var(--ink); border-radius: 5px; padding: 1px 0; }
+.ds-cells .fail, .ds-keys .fail { background: var(--red-2); color: var(--neg); } .ds-cells .ok, .ds-keys .ok { background: var(--blue-2); color: var(--blue); } .ds-cells .great, .ds-keys .great { background: var(--grass-2); color: var(--pos); }
+.ds-keys { display: grid; grid-template-columns: 3fr 3fr 3fr; gap: 2px; margin-top: 3px; } .ds-keys span { font-size: .72rem; font-weight: 700; border-radius: 5px; padding: 1px 5px; }
+
+/* year-end review */
+.mo-cap { display: flex; gap: 6px; align-items: center; } .mo-cap .ico { width: 15px; height: 15px; } .cap-bad { width: 12px; height: 12px; border: 2px solid var(--red); border-radius: 3px; display: inline-block; margin-left: 6px; }
+.ty-mo .mo-bar { display: flex; align-items: flex-end; height: 22px; border-bottom: 2px solid var(--quiet-2); } .ty-mo .mo-bar i { display: block; width: 100%; background: linear-gradient(#7fd0fb, var(--sky)); border-radius: 3px 3px 0 0; }
+.ty-mo.hasbad .mo-bar i { background: linear-gradient(#ffb0a8, var(--red)); }
+.big-num { display: grid; border: 2.5px solid var(--ink); border-radius: 12px; padding: 4px 10px; margin: 4px 0 6px; background: var(--grass-2); } .big-num.neg { background: var(--red-2); }
+.big-num small { font-weight: 800; color: var(--ink-2); font-size: .74rem; } .big-num b { font-size: 1.45rem; }
+.tax-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .tax-pair span { display: grid; gap: 1px; font-size: .74rem; font-weight: 700; color: var(--ink-2); } .tax-pair b { font-size: .95rem; color: var(--ink); } .tax-pair .meter { width: 100%; }
+.io-bar { display: grid; gap: 2px; margin: 4px 0; } .io-lab { display: flex; align-items: center; gap: 4px; font-weight: 800; font-size: .82rem; } .io-lab .ico { width: 16px; height: 16px; } .io-lab b { margin-left: auto; }
+.io-lab.pos { color: var(--pos); } .io-lab.neg { color: var(--neg); } .io-legend { list-style: none; padding: 0; margin: 2px 0 4px; display: grid; gap: 1px; font-size: .78rem; font-weight: 700; }
+.rv-where small.io-h { display: block; font-weight: 900; color: var(--muted); margin-top: 4px; }
+
+/* tutorials and guide */
+.tb-top { display: flex; gap: 10px; align-items: flex-start; } .tb-top > div { display: grid; gap: 2px; }
+.guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.guide-card { display: grid; justify-items: center; gap: 4px; border: 2.5px solid var(--ink); border-radius: 14px; background: #fff; padding: 10px; cursor: pointer; font: inherit; box-shadow: var(--lift-sm); }
+.guide-card:hover { transform: translateY(-2px); } .guide-card small { color: var(--muted); font-weight: 700; } .guide-card.seen { background: var(--paper); }
+.lesson-head { display: flex; gap: 12px; align-items: center; }
+@media (max-width: 720px) { .ba-row { grid-template-columns: minmax(0, 1fr) auto auto; } .ba-row .ba-dir { display: none; } .jobcards { max-height: none; } .ds-keys span { font-size: .64rem; } }
+
+.hud { gap: 8px; } .hud .quest { max-width: 215px; } .hud .quest b { font-size: .9rem; } .hud .lifebar { max-width: 240px; } .hud .snd-btns { gap: 4px; } .hud .icon-btn.snd { width: 30px; height: 30px; }
+
+.ba-row { grid-template-columns: minmax(0, 1fr) 52px 14px auto; font-size: .8rem; } .ba { width: 52px; } .ba-lab { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.jc-tags em.why { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.lesson-pic { display: grid; gap: 4px; margin: 6px 0 2px; } .lesson-pic .meter { width: 100%; height: 14px; } .lp-keys { display: flex; gap: 14px; flex-wrap: wrap; font-weight: 800; font-size: .82rem; }
+.lp-keys span { display: inline-flex; gap: 5px; align-items: center; } .lp-keys i { width: 11px; height: 11px; border-radius: 3px; border: 1.5px solid var(--ink); display: inline-block; } .lp-keys .k-net { background: #7fd3a6; } .lp-keys .ico { width: 16px; height: 16px; }
+@media (max-width: 720px) { .ba-row { grid-template-columns: minmax(0, 1fr) 52px auto; } .chip { white-space: normal; } }
 </style>
 </head>
 <body>
@@ -3614,9 +3713,9 @@ function setupCanvas(canvas) {
   const dpr = Math.min(2, window.devicePixelRatio || 1), w = canvas.clientWidth, h2 = canvas.clientHeight;
   canvas.width = w * dpr;
   canvas.height = h2 * dpr;
-  const ctx = canvas.getContext("2d");
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  return { ctx, w, h: h2 };
+  const ctx2 = canvas.getContext("2d");
+  ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx: ctx2, w, h: h2 };
 }
 function input(canvas) {
   const st = { left: false, right: false, x: null };
@@ -3649,13 +3748,13 @@ function input(canvas) {
     canvas.removeEventListener("touchmove", pm);
   } };
 }
-function rr(ctx, x, y, w, h2, r) {
-  ctx.beginPath();
-  ctx.roundRect ? ctx.roundRect(x, y, w, h2, r) : ctx.rect(x, y, w, h2);
+function rr(ctx2, x, y, w, h2, r) {
+  ctx2.beginPath();
+  ctx2.roundRect ? ctx2.roundRect(x, y, w, h2, r) : ctx2.rect(x, y, w, h2);
 }
 var bonusFrom = (kind, r) => kind === "catch" ? r.ratio >= 0.7 ? 2 : r.ratio >= 0.4 ? 1 : 0 : r.hits <= 1 ? 2 : r.hits <= 3 ? 1 : 0;
 function playChallenge(canvas, kind, hooks, seconds = 12) {
-  const { ctx, w, h: h2 } = setupCanvas(canvas), io = input(canvas);
+  const { ctx: ctx2, w, h: h2 } = setupCanvas(canvas), io = input(canvas);
   let px = w / 2, t = 0, last = performance.now(), raf = 0, done = false, spawn = 0, seq = 0;
   const items = [], pops = [];
   let good = 0, caught = 0, hits = 0, bad = 0;
@@ -3717,70 +3816,70 @@ function playChallenge(canvas, kind, hooks, seconds = 12) {
     raf = requestAnimationFrame(step);
   }
   function draw() {
-    ctx.clearRect(0, 0, w, h2);
-    const g = ctx.createLinearGradient(0, 0, 0, h2);
+    ctx2.clearRect(0, 0, w, h2);
+    const g = ctx2.createLinearGradient(0, 0, 0, h2);
     g.addColorStop(0, kind === "catch" ? "#7fd0fb" : "#ffd8e4");
     g.addColorStop(1, "#fffdf6");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, w, h2);
-    ctx.font = '900 26px system-ui, "Segoe UI Emoji", sans-serif';
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+    ctx2.fillStyle = g;
+    ctx2.fillRect(0, 0, w, h2);
+    ctx2.font = '900 26px system-ui, "Segoe UI Emoji", sans-serif';
+    ctx2.textAlign = "center";
+    ctx2.textBaseline = "middle";
     for (const it of items) {
       if (it.gone) continue;
       if (kind === "catch") {
-        ctx.fillStyle = it.good ? "#ffc531" : "#e04848";
-        ctx.strokeStyle = INK2;
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(it.x, it.y, 16, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = it.good ? INK2 : "#fff";
-        ctx.font = "900 16px system-ui";
-        ctx.fillText(it.ch, it.x, it.y + 1);
+        ctx2.fillStyle = it.good ? "#ffc531" : "#e04848";
+        ctx2.strokeStyle = INK2;
+        ctx2.lineWidth = 3;
+        ctx2.beginPath();
+        ctx2.arc(it.x, it.y, 16, 0, Math.PI * 2);
+        ctx2.fill();
+        ctx2.stroke();
+        ctx2.fillStyle = it.good ? INK2 : "#fff";
+        ctx2.font = "900 16px system-ui";
+        ctx2.fillText(it.ch, it.x, it.y + 1);
       } else {
-        ctx.font = '28px "Segoe UI Emoji", "Apple Color Emoji", system-ui';
-        ctx.fillText(it.ch, it.x, it.y);
+        ctx2.font = '28px "Segoe UI Emoji", "Apple Color Emoji", system-ui';
+        ctx2.fillText(it.ch, it.x, it.y);
       }
     }
-    ctx.save();
-    ctx.translate(px, h2 - 40);
+    ctx2.save();
+    ctx2.translate(px, h2 - 40);
     if (kind === "catch") {
-      ctx.fillStyle = "#fff";
-      ctx.strokeStyle = INK2;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 46, 12, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
+      ctx2.fillStyle = "#fff";
+      ctx2.strokeStyle = INK2;
+      ctx2.lineWidth = 3;
+      ctx2.beginPath();
+      ctx2.ellipse(0, 0, 46, 12, 0, 0, Math.PI * 2);
+      ctx2.fill();
+      ctx2.stroke();
     } else {
-      ctx.fillStyle = "#2fae6b";
-      ctx.strokeStyle = INK2;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(0, -6, 18, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = INK2;
-      ctx.font = "900 14px system-ui";
-      ctx.fillText("You", 0, -5);
+      ctx2.fillStyle = "#2fae6b";
+      ctx2.strokeStyle = INK2;
+      ctx2.lineWidth = 3;
+      ctx2.beginPath();
+      ctx2.arc(0, -6, 18, 0, Math.PI * 2);
+      ctx2.fill();
+      ctx2.stroke();
+      ctx2.fillStyle = INK2;
+      ctx2.font = "900 14px system-ui";
+      ctx2.fillText("You", 0, -5);
     }
-    ctx.restore();
+    ctx2.restore();
     for (const p of pops) if (p.life > 0) {
-      ctx.globalAlpha = Math.min(1, p.life * 2);
-      ctx.font = "900 16px system-ui";
-      ctx.fillStyle = p.ok ? "#13784a" : "#b3262b";
-      ctx.fillText(p.text, p.x, p.y);
+      ctx2.globalAlpha = Math.min(1, p.life * 2);
+      ctx2.font = "900 16px system-ui";
+      ctx2.fillStyle = p.ok ? "#13784a" : "#b3262b";
+      ctx2.fillText(p.text, p.x, p.y);
     }
-    ctx.globalAlpha = 1;
-    rr(ctx, 10, 10, 220, 28, 14);
-    ctx.fillStyle = "rgba(29,43,79,.85)";
-    ctx.fill();
-    ctx.fillStyle = "#fff";
-    ctx.font = "800 13px system-ui";
-    ctx.textAlign = "left";
-    ctx.fillText(kind === "catch" ? `Caught ${caught} \xB7 bad ${bad} \xB7 left ${Math.ceil(Math.max(0, seconds - t))} s` : `Gave in ${hits} times \xB7 left ${Math.ceil(Math.max(0, seconds - t))} s`, 20, 25);
+    ctx2.globalAlpha = 1;
+    rr(ctx2, 10, 10, 220, 28, 14);
+    ctx2.fillStyle = "rgba(29,43,79,.85)";
+    ctx2.fill();
+    ctx2.fillStyle = "#fff";
+    ctx2.font = "800 13px system-ui";
+    ctx2.textAlign = "left";
+    ctx2.fillText(kind === "catch" ? `Caught ${caught} \xB7 bad ${bad} \xB7 left ${Math.ceil(Math.max(0, seconds - t))} s` : `Gave in ${hits} times \xB7 left ${Math.ceil(Math.max(0, seconds - t))} s`, 20, 25);
   }
   raf = requestAnimationFrame(step);
   return { stop: finish };
@@ -3788,6 +3887,7 @@ function playChallenge(canvas, kind, hooks, seconds = 12) {
 
 // ui/glossary.js
 var GLOSSARY = {
+  taxes: ["Taxes", "Three taxes come out of every paycheck: federal income tax, state tax, and Social Security & Medicare (7.65% of pay). Open \u201CLine by line\u201D to see each one."],
   difficulty: ["Difficulty", "Difficulty changes only two things: which starting points the slot machine can give you (the \u201Cbirth lottery\u201D) and how often bad life events show up (luck). Easy start: more savings, less debt, higher pay, fewer bad events, and bad events cost 25% less. Hard start: the opposite, and bad events cost 50% more. Taxes and rules are the same at every level."],
   gross: ["Gross monthly pay", "Your salary on paper, before any tax."],
   federal: ["Federal income tax", "Tax paid to the US federal government. First the \u201Cstandard deduction\u201D ($16,100 single) is subtracted, then the rest is taxed in brackets: 10% on the first $12,400, then 12%, 22%\u2026 The more you earn, the higher the rate on the extra dollars."],
@@ -3823,35 +3923,352 @@ var GLOSSARY = {
   essentials: ["Essentials", "Money you must pay every month: housing costs beyond rent or mortgage, food, transportation, insurance, utilities and phone."],
   fun: ["Fun money", "Eating out, entertainment, subscriptions \u2014 spending you can cut. It grows automatically with raises (lifestyle creep), but you can lock it on payday."]
 };
-var TOURS = {
-  payday: [
-    [".hud", "Top bar", "Left to right: where you are in life (the 18\u219250 progress bar), net worth, financial independence progress, life stage, and how far you are from your goal."],
-    [".idcard", "ID card", "Your education, job, relationship, housing, skills, credit score and current statuses are all here."],
-    [".pd-flow", "Where this month\u2019s money comes from", "Read top to bottom: gross pay minus taxes and 401(k) becomes take-home pay; add other income, subtract essentials, fun and minimum payments, and what\u2019s left is \u201CAvailable each month\u201D. Click any \u201C?\u201D for an explanation."],
-    [".alloc", "Hand out the money", "Each row is a destination. Use + / \u2212 to set how much goes there each month. You don\u2019t have to assign it all \u2014 the rest stays in checking."],
-    ['[data-go="autoplan"]', "Not sure how to split it?", "Click \u201CAuto-plan\u201D to fill it in the order \u201C$1,000 emergency fund \u2192 full employer match \u2192 high-interest debt \u2192 3-month emergency fund \u2192 invest\u201D, with notes on where each dollar went."],
-    [".impact", "Impact preview", "Roughly where you\u2019ll be at year end on this plan (not counting this year\u2019s life card)."],
-    ['[data-go="plan-confirm"]', "Confirm", "This plan runs automatically every month. After confirming you\u2019ll make this year\u2019s big decision; you can change the plan next year."]
-  ],
-  decision: [
-    [".dec-grid", "One big decision per year", "Find a job, ask for a raise, go to school, date, move, buy a car, start a business\u2026 You can pick only one each year. Ones with a dice icon need a throw."],
-    [".phase-steps", "This year\u2019s steps", "Payday plan \u2192 big decision \u2192 life card \u2192 live the year \u2192 year-end review."]
-  ],
-  card: [
-    [".deck-zone", "Life cards", "Draw one a year: a life event, an opportunity, an impulse buy, or a quiet year. On the right are the odds of each type at your age. A card you\u2019ve drawn won\u2019t come up again until the deck runs out."],
-    ['[data-go="draw"]', "Draw", "The deck itself isn\u2019t clickable \u2014 use this button to draw."]
-  ],
-  review: [
-    [".ty-months", "12 months", "Each box is your checking balance at the end of that month, labeled with what happened. Red means trouble: not enough money, or overdue payments."],
-    [".rv-tax", "Tax return", "Your actual tax for the year compared with what was withheld from your pay: you get a refund or pay the difference."],
-    [".rv-where", "Money in & out", "What came in and what went out this year (tax, essentials, fun and interest listed separately), what was left, and what you saved; plus your employer match and market gains or losses."],
-    [".rv-change", "How this year changed things", "Changes to your net worth, emergency fund, debt and life stage."]
-  ],
-  accounts: [
-    [".sheet", "Balance sheet", "On the left is what you own, on the right what you owe; the difference is your net worth."],
-    [".acct-actions", "Transfers and paying off debt", "Only on payday: move money between accounts, or make a one-time extra debt payment."]
-  ]
+var TUTS = [
+  { id: "payday", page: "payday", name: "Payday", steps: [
+    [".pd-flow", "Money comes in", "Taxes take a bite first. The green part is yours to use.", "coin", "green"],
+    [".alloc", "Hand it out", "Tap + or \u2212 to send money to savings. Not sure? Press Auto-plan.", "piggy", "blue"],
+    ['[data-go="plan-confirm"]', "Lock it in", "Your plan then runs every month this year.", "check", "green"]
+  ] },
+  { id: "debt", page: "payday", name: "Debt", need: (s4) => s4.debts.some((d) => d.balance > 5e-3 && !d.closed && d.kind !== "arrears"), steps: [
+    [".alloc-debt", "Debt costs money", "Each debt row charges interest. A flame means high interest: pay those first.", "flame", "red"],
+    [".ladder-steps", "What to do next", "These steps show where extra money helps most right now.", "flag", "gold"]
+  ] },
+  { id: "decision", page: "decision", name: "Big decision", steps: [
+    [".dec-grid", "One big choice a year", "Pick one card. A die badge means you roll for it.", "dice", "blue"],
+    [".phase-steps", "Five steps a year", "Payday, decision, life card, live the year, review.", "map", "gold"]
+  ] },
+  { id: "card", page: "card", name: "Life cards", steps: [
+    [".deck-zone", "A surprise each year", "The bars show the odds of each kind of card.", "star", "gold"],
+    ['[data-go="draw"]', "Draw", "Press Draw to flip this year\u2019s card.", "arrow", "green"]
+  ] },
+  { id: "review", page: "review", name: "Year-end review", steps: [
+    [".ty-months", "12 months at a glance", "Each bar is everything you had saved that month. Red means trouble.", "plan", "blue"],
+    [".rv-where", "In versus out", "Top bar came in, bottom bar went out.", "chart", "green"],
+    [".rv-change", "Better or worse?", "Green arrows mean things improved.", "trophy", "gold"]
+  ] },
+  { id: "accounts", page: "accounts", name: "Accounts", steps: [
+    [".sheet", "Own versus owe", "What you own minus what you owe is your net worth.", "bank", "blue"],
+    [".acct-actions", "Move money", "On payday you can move money or pay off a debt early.", "arrow", "green"]
+  ] },
+  { id: "goals", page: "goals", name: "Goals", steps: [
+    [".goal-big", "Your goal", "The bar fills as you get closer.", "trophy", "gold"],
+    [".stage-path", "Life stages", "Build safety first, then wealth, to climb the stages.", "map", "purple"]
+  ] }
+];
+var T2 = {
+  monthMoney: "This month\u2019s money",
+  grossPay: "Pay",
+  taxes: "Taxes",
+  takeHome: "Take-home pay",
+  toUse: "To use",
+  essentials: "Essentials",
+  fun: "Fun money",
+  minimums: "Minimum payments",
+  available: "Available each month",
+  extraIn: "Extra money in",
+  lineByLine: "Line by line",
+  grossMonthly: "Gross monthly pay",
+  inclSpouse: " (incl. spouse)",
+  federal: "Federal income tax",
+  stateTax: "{st} state tax",
+  fica: "Social Security & Medicare",
+  k401in: "401(k) contribution",
+  side: "Side hustle",
+  loss: "loss",
+  profit: "profit",
+  grantLeft: "Leftover grant money",
+  livingLoan: "Living-cost loan",
+  tuitionNote: "Tuition {t}/yr: Pell Grant pays {p}",
+  tuitionLoanNote: ", student loans pay {l}",
+  notOffered: "Not offered",
+  modeLabel: "How to set savings",
+  modeUsd: "$/mo",
+  modePct: "% of take-home",
+  handOut: "Hand out the money you have available",
+  emergency: "Emergency fund",
+  monthsOf6: "{n} / 6 mo",
+  downPayment: "Down payment fund",
+  goalFund: "Goal fund",
+  matchGot: "+{m}/mo match",
+  matchNeed: "Put in {p} for the full match",
+  roomLeft: "Room {m}",
+  brokerage: "Brokerage",
+  aprChip: "{r} a year",
+  deferred: "paused while in school",
+  creep: "Don\u2019t raise fun money when I get a raise",
+  useLoans: "Use student loans for living costs",
+  unassigned: "Unassigned, stays in checking",
+  autoPlan: "Auto-plan",
+  clear: "Clear",
+  confirm: "Confirm plan",
+  overAssigned: "You\u2019ve assigned {m} more than you have: the extra won\u2019t happen.",
+  confirmed: "This year\u2019s plan is confirmed.",
+  yearOnPlan: "A year on this plan",
+  retirement: "Retirement",
+  consumerDebt: "Consumer debt",
+  interestYear: "Interest this year",
+  freeMatch: "Employer match (free money)",
+  taxReturn: "Tax return",
+  refundOf: "refund {m}",
+  oweOf: "owe {m}",
+  willMiss: "You\u2019ll miss {n} bill payments.",
+  willPull: "Short on cash: you\u2019ll pull {m} from savings.",
+  nextStepFor: "Where extra money goes next",
+  allSteps: "Every step is covered. Keep investing!",
+  thisDecision: "This year\u2019s decision: ",
+  confirmFirst: "Confirm your payday plan first.",
+  bigDecision: "This year\u2019s big decision",
+  oneAYear: "Pick one a year. A die means you roll.",
+  partTime: "In school: part-time only, half pay",
+  reviewLater: "The year-end review comes after you live the year.",
+  paychecks: "Paychecks (before tax)",
+  grants: "Tuition grants",
+  otherIn: "Other income",
+  interest: "Interest & fees",
+  tuition: "Tuition",
+  oneOff: "One-off costs",
+  ageLookBack: "Age {age}: looking back",
+  ageDone: "Age {age}: the year is done",
+  marketNote: "market {r} this year, after inflation",
+  boxMeans: "Bar = everything saved at month end.",
+  redMeans: "Red = a problem that month.",
+  cashIn: "Cash in checking: {m}",
+  refundIn: "Refund, paid into checking",
+  taxDue: "Tax due, taken from checking",
+  owed: "Tax for the year",
+  withheld: "Already taken from pay",
+  underDeduction: "Low income: no federal income tax this year.",
+  totalIncome: "Total income",
+  pretax: "401(k) (pre-tax)",
+  stdDeduction: "Standard deduction",
+  fedTaxable: "Federal taxable income",
+  stateShort: "State tax",
+  noWithholdSide: "Nobody withholds tax on side or business income; ",
+  noWithholdBenefit: "unemployment benefits have no tax withheld; ",
+  soOwe: "so you owe.",
+  overWithheld: "You went unpaid for a few months, so extra withheld tax came back.",
+  inOut: "Money in & out",
+  moneyIn: "In",
+  moneyOut: "Out",
+  leftOver: "Left over",
+  savedIn: "Saved & invested (incl. 401(k))",
+  growth: "Investment gains / losses",
+  borrowed: "Borrowed for living costs",
+  missedN: "{n} missed payments",
+  creditNow: ", credit score {c}",
+  fromSavings: "{m} came out of your savings.",
+  evicted: "You couldn\u2019t pay rent and were evicted.",
+  evictedFix: " Choose a move under \u201CBig decision\u201D to rent again.",
+  spentMore: "You spent more than came in: the gap came from savings or borrowing.",
+  savedMore: "You saved more than was left over: the difference came from cash you already had.",
+  restWent: "Whatever wasn\u2019t saved paid down loans or stayed in checking.",
+  changed: "How this year changed things",
+  netWorth: "Net worth",
+  monthsN: "{n} months",
+  levelUp: "Level up!",
+  movedBack: "Moved back",
+  lifeStage: "Life stage",
+  nextStage: "Next stage: ",
+  topStage: "Highest stage",
+  backThisYear: "Back to this year (age {age})",
+  backJournal: "Back to the journal",
+  ledgerN: "Monthly ledger ({n} entries)",
+  turn50: "Turn 50: life review",
+  onToAge: "On to age {age}",
+  locked: "Locked",
+  skipGuide: "Skip",
+  next: "Next",
+  gotIt: "Got it",
+  guide: "Guide",
+  guideTitle: "Pick a short tutorial",
+  close: "Close",
+  nSteps: "{n} quick steps",
+  seen: "seen",
+  sound: "Sound effects on/off",
+  music: "Background music on/off",
+  readMore: "Read more"
 };
+
+// ui/visual.js
+var I2 = (d) => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${d}</g></svg>`;
+Object.assign(icon, {
+  speaker: I2('<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/>'),
+  mute: I2('<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/>'),
+  music: I2('<path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>'),
+  flame: I2('<path d="M12 21c-4 0-6-2.7-6-6 0-4 4-6 4-10 3 2 5 4.5 5 7 1-.5 1.5-1.5 1.7-2.5C18.3 11 18 13 18 15c0 3.3-2 6-6 6z"/>'),
+  up: I2('<path d="M12 19V5M6 11l6-6 6 6"/>'),
+  down: I2('<path d="M12 5v14M6 13l6 6 6-6"/>'),
+  grid: I2('<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>')
+});
+var esc = (x) => String(x ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+function segBar(segs, total, cls = "") {
+  const list = segs.filter((x) => x.v > 0.5), t = total || list.reduce((n, x) => n + x.v, 0) || 1;
+  return `<div class="segbar ${cls}" role="img" aria-label="${esc(list.map((x) => x.label).join(", "))}">${list.map((x) => `<i class="${x.cls}" style="width:${Math.max(1.5, x.v / t * 100)}%" title="${esc(x.label)}"></i>`).join("")}</div>`;
+}
+function beforeAfter(a, b, better = "up") {
+  const top = Math.max(1, Math.abs(a), Math.abs(b)), good = better === "up" ? b >= a : b <= a, same = Math.abs(b - a) < 0.5;
+  return `<span class="ba ${same ? "same" : good ? "good" : "bad"}"><i class="ba-a" style="width:${Math.abs(a) / top * 100}%"></i><i class="ba-b" style="width:${Math.abs(b) / top * 100}%"></i></span><span class="ba-dir ${same ? "" : good ? "good" : "bad"}">${same ? "" : b > a ? icon.up : icon.down}</span>`;
+}
+function dieStrip(labels) {
+  const cell = (n) => `<i class="${n <= 3 ? "fail" : n <= 6 ? "ok" : "great"}">${n}${n === 9 ? "+" : ""}</i>`;
+  return `<div class="diestrip"><div class="ds-cells">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(cell).join("")}</div><div class="ds-keys"><span class="fail">${esc(labels.fail)}</span><span class="ok">${esc(labels.ok)}</span><span class="great">${esc(labels.great)}</span></div></div>`;
+}
+function bubbleArt(ico, tone2 = "blue") {
+  return `<span class="bubble-art t-${tone2}">${icon[ico] || icon.star}</span>`;
+}
+function meter(v, max, cls = "") {
+  const p = Math.max(0, Math.min(1, max ? v / max : 0));
+  return `<span class="meter ${cls}"><i style="width:${p * 100}%"></i></span>`;
+}
+
+// ui/sound.js
+var KEY = "adulting.tycoon.sound.v1";
+var prefs = { sfx: true, music: false };
+try {
+  prefs = { ...prefs, ...JSON.parse(localStorage.getItem(KEY) || "{}") };
+} catch {
+}
+var save = () => {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(prefs));
+  } catch {
+  }
+};
+var ctx = null;
+var master = null;
+var musicGain = null;
+var musicTimer = null;
+function audio() {
+  if (ctx) {
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  const AC = globalThis.AudioContext || globalThis.webkitAudioContext;
+  if (!AC) return null;
+  try {
+    ctx = new AC();
+  } catch {
+    return null;
+  }
+  master = ctx.createGain();
+  master.gain.value = 0.32;
+  master.connect(ctx.destination);
+  return ctx;
+}
+function tone(freq, start, dur, { type = "sine", vol = 0.5, slide = 0, to = master } = {}) {
+  const t0 = ctx.currentTime + start, o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(freq, t0);
+  if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq * slide), t0 + dur);
+  g.gain.setValueAtTime(1e-4, t0);
+  g.gain.exponentialRampToValueAtTime(vol, t0 + 0.012);
+  g.gain.exponentialRampToValueAtTime(1e-4, t0 + dur);
+  o.connect(g);
+  g.connect(to);
+  o.start(t0);
+  o.stop(t0 + dur + 0.02);
+}
+function noise(start, dur, vol = 0.3, hp = 1200) {
+  const n = Math.floor(ctx.sampleRate * dur), b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+  const s4 = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+  s4.buffer = b;
+  f.type = "highpass";
+  f.frequency.value = hp;
+  g.gain.value = vol;
+  s4.connect(f);
+  f.connect(g);
+  g.connect(master);
+  s4.start(ctx.currentTime + start);
+}
+var N = { C4: 261.6, D4: 293.7, E4: 329.6, F4: 349.2, G4: 392, A4: 440, B4: 493.9, C5: 523.3, D5: 587.3, E5: 659.3, G5: 784, A5: 880, C6: 1046.5 };
+var FX = {
+  click: () => tone(1250, 0, 0.05, { type: "triangle", vol: 0.18 }),
+  soft: () => tone(700, 0, 0.06, { type: "sine", vol: 0.15 }),
+  lever: () => {
+    noise(0, 0.18, 0.25, 600);
+    tone(180, 0, 0.25, { type: "sawtooth", vol: 0.12, slide: 0.5 });
+  },
+  reel: () => {
+    tone(900, 0, 0.05, { type: "square", vol: 0.12 });
+    tone(600, 0.04, 0.08, { type: "triangle", vol: 0.2 });
+  },
+  coin: () => {
+    tone(N.B4 * 2, 0, 0.09, { type: "square", vol: 0.16 });
+    tone(N.E5 * 2, 0.07, 0.35, { type: "square", vol: 0.16 });
+  },
+  dice: () => {
+    for (let i = 0; i < 6; i++) noise(i * 0.06, 0.04, 0.22, 2500);
+    tone(220, 0.38, 0.12, { type: "triangle", vol: 0.3 });
+  },
+  flip: () => {
+    noise(0, 0.12, 0.2, 3e3);
+    tone(500, 0.02, 0.15, { type: "sine", vol: 0.18, slide: 1.8 });
+  },
+  good: () => [N.C5, N.E5, N.G5, N.C6].forEach((f, i) => tone(f, i * 0.09, 0.28, { type: "triangle", vol: 0.28 })),
+  bad: () => {
+    tone(N.E4, 0, 0.25, { type: "triangle", vol: 0.3 });
+    tone(N.C4 * 0.9, 0.18, 0.45, { type: "triangle", vol: 0.3 });
+  },
+  chime: () => {
+    tone(N.G5, 0, 0.5, { vol: 0.22 });
+    tone(N.C6, 0.12, 0.7, { vol: 0.18 });
+  },
+  levelup: () => [N.G4, N.C5, N.E5, N.G5, N.C6].forEach((f, i) => tone(f, i * 0.07, 0.3, { type: "square", vol: 0.12 })),
+  tick: () => tone(1500, 0, 0.025, { type: "square", vol: 0.06 })
+};
+function sfx(name) {
+  if (!prefs.sfx || !FX[name]) return;
+  if (!audio()) return;
+  try {
+    FX[name]();
+  } catch {
+  }
+}
+var CHORDS = [[N.C4, N.E4, N.G4], [N.A4 / 2, N.C4, N.E4], [N.F4 / 2, N.A4 / 2, N.C4], [N.G4 / 2, N.B4 / 2, N.D4]];
+function startMusic() {
+  if (musicTimer || !audio()) return;
+  musicGain = ctx.createGain();
+  musicGain.gain.value = 1e-4;
+  musicGain.connect(master);
+  musicGain.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime + 1.5);
+  let bar2 = 0;
+  const play = () => {
+    const ch = CHORDS[bar2 % 4];
+    ch.forEach((f) => tone(f, 0, 2.3, { type: "sine", vol: 0.12, to: musicGain }));
+    [0, 1, 2, 1].forEach((k, i) => tone(ch[k] * 2, 0.5 * i + 0.05, 0.45, { type: "triangle", vol: 0.05, to: musicGain }));
+    bar2++;
+  };
+  play();
+  musicTimer = setInterval(play, 2e3);
+}
+function stopMusic() {
+  clearInterval(musicTimer);
+  musicTimer = null;
+  if (musicGain && ctx) {
+    const g = musicGain;
+    g.gain.setTargetAtTime(1e-4, ctx.currentTime, 0.3);
+    setTimeout(() => g.disconnect(), 1500);
+    musicGain = null;
+  }
+}
+var soundOn = () => prefs.sfx;
+var musicOn = () => prefs.music;
+function toggleSfx() {
+  prefs.sfx = !prefs.sfx;
+  save();
+  if (prefs.sfx) sfx("soft");
+  return prefs.sfx;
+}
+function toggleMusic() {
+  prefs.music = !prefs.music;
+  save();
+  prefs.music ? startMusic() : stopMusic();
+  return prefs.music;
+}
+function resumeMusic() {
+  if (prefs.music && !musicTimer) startMusic();
+}
 
 // ui/cardart.js
 var K = "#1d2b4f";
@@ -4069,7 +4486,7 @@ function setupFrame(stage2, body2) {
   const i0 = SETUP_STAGES.findIndex((x) => x[0] === stage2);
   root.innerHTML = `<div class="page setup-page wizard">${toastHtml()}
     ${s2 ? `<div class="resume-strip">${icon.save}<span>This browser has a saved life at age ${s2.age} . </span>${btn("resume", "Continue that life", { cls: "btn blue small" })}</div>` : ""}
-    <header class="wiz-head">${logo("wiz-logo")}<ol class="stage-bar">${SETUP_STAGES.map(([id, n], i) => `<li class="${i === i0 ? "on" : i < i0 ? "done" : ""}"><span>${i + 1}</span>${n}</li>`).join("")}</ol></header>
+    <header class="wiz-head">${logo("wiz-logo")}<ol class="stage-bar">${SETUP_STAGES.map(([id, n], i) => `<li class="${i === i0 ? "on" : i < i0 ? "done" : ""}"><span>${i + 1}</span>${n}</li>`).join("")}</ol><span class="snd-btns">${sndBtns()}</span></header>
     <main class="wiz" id="main">${body2}</main></div>${tipHtml()}`;
   root.querySelector("[data-autofocus]")?.focus({ preventScroll: true });
 }
@@ -4163,6 +4580,7 @@ function pull() {
   void lever?.offsetWidth;
   lever?.classList.add("yank");
   if (setup.pulls === 0) {
+    sfx("lever");
     setup.pulls = 1;
     setTimeout(() => {
       update();
@@ -4173,6 +4591,7 @@ function pull() {
   const i = setup.reels.findIndex((v) => v == null);
   setup.reels[i] = reelValue(setup.seed, i, setup.tick + i * 5, setup.difficulty);
   setup.pulls++;
+  sfx(setup.reels.every((v) => v != null) ? "good" : "reel");
   setTimeout(() => update(), reduced ? 0 : 160);
 }
 var previewStart = (path = setup.path, goal = setup.goal) => newGame({ seed: setup.seed, reels: reelsObj(), path, goal, name: setup.name, look: setup.look, difficulty: setup.difficulty });
@@ -4207,6 +4626,7 @@ function hud() {
     <div class="hud-stat wide"><small>Financial Independence ${q("fi")}</small><b>${pct(Math.min(1, m.fiProgress))}</b>${bar(m.fiProgress, "fi")}</div>
     <button class="hud-stage st-${st.id}" data-go="nav" data-id="goals"><small>Life stage</small><b>${st.id}. ${st.name}</b></button>
     <button class="quest" data-go="nav" data-id="goals">${icon[g.icon] || icon.trophy}<div><b>${h(g.title)}</b>${bar(g.progress)}<small>${h(g.label)}</small></div></button>
+    <span class="snd-btns">${sndBtns()}</span>
     ${btn("tour", "Guide", { cls: "btn ghost small", ico: "help" })}
     <div class="menu-wrap">${btn("menu", "Save", { cls: "btn ghost small", ico: "save", attrs: `aria-expanded="${ui.menu}"` })}
       ${ui.menu ? `<div class="menu" role="menu">${btn("export", globalThis.__ADULTING_WEB__ ? "Copy save" : "Export save", { cls: "menu-item" })}${btn("import", "Import save", { cls: "menu-item" })}${btn("new", ui.confirmNew ? "Click again to confirm abandoning this life" : "Start a new life", { cls: "menu-item danger" })}<p>Saved automatically in this browser.</p></div>` : ""}</div>
@@ -4252,54 +4672,68 @@ function paydayPage() {
   const sv = (key, label, disabled) => p.byPct ? pstepper(key, p, label, disabled) : stepper(key, p[key], label, disabled);
   const pv = previewYear(s2, p), pm = metrics(pv.state), sm = pv.summary, a = pay.aid;
   const line = (label, v, key, cls = "") => `<div class="fl ${cls}"><span>${label} ${key ? q(key) : ""}</span><b>${v}</b></div>`;
-  const flow = `<section class="panel pd-flow"><h3>This month\u2019s money</h3>
-    ${line("Gross monthly pay" + (s2.spouse ? " (incl. spouse)" : ""), money2(pay.gross + pay.spouseGross), "gross")}
-    ${line("\u2212 Federal income tax", money2(-pay.tax.federal), "federal", "minus")}${line(`\u2212 ${STATES[s2.region].name} state tax`, money2(-pay.tax.state), "state", "minus")}
-    ${line("\u2212 Social Security & Medicare", money2(-(pay.tax.socialSecurity + pay.tax.medicare)), "fica", "minus")}${pay.k401 ? line("\u2212 401(k) contribution", money2(-pay.k401), "k401", "minus") : ""}
-    ${line("= Take-home pay", `${money2(pay.net)}<small class="per-yr"> \xD712 = ${money2(pay.net * 12)}${LT2.perYear}</small>`, "", "sub")}
-    ${pay.support ? line("+ " + h(s2.support.label), money2(pay.support), "", "plus") : ""}${pay.side ? line("+ Side hustle", money2(pay.side), "", "plus") : ""}${pay.biz ? line(`${pay.biz < 0 ? "\u2212" : "+"} ${h(s2.business.label)}${pay.biz < 0 ? " loss" : "profit"}`, money2(pay.biz), "", pay.biz < 0 ? "minus" : "plus") : ""}
-    ${a.grantCash ? line("+ Leftover grant money", money2(a.grantCash), "pell", "plus") : ""}${a.livingLoan ? line("+ Living-cost loan", money2(a.livingLoan), "livingLoan", "plus warnline") : ""}
-    ${line("\u2212 Essentials", money2(-pay.essentials), "essentials", "minus")}${line("\u2212 Fun money", money2(-pay.fun), "fun", "minus")}${pay.minimums ? line("\u2212 Minimum payments", money2(-pay.minimums), "minimum", "minus") : ""}
-    <div class="fl total ${pay.available < 0 ? "bad" : ""}"><span>Available each month ${q("available")}</span><b>${money2(pay.available)}</b></div>
-    ${s2.school ? `<p class="mini">Tuition ${money2(a.tuition * 12)}/yr: Pell Grant pays ${money2(Math.min(a.pell, a.tuition) * 12)}${a.tuitionLoan ? `, student loans paid ${money2(a.tuitionLoan * 12)}` : ""}.${q("pell")}</p>` : ""}</section>`;
+  const gross = pay.gross + pay.spouseGross, taxes = pay.tax.federal + pay.tax.state + pay.tax.socialSecurity + pay.tax.medicare;
+  const extras = (pay.support || 0) + (pay.side || 0) + Math.max(0, pay.biz || 0) + (a.grantCash || 0) + (a.livingLoan || 0);
+  const avail = Math.max(0, pay.available), costs = pay.essentials + pay.fun + (pay.minimums || 0) + Math.max(0, -(pay.biz || 0));
+  const leg = (cls, label, v, key) => `<li class="k-${cls}"><i></i><span>${label} ${key ? q(key) : ""}</span><b>${v}</b></li>`;
+  const flow = `<section class="panel pd-flow"><h3>${T2.monthMoney}</h3>
+    <div class="wf"><div class="wf-row"><span class="wf-lab">${icon.briefcase}${T2.grossPay}<b>${money2(gross)}</b></span>${segBar([{ v: taxes, cls: "tax", label: T2.taxes }, { v: pay.k401, cls: "save", label: "401(k)" }, { v: pay.net, cls: "net", label: T2.takeHome }], gross)}</div>
+      <div class="wf-row"><span class="wf-lab">${icon.coin}${T2.toUse}<b>${money2(pay.net + extras)}</b></span>${segBar([{ v: pay.essentials, cls: "ess", label: T2.essentials }, { v: pay.fun, cls: "fun", label: T2.fun }, { v: pay.minimums, cls: "min", label: T2.minimums }, { v: avail, cls: "avail", label: T2.available }], Math.max(pay.net + extras, costs + avail))}</div></div>
+    <ul class="wf-legend">${leg("tax", T2.taxes, money2(-taxes), "taxes")}${pay.k401 ? leg("save", "401(k)", money2(-pay.k401), "k401") : ""}${extras ? leg("plus", T2.extraIn, "+" + money2(extras), a.livingLoan ? "livingLoan" : "") : ""}
+      ${leg("ess", T2.essentials, money2(-pay.essentials), "essentials")}${leg("fun", T2.fun, money2(-pay.fun), "fun")}${pay.minimums ? leg("min", T2.minimums, money2(-pay.minimums), "minimum") : ""}</ul>
+    <div class="fl total ${pay.available < 0 ? "bad" : ""}"><span>${T2.available} ${q("available")}</span><b>${money2(pay.available)}</b></div>
+    <details class="more"><summary>${T2.lineByLine}</summary>
+    ${line(T2.grossMonthly + (s2.spouse ? T2.inclSpouse : ""), money2(gross), "gross")}
+    ${line("\u2212 " + T2.federal, money2(-pay.tax.federal), "federal", "minus")}${line("\u2212 " + fmt(T2.stateTax, { st: STATES[s2.region].name }), money2(-pay.tax.state), "state", "minus")}
+    ${line("\u2212 " + T2.fica, money2(-(pay.tax.socialSecurity + pay.tax.medicare)), "fica", "minus")}${pay.k401 ? line("\u2212 " + T2.k401in, money2(-pay.k401), "k401", "minus") : ""}
+    ${line("= " + T2.takeHome, `${money2(pay.net)}<small class="per-yr"> \xD712 = ${money2(pay.net * 12)}${LT2.perYear}</small>`, "", "sub")}
+    ${pay.support ? line("+ " + h(s2.support.label), money2(pay.support), "", "plus") : ""}${pay.side ? line("+ " + T2.side, money2(pay.side), "", "plus") : ""}${pay.biz ? line(`${pay.biz < 0 ? "\u2212" : "+"} ${h(s2.business.label)} ${pay.biz < 0 ? T2.loss : T2.profit}`, money2(pay.biz), "", pay.biz < 0 ? "minus" : "plus") : ""}
+    ${a.grantCash ? line("+ " + T2.grantLeft, money2(a.grantCash), "pell", "plus") : ""}${a.livingLoan ? line("+ " + T2.livingLoan, money2(a.livingLoan), "livingLoan", "plus warnline") : ""}
+    ${line("\u2212 " + T2.essentials, money2(-pay.essentials), "essentials", "minus")}${line("\u2212 " + T2.fun, money2(-pay.fun), "fun", "minus")}${pay.minimums ? line("\u2212 " + T2.minimums, money2(-pay.minimums), "minimum", "minus") : ""}
+    ${s2.school ? `<p class="mini">${fmt(T2.tuitionNote, { t: money2(a.tuition * 12), p: money2(Math.min(a.pell, a.tuition) * 12) })}${a.tuitionLoan ? fmt(T2.tuitionLoanNote, { l: money2(a.tuitionLoan * 12) }) : ""} ${q("pell")}</p>` : ""}</details></section>`;
   const debts = s2.debts.filter((d) => d.balance > 5e-3 && !d.closed && d.kind !== "arrears");
-  const row = (ico, name, key, sub, bal, ctrl) => `<tr><td class="a-ico">${icon[ico]}</td><td><b>${name}</b> ${q(key)}${sub ? `<small>${sub}</small>` : ""}</td><td class="a-bal">${bal}</td><td>${ctrl}</td></tr>`;
+  const row = (ico, name, key, sub, bal, ctrl, cls = "") => `<tr class="${cls}"><td class="a-ico">${icon[ico]}</td><td><b>${name}</b> ${q(key)}${sub ? `<small>${sub}</small>` : ""}</td><td class="a-bal">${bal}</td><td>${ctrl}</td></tr>`;
   const match = s2.job.match, rothRoom2 = rothRoom(s2);
-  const k401ctrl = s2.job.has401k && s2.job.employed ? `<div class="ty-stepper pct ${editable ? "" : "off"}"><button data-go="pct" data-d="-0.01" ${editable ? "" : "disabled"} aria-label="401k down 1%">\u2212</button><output>${pct(p.k401Pct)}</output><button data-go="pct" data-d="0.01" ${editable ? "" : "disabled"} aria-label="401k up 1%">+</button></div>` : '<span class="na">Not offered</span>';
-  const mode = `<span class="pd-mode" role="group" aria-label="How to set savings"><button class="${p.byPct ? "" : "on"}" data-go="pmode" data-id="usd" aria-pressed="${!p.byPct}" ${editable ? "" : "disabled"}>$/mo</button><button class="${p.byPct ? "on" : ""}" data-go="pmode" data-id="pct" aria-pressed="${!!p.byPct}" ${editable ? "" : "disabled"}>% of take-home</button>${q("pctMode")}</span>`;
-  const alloc = `<section class="panel alloc"><h3 class="alloc-h"><span>Hand out the money you have available</span>${mode}</h3><table class="alloc-t"><tbody>
-    ${row("piggy", "Emergency fund", "emergency", `${m.runway.toFixed(1)} months of expenses`, money2(s2.accounts.emergency), sv("emergency", "Emergency fund", !editable))}
-    ${row("flag", s2.goal === "home" ? "Down payment fund" : "Goal fund", "goalfund", "", money2(s2.accounts.goal), sv("goal", "Goal fund", !editable))}
-    ${row("bank", "401(k)", "k401", s2.job.has401k && s2.job.employed ? `of pay ${pct(p.k401Pct)} = ${money2(pay.k401)}/mo${match ? p.k401Pct >= match.upTo - 1e-9 ? ` \xB7 <em class="ok">employer adds ${money2(pay.match)}</em>` : ` \xB7 <em class="warn">Contribute ${pct(match.upTo)} to get the full match</em> ${q("match")}` : ""}` : "", money2(s2.accounts.k401), k401ctrl)}
-    ${row("sprout", "Roth IRA", "roth", `Room left this year ${money2(rothRoom2)}`, money2(s2.accounts.roth), sv("roth", "Roth IRA", !editable || !rothRoom2))}
-    ${row("chart", "Brokerage", "brokerage", "", money2(s2.accounts.brokerage), sv("brokerage", "Brokerage", !editable))}
-    ${debts.map((d) => row(d.kind === "auto" ? "car" : d.kind === "mortgage" ? "house" : d.kind === "student" ? "cap" : "receipt", "Extra payment: " + h(d.label), "extra", `APR (annual interest rate) ${pct(d.apr, 2)}${d.apr >= 0.08 ? ' \xB7 <em class="warn">high interest</em>' : ""}${d.deferUntilAge && s2.age < d.deferUntilAge ? " \xB7 deferred while in school" : ""}`, money2(d.balance), stepper("extra:" + d.id, p.extra?.[d.id] || 0, d.label, !editable))).join("")}
+  const k401ctrl = s2.job.has401k && s2.job.employed ? `<div class="ty-stepper pct ${editable ? "" : "off"}"><button data-go="pct" data-d="-0.01" ${editable ? "" : "disabled"} aria-label="401k \u22121%">\u2212</button><output>${pct(p.k401Pct)}</output><button data-go="pct" data-d="0.01" ${editable ? "" : "disabled"} aria-label="401k +1%">+</button></div>` : `<span class="na">${T2.notOffered}</span>`;
+  const mode = `<span class="pd-mode" role="group" aria-label="${T2.modeLabel}"><button class="${p.byPct ? "" : "on"}" data-go="pmode" data-id="usd" aria-pressed="${!p.byPct}" ${editable ? "" : "disabled"}>${T2.modeUsd}</button><button class="${p.byPct ? "on" : ""}" data-go="pmode" data-id="pct" aria-pressed="${!!p.byPct}" ${editable ? "" : "disabled"}>${T2.modePct}</button>${q("pctMode")}</span>`;
+  const chip = (txt, cls = "") => `<span class="chip ${cls}">${txt}</span>`;
+  const alloc = `<section class="panel alloc"><h3 class="alloc-h"><span>${T2.handOut}</span>${mode}</h3><table class="alloc-t"><tbody>
+    ${row("piggy", T2.emergency, "emergency", `${meter(m.runway, 6, m.runway >= 3 ? "ok" : "")}${chip(fmt(T2.monthsOf6, { n: m.runway.toFixed(1) }))}`, money2(s2.accounts.emergency), sv("emergency", T2.emergency, !editable))}
+    ${row("flag", s2.goal === "home" ? T2.downPayment : T2.goalFund, "goalfund", "", money2(s2.accounts.goal), sv("goal", T2.goalFund, !editable))}
+    ${row("bank", "401(k)", "k401", s2.job.has401k && s2.job.employed ? `${match ? p.k401Pct >= match.upTo - 1e-9 ? chip(icon.hands + fmt(T2.matchGot, { m: money2(pay.match) }), "ok") : chip(icon.hands + fmt(T2.matchNeed, { p: pct(match.upTo) }), "warn") + " " + q("match") : ""}` : "", money2(s2.accounts.k401), k401ctrl)}
+    ${row("sprout", "Roth IRA", "roth", chip(fmt(T2.roomLeft, { m: money2(rothRoom2) })), money2(s2.accounts.roth), sv("roth", "Roth IRA", !editable || !rothRoom2))}
+    ${row("chart", T2.brokerage, "brokerage", "", money2(s2.accounts.brokerage), sv("brokerage", T2.brokerage, !editable))}
+    ${debts.map((d) => row(d.kind === "auto" ? "car" : d.kind === "mortgage" ? "house" : d.kind === "student" ? "cap" : "receipt", h(d.label), "extra", `${chip((d.apr >= 0.08 ? icon.flame : "") + fmt(T2.aprChip, { r: pct(d.apr, 1) }), d.apr >= 0.08 ? "hot" : "")}${d.deferUntilAge && s2.age < d.deferUntilAge ? chip(T2.deferred) : ""}`, money2(d.balance), stepper("extra:" + d.id, p.extra?.[d.id] || 0, d.label, !editable), "alloc-debt")).join("")}
     </tbody></table>
-    <div class="toggles"><label><input type="checkbox" data-go="creep" ${p.lockLifestyle ? "checked" : ""} ${editable ? "" : "disabled"}> Don\u2019t raise fun money when I get a raise ${q("creep")}</label>
-      ${s2.school ? `<label><input type="checkbox" data-go="living" ${p.livingLoan !== false ? "checked" : ""} ${editable ? "" : "disabled"}> Use student loans for living costs ${q("livingLoan")}</label>` : ""}</div>
-    ${editable ? `<div class="pd-foot"><div class="left-to"><small>Unassigned, stays in checking</small><b class="${pay.left < 0 ? "neg" : ""}">${money2(pay.left)}</b></div>
-      ${btn("autoplan", "Auto-plan", { cls: "btn gold", ico: "star" })}${btn("plan-clear", "Clear", { cls: "btn ghost small" })}${btn("plan-confirm", "Confirm plan", { cls: "btn green", ico: "check" })}</div>
-      ${pay.left < -0.5 ? `<p class="risk">${icon.alert}<span>You\u2019ve assigned more than you have by ${money2(-pay.left)}: the extra won\u2019t happen.</span></p>` : ""}` : `<p class="hint">This year\u2019s plan is confirmed.</p>${goNext()}`}
-    ${ui.autoNotes ? `<div class="autonotes">${icon.star}<ul>${ui.autoNotes.map((n) => `<li>${h(n)}</li>`).join("")}</ul></div>` : ""}</section>`;
-  const next = LADDER.find((x) => !{ starter: m.emergency >= 1e3, match: !match || p.k401Pct >= match.upTo - 1e-9 || !s2.job.employed, highdebt: !m.highDebt, ef: m.runway >= 3, roth: p.roth > 0 || !rothRoom2, more: p.brokerage > 0 }[x.id]);
-  const impact = `<section class="panel impact"><h3>A year on this plan</h3>
-    <div class="kv"><span>Emergency fund</span><b>${money2(s2.accounts.emergency)} \u2192 ${money2(pv.state.accounts.emergency)}</b></div>
-    <div class="kv"><span>Retirement accounts</span><b>${money2(m.retirement)} \u2192 ${money2(pm.retirement)}</b></div>
-    <div class="kv"><span>Consumer debt</span><b>${money2(m.consumerDebt)} \u2192 ${money2(pm.consumerDebt)}</b></div>
-    <div class="kv"><span>Interest paid this year</span><b class="neg">${money2(sm.interest)}</b></div>
-    ${sm.match ? `<div class="kv"><span>Employer match (free money)</span><b class="pos">+${money2(sm.match)}</b></div>` : ""}
-    <div class="kv"><span>Tax return at year end</span><b>${sm.refund >= 0 ? "refund " + money2(sm.refund) : "owe " + money2(-sm.refund)}</b></div>
-    ${sm.missed ? `<p class="risk">${icon.alert}<span>You\u2019ll miss ${sm.missed} bill payments.</span></p>` : sm.shortfallDraw > 1 ? `<p class="risk">${icon.alert}<span>Short on cash: you\u2019ll pull ${money2(sm.shortfallDraw)}.</span></p>` : ""}
-    <div class="ladder-mini"><small>Where extra money goes (team flowchart)</small><ol>${LADDER.map((x) => `<li class="${next?.id === x.id ? "now" : ""}">${h(x.title)}</li>`).join("")}</ol></div></section>`;
+    <div class="toggles"><label><input type="checkbox" data-go="creep" ${p.lockLifestyle ? "checked" : ""} ${editable ? "" : "disabled"}> ${T2.creep} ${q("creep")}</label>
+      ${s2.school ? `<label><input type="checkbox" data-go="living" ${p.livingLoan !== false ? "checked" : ""} ${editable ? "" : "disabled"}> ${T2.useLoans} ${q("livingLoan")}</label>` : ""}</div>
+    ${editable ? `<div class="pd-foot"><div class="left-to"><small>${T2.unassigned}</small><b class="${pay.left < 0 ? "neg" : ""}">${money2(pay.left)}</b></div>
+      ${btn("autoplan", T2.autoPlan, { cls: "btn gold", ico: "star" })}${btn("plan-clear", T2.clear, { cls: "btn ghost small" })}${btn("plan-confirm", T2.confirm, { cls: "btn green", ico: "check" })}</div>
+      ${pay.left < -0.5 ? `<p class="risk">${icon.alert}<span>${fmt(T2.overAssigned, { m: money2(-pay.left) })}</span></p>` : ""}` : `<p class="hint">${T2.confirmed}</p>${goNext()}`}
+    ${ui.autoNotes ? `<div class="autonotes">${icon.star}<div><p>${h(ui.autoNotes[0])}</p>${ui.autoNotes.length > 1 ? `<details class="more"><summary>${T2.lineByLine}</summary><ul>${ui.autoNotes.slice(1).map((n) => `<li>${h(n)}</li>`).join("")}</ul></details>` : ""}</div></div>` : ""}</section>`;
+  const done = { starter: m.emergency >= 1e3, match: !match || p.k401Pct >= match.upTo - 1e-9 || !s2.job.employed, highdebt: !m.highDebt, ef: m.runway >= 3, roth: p.roth > 0 || !rothRoom2, more: p.brokerage > 0 };
+  const next = LADDER.find((x) => !done[x.id]), ni = LADDER.indexOf(next);
+  const LICO = { starter: "shield", match: "hands", highdebt: "flame", ef: "piggy", roth: "sprout", more: "chart" };
+  const baRow = (ico, label, a0, b0, better) => `<div class="ba-row"><span class="ba-lab">${icon[ico]}${label}</span>${beforeAfter(a0, b0, better)}<b>${money2(b0)}</b></div>`;
+  const impact = `<section class="panel impact"><h3>${T2.yearOnPlan}</h3>
+    ${baRow("piggy", T2.emergency, s2.accounts.emergency, pv.state.accounts.emergency, "up")}${baRow("sprout", T2.retirement, m.retirement, pm.retirement, "up")}${baRow("receipt", T2.consumerDebt, m.consumerDebt, pm.consumerDebt, "down")}
+    <div class="kv"><span>${icon.flame}${T2.interestYear}</span><b class="neg">${money2(sm.interest)}</b></div>
+    ${sm.match ? `<div class="kv"><span>${icon.hands}${T2.freeMatch}</span><b class="pos">+${money2(sm.match)}</b></div>` : ""}
+    <div class="kv"><span>${icon.receipt}${T2.taxReturn}</span><b>${sm.refund >= 0 ? fmt(T2.refundOf, { m: money2(sm.refund) }) : fmt(T2.oweOf, { m: money2(-sm.refund) })}</b></div>
+    ${sm.missed ? `<p class="risk">${icon.alert}<span>${fmt(T2.willMiss, { n: sm.missed })}</span></p>` : sm.shortfallDraw > 1 ? `<p class="risk">${icon.alert}<span>${fmt(T2.willPull, { m: money2(sm.shortfallDraw) })}</span></p>` : ""}
+    <div class="ladder-steps"><small>${T2.nextStepFor}</small><ol>${LADDER.map((x, i) => `<li class="${i < ni || ni < 0 ? "done" : i === ni ? "now" : ""}" title="${i + 1}. ${h(x.title)}">${icon[LICO[x.id]] || icon.star}</li>`).join("")}</ol><p class="ls-now">${next ? `<b>${ni + 1}.</b> ${h(next.title)}` : h(T2.allSteps)}</p></div></section>`;
   frame("payday", `<section class="payday"><div class="pd-grid">${flow}${alloc}${impact}</div></section>`);
 }
 var throwTag = (t) => t ? `<span class="throw-badge">${icon.dice}Throw \xB7 ${STAT[t.stat]} ${modFor(s2, t.stat)}</span>` : "";
 function decisionPage() {
-  if (s2.phase !== "decision") return frame("decision", `<section class="panel">${s2.decision ? `<h2>This year\u2019s decision: ${h(s2.decision.title)}${s2.decision.choice ? " \xB7 " + h(s2.decision.choice) : ""}</h2><p>${h(s2.decision.note || "")}</p>` : "<p>Confirm your payday plan first.</p>"}${goNext()}</section>`);
-  frame("decision", `<section><header class="page-head"><h1>This year\u2019s big decision</h1><p>You can pick only one each year. The ones with a die need a throw. ${q("dice")}</p></header>
-    <div class="dec-grid">${decisions(s2).map((d) => `<button class="dec-card ${d.blocked ? "blocked" : ""}" data-go="pick-decision" data-id="${d.id}">
-      <span class="dc-top">${icon[d.icon] || icon.star}<b>${h(d.title)}</b></span><span class="dc-text">${h(d.text)}</span>${throwTag(d.throw)}${d.blocked ? `<small class="why">${h(d.blocked)}</small>` : ""}</button>`).join("")}</div></section>`);
+  if (s2.phase !== "decision") return frame("decision", `<section class="panel">${s2.decision ? `<h2>${T2.thisDecision}${h(s2.decision.title)}${s2.decision.choice ? " \xB7 " + h(s2.decision.choice) : ""}</h2><p>${h(s2.decision.note || "")}</p>` : `<p>${T2.confirmFirst}</p>`}${goNext()}</section>`);
+  const tones = ["blue", "gold", "green", "red", "purple"];
+  frame("decision", `<section><header class="page-head"><h1>${T2.bigDecision}</h1><p>${icon.dice}${T2.oneAYear} ${q("dice")}</p></header>
+    <div class="dec-grid">${decisions(s2).map((d, i) => `<button class="dec-card ${d.blocked ? "blocked" : ""}" data-go="pick-decision" data-id="${d.id}" title="${h(d.text)}">
+      <span class="dc-top"><span class="dc-art t-${tones[i % tones.length]}">${icon[d.icon] || icon.star}</span><b>${h(d.title)}</b></span><span class="dc-text">${h(firstSentence(d.text))}</span>${throwTag(d.throw)}${d.blocked ? `<small class="why" title="${h(d.blocked)}">${icon.lock}${h(firstClause(d.blocked))}</small>` : ""}</button>`).join("")}</div></section>`);
 }
+var firstSentence = (t) => String(t || "").split(/(?<=[.!?。！？])\s*/)[0];
+var firstClause = (t) => String(t || "").split(/[,，;；:]/)[0];
 function cardPage() {
   if (s2.phase !== "card") return frame("card", `<section class="panel">${s2.card ? `<h2>This year\u2019s card: ${h(s2.card.title)}</h2><p>${h(s2.card.choiceLabel || "")}</p>` : "<p>It\u2019s not time to draw a card yet.</p>"}${goNext()}</section>`);
   const c = s2.card;
@@ -4342,6 +4776,7 @@ function stepWalk() {
   walkTimer = setTimeout(() => {
     if (!ui.walk || ui.page !== "live") return;
     ui.walk.i++;
+    sfx("tick");
     update(false);
     stepWalk();
   }, 520);
@@ -4373,51 +4808,61 @@ function pastPicker(past) {
 function reviewPage() {
   const past = ui.pastAge != null ? s2.history.find((x) => x.age === ui.pastAge && x.review) : null;
   if (!past && s2.phase === "review" && s2.year?.review && s2.year.review.answered == null && !ui.modal) ui.modal = { kind: "review" };
-  if (!past && s2.phase !== "review") return frame("review", `<section class="panel"><p>The year-end review comes after you live the year.</p>${pastPicker()}${goNext()}</section>`);
+  if (!past && s2.phase !== "review") return frame("review", `<section class="panel"><p>${T2.reviewLater}</p>${pastPicker()}${goNext()}</section>`);
   const y = past ? past.review : s2.year, age = past ? past.age : s2.age, sm = y.summary, t = sm.tax, before = y.before, after = y.after, stBefore = STAGES[y.stageBefore];
   const stNow = past ? STAGES[past.stage] : stage(s2, { netCashFlow: sm.netCashFlow, investRate: sm.investRate });
   const bad = ["shortfall", "overdue", "missed", "charge-off", "evicted"], anim = ui.animAge !== age && !reduced;
   ui.animAge = age;
   const ev = (mo) => y.lines.filter((l) => l.month === mo && (bad.includes(l.type) || ["note", "income", "benefit", "card-charge"].includes(l.type)));
   const otherIn = sm.income - sm.gross - sm.spouseGross - sm.grants, out = sm.essentials + sm.fun + sm.interest + sm.costs + t.total + sm.lateFees + sm.tuition + Math.max(0, -sm.biz);
-  const savedIn = sm.k401 + sum2(Object.values(sm.saved));
-  frame("review", `<section class="ty-review"><header class="page-head"><h1>Age ${age}: ${past ? "looking back" : "the year is done"}</h1>${y.news ? `<p class="news">${icon.chart}${h(y.news)} (market return this year ${pct(sm.returnRate, 1)}, after inflation)</p>` : ""}${pastPicker(past)}</header>
-    <p class="mo-cap">Each box: everything in your accounts at month end (cash + savings + investments, debts not subtracted). Small line: cash in checking. Red = a problem that month.</p>
+  const savedIn = sm.k401 + sum2(Object.values(sm.saved)), left = sm.income - out;
+  const anyBad = y.months.some((mo) => ev(mo.month).some((l) => bad.includes(l.type)));
+  if (!past && ui.soundAge !== age) {
+    ui.soundAge = age;
+    ui.pendingSound = stNow.id > stBefore.id ? "levelup" : anyBad || left < 0 ? "bad" : "good";
+  }
+  const moMax = Math.max(1, ...y.months.map(moTotal));
+  const scale = Math.max(sm.income, out, 1);
+  const inSegs = [{ v: sm.gross + sm.spouseGross, cls: "pay", label: T2.paychecks }, { v: sm.grants, cls: "grant", label: T2.grants }, { v: otherIn, cls: "other", label: T2.otherIn }];
+  const outSegs = [{ v: t.total, cls: "tax", label: T2.taxes }, { v: sm.essentials, cls: "ess", label: T2.essentials }, { v: sm.fun, cls: "fun", label: T2.fun }, { v: sm.interest + sm.lateFees, cls: "int", label: T2.interest }, { v: sm.tuition, cls: "tui", label: T2.tuition }, { v: sm.costs + Math.max(0, -sm.biz), cls: "one", label: T2.oneOff }];
+  const legend = (segs) => `<ul class="io-legend">${segs.filter((x) => x.v > 0.5).map((x) => `<li class="k-${x.cls}"><i></i>${x.label}<b>${money2(x.v)}</b></li>`).join("")}</ul>`;
+  const baRow = (label, a0, b0, better, show) => `<div class="ba-row"><span class="ba-lab">${label}</span>${beforeAfter(a0, b0, better)}<b>${show}</b></div>`;
+  frame("review", `<section class="ty-review"><header class="page-head"><h1>${fmt(past ? T2.ageLookBack : T2.ageDone, { age })}</h1>${y.news ? `<p class="news">${icon.chart}${h(y.news)} (${fmt(T2.marketNote, { r: pct(sm.returnRate, 1) })})</p>` : ""}${pastPicker(past)}</header>
+    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans}</p>
     <div class="ty-months ${anim ? "anim" : ""}">${y.months.map((mo, i) => {
     const e = ev(mo.month), b2 = e.find((l) => bad.includes(l.type)) || e[0];
-    return `<div class="ty-mo ${e.some((l) => bad.includes(l.type)) ? "hasbad" : ""}" style="--i:${i}"><small>Month ${mo.month}</small><b>${money2(moTotal(mo))}</b><span class="mo-cash">cash ${money2(mo.checking)}</span>${b2 ? `<em class="${bad.includes(b2.type) ? "bad" : ""}" title="${h(b2.label)}">${h(b2.label.replace(/: .*$/, ""))}</em>` : ""}</div>`;
+    return `<div class="ty-mo ${e.some((l) => bad.includes(l.type)) ? "hasbad" : ""}" style="--i:${i}" title="${h(fmt(T2.cashIn, { m: money2(mo.checking) }))}"><small>${h(fmt(LT2.month, { m: mo.month }))}</small><span class="mo-bar"><i style="height:${Math.max(4, moTotal(mo) / moMax * 100)}%"></i></span><b>${money2(moTotal(mo))}</b>${b2 ? `<em class="${bad.includes(b2.type) ? "bad" : ""}" title="${h(b2.label)}">${h(b2.label.replace(/[:：].*$/, ""))}</em>` : ""}</div>`;
   }).join("")}</div>
     <div class="ty-rv-grid">
-      <section class="panel rv-tax"><h3>${icon.receipt}Tax return ${q("refund")}</h3>
-        <div class="kv"><span>Total income</span><b>${money2(t.gross)}</b></div>
-        ${t.pretax ? `<div class="kv small"><span>\u2212 401(k) contributions (pre-tax) ${q("k401")}</span><b>\u2212${money2(t.pretax)}</b></div>` : ""}
-        <div class="kv small"><span>\u2212 Standard deduction ${q("stdDeduction")}</span><b>\u2212${money2(t.agi - t.fedTaxable)}</b></div>
-        <div class="kv small"><span>= Federal taxable income</span><b>${money2(t.fedTaxable)}</b></div>
-        ${t.fedTaxable < 1 && t.gross > 0 ? `<p class="mini">Income at or below the standard deduction owes no federal income tax (real U.S. rule). Social Security, Medicare${t.state ? " and state tax" : ""} still apply.</p>` : ""}
-        <div class="kv"><span>Tax owed: federal ${money2(t.federal)} + state ${money2(t.state)} + Social Security & Medicare ${money2(t.socialSecurity + t.medicare)}</span><b>${money2(t.total)}</b></div>
-        <div class="kv"><span>Already withheld from pay</span><b>${money2(sm.withheld)}</b></div>
-        <div class="kv total ${sm.refund >= 0 ? "pos" : "neg"}"><span>${sm.refund >= 0 ? "Refund (deposited in checking)" : "Tax due (taken from checking automatically)"}</span><b>${money2(Math.abs(sm.refund))}</b></div>
-        ${sm.refund < -1 ? `<p class="mini">${sm.side || sm.biz > 0 ? "Nobody withholds tax on side or business income; " : ""}${sm.benefits ? "no tax is withheld from unemployment benefits; " : ""}so you owe.</p>` : sm.refund > 1 ? '<p class="mini">You went unpaid for a few months this year, so over-withheld tax came back.</p>' : ""}</section>
-      <section class="panel rv-where"><h3>${icon.chart}Money in & out this year</h3>
-        <div class="kv io-h"><span>Money in</span><b class="pos">${money2(sm.income)}</b></div>
-        <div class="io-items in"><span>Paychecks (before tax)<b>+${money2(sm.gross + sm.spouseGross)}</b></span>${sm.grants ? `<span>Tuition grants<b>+${money2(sm.grants)}</b></span>` : ""}${otherIn > 0.5 ? `<span>Other income<b>+${money2(otherIn)}</b></span>` : ""}</div>
-        <div class="kv io-h"><span>Money out</span><b class="neg">${money2(out)}</b></div>
-        <div class="io-items out"><span>Taxes<b>\u2212${money2(t.total)}</b></span><span>Essentials<b>\u2212${money2(sm.essentials)}</b></span><span>Fun<b>\u2212${money2(sm.fun)}</b></span><span>Interest${sm.lateFees ? " + late fees" : ""}<b>\u2212${money2(sm.interest + sm.lateFees)}</b></span>${sm.tuition ? `<span>Tuition<b>\u2212${money2(sm.tuition)}</b></span>` : ""}${sm.costs ? `<span>One-off costs<b>\u2212${money2(sm.costs)}</b></span>` : ""}${sm.biz < 0 ? `<span>Business loss<b>\u2212${money2(-sm.biz)}</b></span>` : ""}</div>
-        <div class="kv total ${sm.income - out < 0 ? "neg" : "pos"}"><span>= Left over</span><b>${money2(sm.income - out)}</b></div>
-        <div class="kv small"><span>Put into savings & investments (incl. 401(k))</span><b>${money2(savedIn)}</b></div>
-        <p class="mini">${sm.income - out < 0 ? "You spent more than came in: the gap came from savings or borrowing." : savedIn > sm.income - out + 1 ? "You saved more than was left over: the difference came from money already in checking." : "Whatever wasn\u2019t saved paid down loans or stayed in checking."}</p>
-        ${sm.match ? `<div class="kv"><span>Employer match (free money)</span><b class="pos">+${money2(sm.match)}</b></div>` : ""}
-        <div class="kv"><span>Investment gains / losses</span><b class="${sm.growth < 0 ? "neg" : "pos"}">${sm.growth >= 0 ? "+" : ""}${money2(sm.growth)}</b></div>
-        ${sm.borrowed ? `<div class="kv"><span>Borrowed for living costs</span><b class="neg">${money2(sm.borrowed)}</b></div>` : ""}
-        ${sm.missed ? `<p class="risk">${icon.alert}<span>${sm.missed} missed payments${past ? "" : `, credit score ${s2.credit}`}.</span></p>` : sm.shortfallDraw >= 1 ? `<p class="risk">${icon.alert}<span> ${money2(sm.shortfallDraw)} came out of your savings.</span></p>` : ""}
-        ${sm.evicted ? `<p class="risk">${icon.alert}<span>You couldn\u2019t pay rent and were evicted.${past ? "" : " Choose a move under \u201CBig decision\u201D to rent again."}</span></p>` : ""}</section>
-      <section class="panel rv-change"><h3>${icon.trophy}How this year changed things</h3>
-        <div class="kv"><span>Net worth</span><b>${money2(before.netWorth)} \u2192 ${money2(after.netWorth)}</b></div>
-        <div class="kv"><span>Emergency fund</span><b>${before.runway.toFixed(1)} \u2192 ${after.runway.toFixed(1)} months</b></div>
-        <div class="kv"><span>Consumer debt</span><b>${money2(before.consumerDebt)} \u2192 ${money2(after.consumerDebt)}</b></div>
-        <div class="kv"><span>Retirement accounts</span><b>${money2(before.retirement)} \u2192 ${money2(after.retirement)}</b></div>
-        <div class="stage-change st-${stNow.id}">${stNow.id > stBefore.id ? "Level up!" : stNow.id < stBefore.id ? "Moved back" : "Life stage"} <b>${stNow.id}. ${stNow.name}</b><small>${stNow.id < 6 ? "Next stage: " + h(STAGES[stNow.id + 1].enter) : "Highest stage"}</small></div></section></div>
-    <div class="center row">${past ? btn("past-year", s2.phase === "review" ? `Back to this year (age ${s2.age})` : "Back to the journal", { cls: "btn green big", ico: "back", attrs: "data-autofocus" }) : `${btn("ledger", `Monthly ledger (${y.lines.length} entries)`, { cls: "btn ghost small", ico: "book" })}${btn("next-year", s2.age + 1 >= FINAL_AGE ? "Turn 50: life review" : `On to age ${s2.age + 1}`, { cls: "btn green big", ico: "arrow", attrs: "data-autofocus" })}`}</div></section>`);
+      <section class="panel rv-tax"><h3>${icon.receipt}${T2.taxReturn} ${q("refund")}</h3>
+        <div class="big-num ${sm.refund >= 0 ? "pos" : "neg"}"><small>${sm.refund >= 0 ? T2.refundIn : T2.taxDue}</small><b>${money2(Math.abs(sm.refund))}</b></div>
+        <div class="tax-pair"><span>${T2.owed}<b>${money2(t.total)}</b>${meter(t.total, Math.max(t.total, sm.withheld, 1), "tax")}</span><span>${T2.withheld}<b>${money2(sm.withheld)}</b>${meter(sm.withheld, Math.max(t.total, sm.withheld, 1), "held")}</span></div>
+        ${t.fedTaxable < 1 && t.gross > 0 ? `<p class="mini">${icon.check}${T2.underDeduction}</p>` : ""}
+        <details class="more"><summary>${T2.lineByLine}</summary>
+        <div class="kv"><span>${T2.totalIncome}</span><b>${money2(t.gross)}</b></div>
+        ${t.pretax ? `<div class="kv small"><span>\u2212 ${T2.pretax} ${q("k401")}</span><b>\u2212${money2(t.pretax)}</b></div>` : ""}
+        <div class="kv small"><span>\u2212 ${T2.stdDeduction} ${q("stdDeduction")}</span><b>\u2212${money2(t.agi - t.fedTaxable)}</b></div>
+        <div class="kv small"><span>= ${T2.fedTaxable}</span><b>${money2(t.fedTaxable)}</b></div>
+        <div class="kv small"><span>${T2.federal}</span><b>${money2(t.federal)}</b></div><div class="kv small"><span>${T2.stateShort}</span><b>${money2(t.state)}</b></div><div class="kv small"><span>${T2.fica}</span><b>${money2(t.socialSecurity + t.medicare)}</b></div>
+        ${sm.refund < -1 ? `<p class="mini">${sm.side || sm.biz > 0 ? T2.noWithholdSide : ""}${sm.benefits ? T2.noWithholdBenefit : ""}${T2.soOwe}</p>` : sm.refund > 1 ? `<p class="mini">${T2.overWithheld}</p>` : ""}</details></section>
+      <section class="panel rv-where"><h3>${icon.chart}${T2.inOut}</h3>
+        <div class="io-bar"><span class="io-lab pos">${icon.up}${T2.moneyIn}<b>${money2(sm.income)}</b></span>${segBar(inSegs, scale, "in")}</div>
+        <div class="io-bar"><span class="io-lab neg">${icon.down}${T2.moneyOut}<b>${money2(out)}</b></span>${segBar(outSegs, scale, "out")}</div>
+        <div class="kv total ${left < 0 ? "neg" : "pos"}"><span>= ${T2.leftOver}</span><b>${money2(left)}</b></div>
+        <div class="kv small"><span>${icon.piggy}${T2.savedIn}</span><b>${money2(savedIn)}</b></div>
+        ${sm.match ? `<div class="kv small"><span>${icon.hands}${T2.freeMatch}</span><b class="pos">+${money2(sm.match)}</b></div>` : ""}
+        <div class="kv small"><span>${icon.chart}${T2.growth}</span><b class="${sm.growth < 0 ? "neg" : "pos"}">${sm.growth >= 0 ? "+" : ""}${money2(sm.growth)}</b></div>
+        ${sm.borrowed ? `<div class="kv small"><span>${icon.receipt}${T2.borrowed}</span><b class="neg">${money2(sm.borrowed)}</b></div>` : ""}
+        ${sm.missed ? `<p class="risk">${icon.alert}<span>${fmt(T2.missedN, { n: sm.missed })}${past ? "" : fmt(T2.creditNow, { c: s2.credit })}</span></p>` : sm.shortfallDraw >= 1 ? `<p class="risk">${icon.alert}<span>${fmt(T2.fromSavings, { m: money2(sm.shortfallDraw) })}</span></p>` : ""}
+        ${sm.evicted ? `<p class="risk">${icon.alert}<span>${T2.evicted}${past ? "" : T2.evictedFix}</span></p>` : ""}
+        <details class="more"><summary>${T2.lineByLine}</summary><small class="io-h">${T2.moneyIn}</small>${legend(inSegs)}<small class="io-h">${T2.moneyOut}</small>${legend(outSegs)}<p class="mini">${left < 0 ? T2.spentMore : savedIn > left + 1 ? T2.savedMore : T2.restWent}</p></details></section>
+      <section class="panel rv-change"><h3>${icon.trophy}${T2.changed}</h3>
+        ${baRow(T2.netWorth, before.netWorth, after.netWorth, "up", money2(after.netWorth))}
+        ${baRow(T2.emergency, before.runway, after.runway, "up", fmt(T2.monthsN, { n: after.runway.toFixed(1) }))}
+        ${baRow(T2.consumerDebt, before.consumerDebt, after.consumerDebt, "down", money2(after.consumerDebt))}
+        ${baRow(T2.retirement, before.retirement, after.retirement, "up", money2(after.retirement))}
+        <div class="stage-change st-${stNow.id}">${stNow.id > stBefore.id ? T2.levelUp : stNow.id < stBefore.id ? T2.movedBack : T2.lifeStage} <b>${stNow.id}. ${stNow.name}</b><small>${stNow.id < 6 ? T2.nextStage + h(STAGES[stNow.id + 1].enter) : T2.topStage}</small></div></section></div>
+    <div class="center row">${past ? btn("past-year", s2.phase === "review" ? fmt(T2.backThisYear, { age: s2.age }) : T2.backJournal, { cls: "btn green big", ico: "back", attrs: "data-autofocus" }) : `${btn("ledger", fmt(T2.ledgerN, { n: y.lines.length }), { cls: "btn ghost small", ico: "book" })}${btn("next-year", s2.age + 1 >= FINAL_AGE ? T2.turn50 : fmt(T2.onToAge, { age: s2.age + 1 }), { cls: "btn green big", ico: "arrow", attrs: "data-autofocus" })}`}</div></section>`);
 }
 var CAT_NAME = { housing: "Housing", food: "Food", transport: "Transportation", insurance: "Insurance & health", other: "Utilities, phone etc.", fun: "Fun", interest: "Interest", tax: "Tax", oneoff: "One-off costs", education: "Tuition" };
 function finishPage() {
@@ -4501,8 +4946,12 @@ function modalHtml() {
   if (M.kind === "decision") {
     const d = decisions(s2).find((x) => x.id === M.id), F = ui.flow || {}, jobs = d.id === "jobhunt" ? jobsFor(s2) : null;
     const choice = d.choices ? `<div class="choices">${d.choices.map((c) => `<label class="choice ${c.blocked ? "blocked" : ""}"><input type="radio" name="choice" value="${c.id}" ${F.choice === c.id ? "checked" : ""} ${c.blocked ? "disabled" : ""}><span>${h(c.label)}${c.blocked ? `<small class="why">${h(c.blocked)}</small>` : ""}</span></label>`).join("")}</div>` : "";
-    const board = jobs ? `<div class="jobs-wrap"><table class="jobs"><thead><tr><th></th><th>Job</th><th>Salary${s2.school ? " (part-time)" : ""}</th><th>Requirements</th><th>Benefits</th></tr></thead><tbody>${jobs.map((j) => `<tr class="${j.blocked ? "blocked" : ""}"><td><input type="radio" name="job" value="${j.id}" ${F.jobId === j.id ? "checked" : ""} ${j.blocked ? "disabled" : ""} aria-label="${h(j.title)}"></td><td><b>${h(j.title)}</b></td><td>${money2(j.salary)}<small class="cap"> ${h(TEXT.upTo)} ${money2(j.cap)}</small></td><td>${j.blocked ? `<small class="why">${h(j.blocked)}</small>` : `${EDU[j.edu]}${j.career ? ` \xB7 skill ${j.career}` : ""}${j.jump && !j.blocked ? ` \xB7 <em class="warn">${h(TEXT.jump)} \u2212${j.jump}</em>` : ""}${j.needCar ? " \xB7 has a car" : ""}`}</td><td><small>${h(j.benefit)}</small></td></tr>`).join("")}</tbody></table></div>` : "";
-    const out = d.throw ? `<p class="mini">${h(TEXT.nat1.replace(/^./, (c) => c.toUpperCase()))}.</p><ul class="outcomes">${Object.entries(d.outcomes).map(([k, o]) => `<li class="o-${k}"><b>${{ fail: "\u22643 fail", ok: "4\u20136 success", great: "\u22657 great success" }[k]}</b> ${h(o.note)}</li>`).join("")}</ul>` : "";
+    const capMax = jobs ? Math.max(1, ...jobs.map((j) => j.cap)) : 1;
+    const board = jobs ? `${s2.school ? `<p class="chip warn">${icon.cap}${T2.partTime}</p>` : ""}<div class="jobcards">${jobs.map((j) => `<label class="jobcard ${j.blocked ? "blocked" : ""} ${F.jobId === j.id ? "on" : ""}"><input type="radio" name="job" value="${j.id}" ${F.jobId === j.id ? "checked" : ""} ${j.blocked ? "disabled" : ""} aria-label="${h(j.title)}">
+      <span class="jc-head"><span class="jc-ico">${icon[j.needCar ? "car" : j.edu >= 2 ? "cap" : "briefcase"]}</span><b>${h(j.title)}</b></span>
+      <span class="jc-pay">${meter(j.salary, capMax)}<b>${money2(j.salary)}</b><small>${h(TEXT.upTo)} ${money2(j.cap)}</small></span>
+      <span class="jc-tags">${j.blocked ? `<em class="why" title="${h(j.blocked)}">${icon.lock}${T2.locked}</em>` : `<em>${icon.cap}${EDU[j.edu]}</em>${j.career ? `<em>${icon.star}${j.career}</em>` : ""}${j.needCar ? `<em>${icon.car}</em>` : ""}${j.jump ? `<em class="warn">${h(TEXT.jump)} \u2212${j.jump}</em>` : ""}`}<em class="ben ${/no 401|没有|不提供/i.test(j.benefit) ? "no" : ""}" title="${h(j.benefit)}">${icon.bank}${h(j.benefit)}</em></span></label>`).join("")}</div>` : "";
+    const out = d.throw ? `<p class="mini">${h(TEXT.nat1.replace(/^./, (c) => c.toUpperCase()))}</p>${dieStrip({ fail: d.outcomes.fail?.note || "", ok: d.outcomes.ok?.note || "", great: d.outcomes.great?.note || "" })}` : "";
     const ready = (!d.choices || F.choice) && (!jobs || F.jobId);
     return wrap(`<header class="m-head"><span class="ribbon-tag">This year\u2019s big decision</span><h2>${h(d.title)}</h2><p>${h(d.text)}</p>${btn("close", "Close", { cls: "icon-btn", ico: "close" })}</header>
       ${choice}${board}${d.throw ? `<div class="judge-info">${icon.dice}<div><b>Needs a throw: die + ${STAT[d.throw.stat]} ${modFor(s2, d.throw.stat)}${jobs && F.jobId && jobs.find((j) => j.id === F.jobId)?.jump ? ` \u2212 ${h(TEXT.jump)} ${jobs.find((j) => j.id === F.jobId).jump}` : ""} + mini-game bonus</b> ${q("dice")}${out}</div></div>` : ""}
@@ -4510,10 +4959,11 @@ function modalHtml() {
       <div class="m-foot">${btn("close", "Let me think", { cls: "btn ghost" })}${d.throw ? `${btn("dec-roll", "Just roll", { cls: "btn ghost", ico: "dice", attrs: ready && !d.blocked ? "" : "disabled" })}${btn("dec-game", "Play the mini-game, then roll", { cls: "btn blue", ico: "star", attrs: (ready && !d.blocked && !reduced ? "" : "disabled") + " data-autofocus" })}` : btn("dec-go", "Decide", { cls: "btn green", ico: "check", attrs: (ready && !d.blocked ? "" : "disabled") + " data-autofocus" })}</div>`, "wide-modal");
   }
   if (M.kind === "lesson" && s2.learn?.pending) {
-    const t = lessonText(s2, s2.learn.pending);
-    return wrap(`<header class="m-head"><span class="ribbon-tag">${h(fmt(LT2.lesson, t))}</span><h2>${h(t.title)}</h2></header><p class="lesson-body">${h(t.body)}</p><p class="lesson-short">${icon.star}<b>${h(t.short)}</b></p>
+    const t = lessonText(s2, s2.learn.pending), LICO = { paycheck: ["coin", "green"], emergency: ["piggy", "blue"], debt: ["flame", "red"], match: ["hands", "gold"], compound: ["sprout", "green"], creep: ["chart", "purple"] }[s2.learn.pending] || ["star", "gold"];
+    return wrap(`<header class="m-head lesson-head">${bubbleArt(LICO[0], LICO[1])}<div><span class="ribbon-tag">${h(fmt(LT2.lesson, t))}</span><h2>${h(t.title)}</h2></div></header><p class="lesson-short">${icon.star}<b>${h(t.short)}</b></p>${lessonPic(s2.learn.pending)}<p class="lesson-body">${h(t.body)}</p>
       <div class="m-foot">${btn("lesson-ok", LT2.gotIt, { cls: "btn green big", ico: "check", attrs: "data-autofocus" })}</div>`, "small-modal lesson-modal");
   }
+  if (M.kind === "guide") return wrap(guideHtml(), "wide-modal guide-modal");
   if (M.kind === "review" && s2.year?.review) {
     const R2 = s2.year.review, Ld = LESSONS.find((l) => l.id === R2.id), q2 = Ld.q[R2.variant], done = R2.answered != null;
     return wrap(`<header class="m-head"><span class="ribbon-tag">${icon.star}${h(LT2.quick)} \xB7 ${h(Ld.title)}</span><h2>${h(q2.q)}</h2></header>
@@ -4583,17 +5033,18 @@ function placeTip() {
   const top = r.bottom + 8;
   el.style.top = (top + el.offsetHeight + 12 > innerHeight ? Math.max(12, r.top - el.offsetHeight - 8) : top) + "px";
 }
+var tutOf = (id) => TUTS.find((t) => t.id === id);
 function tourHtml() {
-  const T2 = ui.tour;
-  if (!T2) return "";
-  const st = TOURS[T2.page][T2.i];
+  const T3 = ui.tour;
+  if (!T3) return "";
+  const tut = tutOf(T3.id), st = tut?.steps[T3.i];
   if (!st) return "";
-  return `<div class="tour-spot"></div><div class="tour-bubble" role="dialog" aria-live="polite"><small>${T2.i + 1} / ${TOURS[T2.page].length}</small><b>${h(st[1])}</b><p>${h(st[2])}</p><div class="row">${btn("tour-skip", "Skip the guide", { cls: "btn ghost small" })}${btn("tour-next", T2.i + 1 < TOURS[T2.page].length ? "Next" : "Got it", { cls: "btn green small", attrs: "data-autofocus" })}</div></div>`;
+  return `<div class="tour-spot"></div><div class="tour-bubble" role="dialog" aria-live="polite"><div class="tb-top">${bubbleArt(st[3], st[4])}<div><small>${h(tut.name)} \xB7 ${T3.i + 1} / ${tut.steps.length}</small><b>${h(st[1])}</b><p>${h(st[2])}</p></div></div><div class="row">${btn("tour-skip", T2.skipGuide, { cls: "btn ghost small" })}${btn("tour-next", T3.i + 1 < tut.steps.length ? T2.next : T2.gotIt, { cls: "btn green small", attrs: "data-autofocus" })}</div></div>`;
 }
 function placeTour() {
-  const T2 = ui.tour;
-  if (!T2) return;
-  const st = TOURS[T2.page][T2.i], el = st && document.querySelector(st[0]), spot = root.querySelector(".tour-spot"), bub = root.querySelector(".tour-bubble");
+  const T3 = ui.tour;
+  if (!T3) return;
+  const st = tutOf(T3.id)?.steps[T3.i], el = st && document.querySelector(st[0]), spot = root.querySelector(".tour-spot"), bub = root.querySelector(".tour-bubble");
   if (!spot || !bub) return;
   if (!el) {
     spot.style.display = "none";
@@ -4603,7 +5054,7 @@ function placeTour() {
   el.scrollIntoView({ block: "nearest" });
   const r = el.getBoundingClientRect(), pad = 6;
   Object.assign(spot.style, { left: r.left - pad + "px", top: r.top - pad + "px", width: r.width + pad * 2 + "px", height: r.height + pad * 2 + "px" });
-  const bw = Math.min(340, innerWidth - 24);
+  const bw = Math.min(360, innerWidth - 24);
   bub.style.width = bw + "px";
   const bh = bub.offsetHeight;
   let left = r.left, top = r.bottom + 12;
@@ -4619,16 +5070,37 @@ function placeTour() {
   root.querySelector(".tour-bubble [data-autofocus]")?.focus({ preventScroll: true });
 }
 function maybeTour(page) {
-  if (TOURS[page] && !toursSeen[page] && !ui.modal && !ui.tour) ui.tour = { page, i: 0 };
+  if (ui.modal || ui.tour || ui.tourRested === page) return;
+  const tut = TUTS.find((t) => t.page === page && !toursSeen[t.id] && (!t.need || t.need(s2)));
+  if (tut) ui.tour = { id: tut.id, i: 0 };
 }
 function endTour() {
-  toursSeen[ui.tour.page] = 1;
+  toursSeen[ui.tour.id] = 1;
   ls.set(TOURKEY, toursSeen);
+  ui.tourRested = ui.page || PHASE_PAGE[s2.phase];
   ui.tour = null;
   update(false);
 }
+function lessonPic(id) {
+  if (id === "paycheck") {
+    const pay = payday(s2), gone = pay.gross - pay.net;
+    return `<div class="lesson-pic">${segBar([{ v: gone, cls: "tax", label: T2.taxes }, { v: pay.net, cls: "net", label: T2.takeHome }], pay.gross)}<div class="lp-keys"><span class="k-tax"><i></i>${T2.taxes} ${money2(gone)}</span><span><i class="k-net"></i>${T2.takeHome} ${money2(pay.net)}</span></div></div>`;
+  }
+  if (id === "emergency") {
+    const m = metrics(s2);
+    return `<div class="lesson-pic">${meter(m.runway, 3, m.runway >= 3 ? "ok" : "")}<div class="lp-keys"><span>${icon.piggy}${fmt(T2.monthsN, { n: m.runway.toFixed(1) })} / 3</span></div></div>`;
+  }
+  return "";
+}
+function guideHtml() {
+  return `<header class="m-head"><span class="ribbon-tag">${icon.help}${T2.guide}</span><h2>${T2.guideTitle}</h2>${btn("close", T2.close, { cls: "icon-btn", ico: "close" })}</header>
+    <div class="guide-grid">${TUTS.map((t) => `<button class="guide-card ${toursSeen[t.id] ? "seen" : ""}" data-go="tut" data-id="${t.id}">${bubbleArt(t.steps[0][3], t.steps[0][4])}<b>${h(t.name)}</b><small>${fmt(T2.nSteps, { n: t.steps.length })}${toursSeen[t.id] ? " \xB7 " + T2.seen : ""}</small></button>`).join("")}</div>`;
+}
+var sndBtns = () => `<button class="icon-btn snd ${soundOn() ? "on" : ""}" data-go="sfx" aria-pressed="${soundOn()}" title="${T2.sound}" aria-label="${T2.sound}">${icon[soundOn() ? "speaker" : "mute"]}</button><button class="icon-btn snd ${musicOn() ? "on" : ""}" data-go="music" aria-pressed="${musicOn()}" title="${T2.music}" aria-label="${T2.music}">${icon.music}</button>`;
+var BTN_SOUND = { "plan-confirm": "coin", draw: "flip", "card-opt": "coin", "tour-next": "soft", "tour-skip": "soft", "next-year": "soft", pull: null, sfx: null, music: null, "rv-ans": null };
 function commit(next, nav = true) {
   s2 = next;
+  ui.tourRested = null;
   ls.set(SAVE_KEY, s2);
   if (nav) ui.page = PHASE_PAGE[s2.phase];
   update();
@@ -4647,6 +5119,17 @@ function update(scroll = true) {
     ({ overview: overviewPage, payday: paydayPage, decision: decisionPage, card: cardPage, live: livePage, review: reviewPage, finish: finishPage, accounts: accountsPage, goals: goalsPage, journal: journalPage })[page]();
     if (ui.modal?.kind === "game") requestAnimationFrame(startGame);
     animateDice();
+    if (ui.pendingSound) {
+      sfx(ui.pendingSound);
+      ui.pendingSound = null;
+    }
+    {
+      const mk = ui.modal?.kind || "";
+      if (mk !== ui.soundModal) {
+        ui.soundModal = mk;
+        if (mk === "lesson") sfx("chime");
+      }
+    }
   } catch (e) {
     console.error(e);
     root.innerHTML = `<main class="boot-error"><h1>Something went wrong</h1><p>${h(e.message)}</p><button class="btn" data-go="new-life">Start over</button></main>`;
@@ -4661,6 +5144,7 @@ function animateDice() {
     ui.diceShown = key + s2?.age + el.dataset.final + (ui.modal?.kind || "");
     const fin = el.dataset.final, box = el.closest(".dice-box");
     box?.classList.add("hide-result");
+    sfx("dice");
     let k = 0;
     const t = setInterval(() => {
       el.textContent = 1 + Math.floor(Math.random() * 6);
@@ -4761,6 +5245,11 @@ document.addEventListener("click", (e) => {
   const b = e.target.closest("[data-go]");
   if (!b || b.disabled) return;
   const go = b.dataset.go, id = b.dataset.id;
+  resumeMusic();
+  {
+    const snd = go in BTN_SOUND ? BTN_SOUND[go] : "click";
+    if (snd) sfx(snd);
+  }
   try {
     switch (go) {
       case "dismiss":
@@ -4772,14 +5261,27 @@ document.addEventListener("click", (e) => {
       case "tip-close":
         ui.tip = null;
         return update(false);
-      case "tour": {
-        const pg = ui.page || PHASE_PAGE[s2.phase];
-        if (!TOURS[pg]) ui.page = "payday";
-        ui.tour = { page: TOURS[pg] ? pg : "payday", i: 0 };
+      case "tour":
+        ui.modal = { kind: "guide" };
+        return update(false);
+      case "tut": {
+        const t = tutOf(id);
+        ui.modal = null;
+        ui.flow = null;
+        ui.pastAge = null;
+        ui.page = t.page;
+        ui.tourRested = null;
+        ui.tour = { id, i: 0 };
         return update(false);
       }
+      case "sfx":
+        toggleSfx();
+        return update(false);
+      case "music":
+        toggleMusic();
+        return update(false);
       case "tour-next":
-        if (ui.tour.i + 1 < TOURS[ui.tour.page].length) {
+        if (ui.tour.i + 1 < tutOf(ui.tour.id).steps.length) {
           ui.tour.i++;
           return update(false);
         }
@@ -4915,6 +5417,7 @@ document.addEventListener("click", (e) => {
         if (s2.phase !== "review") ui.page = "journal";
         return update();
       case "nav":
+        ui.tourRested = null;
         ui.page = id;
         ui.pastAge = null;
         ui.menu = false;
@@ -5051,6 +5554,7 @@ document.addEventListener("click", (e) => {
       case "rv-ans":
         s2 = answerReview(s2, +id);
         ls.set(SAVE_KEY, s2);
+        sfx(s2.year.review.ok ? "good" : "bad");
         return update(false);
       case "rv-cont":
         ui.modal = null;

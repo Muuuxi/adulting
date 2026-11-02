@@ -1345,6 +1345,20 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .lesson-pic { display: grid; gap: 4px; margin: 6px 0 2px; } .lesson-pic .meter { width: 100%; height: 14px; } .lp-keys { display: flex; gap: 14px; flex-wrap: wrap; font-weight: 800; font-size: .82rem; }
 .lp-keys span { display: inline-flex; gap: 5px; align-items: center; } .lp-keys i { width: 11px; height: 11px; border-radius: 3px; border: 1.5px solid var(--ink); display: inline-block; } .lp-keys .k-net { background: #7fd3a6; } .lp-keys .ico { width: 16px; height: 16px; }
 @media (max-width: 720px) { .ba-row { grid-template-columns: minmax(0, 1fr) 52px auto; } .chip { white-space: normal; } }
+
+/* Round 12: how to win */
+.win-panel h2 { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 0 8px; } .win-panel h2 .ico { width: 26px; height: 26px; color: var(--orange); }
+.win-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 1fr); gap: 10px; }
+.win-tile { position: relative; background: #fff; border: 3px solid var(--ink); border-radius: 14px; padding: 10px 12px 10px 14px; box-shadow: 0 4px 0 var(--ink); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; align-content: start; }
+.win-tile > .ico { width: 34px; height: 34px; grid-row: span 2; color: var(--blue); } .win-tile b { font-size: 1.05rem; } .win-tile > span:not(.win-n) { font-size: .82rem; color: var(--ink-2); line-height: 1.3; }
+.win-n { position: absolute; top: -10px; left: -10px; width: 24px; height: 24px; border-radius: 50%; background: var(--sun); border: 2.5px solid var(--ink); display: grid; place-items: center; font-weight: 900; font-size: .8rem; }
+.win-stairs { grid-column: 1 / -1; display: flex; align-items: flex-end; gap: 5px; height: 62px; margin-top: 6px; position: relative; padding-right: 30px; }
+.win-stairs i { flex: 1; border: 2px solid var(--ink); border-radius: 6px 6px 2px 2px; background: var(--sky-3); display: flex; justify-content: center; font-style: normal; }
+.win-stairs i b { font-size: .72rem; margin-top: 1px; } .win-stairs i.on { color: #fff; }
+.win-stairs i.on.st-1 { background: var(--st1); } .win-stairs i.on.st-2 { background: var(--st2); } .win-stairs i.on.st-3 { background: var(--st3); } .win-stairs i.on.st-4 { background: var(--st4); } .win-stairs i.on.st-5 { background: var(--st5); } .win-stairs i.on.st-6 { background: var(--st6); }
+.win-top { position: absolute; right: 0; top: -4px; } .win-top .ico { width: 26px; height: 26px; color: var(--orange); }
+.win-ends { grid-column: 1 / -1; display: flex; justify-content: space-between; padding-right: 30px; } .win-ends small { color: var(--muted); font-size: .72rem; }
+@media (max-width: 720px) { .win-row { grid-template-columns: minmax(0, 1fr); gap: 14px; } }
 </style>
 </head>
 <body>
@@ -3950,8 +3964,8 @@ var TUTS = [
     [".sheet", "Own versus owe", "What you own minus what you owe is your net worth.", "bank", "blue"],
     [".acct-actions", "Move money", "On payday you can move money or pay off a debt early.", "arrow", "green"]
   ] },
-  { id: "goals", page: "goals", name: "Goals", steps: [
-    [".goal-big", "Your goal", "The bar fills as you get closer.", "trophy", "gold"],
+  { id: "goals", page: "goals", name: "How to win", steps: [
+    [".win-panel", "How to win", "Stay afloat, climb the stages, reach 50.", "trophy", "gold"],
     [".stage-path", "Life stages", "Build safety first, then wealth, to climb the stages.", "map", "purple"]
   ] }
 ];
@@ -4481,7 +4495,7 @@ var LOOK_STEPS = [
   { title: "Expression", sub: "What\u2019s your character\u2019s usual expression?", options: EXPRESSIONS.map(([v, n]) => ({ field: "expr", v, n })), colors: [] },
   { title: "Top", sub: "Pick a style, then a color.", options: TOPS.map(([v, n]) => ({ field: "top", v, n })), colors: TOP_COLORS.map(([v, n]) => ({ field: "topColor", v, n })) }
 ];
-var SETUP_STAGES = [["look", "Look"], ["slot", "Spin your life"], ["path", "Start & goal"]];
+var SETUP_STAGES = [["look", "Look"], ["slot", "Spin your life"], ["path", "Start"]];
 function setupFrame(stage2, body2) {
   const i0 = SETUP_STAGES.findIndex((x) => x[0] === stage2);
   root.innerHTML = `<div class="page setup-page wizard">${toastHtml()}
@@ -4595,6 +4609,11 @@ function pull() {
   setTimeout(() => update(), reduced ? 0 : 160);
 }
 var previewStart = (path = setup.path, goal = setup.goal) => newGame({ seed: setup.seed, reels: reelsObj(), path, goal, name: setup.name, look: setup.look, difficulty: setup.difficulty });
+function winHtml(reached = 0) {
+  const tiles = [["shield", "Stay afloat", "Pay the bills every month and keep an emergency fund, so one bad break can\u2019t sink you."], ["up", "Climb 6 stages", "From Survival to Financial Independence. Each step is a safer, freer life."], ["flag", "Reach 50", "The game ends at 50. The higher your stage, the better your ending."]];
+  const stairs = `<div class="win-stairs">${STAGES.slice(1).map((x) => `<i class="st-${x.id} ${x.id <= reached ? "on" : ""}" style="height:${28 + x.id * 12}%" title="${h(x.name)}: ${h(x.enter)}"><b>${x.id}</b></i>`).join("")}<span class="win-top">${icon.trophy}</span></div><div class="win-ends"><small>1 ${h(STAGES[1].name)}</small><small>6 ${h(STAGES[6].name)}</small></div>`;
+  return `<section class="win-panel"><h2>${icon.trophy}How to win</h2><div class="win-row">${tiles.map(([ic, t, d], k) => `<div class="win-tile"><span class="win-n">${k + 1}</span>${icon[ic]}<b>${t}</b><span>${d}</span>${k === 1 ? stairs : ""}</div>`).join("")}</div></section>`;
+}
 function pathScreen() {
   const r = reelsObj(), need = needsPath(r), p = previewStart(), pay = payday(p);
   const pathCard = (x) => {
@@ -4608,7 +4627,7 @@ function pathScreen() {
   };
   setupFrame("path", `<section class="goal-stage">
     ${need ? `<header class="wiz-title"><h1>How do you want to start?</h1><p>The reels only decide the money. Whether you study is up to you, and you can change it later.</p></header><div class="path-pick">${PATHS.map(pathCard).join("")}</div>` : `<header class="wiz-title"><h1>${r.age} and already working</h1><p>${h(backstoryFor(setup.seed, r).title)}. Every year you can change jobs, go back to school, start a business or move.</p></header>`}
-    <header class="wiz-title"><h2>Pick a goal</h2></header><div class="goal-pick five">${Object.entries(GOALS).map(goalCard).join("")}</div>
+    ${winHtml(0)}
     <div class="start-sum">${avatar(setup.look, { cls: "mid", label: false })}<label class="name-field dark"><span>Name</span><input id="player-name" maxlength="20" value="${h(setup.name)}" placeholder="Optional" autocomplete="off"></label>
       </div>
     <footer class="look-foot">${btn("to-slot", "Back to the slot machine", { cls: "btn ghost", ico: "back" })}${btn("start", `Start life at ${r.age} `, { cls: "btn green big", ico: "check" })}</footer></section>`);
@@ -4616,7 +4635,7 @@ function pathScreen() {
 var PHASE_PAGE = { plan: "payday", decision: "decision", card: "card", live: "live", review: "review", finish: "finish" };
 var STEPS = [["plan", "Payday"], ["decision", "Big decision"], ["card", "Life cards"], ["live", "Live the year"], ["review", "Year-end review"]];
 function hud() {
-  const m = metrics(s2), st = stage(s2), g = goalStatus(s2), span = FINAL_AGE - s2.startAge, age = s2.phase === "finish" ? 50 : s2.age;
+  const m = metrics(s2), st = stage(s2), nx = STAGES[st.id + 1], span = FINAL_AGE - s2.startAge, age = s2.phase === "finish" ? 50 : s2.age;
   return `<header class="hud">
     ${logo("mini")}
     <div class="lifebar" title="From age ${s2.startAge} to 50"><div class="lb-top"><b>Age ${age}</b><small>Year ${Math.min(span, age - s2.startAge + 1)} / ${span}</small></div>
@@ -4624,8 +4643,7 @@ function hud() {
     <div class="hud-stat"><small>Net worth ${q("netWorth")}</small><b class="${m.netWorth < 0 ? "neg" : ""}">${money2(m.netWorth)}</b></div>
     <div class="hud-stat"><small>Emergency fund ${q("emergency")}</small><b>${money2(m.emergency)}</b><span class="hud-sub"> \u2248 ${m.runway.toFixed(1)} mo</span></div>
     <div class="hud-stat wide"><small>Financial Independence ${q("fi")}</small><b>${pct(Math.min(1, m.fiProgress))}</b>${bar(m.fiProgress, "fi")}</div>
-    <button class="hud-stage st-${st.id}" data-go="nav" data-id="goals"><small>Life stage</small><b>${st.id}. ${st.name}</b></button>
-    <button class="quest" data-go="nav" data-id="goals">${icon[g.icon] || icon.trophy}<div><b>${h(g.title)}</b>${bar(g.progress)}<small>${h(g.label)}</small></div></button>
+    <button class="quest" data-go="nav" data-id="goals" title="${h(nx ? nx.enter : "")}">${icon.trophy}<div><b>Stage ${st.id}/6 \xB7 ${st.name}</b>${bar(st.id / 6)}<small>${nx ? "Next: " + h(nx.name) : "Top stage!"}</small></div></button>
     <span class="snd-btns">${sndBtns()}</span>
     ${btn("tour", "Guide", { cls: "btn ghost small", ico: "help" })}
     <div class="menu-wrap">${btn("menu", "Save", { cls: "btn ghost small", ico: "save", attrs: `aria-expanded="${ui.menu}"` })}
@@ -4642,7 +4660,7 @@ function idCard() {
     ${p.status.length ? `<div class="statuses">${p.status.map((x) => `<span class="st-chip ${x.tone}" title="${h(x.why)}">${h(x.label)} ${x.delta > 0 ? "+" : ""}${x.delta}</span>`).join("")}${q("status")}</div>` : ""}</section>`;
 }
 function frame(active, body2) {
-  const items = [["overview", "Overview", "pin"], ["payday", "Payday", "coin"], ["accounts", "Accounts", "bank"], ["goals", "Stages & goal", "trophy"], ["journal", "Journal", "book"]];
+  const items = [["overview", "Overview", "pin"], ["payday", "Payday", "coin"], ["accounts", "Accounts", "bank"], ["goals", "How to win", "trophy"], ["journal", "Journal", "book"]];
   const k = STEPS.findIndex((x) => x[0] === s2.phase);
   root.innerHTML = `<div class="page tycoon">${hud()}${toastHtml()}<div class="tycoon-grid">
     <aside class="side"><nav aria-label="Game areas">${items.map(([id, n, ico]) => `<button class="side-item ${active === id ? "on" : ""}" data-go="nav" data-id="${id}">${icon[ico]}<span>${n}</span></button>`).join("")}</nav>${idCard()}</aside>
@@ -4877,7 +4895,7 @@ function finishPage() {
     `<div class="sl"><small>Your most memorable year</small><h2>Age ${w.swingYear.age}</h2><p>Net worth this year ${w.swingYear.delta >= 0 ? "gained" : "lost"} <b>${money2(Math.abs(w.swingYear.delta))}</b>.</p>${w.memorable ? `<p class="quote">\u201C${h(w.memorable.text)}\u201D</p>` : ""}${w.crashes.length ? `<p>You lived through ${w.crashes.length} stock market crashes (at age ${w.crashes.join(", ")}).</p>` : ""}</div>`,
     `<div class="sl"><small>Net worth over time</small>${sparkline(w.worth)}<p>At 50: <b>${money2(m.netWorth)}</b>, investable assets <b>${money2(m.invested)}</b>.</p></div>`,
     `<div class="sl"><small>${h(LT2.learned)}</small><h2>${mastery(s2).filter((x) => x.taughtAt != null).length} / ${LESSONS.length}</h2><ul class="learn-list big">${mastery(s2).map((x) => `<li class="${x.taughtAt != null ? "ok" : ""}"><b>${h(x.title)}</b><small>${x.asked ? h(fmt(LT2.score, { c: x.right, t: x.asked })) : ""}</small></li>`).join("")}</ul></div>`,
-    `<div class="sl s-end"><small>Your ending</small><h1>${h(w.ending.title)}</h1><p>${h(w.ending.text)}</p><p>Life stage <b>${st.id}. ${st.name}</b> \xB7 goal \u201C${h(g.title)}\u201D ${g.done ? '<b class="pos">achieved</b>' : "not yet achieved"}</p></div>`
+    `<div class="sl s-end"><small>Your ending</small><h1>${h(w.ending.title)}</h1><p>${h(w.ending.text)}</p><p>Life stage <b>${st.id}. ${st.name}</b></p></div>`
   ];
   const i = Math.min(ui.slide, slides.length);
   if (i < slides.length) return frame("finish", `<section class="wrapped"><div class="sl-wrap">${slides[i]}</div>
@@ -4925,7 +4943,7 @@ function accountsPage() {
 }
 function goalsPage() {
   const g = goalStatus(s2), m = metrics(s2);
-  frame("goals", `<section><section class="panel goal-big">${icon[g.icon] || icon.flag}<div><small>Your goal</small><b>${h(g.title)}: ${h(g.label)}</b>${bar(g.progress)}<p class="hint">${h(g.hint)}</p></div></section>
+  frame("goals", `<section><section class="panel">${winHtml(stage(s2).id)}</section>
     <section class="panel"><h3>Your financial independence number ${q("fi")}</h3><p>A year of spending ${money2(m.annualSpend)} \xD7 25 = <b>${money2(m.fiNumber)}</b>. Your investable assets ${money2(m.invested)}, at a 4% withdrawal rate, can pay ${money2(m.passive)}/yr.</p></section>
     <section class="panel learn-panel"><h3>${icon.star}${h(LT2.learned)}</h3><ul class="learn-list">${mastery(s2).map((x) => `<li class="${x.taughtAt != null ? "ok" : ""}"><b>${h(x.taughtAt != null ? x.title : LT2.later)}</b><small>${x.taughtAt != null ? h(x.short) + (x.asked ? " \xB7 " + h(fmt(LT2.score, { c: x.right, t: x.asked })) : "") : ""}</small></li>`).join("")}</ul></section>
     ${stagePath()}${goNext()}</section>`);

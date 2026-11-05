@@ -1584,13 +1584,6 @@ var STATUSES = {
   stressed: { label: "Stressed out", stat: "discipline", delta: -1, years: 1, tone: "bad", why: "Stress makes impulse buys more tempting." },
   couch: { label: "Couch-surfing", stat: "career", delta: -1, years: 99, tone: "bad", why: "No place of your own and poor sleep. Ends when you move into a new place." }
 };
-var GOALS = {
-  safety: { title: "Save 6 months of emergency fund", icon: "shield", target: (s4) => s4.essentialsMonthly * 6, now: (m) => m.emergency, hint: "The emergency fund is only for surprises: job loss, illness, car repairs." },
-  debtfree: { title: "Pay off all card-type debt", icon: "chain", target: () => 0, now: (m) => m.consumerDebt, reverse: true, hint: "Credit cards, car loans, personal loans and overdue bills count; mortgages and student loans don\u2019t." },
-  home: { title: "Save a home down payment", icon: "house", target: () => 3e4, now: (m) => m.goal, hint: "Down payment fund: a $260,000 home needs 10% down plus closing costs, about $30,000." },
-  retire: { title: "Reach $100,000 in retirement accounts", icon: "sprout", target: () => 1e5, now: (m) => m.retirement, hint: "401(k) + Roth IRA. The earlier you start, the longer compounding works." },
-  fi: { title: "Reach financial independence", icon: "flag", target: (s4) => s4.fiNumber, now: (m) => m.invested, hint: "FI number = one year of spending \xD7 25 (the 4% rule, a simplification)." }
-};
 var MOVE_CHOICES = (extra) => [
   { id: "diy", label: "Move yourself ($300, may hurt your back)", cost: 300, risk: "backache" },
   { id: "movers", label: "Hire movers ($1,200)", cost: 1200 }
@@ -1881,7 +1874,7 @@ var CARDS = [
   },
   { id: "takeout", type: "impulse", title: "Takeout week", text: "Work is exhausting, so you order takeout every day this week: $250 extra.", month: 5, options: [{ id: "checking", label: "Order away", pay: "checking", cost: 250 }, { id: "cook", label: "Cook and freeze meals on the weekend", decline: true }] },
   { id: "concert", type: "impulse", title: "Your favorite band is in town", text: "Tickets and travel come to $400.", month: 7, options: [{ id: "card", label: "Go, on the credit card (inspired for 1 year: career throws +1)", pay: "card", cost: 400, status: "inspired" }, { id: "checking", label: "Go, from checking (inspired for 1 year)", pay: "checking", cost: 400, status: "inspired" }, { id: "skip", label: "Pass", decline: true }] },
-  { id: "trip", type: "impulse", title: "Friends plan a trip", text: "Friends invite you to the beach for a week: $2,000.", month: 6, options: [{ id: "goal", label: "Pay from the goal fund (recharged for 1 year)", pay: "goal", cost: 2e3, status: "recharged" }, { id: "card", label: "Go, on the credit card (recharged for 1 year)", pay: "card", cost: 2e3, status: "recharged" }, { id: "skip", label: "Not this time", decline: true }] },
+  { id: "trip", type: "impulse", title: "Friends plan a trip", text: "Friends invite you to the beach for a week: $2,000.", month: 6, options: [{ id: "goal", label: "Pay from the savings fund (recharged for 1 year)", pay: "goal", cost: 2e3, status: "recharged" }, { id: "card", label: "Go, on the credit card (recharged for 1 year)", pay: "card", cost: 2e3, status: "recharged" }, { id: "skip", label: "Not this time", decline: true }] },
   {
     id: "console",
     type: "impulse",
@@ -2271,14 +2264,6 @@ function stage(s4, year = s4.history.at(-1)) {
   }
   return STAGES[k];
 }
-function goalStatus(s4) {
-  const g = GOALS[s4.goal], m = metrics(s4), target = g.target({ essentialsMonthly: m.essentials, fiNumber: m.fiNumber }), now = g.now(m);
-  if (g.reverse) {
-    const start = Math.max(s4.debtAtStart || 0, now);
-    return { ...g, id: s4.goal, now, target, done: now <= 0.5, progress: start > 0 ? Math.max(0, Math.min(1, 1 - now / start)) : 1, label: now <= 0.5 ? "Card-type debt paid off" : `Remaining ${money(now)}` };
-  }
-  return { ...g, id: s4.goal, now, target, done: target > 0 && now >= target, progress: target > 0 ? Math.max(0, Math.min(1, now / target)) : 0, label: `${money(now)} / ${money(target)}` };
-}
 function profile(s4) {
   return {
     edu: EDU[s4.edu],
@@ -2374,11 +2359,11 @@ function autoPlan(s4) {
     notes.push(`Emergency fund +${money(v)}/mo: aim for 3 months of expenses.`);
   }
   if (!hd && A >= 25) {
-    if (s4.goal === "home") {
-      const v = f25(A * 0.5);
+    if (!s4.home && s4.accounts.goal < 3e4 && A >= 100 && (s4.goal === "home" || m.runway >= 3)) {
+      const v = f25(A * (s4.goal === "home" ? 0.5 : 0.25));
       p.goal = v;
       A -= v;
-      notes.push(`Goal fund ${money(v)}/mo: saving for the down payment.`);
+      notes.push(`Savings fund ${money(v)}/mo: saving for the down payment.`);
     }
     const room = f25(rothRoom(s4) / 12);
     if (room > 0) {
@@ -2406,7 +2391,7 @@ function confirmPlan(s4) {
 function assertPhase(s4, ph) {
   if (s4.phase !== ph) throw Error(`You can\u2019t do that right now (current phase: ${s4.phase}).`);
 }
-var ACCOUNT_NAMES = { checking: "Checking", emergency: "Emergency fund", goal: "Goal fund", brokerage: "Other investing account", roth: "Roth IRA", k401: "401(k)" };
+var ACCOUNT_NAMES = { checking: "Checking", emergency: "Emergency fund", goal: "Savings fund", brokerage: "Other investing account", roth: "Roth IRA", k401: "401(k)" };
 function transfer(s4, from, to, amount) {
   assertPhase(s4, "plan");
   const n = clone(s4), a = r22(amount);
@@ -2533,12 +2518,12 @@ var decisions = (s4) => DECISIONS.filter((d) => d.eligible(s4)).map((d) => ({ ..
 var liquid = (s4) => s4.accounts.checking + s4.accounts.emergency + s4.accounts.goal;
 function blockReason(s4, d) {
   if (COOLDOWN[d.id] && s4.age - lastAge(s4, d.id) < COOLDOWN[d.id]) return `${COOLDOWN[d.id]} years between tries (last tried at age ${lastAge(s4, d.id)}).`;
-  if (d.cost && liquid(s4) < d.cost && d.id !== "bankruptcy") return `Costs ${money(d.cost)}, but your checking, emergency fund and goal fund only hold ${money(liquid(s4))}.`;
+  if (d.cost && liquid(s4) < d.cost && d.id !== "bankruptcy") return `Costs ${money(d.cost)}, but your checking, emergency fund and savings fund only hold ${money(liquid(s4))}.`;
   if (d.id === "raise" && s4.job.salary >= salaryCap(s4)) return TEXT.capBlock;
   if (d.id === "jobhunt" && jobsFor(s4).every((j) => j.blocked)) return "No jobs on the board you can apply for right now.";
   if (d.id === "buyhome") {
     if (s4.flags.bankruptAt != null && s4.age - s4.flags.bankruptAt < 10) return "Banks won\u2019t approve a mortgage within 10 years of bankruptcy.";
-    if (s4.accounts.goal + s4.accounts.checking < 3e4) return `Down payment and closing costs need $30,000; your goal fund plus checking only hold ${money(s4.accounts.goal + s4.accounts.checking)}.`;
+    if (s4.accounts.goal + s4.accounts.checking < 3e4) return `Down payment and closing costs need $30,000; your savings fund plus checking only hold ${money(s4.accounts.goal + s4.accounts.checking)}.`;
     if (s4.credit && s4.credit < 620) return "Credit score below 620: banks won\u2019t approve a mortgage.";
     if (!s4.job.employed && !s4.business) return "No income: banks won\u2019t approve a mortgage.";
   }
@@ -2792,7 +2777,7 @@ function cardOptions(s4) {
 function optionBlock(s4, o) {
   if (o.needs === "ok" && s4.card.tier === "fail") return "Throw failed: you couldn\u2019t resist this time, so only the spending options are left.";
   if (o.pay === "emergency" && s4.accounts.emergency < o.cost) return `Emergency fund only has ${money(s4.accounts.emergency)}.`;
-  if (o.pay === "goal" && s4.accounts.goal < o.cost) return `Goal fund only has ${money(s4.accounts.goal)}.`;
+  if (o.pay === "goal" && s4.accounts.goal < o.cost) return `Savings fund only has ${money(s4.accounts.goal)}.`;
   if (o.pay === "card") {
     const room = cardRoom(s4);
     if (room < o.cost) return room <= 0 ? "You have no available credit." : `Only ${money(room)} of credit left.`;
@@ -3195,7 +3180,7 @@ function simulateYear(s0, { returnRate = s0.marketReturn ?? ASSUME.stockReturnMe
       }
     };
     put("emergency", plan.emergency, "Saved to emergency fund");
-    put("goal", plan.goal, "Saved to goal fund");
+    put("goal", plan.goal, "Saved to savings fund");
     put("roth", Math.min(plan.roth, Math.max(0, rothRoom(s4) - y.saved.roth)), "Saved to Roth IRA");
     put("brokerage", plan.brokerage, "Saved to brokerage");
     for (const [id, want] of Object.entries(plan.extra || {})) {
@@ -3952,7 +3937,7 @@ var GLOSSARY = {
   roth: ["Roth IRA", "A retirement account you open yourself. You put in money you\u2019ve already paid tax on; all the growth and withdrawals later are tax-free. Up to $7,500 a year."],
   brokerage: ["Other investing account", "For buying index funds (hundreds of companies\u2019 stocks in one purchase). You can sell anytime, but it goes up and down each year. The game assumes a long-run average of 5% a year after inflation."],
   emergency: ["Emergency fund", "Money set aside only for surprises: job loss, illness, car repairs. Kept in a high-yield savings account. Aim for 3\u20136 months of essential costs."],
-  goalfund: ["Goal fund", "Money you\u2019ll need in 1\u20135 years, like a down payment, a trip, or a car."],
+  goalfund: ["Savings fund", "Money you\u2019ll need in 1\u20135 years, like a down payment, a trip, or a car."],
   checking: ["Checking", "Paychecks come in and bills go out. No interest."],
   available: ["Left to plan", "Take-home pay minus essentials, fun money and minimum debt payments: what\u2019s left is yours to plan. Negative means you spend more than you earn \u2014 the game dips into savings first, then the credit card, and finally bills go overdue."],
   minimum: [" minimum payment", "The least you must pay on each debt every month; the game takes it automatically. Miss one and it\u2019s overdue: $30 late fee and your credit score drops."],
@@ -4053,7 +4038,7 @@ var T2 = {
   emergency: "Emergency fund",
   monthsOf6: "{n} / 6 mo",
   downPayment: "Down payment fund",
-  goalFund: "Goal fund",
+  goalFund: "Savings fund",
   matchGot: "+{m}/mo match",
   matchNeed: "Put in {p} for the full match",
   roomLeft: "Room {m}",
@@ -4808,16 +4793,12 @@ function pathScreen() {
   const TAG = { work: "Start earning now", both: "Community college + part-time job \xB7 2 yrs", study: "State university \xB7 4 yrs" };
   const pathCard = (x) => {
     const qq = previewStart(x.id), sc2 = SCHOOL[x.id], lvl = sc2 ? sc2.edu : 0;
-    const fee = sc2 ? Math.max(0, sc2.years * (sc2.tuition - pellYear(qq))) : 0;
+    const aid = payday(qq).aid, fee = sc2 ? Math.round(sc2.years * 12 * (aid.tuitionLoan + aid.livingLoan)) : 0;
     const top = JOBS.filter((j) => j.edu <= lvl && j.career <= 2).sort((a, b) => b.salary - a.salary)[0], full = qq.job.part ? qq.job.salary * 2 : qq.job.salary, best = full > top.salary ? { title: qq.job.title.replace(/ \(.*$|（.*$/, ""), salary: full } : top;
     const row = (lbl, v, max, cls, sub) => `<span class="pm-row"><em>${lbl}</em>${meter(v, max, cls)}<b>${sub}</b></span>`;
     return `<button class="path-opt ${setup.path === x.id ? "on" : ""}" data-go="path" data-id="${x.id}" aria-pressed="${setup.path === x.id}" title="${h(x.text)}">${icon[x.icon]}<b>${h(x.title)}</b><span>${h(TAG[x.id] || "")}</span>
-      ${row("Pay now", qq.job.salary, 45e3, "ok", money2(qq.job.salary) + "/yr")}${row("Tuition after grants", fee, 2e4, "tax", fee ? money2(fee) : "$0")}${row("Best job later", best.salary, 1e5, "held", money2(best.salary) + "/yr")}
+      ${row("Pay now", qq.job.salary, 45e3, "ok", money2(qq.job.salary) + "/yr")}${row("Est. student loans", fee, 5e4, "tax", fee ? money2(fee) : "$0")}${row("Best job later", best.salary, 1e5, "held", money2(best.salary) + "/yr")}
       <small>${h(best.title)}</small></button>`;
-  };
-  const goalCard = ([id, g]) => {
-    const st = goalStatus(previewStart(setup.path, id));
-    return `<button class="goal-opt ${setup.goal === id ? "on" : ""}" data-go="goal" data-id="${id}" aria-pressed="${setup.goal === id}"><span class="go-ico">${icon[g.icon] || icon.flag}</span><b class="go-amt">${h(g.title)}</b><span class="go-title">${g.reverse ? `Currently owe ${money2(st.now)}` : `Target ${money2(st.target)}`}</span></button>`;
   };
   setupFrame("path", `<section class="goal-stage">
     ${need ? `<header class="wiz-title"><h1>How do you want to start?</h1><p>The reels only decide the money. Whether you study is up to you, and you can change it later.</p></header><div class="path-pick">${PATHS.map(pathCard).join("")}</div>` : `<header class="wiz-title"><h1>${r.age} and already working</h1><p>${h(backstoryFor(setup.seed, r).title)}. Every year you can change jobs, go back to school, start a business or move.</p></header>`}
@@ -5086,7 +5067,7 @@ function reviewPage() {
 }
 var CAT_NAME = { housing: "Housing", food: "Food", transport: "Transportation", insurance: "Insurance & health", other: "Utilities, phone etc.", fun: "Fun", interest: "Interest", tax: "Tax", oneoff: "One-off costs", education: "Tuition" };
 function finishPage() {
-  const w = wrapUp(s2), m = metrics(s2), g = goalStatus(s2), st = stage(s2);
+  const w = wrapUp(s2), m = metrics(s2), st = stage(s2);
   if (!w) return frame("finish", '<section class="panel"><p>No records.</p></section>');
   const cats = Object.entries(w.cats).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]), catMax = cats[0]?.[1] || 1;
   const slides = [
@@ -5119,7 +5100,7 @@ function overviewPage() {
     ${sheet(m)}</div>${stagePath()}</section>`);
 }
 function sheet(m) {
-  const a = s2.accounts, assets = [["Checking", a.checking, "checking"], [`Emergency fund (${m.runway.toFixed(1)} mo)`, a.emergency, "emergency"], [s2.goal === "home" ? "Down payment fund" : "Goal fund", a.goal, "goalfund"], ["401(k)", a.k401, "k401"], ["Roth IRA", a.roth, "roth"], ["Other investing", a.brokerage, "brokerage"], ...s2.home ? [["Home (estimated value)", s2.home.value, ""]] : []];
+  const a = s2.accounts, assets = [["Checking", a.checking, "checking"], [`Emergency fund (${m.runway.toFixed(1)} mo)`, a.emergency, "emergency"], [s2.goal === "home" ? "Down payment fund" : "Savings fund", a.goal, "goalfund"], ["401(k)", a.k401, "k401"], ["Roth IRA", a.roth, "roth"], ["Other investing", a.brokerage, "brokerage"], ...s2.home ? [["Home (estimated value)", s2.home.value, ""]] : []];
   const debts = s2.debts.filter((d) => d.balance > 5e-3).map((d) => [d.label, d.balance, "", d.apr]);
   const top = Math.max(1, ...assets.map((x) => x[1]), ...debts.map((x) => x[1]));
   const rows = (list) => list.map(([n, v, k, apr]) => `<li><span>${h(n)} ${k ? q(k) : ""}${apr != null ? `<small> ${pct(apr, 1)}</small>` : ""}</span><i style="width:${Math.max(1, v / top * 100)}%"></i><b>${money2(v)}</b></li>`).join("");
@@ -5144,7 +5125,7 @@ function accountsPage() {
     ${s2.history.length ? `<section class="panel"><h3>Your wealth by year</h3>${sparkline(s2.history.map((x) => x.netWorth))}</section>` : ""}${goNext()}</section>`);
 }
 function goalsPage() {
-  const g = goalStatus(s2), m = metrics(s2);
+  const m = metrics(s2);
   frame("goals", `<section><section class="panel">${winHtml(stage(s2).id)}</section>
     <section class="panel"><h3>Your financial independence number ${q("fi")}</h3><p>A year of spending ${money2(m.annualSpend)} \xD7 25 = <b>${money2(m.fiNumber)}</b>. Your investable assets ${money2(m.invested)}, at a 4% withdrawal rate, can pay ${money2(m.passive)}/yr.</p></section>
     <section class="panel learn-panel"><h3>${icon.star}${h(LT2.learned)}</h3><ul class="learn-list">${mastery(s2).map((x) => `<li class="${x.taughtAt != null ? "ok" : ""}"><b>${h(x.taughtAt != null ? x.title : LT2.later)}</b><small>${x.taughtAt != null ? h(x.short) + (x.asked ? " \xB7 " + h(fmt(LT2.score, { c: x.right, t: x.asked })) : "") : ""}</small></li>`).join("")}</ul></section>
@@ -5614,10 +5595,6 @@ document.addEventListener("click", (e) => {
         return update();
       case "path":
         setup.path = id;
-        setup.name = document.querySelector("#player-name")?.value ?? setup.name;
-        return update(false);
-      case "goal":
-        setup.goal = id;
         setup.name = document.querySelector("#player-name")?.value ?? setup.name;
         return update(false);
       case "diff":

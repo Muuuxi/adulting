@@ -4506,7 +4506,7 @@ function gameInit(s4, id, t, fvMonthly2) {
       cuts = [{ l: LG.fed, a: 270 }, { l: LG.state, a: 90 }, { l: LG.fica, a: 230 }];
     }
     const net = gross - cuts.reduce((n, c) => n + c.a, 0);
-    return { id, st: "guess", gross, net, cuts, i: 0, example, opts: [r10(gross * 0.6), r10(net), r10(gross * 0.93)] };
+    return { id, st: "guess", gross, net, cuts, i: 0, example, opts: [r10(gross * 0.6), r10(net), Math.round(gross)] };
   }
   if (id === "debt") return { id, bal: v.balN, apr: v.aprN, fixed: v.fixedN, b: v.balN, prev: v.balN, m: 0, interest: 0, example: !v.realCard, v };
   const H = 65 - s4.age;

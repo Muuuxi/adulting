@@ -4959,8 +4959,8 @@ function decisionPage() {
     <div class="dec-grid">${decisions(s2).map((d, i) => `<button class="dec-card ${d.blocked ? "blocked" : ""}" data-go="pick-decision" data-id="${d.id}" title="${h(d.text)}">
       <span class="dc-top"><span class="dc-art t-${tones[i % tones.length]}">${icon[d.icon] || icon.star}</span><b>${h(d.title)}</b></span><span class="dc-text">${h(firstSentence(d.text))}</span>${throwTag(d.throw)}${d.blocked ? `<small class="why" title="${h(d.blocked)}">${icon.lock}${h(firstClause(d.blocked))}</small>` : ""}</button>`).join("")}</div></section>`);
 }
-var firstSentence = (t) => String(t || "").split(/(?<=[.!?。！？])\s*/)[0];
-var firstClause = (t) => String(t || "").split(/[,，;；:]/)[0];
+var firstSentence = (t) => String(t || "").split(/(?<=[.!?])\s+|(?<=[。！？])/)[0];
+var firstClause = (t) => String(t || "").split(/[，；;:]|,(?!\d)/)[0];
 function cardPage() {
   if (s2.phase !== "card") return frame("card", `<section class="panel">${s2.card ? `<h2>\u4ECA\u5E74\u7684\u5361\uFF1A${h(s2.card.title)}</h2><p>${h(s2.card.choiceLabel || "")}</p>` : "<p>\u8FD8\u6CA1\u5230\u62BD\u5361\u8FD9\u4E00\u6B65\u3002</p>"}${goNext()}</section>`);
   const c = s2.card;

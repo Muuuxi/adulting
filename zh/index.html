@@ -1365,6 +1365,29 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .path-opt .pm-row em { font-style: normal; color: var(--ink-2); } .path-opt .pm-row b { font-size: .82rem; min-width: 6.2em; text-align: right; }
 .path-opt .pm-row .meter { width: 100%; height: 10px; }
 .path-opt > small { justify-self: end; font-weight: 600; color: var(--muted); font-size: .72rem; margin-top: -2px; }
+
+/* Round 13: lesson games */
+.lg { display: grid; gap: 10px; margin: 8px 0; } .lg-q { font-weight: 800; font-size: 1.02rem; margin: 2px 0; text-align: center; } .lg-eg { justify-self: center; margin: 0; font-size: .74rem; font-weight: 800; color: var(--muted); }
+.lg-opts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; } .lg-debrief { font-weight: 800; font-size: 1rem; line-height: 1.45; margin: 8px 0 2px; }
+.lg-track { position: relative; height: 40px; border: 3px solid var(--ink); border-radius: 12px; background: var(--red-2); overflow: hidden; }
+.lg-track i { position: absolute; inset: 0 auto 0 0; width: var(--b); background: linear-gradient(90deg, var(--grass), #63d08f); animation: lg-w .6s ease-out; }
+.lg-track b { position: absolute; inset: 0; display: grid; place-items: center; }
+@keyframes lg-w { from { width: var(--a); } to { width: var(--b); } }
+.lg-gates { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 5px; }
+.lg-gates li { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 5px 10px; border: 2px dashed var(--quiet-2); border-radius: 10px; color: var(--muted); } .lg-gates .ico { width: 16px; height: 16px; }
+.lg-gates li.now { border: 2px solid var(--blue); color: var(--ink); font-weight: 800; } .lg-gates li.open { border: 2px solid var(--ink); color: var(--ink); } .lg-gates li b { color: var(--neg); }
+.lg-debt-box { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; align-items: center; }
+.lg-hill { height: 130px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 4px solid var(--ink); }
+.lg-ball { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--ink); background: radial-gradient(circle at 35% 30%, #fff, var(--red-2) 55%, var(--red)); transform-origin: 50% 100%; transform: scale(var(--b)); animation: lg-s .6s ease-out; }
+@keyframes lg-s { from { transform: scale(var(--a)); } to { transform: scale(var(--b)); } }
+.lg-nums { display: grid; gap: 6px; } .lg-nums small { display: block; color: var(--muted); font-weight: 800; font-size: .76rem; } .lg-nums b { font-size: 1.25rem; }
+.lg-dots { display: flex; gap: 4px; margin-top: 3px; } .lg-dots i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--ink); } .lg-dots i.on { background: var(--sun); }
+.lg-age { text-align: center; margin: 0; font-size: 1.2rem; }
+.lg-plots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .lg-plot { display: grid; justify-items: center; gap: 2px; border: 2px solid var(--ink); border-radius: 12px; padding: 6px; background: var(--sky-3); } .lg-plot svg { width: 100%; max-width: 150px; height: 120px; }
+.lg-ground { stroke: var(--ink); stroke-width: 3; } .lg-seed { fill: var(--ink); }
+.lg-tree { transform-origin: 50px 104px; transform: scale(var(--b)); animation: lg-s .6s ease-out; } .lg-tree rect { fill: #8a5a33; stroke: var(--ink); stroke-width: 2; } .lg-tree circle { fill: var(--grass); stroke: var(--ink); stroke-width: 2.5; }
+@media (max-width: 720px) { .lg-debt-box { grid-template-columns: minmax(0, 1fr); } .lg-opts .btn { flex: 1 1 100%; } }
+@media (prefers-reduced-motion: reduce) { .lg-track i, .lg-ball, .lg-tree { animation: none; } }
 </style>
 </head>
 <body>
@@ -3497,13 +3520,13 @@ function lessonText(s4, id) {
   let body2 = Ld.body, v = {};
   if (id === "paycheck") {
     const p = payday(s4);
-    v = { gross: money(p.gross + (p.spouseGross || 0)), net: money(p.net) };
+    v = { gross: money(p.gross + (p.spouseGross || 0)), net: money(p.net), p };
   }
   if (id === "emergency") v = { ef3: money(essentialsMonthly(s4) * 3), ef: money(s4.accounts.emergency) };
   if (id === "debt") {
     const card = s4.debts.find((d) => d.kind === "card" && d.balance > 200), bal = Math.round(card ? card.balance : 3e3), apr = card?.apr || CARD.apr, fixed = Math.max(150, Math.ceil(bal * 0.05 / 10) * 10);
     const a = payoffSim(bal, apr, (b, i) => Math.max(25, i + b * 0.01)), b2 = payoffSim(bal, apr, () => fixed);
-    v = { bal: money(bal), minYears: Math.max(1, Math.round(a.months / 12)), minInterest: money(a.interest), fixed: money(fixed), fixMonths: b2.months, fixInterest: money(b2.interest) };
+    v = { bal: money(bal), minYears: Math.max(1, Math.round(a.months / 12)), minInterest: money(a.interest), fixed: money(fixed), fixMonths: b2.months, fixInterest: money(b2.interest), balN: bal, aprN: apr, fixedN: fixed, realCard: !!card };
   }
   if (id === "match") {
     if (s4.job.match && s4.job.salary) v = { free: money(s4.job.salary * s4.job.match.rate * s4.job.match.upTo) };
@@ -3517,7 +3540,7 @@ function lessonText(s4, id) {
     const raise = h2?.salary && s4.job.salary > h2.salary ? s4.job.salary - h2.salary : 5e3;
     v = { raise: money(raise), fv: money(fvMonthly(raise / 24, Math.max(5, 50 - s4.age))) };
   }
-  return { id, k: LESSON_IDS.indexOf(id) + 1, n: LESSON_IDS.length, title: Ld.title, short: Ld.short, body: body2.replace(/\{(\w+)\}/g, (_, x) => v[x] ?? "") };
+  return { id, k: LESSON_IDS.indexOf(id) + 1, n: LESSON_IDS.length, title: Ld.title, short: Ld.short, body: body2.replace(/\{(\w+)\}/g, (_, x) => v[x] ?? ""), v };
 }
 function mastery(s4) {
   const Ln = s4.learn || freshLearn();
@@ -4433,6 +4456,144 @@ function cardArt(id, type = "life") {
 }
 var CARD_SCENE_IDS = Object.keys(CARD_SCENE);
 
+// ui/lessongames.js
+var LG = {
+  skip: "\u8DF3\u8FC7",
+  more: "\u770B\u5B8C\u6574\u8BF4\u660E",
+  example: "\u793A\u4F8B\u6570\u5B57",
+  oneYearNote: "",
+  guessPay: (g) => `\u4F60\u6BCF\u6708\u5DE5\u8D44 ${g}\u3002\u731C\u731C\u6709\u591A\u5C11\u80FD\u5230\u8D26\uFF1F`,
+  fed: "\u8054\u90A6\u7A0E",
+  state: "\u5DDE\u7A0E",
+  fica: "\u793E\u4FDD\u548C\u533B\u4FDD",
+  k401: "401(k)",
+  openGate: (l) => `\u6253\u5F00\u95F8\u95E8\uFF1A${l}`,
+  left: "\u8FD8\u5269",
+  spot: (net, gross) => `\u731C\u5BF9\u4E86\uFF1A\u5230\u8D26 ${net}\u3002\u505A\u9884\u7B97\u8981\u6309\u8FD9\u4E2A\u6570\uFF0C\u4E0D\u662F ${gross}\u3002`,
+  off: (g, net, gross) => `\u4F60\u731C ${g}\uFF0C\u5176\u5B9E\u53EA\u5230\u8D26 ${net}\u3002\u505A\u9884\u7B97\u8981\u6309\u8FD9\u4E2A\u6570\uFF0C\u4E0D\u662F ${gross}\u3002`,
+  owe: "\u8FD8\u6B20",
+  interest: "\u5DF2\u4ED8\u5229\u606F",
+  halfYear: "\u63A5\u4E0B\u6765 6 \u4E2A\u6708\uFF1A",
+  payMin: "\u53EA\u8FD8\u6700\u4F4E",
+  payExtra: (a) => `\u6BCF\u6708\u8FD8 ${a}`,
+  monthsIn: (m) => `\u7B2C ${m} \u4E2A\u6708`,
+  cleared: (m, i) => `\u4F60\u7528 ${m} \u4E2A\u6708\u8FD8\u6E05\u4E86\uFF0C\u5229\u606F\u4ED8\u4E86 ${i}\u3002`,
+  still: (i, b) => `3 \u5E74\u8FC7\u53BB\uFF0C\u5229\u606F\u4ED8\u4E86 ${i}\uFF0C\u8FD8\u6B20 ${b}\u3002`,
+  compare: (y, i, f, m, j) => `\u53EA\u8FD8\u6700\u4F4E\uFF1A\u5927\u7EA6 ${y} \u5E74\uFF0C\u5229\u606F ${i}\u3002\u6BCF\u6708\u8FD8 ${f}\uFF1A${m} \u4E2A\u6708\uFF0C\u5229\u606F ${j}\u3002`,
+  guessTree: (a, b) => `\u4E24\u4E2A\u4EBA\u90FD\u6BCF\u6708\u5B58 $200\uFF0C\u5B58\u5230 65 \u5C81\u3002\u4E00\u4E2A ${a} \u5C81\u5F00\u59CB\uFF0C\u4E00\u4E2A ${b} \u5C81\u5F00\u59CB\u3002\u5230 65 \u5C81\uFF0C\u65E9\u5F00\u59CB\u7684\u4EBA\u4F1A\u591A\u591A\u5C11\uFF1F`,
+  early: (a) => `${a} \u5C81\u5F00\u59CB`,
+  late: (a) => `${a} \u5C81\u5F00\u59CB`,
+  notYet: "\u8FD8\u6CA1\u79CD",
+  ff: (a) => `\u5FEB\u8FDB\u5230 ${a} \u5C81`,
+  age: (a) => `${a} \u5C81`,
+  treeOk: "\u731C\u5BF9\u4E86\u3002",
+  treeNo: "\u6BD4\u591A\u6570\u4EBA\u60F3\u7684\u591A\u3002",
+  treeEnd: (d, g) => `\u665A 10 \u5E74\u53EA\u5C11\u5B58\u4E86 ${d}\uFF0C\u5230 65 \u5C81\u5374\u5C11\u4E86\u5927\u7EA6 ${g}\u3002`,
+  note: "\u6309\u6263\u9664\u901A\u80C0\u540E\u6BCF\u5E74 5% \u8BA1\u7B97\u3002"
+};
+var hasGame = (id) => ["paycheck", "debt", "compound"].includes(id);
+var r10 = (x) => Math.round(x / 10) * 10;
+var fv = (fn, y) => y > 0 ? fn(200, y) : 0;
+function gameInit(s4, id, t, fvMonthly2) {
+  const v = t.v;
+  if (id === "paycheck") {
+    const p = v.p, tax = p.tax || {};
+    let gross = p.gross + (p.spouseGross || 0), example = false;
+    let cuts = [[LG.fed, tax.federal], [LG.state, tax.state], [LG.fica, (tax.socialSecurity || 0) + (tax.medicare || 0)], [LG.k401, p.k401]].filter((c) => c[1] > 0.5).map(([l, a]) => ({ l, a }));
+    if (gross <= 0) {
+      gross = 3e3;
+      example = true;
+      cuts = [{ l: LG.fed, a: 270 }, { l: LG.state, a: 90 }, { l: LG.fica, a: 230 }];
+    }
+    const net = gross - cuts.reduce((n, c) => n + c.a, 0);
+    return { id, st: "guess", gross, net, cuts, i: 0, example, opts: [r10(gross * 0.6), r10(net), r10(gross * 0.93)] };
+  }
+  if (id === "debt") return { id, bal: v.balN, apr: v.aprN, fixed: v.fixedN, b: v.balN, prev: v.balN, m: 0, interest: 0, example: !v.realCard, v };
+  const H = 65 - s4.age;
+  return { id, st: "guess", age: s4.age, H, y: 0, py: 0, fn: fvMonthly2, gap: Math.round(fv(fvMonthly2, H) - fv(fvMonthly2, H - 10)) };
+}
+function gameStep(g, act) {
+  if (act === "skip") {
+    g.done = true;
+    if (g.id === "paycheck") g.skipped = true;
+    if (g.id === "compound") {
+      g.st = "grow";
+      g.y = g.H;
+      g.skipped = true;
+    }
+    return "soft";
+  }
+  if (g.id === "paycheck") {
+    if (act.startsWith("guess:")) {
+      g.guess = g.opts[+act.slice(6)];
+      g.st = "gates";
+      return "soft";
+    }
+    g.i++;
+    if (g.i >= g.cuts.length) g.done = true;
+    return g.done ? "good" : "coin";
+  }
+  if (g.id === "debt") {
+    const extra = act === "pay:extra";
+    g.prev = g.b;
+    for (let k = 0; k < 6 && g.b > 0.5; k++) {
+      const i = g.b * g.apr / 12, due = Math.min(g.b + i, extra ? g.fixed : Math.max(25, i + g.b * 0.01));
+      g.interest += i;
+      g.b = g.b + i - due;
+      g.m++;
+    }
+    if (g.m >= 36 || g.b <= 0.5) {
+      g.done = true;
+      g.b = Math.max(0, g.b);
+      return g.b <= 0.5 ? "good" : "bad";
+    }
+    return extra ? "coin" : "bad";
+  }
+  if (act.startsWith("guess:")) {
+    g.pick = +act.slice(6);
+    g.st = "grow";
+    return "soft";
+  }
+  g.py = g.y;
+  g.y = Math.min(g.H, g.y + 10);
+  if (g.y >= g.H) g.done = true;
+  return g.done ? "levelup" : "tick";
+}
+var paycheck = (g, { money: money3, btn: btn2, icon: icon2 }) => {
+  if (g.st === "guess") return `<p class="lg-q">${LG.guessPay(money3(g.gross))}</p><div class="lg-opts">${g.opts.map((o, k) => btn2("lg", money3(o), { id: "guess:" + k, cls: "btn blue", attrs: k === 0 ? "data-autofocus" : "" })).join("")}</div>`;
+  const left = (i) => g.gross - g.cuts.slice(0, i).reduce((n, c) => n + c.a, 0), pct2 = (x) => (x / g.gross * 100).toFixed(1) + "%";
+  const shown = g.skipped ? g.cuts.length : g.i, a = left(Math.max(0, shown - 1)), b = left(shown);
+  return `<div class="lg-pay"><div class="lg-track"><i style="--a:${pct2(a)};--b:${pct2(b)}"></i><b>${LG.left} ${money3(b)}</b></div>
+    <ol class="lg-gates">${g.cuts.map((c, k) => `<li class="${k < shown ? "open" : k === shown ? "now" : ""}">${k < shown ? icon2.check : icon2.lock}<span>${c.l}</span><b>${k < shown ? "\u2212" + money3(c.a) : ""}</b></li>`).join("")}</ol></div>
+    ${g.done ? "" : `<div class="lg-opts">${btn2("lg", LG.openGate(g.cuts[g.i].l), { id: "next", cls: "btn blue", ico: "arrow", attrs: "data-autofocus" })}</div>`}`;
+};
+var debt2 = (g, { money: money3, btn: btn2 }) => {
+  const size = (b) => (0.3 + 0.7 * Math.sqrt(Math.min(1.2, b / g.bal))).toFixed(3);
+  return `<div class="lg-debt-box"><div class="lg-hill"><span class="lg-ball" style="--a:${size(g.prev)};--b:${g.b <= 0.5 ? 0 : size(g.b)}"></span></div>
+    <div class="lg-nums"><div><small>${LG.owe}</small><b class="neg">${money3(g.b)}</b></div><div><small>${LG.interest}</small><b>${money3(g.interest)}</b></div><div><small>${LG.monthsIn(g.m)}</small><span class="lg-dots">${[6, 12, 18, 24, 30, 36].map((x) => `<i class="${x <= g.m ? "on" : ""}"></i>`).join("")}</span></div></div></div>
+    ${g.done ? "" : `<p class="lg-q">${LG.halfYear}</p><div class="lg-opts">${btn2("lg", LG.payMin, { id: "pay:min", cls: "btn ghost", attrs: "data-autofocus" })}${btn2("lg", LG.payExtra(money3(g.fixed)), { id: "pay:extra", cls: "btn blue" })}</div>`}`;
+};
+var tree = (v, prev, max, label, money3) => {
+  const sc2 = (x) => (x > 0 ? 0.25 + 0.75 * Math.sqrt(x / max) : 0).toFixed(3);
+  return `<div class="lg-plot"><small>${label}</small><svg viewBox="0 0 100 110" aria-hidden="true"><line x1="6" y1="104" x2="94" y2="104" class="lg-ground"/>${v > 0 ? `<g class="lg-tree" style="--a:${sc2(prev)};--b:${sc2(v)}"><rect x="45" y="62" width="10" height="42" rx="3"/><circle cx="50" cy="44" r="34"/></g>` : '<circle cx="50" cy="100" r="4" class="lg-seed"/>'}</svg><b>${v > 0 ? money3(v) : LG.notYet}</b></div>`;
+};
+var compound = (g, { money: money3, btn: btn2 }) => {
+  const a = g.age, gap = g.gap, opts = [24e3, Math.round(gap / 1e3) * 1e3, Math.round(gap * 3 / 1e3) * 1e3];
+  if (g.st === "guess") return `<p class="lg-q">${LG.guessTree(a, a + 10)}</p><div class="lg-opts">${opts.map((o, k) => btn2("lg", "+" + money3(o), { id: "guess:" + k, cls: "btn blue", attrs: k === 0 ? "data-autofocus" : "" })).join("")}</div>`;
+  const E = (y) => fv(g.fn, y), L = (y) => fv(g.fn, y - 10), max = E(g.H), nx = Math.min(g.H, g.y + 10);
+  return `<p class="lg-age"><b>${LG.age(a + g.y)}</b></p><div class="lg-plots">${tree(E(g.y), E(g.py), max, LG.early(a), money3)}${tree(L(g.y), L(g.py), max, LG.late(a + 10), money3)}</div>
+    ${g.done ? "" : `<div class="lg-opts">${btn2("lg", LG.ff(a + nx), { id: "ff", cls: "btn blue", ico: "arrow", attrs: "data-autofocus" })}</div>`}`;
+};
+var lessonGame = (g, d) => `<div class="lg lg-${g.id}">${g.example ? `<p class="lg-eg">${LG.example}</p>` : ""}${{ paycheck, debt: debt2, compound }[g.id](g, d)}</div>`;
+function debrief(g, { money: money3 }) {
+  if (g.id === "paycheck") return g.skipped || g.guess === g.opts[1] ? LG.spot(money3(g.net), money3(g.gross)) : LG.off(money3(g.guess), money3(g.net), money3(g.gross));
+  if (g.id === "debt") {
+    const v = g.v, first = g.m === 0 ? "" : g.b <= 0.5 ? LG.cleared(g.m, money3(g.interest)) + " " : LG.still(money3(g.interest), money3(g.b)) + " ";
+    return first + LG.compare(v.minYears, v.minInterest, v.fixed, v.fixMonths, v.fixInterest);
+  }
+  return (g.skipped ? "" : g.pick === 1 ? LG.treeOk : LG.treeNo) + LG.treeEnd(money3(24e3), money3(Math.round(g.gap / 1e3) * 1e3)) + " " + LG.note;
+}
+
 // ui/app.js
 var root = document.querySelector("#app");
 var h = (x) => String(x ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -4989,8 +5150,12 @@ function modalHtml() {
   }
   if (M.kind === "lesson" && s2.learn?.pending) {
     const t = lessonText(s2, s2.learn.pending), LICO = { paycheck: ["coin", "green"], emergency: ["piggy", "blue"], debt: ["flame", "red"], match: ["hands", "gold"], compound: ["sprout", "green"], creep: ["chart", "purple"] }[s2.learn.pending] || ["star", "gold"];
-    return wrap(`<header class="m-head lesson-head">${bubbleArt(LICO[0], LICO[1])}<div><span class="ribbon-tag">${h(fmt(LT2.lesson, t))}</span><h2>${h(t.title)}</h2></div></header><p class="lesson-short">${icon.star}<b>${h(t.short)}</b></p>${lessonPic(s2.learn.pending)}<p class="lesson-body">${h(t.body)}</p>
-      <div class="m-foot">${btn("lesson-ok", LT2.gotIt, { cls: "btn green big", ico: "check", attrs: "data-autofocus" })}</div>`, "small-modal lesson-modal");
+    const P2 = s2.learn.pending, G = hasGame(P2);
+    if (G && !M.g) M.g = gameInit(s2, P2, t, fvMonthly);
+    const done = !G || M.g.done, short = done ? `<p class="lesson-short">${icon.star}<b>${h(t.short)}</b></p>` : "";
+    const mid = G ? `${lessonGame(M.g, { money: money2, btn, icon })}${M.g.done ? `<p class="lg-debrief">${h(debrief(M.g, { money: money2 }))}</p><details class="more"><summary>${h(LG.more)}</summary><p class="lesson-body">${h(t.body)}</p></details>` : ""}` : `${lessonPic(P2)}<p class="lesson-body">${h(t.body)}</p>`;
+    return wrap(`<header class="m-head lesson-head">${bubbleArt(LICO[0], LICO[1])}<div><span class="ribbon-tag">${h(fmt(LT2.lesson, t))}</span><h2>${h(t.title)}</h2></div></header>${short}${mid}
+      <div class="m-foot">${done ? btn("lesson-ok", LT2.gotIt, { cls: "btn green big", ico: "check", attrs: "data-autofocus" }) : btn("lg", LG.skip, { id: "skip", cls: "btn ghost small" })}</div>`, "small-modal lesson-modal");
   }
   if (M.kind === "guide") return wrap(guideHtml(), "wide-modal guide-modal");
   if (M.kind === "review" && s2.year?.review) {
@@ -5126,7 +5291,7 @@ function guideHtml() {
     <div class="guide-grid">${TUTS.map((t) => `<button class="guide-card ${toursSeen[t.id] ? "seen" : ""}" data-go="tut" data-id="${t.id}">${bubbleArt(t.steps[0][3], t.steps[0][4])}<b>${h(t.name)}</b><small>${fmt(T2.nSteps, { n: t.steps.length })}${toursSeen[t.id] ? " \xB7 " + T2.seen : ""}</small></button>`).join("")}</div>`;
 }
 var sndBtns = () => `<button class="icon-btn snd ${soundOn() ? "on" : ""}" data-go="sfx" aria-pressed="${soundOn()}" title="${T2.sound}" aria-label="${T2.sound}">${icon[soundOn() ? "speaker" : "mute"]}</button><button class="icon-btn snd ${musicOn() ? "on" : ""}" data-go="music" aria-pressed="${musicOn()}" title="${T2.music}" aria-label="${T2.music}">${icon.music}</button>`;
-var BTN_SOUND = { "plan-confirm": "coin", draw: "flip", "card-opt": "coin", "tour-next": "soft", "tour-skip": "soft", "next-year": "soft", pull: null, sfx: null, music: null, "rv-ans": null };
+var BTN_SOUND = { "plan-confirm": "coin", draw: "flip", "card-opt": "coin", "tour-next": "soft", "tour-skip": "soft", "next-year": "soft", pull: null, sfx: null, music: null, "rv-ans": null, lg: null };
 function commit(next, nav = true) {
   s2 = next;
   ui.tourRested = null;
@@ -5575,6 +5740,11 @@ document.addEventListener("click", (e) => {
         ui.walk = null;
         ui.page = "review";
         return update();
+      case "lg": {
+        const snd = ui.modal?.g && gameStep(ui.modal.g, id);
+        if (snd) sfx(snd);
+        return update(false);
+      }
       case "lesson-ok":
         ui.modal = null;
         s2 = ackLesson(s2);

@@ -1399,6 +1399,9 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 /* Round 14b */
 .hud .quest { max-width: 245px; } .hud .quest b { font-size: .82rem; white-space: nowrap; } .acct-layout ~ section .ty-spark { max-height: 170px; }
 @media (max-width: 720px) { .hud .quest b { white-space: normal; } }
+
+/* Round 16 */
+.odds li { grid-template-columns: 24px 110px minmax(0, 1fr) 46px; } @media (max-width: 720px) { .odds li { grid-template-columns: 24px 96px minmax(0, 1fr) 44px; } }
 </style>
 </head>
 <body>
@@ -3703,13 +3706,13 @@ var icon = {
   arrow: I('<path d="M5 12h13M13 6l6 6-6 6"/>'),
   back: I('<path d="M19 12H6M11 6l-6 6 6 6"/>'),
   close: I('<path d="M6 6l12 12M18 6 6 18"/>'),
-  coin: I('<circle cx="12" cy="12" r="8"/><path d="M12 7v10M9.5 9.5c0-1.2 1.1-2 2.5-2s2.5.8 2.5 2-1 1.6-2.5 2-2.5 1-2.5 2.3 1.1 2.2 2.5 2.2 2.5-.9 2.5-2"/>'),
+  coin: I('<circle cx="12" cy="12" r="9"/><path d="M12 5.500v2.500M12 16v2.500M15 9.500C14.500 8.400 13.400 8 12 8c-1.700 0-3 .8-3 2 0 3 6 1.200 6 4 0 1.300-1.300 2-3 2-1.400 0-2.600-.5-3-1.600"/>'),
   shield: I('<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>'),
   house: I('<path d="M3 11 12 4l9 7M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/>'),
   briefcase: I('<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5h6v2M3 12h18"/>'),
   cap: I('<path d="M12 4 2 8.5 12 13l10-4.5z"/><path d="M6 10.8v4.7c0 1.6 2.7 2.8 6 2.8s6-1.2 6-2.8v-4.7"/><path d="M12 8.5l7.5 2.6v5.4"/><path d="M18.3 16.5h2.4l.6 3.3h-3.6z" fill="currentColor"/>'),
   heart: I('<path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.7A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/>'),
-  hands: I('<path d="M4 14l4-4 3 2 4-4 5 5M4 14l5 5h5l6-6"/>'),
+  hands: I('<rect x="4" y="11" width="16" height="9" rx="1"/><path d="M3 7h18v4H3zM12 7v13M12 7C10 3 6 2 6 5c0 2 3 2 6 2zM12 7c2-4 6-5 6-2 0 2-3 2-6 2z"/>'),
   clock: I('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
   sprout: I('<path d="M12 21V11M12 11c0-4 3-6 7-6 0 4-3 6-7 6zM12 13c0-3-2-5-6-5 0 3 2 5 6 5z"/>'),
   chart: I('<path d="M4 19 10 12l4 3 6-8"/><path d="M15 7h5v5"/>'),
@@ -3797,7 +3800,7 @@ function playChallenge(canvas, kind, hooks, seconds = 12) {
   let px = w / 2, t = 0, last = performance.now(), raf = 0, done = false, spawn = 0, seq = 0;
   const items = [], pops = [];
   let good = 0, caught = 0, hits = 0, bad = 0;
-  const GOOD = ["\u2605", "$", "\u2713"], BAD = kind === "catch" ? ["\u2715"] : ["\u{1F4F1}", "\u{1F6CD}", "\u{1F3B0}", "\u{1F354}", "\u{1F3AE}"];
+  const GOOD = ["\u2605", "$"], BAD = kind === "catch" ? ["\u2715"] : ["\u{1F4F1}", "\u{1F6CD}", "\u{1F3B0}", "\u{1F354}", "\u{1F3AE}"];
   const finish = () => {
     if (done) return;
     done = true;
@@ -3885,11 +3888,28 @@ function playChallenge(canvas, kind, hooks, seconds = 12) {
     ctx2.save();
     ctx2.translate(px, h2 - 40);
     if (kind === "catch") {
-      ctx2.fillStyle = "#fff";
+      ctx2.fillStyle = "#e8bf8a";
       ctx2.strokeStyle = INK2;
       ctx2.lineWidth = 3;
       ctx2.beginPath();
-      ctx2.ellipse(0, 0, 46, 12, 0, 0, Math.PI * 2);
+      ctx2.moveTo(-42, -8);
+      ctx2.lineTo(42, -8);
+      ctx2.lineTo(32, 16);
+      ctx2.lineTo(-32, 16);
+      ctx2.closePath();
+      ctx2.fill();
+      ctx2.stroke();
+      ctx2.beginPath();
+      ctx2.moveTo(-14, -8);
+      ctx2.lineTo(-11, 16);
+      ctx2.moveTo(14, -8);
+      ctx2.lineTo(11, 16);
+      ctx2.moveTo(-37, 4);
+      ctx2.lineTo(37, 4);
+      ctx2.stroke();
+      ctx2.fillStyle = "#d9a46b";
+      ctx2.beginPath();
+      ctx2.roundRect(-46, -14, 92, 8, 4);
       ctx2.fill();
       ctx2.stroke();
     } else {
@@ -4348,23 +4368,27 @@ var cardRect = (x, y, f = "#7a6ff0") => R(x, y, 86, 54, f, 8) + R(x, y + 12, 86,
 var cloud = (x, y, f = "#fff") => P(`M${x} ${y + 22}c-12 0-12-18 2-18 2-12 22-12 26-2 12-4 20 8 12 20z`, f);
 var ground = (f) => `<rect x="-4" y="112" width="308" height="24" fill="${f}" stroke="none"/><path d="M-4 112H304" ${s}/>`;
 var BG = { life: ["#ffe7dc", "#ffd2c2", "#f5b9a4"], opportunity: ["#e3f4ff", "#c9ecff", "#a8dcc0"], impulse: ["#ffeaf3", "#ffd6e8", "#f7bdd5"], quiet: ["#ece9ff", "#d9d4ff", "#c4bdf5"] };
+var pig = (dx) => R(118 + dx, 94, 15, 18, "#ffb3c7", 4) + R(166 + dx, 94, 15, 18, "#ffb3c7", 4) + P(`M${104 + dx} 66c-10-2-14 8-8 11s9-6 3-7`, "none", 'stroke-width="3"') + `<ellipse cx="${150 + dx}" cy="70" rx="50" ry="31" fill="#ffb3c7" ${s}/>` + P(`M${174 + dx} 42l6-16 12 16z`, "#ff9ab5") + R(196 + dx, 60, 20, 22, "#ff9ab5", 8) + C(203 + dx, 71, 1.5, K) + C(209 + dx, 71, 1.5, K) + C(186 + dx, 58, 3.5, K) + R(132 + dx, 38, 30, 6, K, 3);
+var arm = (x1, y1, x2, y2, f) => `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${K}" stroke-width="13" stroke-linecap="round"/><path d="M${x1} ${y1}L${x2} ${y2}" stroke="${f}" stroke-width="7" stroke-linecap="round"/>`;
 var SCENES = {
-  car: () => car(100, 64) + P("M196 58c10-6 16-14 14-24", "none", 'stroke="#8a93a8" stroke-width="5"') + P("M214 64c12-4 20-12 20-22", "none", 'stroke="#8a93a8" stroke-width="5"') + alert(232, 28),
+  firstjob: () => R(52, 28, 86, 84, "#dfe3ea", 4) + [40, 62, 84].map((y) => [62, 84, 106].map((x) => R(x, y, 14, 14, "#bfe8ff", 2)).join("")).join("") + P("M206 8l-16 32M206 8l16 32", "none", 'stroke-width="4"') + R(174, 38, 64, 70, "#fff", 6) + C(206, 60, 11, "#f2c29b") + P("M190 84c0-10 8-13 16-13s16 3 16 13z", "#3d7be0") + R(188, 90, 36, 8, "#ffc531", 3) + star(254, 34, 13),
+  payday: () => R(26, 26, 66, 86, "#fff", 5) + T(59, 58, "$", 26, "#2fae6b") + P("M38 72h42M38 84h42M38 96h26", "none", 'stroke-width="3"') + P("M100 68h24M116 59l9 9-9 9", "none", 'stroke="#2fae6b" stroke-width="6"') + coin(146, 96, 15) + coin(160, 72, 15) + coin(140, 50, 15) + P("M178 68h22M192 59l9 9-9 9", "none", 'stroke="#e04848" stroke-width="6"') + `<g transform="translate(206 66) scale(.56)">${house(0, 0)}</g><g transform="translate(250 86) scale(.42)">${car(0, 8)}</g>`,
+  car: () => car(100, 64) + C(202, 60, 6, "#c5cad6") + C(212, 47, 8, "#c5cad6") + C(226, 32, 10, "#c5cad6") + alert(262, 42),
   fender: () => car(40, 64, "#ff8a5c") + car(160, 64, "#3d7be0") + star(150, 66, 14, "#ffc531"),
   bus: () => R(70, 40, 150, 62, "#ffc531", 12) + [86, 120, 154, 188].map((x) => R(x, 50, 26, 20, "#bfe8ff", 3)).join("") + C(100, 104, 10, "#4b5d8c") + C(190, 104, 10, "#4b5d8c") + C(250, 44, 18, "#fff") + P("M250 32v12l8 6"),
   newcar: () => car(90, 64, "#e04848") + star(214, 40, 12) + star(78, 36, 8) + star(232, 70, 7),
   hospital: () => R(96, 30, 108, 80, "#fff", 4) + R(138, 44, 24, 52, "#e04848", 2) + R(124, 58, 52, 24, "#e04848", 2) + C(232, 52, 22, "#fff7e0") + T(232, 60, "$", 22, "#e04848"),
   tooth: () => P("M126 36c-20 0-26 22-18 40 6 14 4 30 12 34 8 3 8-22 20-22s12 25 20 22c8-4 6-20 12-34 8-18 2-40-18-40-10 0-12 6-14 6s-4-6-14-6z", "#fff") + P("M196 40l14-10M200 56h16M196 72l14 10", "none", 'stroke="#e04848"'),
-  layoff: () => R(100, 60, 100, 50, "#d9a46b", 3) + P("M100 60l14-18h72l14 18", "#e8bf8a") + R(116, 36, 18, 26, "#7fd0fb", 2) + C(170, 46, 12, "#2fae6b") + R(226, 22, 46, 36, "#fff", 4) + arrowDown(249, 70),
+  layoff: () => R(100, 60, 100, 50, "#d9a46b", 3) + P("M100 60l14-18h72l14 18", "#e8bf8a") + R(116, 36, 18, 26, "#7fd0fb", 2) + C(170, 46, 12, "#2fae6b") + R(222, 14, 54, 44, "#fff", 4) + P("M238 26l22 20M260 26l-22 20", "none", 'stroke="#e04848" stroke-width="5"') + arrowDown(249, 68),
   recession: () => R(80, 26, 140, 84, "#fff", 6) + P("M92 44L130 62L160 54L206 96", "none", 'stroke="#e04848" stroke-width="5"') + P("M206 96l-14-2m14 2l-2-14", "none", 'stroke="#e04848" stroke-width="5"') + [92, 112, 132, 152, 172, 192].map((x) => `<path d="M${x} 104v4" ${s}/>`).join(""),
   rentup: () => house(90, 30) + R(196, 30, 54, 30, "#fff7e0", 5) + T(223, 52, "$+", 18, "#e04848") + arrowUp(223, 62, "#e04848"),
   roof: () => house(108, 34) + cloud(80, 6, "#c9d3e6") + cloud(168, 2, "#c9d3e6") + [118, 140, 162, 184].map((x, i) => P(`M${x} ${36 + i % 2 * 6}l-4 10`, "none", 'stroke="#3d7be0" stroke-width="4"')).join(""),
-  family: () => person(110, 40, "#2fae6b", "#e8b08a", "#24170f") + person(150, 30, "#3d7be0") + person(190, 46, "#e05a8a", "#c98a5e", "#8b5a2b") + heart(150, 2, 0.7),
-  parents: () => person(120, 36, "#8e8e8e", "#f2c29b", "#dfe3ea") + person(176, 36, "#7a6ff0", "#f2c29b", "#dfe3ea") + R(108, 98, 24, 8, "#fff", 3) + heart(148, 6, 0.6),
-  washer: () => R(110, 24, 80, 86, "#fff", 8) + R(110, 24, 80, 18, "#dfe3ea", 8) + C(150, 72, 24, "#bfe8ff") + C(150, 72, 13, "#7fd0fb") + P("M196 40c8 4 10 12 6 18", "none", 'stroke="#8a93a8" stroke-width="4"') + alert(228, 30),
+  family: () => person(106, 60, "#2fae6b", "#e8b08a", "#24170f") + person(150, 60, "#3d7be0") + person(194, 60, "#e05a8a", "#c98a5e", "#8b5a2b") + heart(150, 16, 0.7),
+  parents: () => person(124, 60, "#8e8e8e", "#f2c29b", "#dfe3ea") + person(180, 60, "#7a6ff0", "#f2c29b", "#dfe3ea") + P("M92 112V76c0-7 11-7 11 0", "none", 'stroke="#8b5a2b" stroke-width="5"') + heart(152, 18, 0.7),
+  washer: () => P("M90 112c6-9 18-8 28-6h64c14-2 24-3 30 6z", "#7fd0fb") + R(110, 24, 80, 84, "#fff", 8) + R(110, 24, 80, 18, "#dfe3ea", 8) + C(150, 72, 24, "#bfe8ff") + C(150, 72, 13, "#7fd0fb") + alert(236, 34),
   phonebroke: () => phone(128, 22, true) + alert(206, 34),
   newphone: () => phone(128, 22) + star(204, 36, 12) + star(98, 50, 8) + R(196, 70, 54, 26, "#fff7e0", 5) + T(223, 89, "$$$", 16, "#e04848"),
-  fraud: () => cardRect(96, 40) + alert(214, 30) + P("M200 92l30-30", "none", 'stroke="#e04848" stroke-width="6"'),
+  fraud: () => cardRect(84, 40) + P("M180 72h34M205 63l9 9-9 9", "none", 'stroke="#e04848" stroke-width="6"') + coin(240, 72, 15) + alert(240, 8),
   refi: () => cardRect(70, 46, "#e04848") + P("M170 72h34m-10-10l10 10-10 10", "none", 'stroke-width="5"') + R(212, 46, 60, 54, "#fff", 6) + T(242, 82, "%", 26, "#2fae6b") + arrowDown(242, 6, "#2fae6b"),
   breakup: () => heart(120, 40, 1.1) + heart(184, 40, 1.1) + P("M150 40l-6 14 8 8-6 16", "none", 'stroke="#fff" stroke-width="4"'),
   checkup: () => R(80, 30, 140, 70, "#fff", 8) + P("M90 66h30l8-20 12 36 10-26 6 10h44", "none", 'stroke="#e04848" stroke-width="4"') + R(232, 46, 26, 40, "#fff7e0", 6) + R(232, 46, 26, 14, "#e05a8a", 6),
@@ -4374,14 +4398,14 @@ var SCENES = {
   flood: () => house(110, 22) + P("M60 92c20-10 30 10 50 0s30 10 50 0 30 10 50 0 30 10 50 0V112H60z", "#7fd0fb"),
   insurance: () => P("M150 22l46 16v24c0 26-20 40-46 50-26-10-46-24-46-50V38z", "#7fd0fb") + P("M134 66l12 12 22-24", "none", 'stroke="#fff" stroke-width="6"') + arrowUp(232, 30, "#e04848"),
   lend: () => P("M70 96h40l40 10 50-24c8-4 14 6 6 12l-46 28H70z", "#f2c29b") + coin(176, 54) + coin(200, 40) + coin(152, 38) + T(236, 46, "?", 30),
-  match: () => P("M96 62c0-24 22-36 52-36s50 14 50 36-18 38-50 38c-14 0-28-4-36-12l-14 4 4-14c-4-4-6-10-6-16z", "#ffb3c7") + C(214, 58, 6, K) + R(136, 24, 30, 8, K, 3) + coin(120, 18) + T(240, 40, "+", 34, "#2fae6b") + coin(258, 72),
+  match: () => pig(0) + coin(147, 16, 13) + T(244, 48, "+", 34, "#2fae6b") + coin(262, 76),
   bonus: () => R(106, 52, 88, 56, "#e05a8a", 6) + R(100, 40, 100, 18, "#ff8ab0", 5) + R(144, 40, 12, 68, "#ffc531", 0) + P("M150 40c-10-18-30-14-20 0m20 0c10-18 30-14 20 0", "#ffc531") + coin(226, 50) + coin(244, 78),
   project: () => R(106, 20, 88, 92, "#fff", 8) + R(130, 14, 40, 14, "#8a93a8", 5) + [44, 64, 84].map((y) => P(`M120 ${y}l6 6 10-10M144 ${y + 2}h36`, "none", 'stroke-width="3"')).join("") + star(230, 40, 16),
-  handshake: () => P("M70 70h36l20-10 30 6 30-6 20 10h34", "none", 'stroke-width="5"') + P("M110 66c10 10 24 22 40 26 16-4 30-16 40-26", "#f2c29b") + P("M60 60h30v28H60zM210 60h30v28h-30z", "#3d7be0"),
-  mentor: () => person(110, 40, "#4b5d8c", "#f2c29b", "#8e8e8e") + person(186, 48, "#2fae6b") + R(118, 6, 64, 30, "#fff", 12) + T(150, 28, "\u2605", 20, "#ffc531"),
+  handshake: () => person(92, 60, "#3d7be0") + person(208, 60, "#2fae6b", "#c98a5e", "#24170f") + arm(106, 92, 150, 80, "#3d7be0") + arm(194, 92, 150, 80, "#2fae6b") + C(150, 80, 9, "#f2c29b") + star(150, 40, 13),
+  mentor: () => person(106, 60, "#4b5d8c", "#f2c29b", "#8e8e8e") + person(194, 60, "#2fae6b") + R(118, 12, 64, 30, "#fff", 12) + P("M132 42l-8 12 18-12", "#fff") + T(150, 34, "\u2605", 20, "#ffc531"),
   school: () => P("M108 60v28c0 14 84 14 84 0V60", "#4b5d8c") + P("M150 20l78 28-78 28-78-28z", "#2b3a66") + C(150, 48, 6, "#ffc531") + P("M150 48L216 66V94", "none", 'stroke="#ffc531" stroke-width="5"') + P("M209 92h14l4 18h-22z", "#ffc531") + R(26, 86, 62, 20, "#fff7e0", 10) + R(52, 83, 10, 26, "#e04848", 2),
   diploma: () => R(80, 40, 120, 64, "#fff7e0", 6) + C(176, 92, 14, "#e04848") + P("M100 60h70M100 74h56", "none") + coin(234, 54) + coin(252, 80),
-  meet: () => person(120, 40, "#e05a8a", "#e8b08a", "#24170f") + person(184, 40, "#3d7be0") + heart(152, 10, 0.6) + heart(132, 0, 0.35, "#ff8ab0") + heart(172, 2, 0.35, "#ff8ab0"),
+  meet: () => person(120, 60, "#e05a8a", "#e8b08a", "#24170f") + person(184, 60, "#3d7be0") + heart(152, 28, 0.6) + heart(132, 14, 0.35, "#ff8ab0") + heart(172, 14, 0.35, "#ff8ab0"),
   gig: () => R(90, 30, 76, 70, "#fff", 6) + R(90, 30, 76, 18, "#e04848", 6) + [104, 124, 144].map((x) => R(x, 58, 12, 10, x === 144 ? "#2fae6b" : "#dfe3ea", 2)).join("") + coin(206, 50) + coin(230, 70) + coin(198, 82),
   stocktip: () => R(80, 26, 120, 84, "#fff", 6) + P("M92 96l28-24 22 10 46-42", "none", 'stroke="#2fae6b" stroke-width="5"') + C(236, 58, 26, "#fff7e0") + T(236, 70, "?", 34, "#e04848"),
   inherit: () => R(96, 40, 100, 64, "#fff7e0", 4) + P("M96 44l50 34 50-34", "none") + C(146, 80, 10, "#e04848") + coin(222, 46) + coin(242, 70) + coin(214, 88),
@@ -4389,7 +4413,7 @@ var SCENES = {
   console: () => P("M94 60c0-14 10-22 22-22h68c12 0 22 8 22 22l6 30c2 14-14 22-24 12l-12-12h-52l-12 12c-10 10-26 2-24-12z", "#4b5d8c") + P("M118 58v20M108 68h20", "none", 'stroke="#fff" stroke-width="5"') + C(182, 62, 6, "#e04848") + C(196, 74, 6, "#2fae6b"),
   cat: () => P("M110 108c0-30 16-46 40-46s40 16 40 46z", "#ff8a5c") + C(150, 52, 26, "#ff8a5c") + P("M128 36l-4-22 18 12M172 36l4-22-18 12", "#ff8a5c") + C(141, 50, 3, K) + C(159, 50, 3, K) + P("M146 60l4 3 4-3") + heart(214, 30, 0.55),
   subs: () => [[86, "#e04848"], [136, "#2fae6b"], [186, "#7a6ff0"]].map(([x, f]) => R(x, 36, 42, 42, f, 10)).join("") + P("M100 46l16 11-16 11z", "#fff") + T(157, 66, "\u266A", 26, "#fff") + P("M196 58h22M207 47v22", "none", 'stroke="#fff" stroke-width="5"') + R(110, 88, 80, 16, "#fff7e0", 6),
-  takeout: () => P("M110 50h80l-10 58h-60z", "#fff") + P("M110 50l10-20h60l10 20", "#e8bf8a") + P("M140 30c0-10 20-10 20 0", "none") + R(130, 70, 40, 18, "#e04848", 3) + [210, 232, 254].map((x, i) => R(x, 72 - i * 6, 18, 36 + i * 6, "#fff", 4)).join(""),
+  takeout: () => P("M86 50h80l-10 58h-60z", "#fff") + P("M86 50l10-20h60l10 20", "#e8bf8a") + P("M116 30c0-10 20-10 20 0", "none") + R(106, 70, 40, 18, "#e04848", 3) + P("M204 66h38l-5 42h-28z", "#fff") + R(198, 58, 50, 8, "#e04848", 3) + P("M226 58l8-24", "none", 'stroke-width="5"'),
   concert: () => R(60, 86, 180, 22, "#4b5d8c", 3) + P("M86 86l20-60M214 86l-20-60", "none", 'stroke="#ffc531" stroke-width="10" opacity=".5"') + T(130, 62, "\u266A", 34, "#e05a8a") + T(170, 50, "\u266B", 34, "#7a6ff0") + star(236, 30, 9) + star(66, 30, 9),
   trip: () => C(240, 34, 18, "#ffc531") + P("M40 112c40-14 80-14 120 0", "#7fd0fb") + P("M110 112c0-30 4-52 14-70", "none", 'stroke="#8b5a2b" stroke-width="7"') + P("M124 42c-20-10-40-4-46 8 14-6 30-6 46-8zM124 42c18-14 38-12 46 0-16-4-30-2-46 0zM124 42c-4-20 6-30 18-32-6 10-10 20-18 32z", "#2fae6b") + R(170, 84, 50, 24, "#ff8a5c", 6),
   casino: () => R(96, 44, 52, 52, "#fff", 8, 'transform="rotate(-10 122 70)"') + [[110, 58], [134, 82], [122, 70]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5" fill="${K}"/>`).join("") + R(160, 40, 52, 52, "#e04848", 8, 'transform="rotate(12 186 66)"') + [[176, 56], [196, 76]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5" fill="#fff"/>`).join("") + C(236, 94, 12, "#2fae6b") + C(256, 100, 12, "#7a6ff0"),
@@ -4403,6 +4427,8 @@ var SCENES = {
   quiet: () => C(200, 50, 26, "#ffe9a8") + C(212, 42, 22, "#d9d4ff") + star(100, 36, 8, "#fff") + star(130, 64, 6, "#fff") + star(80, 76, 5, "#fff") + P("M90 112c10-20 40-26 60-14 20-14 50-8 60 14", "#c4bdf5")
 };
 var CARD_SCENE = {
+  "intro-job": "firstjob",
+  "intro-pay": "payday",
   "car-repair": "car",
   fender: "fender",
   commute: "bus",
@@ -4685,8 +4711,8 @@ function introScreen() {
   const maya = { hairStyle: "long", hairColor: i === 4 ? "#b8bfcc" : "#24170f", skin: "#c98a5e", expr: i === 2 ? "wow" : i === 4 ? "calm" : "smile", topStyle: i >= 3 ? "collar" : "hoodie", topColor: i >= 3 ? "#2fae6b" : "#7a6ff0" };
   const growth = `<svg class="card-art" viewBox="0 0 300 130" aria-hidden="true"><rect width="300" height="130" fill="#e3f4ff"/><rect x="-4" y="112" width="308" height="24" fill="#a8dcc0"/><path d="M-4 112H304" stroke="#1d2b4f" stroke-width="3"/>${[0, 1, 2, 3, 4, 5, 6].map((k) => `<rect x="${40 + k * 32}" y="${108 - (8 + k * k * 2.2)}" width="22" height="${8 + k * k * 2.2}" rx="4" fill="${k < 6 ? "#7fd0fb" : "#2fae6b"}" stroke="#1d2b4f" stroke-width="3" style="animation: grow .5s ${0.15 * k}s both"/>`).join("")}<path d="M44 96 L272 18" stroke="#2fae6b" stroke-width="5" stroke-dasharray="8 7" fill="none"/></svg>`;
   const art = [
-    cardArt("promotion", "opportunity"),
-    cardArt("rent-up", "life"),
+    cardArt("intro-job", "opportunity"),
+    cardArt("intro-pay", "opportunity"),
     cardArt("car-repair", "life"),
     cardArt("match-start", "opportunity"),
     growth,
@@ -4744,7 +4770,7 @@ function slotScreen() {
       <button class="lever ${spinning ? "armed" : ""}" data-go="pull" ${all ? "disabled" : "data-autofocus"} aria-label="${h(leverLabel)}"><span class="rod"></span><span class="knob"></span><span class="base"></span></button></div>
     ${all ? `<div class="slot-side reveal"><section class="backstory-card"><span class="ribbon-tag">Backstory \xB7 age ${r.age}</span><h2>${h(bs.title)}</h2><p>${h(bs.text)}</p>
       <p class="facts">${STATES[r.region].name} (${STATES[r.region].rate ? "state tax " + pct(STATES[r.region].rate, 2) : "no state income tax"}) \xB7 ${r.salary ? "A job offer paying " + money2(r.salary) + " " : "No job yet"} \xB7 savings ${money2(r.savings)} \xB7 ${r.debt ? "owes " + money2(r.debt) + " " + kind : "No debt"}</p></section>
-      <div class="row"><span class="row">${btn("to-look", "Back to look", { cls: "btn ghost", ico: "back" })}${btn("slot-again", "Pull again", { cls: "btn ghost", ico: "loop", attrs: setup.rerolls ? "disabled" : "" })}</span><button class="confirm-tick" data-go="slot-next" aria-label="Confirm, next" data-autofocus>${icon.check}</button></div><p class="mini reroll-note">${h(setup.rerolls ? LT2.noReroll : LT2.rerollOnce)}</p></div>` : `
+      <div class="row"><span class="row">${btn("to-look", "Back to look", { cls: "btn ghost", ico: "back" })}${btn("slot-again", "Pull again", { cls: "btn ghost", ico: "loop", attrs: setup.rerolls ? "disabled" : "" })}</span><button class="btn green big" data-go="slot-next" aria-label="Confirm, next" data-autofocus>${icon.check}<span>Continue</span></button></div><p class="mini reroll-note">${h(setup.rerolls ? LT2.noReroll : LT2.rerollOnce)}</p></div>` : `
     <footer class="look-foot">${btn("to-look", "Back to look", { cls: "btn ghost", ico: "back" })}</footer>`}</section>`);
 }
 function spin() {

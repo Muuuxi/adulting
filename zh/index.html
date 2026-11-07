@@ -1406,6 +1406,15 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 /* Round 18 */
 .ask-facts { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
 @media (max-width: 760px) { .modal.small-modal, .modal.wide-modal, .modal.game-host { width: 100%; } }
+
+/* Round 19 */
+.path-pick { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; } .path-opt { padding: 8px 9px; } .path-opt .pm-row { grid-template-columns: minmax(0, 1fr) auto; gap: 2px 6px; font-size: .74rem; } .path-opt .pm-row em { grid-column: 1 / -1; } .path-opt .pm-row b { min-width: 0; font-size: .76rem; } .path-opt > span { font-size: .76rem; line-height: 1.25; }
+.path-opt .path-share { font-weight: 800; color: #1c6b45; font-size: .74rem; } .path-note { margin: 6px 2px 0; font-size: .74rem; color: var(--ink-2); }
+@media (max-width: 760px) { .path-pick { grid-template-columns: minmax(0, 1fr); } .path-opt .pm-row { grid-template-columns: minmax(0, 9.5em) minmax(0, 1fr) auto; } .path-opt .pm-row em { grid-column: auto; } }
+@media (min-width: 761px) { .path-opt { grid-template-columns: auto minmax(0, 1fr); column-gap: 6px; row-gap: 2px; } .path-opt > * { grid-column: 1 / -1; } .path-opt > .ico { grid-column: 1; width: 22px; height: 22px; } .path-opt > b { grid-column: 2; align-self: center; font-size: .98rem; line-height: 1.15; }
+  .page.wizard .goal-stage { gap: 6px; } .goal-stage .wiz-title h1 { font-size: 1.5rem; } .goal-stage .wiz-title p { margin-top: 0; font-size: .86rem; } .path-note { margin-top: 0; } .win-panel h2 { margin-bottom: 4px; font-size: 1.1rem; } .win-tile { padding: 6px 10px; } .win-stairs { height: 36px; margin-top: 2px; } .start-sum { padding: 4px 10px; } .start-sum .avatar, .start-sum .mid { width: 44px; height: 44px; } .goal-stage .look-foot { padding-top: 4px; } }
+.pd-flow .fl.total b { font-size: clamp(1rem, 1.5vw, 1.35rem); white-space: nowrap; }
+@media (min-width: 761px) { .win-stairs { height: 48px; } }
 </style>
 </head>
 <body>
@@ -1549,14 +1558,23 @@ var BACKSTORIES = [
 ];
 var backstoriesFor = (reels) => BACKSTORIES.filter((b) => b.ages.includes(reels.age) && (!b.when || b.when(reels)) && (!b.minDebt || reels.debt >= b.minDebt));
 var PATHS = [
-  { id: "work", title: "\u76F4\u63A5\u5DE5\u4F5C", text: "\u5168\u804C\u4E0A\u73ED\uFF0C\u9A6C\u4E0A\u6709\u5DE5\u8D44\u3002\u4EE5\u540E\u4E5F\u53EF\u4EE5\u518D\u53BB\u8BFB\u4E66\u3002", icon: "briefcase" },
-  { id: "both", title: "\u8FB9\u8BFB\u4E66\u8FB9\u5DE5\u4F5C", text: "\u8BFB 2 \u5E74\u793E\u533A\u5927\u5B66\uFF08\u5B66\u8D39 $4,000/\u5E74\uFF09\uFF0C\u505A\u517C\u804C\u3002\u53EF\u4EE5\u9886\u4E00\u534A\u7684 Pell \u52A9\u5B66\u91D1\uFF0C\u4E0D\u591F\u7684\u53EF\u4EE5\u7528\u5B66\u751F\u8D37\u6B3E\u3002", icon: "cap" },
-  { id: "study", title: "\u5168\u804C\u8BFB\u4E66", text: "\u8BFB 4 \u5E74\u5DDE\u7ACB\u5927\u5B66\uFF08\u5B66\u8D39 $11,000/\u5E74\uFF09\uFF0C\u53EA\u505A\u6821\u5185\u517C\u804C\u3002Pell \u52A9\u5B66\u91D1\u52A0\u5B66\u751F\u8D37\u6B3E\u4ED8\u5B66\u8D39\u548C\u751F\u6D3B\u8D39\uFF0C\u6BD5\u4E1A\u540E\u80FD\u627E\u8981\u6C42\u5B66\u58EB\u5B66\u4F4D\u7684\u5DE5\u4F5C\u3002", icon: "cap" }
+  { id: "work", share: "100 \u4E2A\u91CC\u7EA6 19 \u4E2A", title: "\u76F4\u63A5\u5DE5\u4F5C", text: "\u5168\u804C\u4E0A\u73ED\uFF0C\u9A6C\u4E0A\u6709\u5DE5\u8D44\u3002\u4EE5\u540E\u4E5F\u53EF\u4EE5\u518D\u53BB\u8BFB\u4E66\u3002", icon: "briefcase" },
+  { id: "both", share: "100 \u4E2A\u91CC\u7EA6 18 \u4E2A", title: "\u8FB9\u8BFB\u4E66\u8FB9\u5DE5\u4F5C", text: "\u8BFB 2 \u5E74\u793E\u533A\u5927\u5B66\uFF08\u5B66\u8D39 $4,000/\u5E74\uFF09\uFF0C\u505A\u517C\u804C\u3002\u53EF\u4EE5\u9886\u4E00\u534A\u7684 Pell \u52A9\u5B66\u91D1\uFF0C\u4E0D\u591F\u7684\u53EF\u4EE5\u7528\u5B66\u751F\u8D37\u6B3E\u3002", icon: "cap" },
+  { id: "study", share: "100 \u4E2A\u91CC\u7EA6 41 \u4E2A", title: "\u5168\u804C\u8BFB\u4E66", text: "\u8BFB 4 \u5E74\u5DDE\u7ACB\u5927\u5B66\uFF08\u5B66\u8D39 $11,000/\u5E74\uFF09\uFF0C\u53EA\u505A\u6821\u5185\u517C\u804C\u3002Pell \u52A9\u5B66\u91D1\u52A0\u5B66\u751F\u8D37\u6B3E\u4ED8\u5B66\u8D39\u548C\u751F\u6D3B\u8D39\uFF0C\u6BD5\u4E1A\u540E\u80FD\u627E\u8981\u6C42\u5B66\u58EB\u5B66\u4F4D\u7684\u5DE5\u4F5C\u3002", icon: "cap" },
+  { id: "cert", share: "\u6CA1\u6709\u5355\u72EC\u7684\u6570\u5B57", title: "\u804C\u4E1A\u8BC1\u4E66", text: "\u8BFB\u4E00\u5E74\u804C\u6821\uFF08\u5B66\u8D39 $4,150\uFF09\uFF0C\u540C\u65F6\u6253\u96F6\u5DE5\uFF0C\u4E4B\u540E\u505A\u6280\u672F\u5DE5\u4F5C\u3002\u6CA1\u6709\u5B66\u4F4D\uFF0C\u4F46\u804C\u4E1A\u80FD\u529B +1\u3002", icon: "cap" },
+  { id: "military", share: "100 \u4E2A\u91CC\u6700\u591A 4 \u4E2A", title: "\u5165\u4F0D", text: "4 \u5E74\u5408\u540C\uFF0C\u4E0D\u80FD\u63D0\u524D\u9000\u51FA\u3002\u4F4F\u8425\u623F\uFF0C\u5305\u4F19\u98DF\u3002\u5DE5\u8D44\u4ECE\u7EA6 $29,000 \u6DA8\u5230\u7EA6 $38,000\u3002\u670D\u5F79\u53EF\u80FD\u6709\u5371\u9669\uFF0C\u4E5F\u53EF\u80FD\u957F\u671F\u4E0D\u5728\u5BB6\u3002\u9000\u5F79\u540E GI Bill \u53EF\u4EE5\u4ED8\u5B66\u8D39\u3002", icon: "shield" }
 ];
 var SCHOOL = {
   both: { years: 2, tuition: 4e3, pellShare: 0.5, edu: 1, career: 1 },
-  study: { years: 4, tuition: 11e3, pellShare: 1, edu: 2, career: 1 }
+  study: { years: 4, tuition: 11e3, pellShare: 1, edu: 2, career: 1 },
+  cert: { years: 1, tuition: 4150, pellShare: 0.5, edu: 0, career: 1 }
 };
+var SERVICE_PAY = [28900, 32400, 34900, 37700];
+var GI_HOUSING = 1500;
+var BIZ_FAIL = [0.2, 0.125, 0.1, 0.09, 0.08, 0.07, 0.07, 0.07, 0.07, 0.07, 0.04];
+var BIZ_BILLS = { truck: 6e3, studio: 3e3, shop: 1e3, own: 500 };
+var BIZ_SOLD_PROFIT = 2e3;
+var BIZ_SALE_MONTHS = 12;
 var AID = { pellMax: 7395, loanCapYear: 12500, pellSavingsLimit: 1e4 };
 var EDU = ["\u9AD8\u4E2D", "\u526F\u5B66\u58EB\uFF08\u793E\u533A\u5927\u5B66\uFF09", "\u5B66\u58EB"];
 var STUDENT_APR = 0.0639;
@@ -1597,12 +1615,13 @@ var MOVE_CHOICES = (extra) => [
 ].map((c) => ({ ...c, ...extra }));
 var DECISIONS = [
   { id: "keep", title: "\u7EF4\u6301\u73B0\u72B6", icon: "loop", text: "\u4ECA\u5E74\u4E0D\u505A\u5927\u7684\u6539\u53D8\u3002", eligible: () => true },
+  { id: "rehire", title: "\u56DE\u53BB\u5DE5\u4F5C", icon: "briefcase", text: "\u751F\u610F\u5173\u95E8\u4E86\u3002\u591A\u6570\u4EBA\u5931\u8D25\u540E\u56DE\u53BB\u5DE5\u4F5C\uFF0C\u6536\u5165\u4E5F\u80FD\u6062\u590D\u3002\u4E0D\u7528\u9762\u8BD5\uFF0C\u5927\u7EA6 2 \u4E2A\u6708\u5185\u4E0A\u73ED\uFF08\u5E74\u85AA\u6700\u9AD8 $45,000\uFF09\u3002\u4F60\u4E5F\u53EF\u4EE5\u9009\u201C\u521B\u4E1A\u201D\u518D\u8BD5\u4E00\u6B21\u3002", eligible: (s4) => s4.flags.bizFailedAt === s4.age && !s4.job.employed && !s4.business && !s4.school },
   {
     id: "jobhunt",
     title: "\u627E\u5DE5\u4F5C / \u6362\u5DE5\u4F5C",
     icon: "briefcase",
     text: "\u4ECE\u804C\u4F4D\u677F\u91CC\u9009\u4E00\u4EFD\u5DE5\u4F5C\u53BB\u9762\u8BD5\u3002\u5728\u8BFB\u4E66\u7684\u8BDD\u53EA\u80FD\u505A\u517C\u804C\uFF08\u5DE5\u8D44\u51CF\u534A\uFF09\u3002",
-    eligible: (s4) => !s4.business,
+    eligible: (s4) => !s4.service && !s4.business,
     throw: { stat: "career", label: "\u9762\u8BD5", game: "catch" },
     outcomes: { fail: { note: "\u9762\u8BD5\u6CA1\u901A\u8FC7\u3002" }, ok: { hire: 1, note: "\u62FF\u5230\u4E86\u8FD9\u4EFD\u5DE5\u4F5C\u3002" }, great: { hire: 1.05, note: "\u62FF\u5230\u4E86\uFF0C\u800C\u4E14\u591A\u8C08\u4E86 5% \u5DE5\u8D44\u3002" } }
   },
@@ -1611,7 +1630,7 @@ var DECISIONS = [
     title: "\u4E89\u53D6\u52A0\u85AA",
     icon: "chart",
     text: "\u51C6\u5907\u6750\u6599\u548C\u4E0A\u53F8\u8C08\u52A0\u85AA\u3002\u4E24\u5E74\u53EA\u80FD\u8BD5\u4E00\u6B21\u3002",
-    eligible: (s4) => s4.job.employed && !s4.school && !s4.business,
+    eligible: (s4) => !s4.service && s4.job.employed && !s4.school && !s4.business,
     throw: { stat: "career", label: "\u8C08\u5224", game: "catch" },
     outcomes: { fail: { note: "\u8FD9\u6B21\u6CA1\u8C08\u4E0B\u6765\u3002" }, ok: { salaryPct: 0.04, note: "\u52A0\u85AA 4%\u3002" }, great: { salaryPct: 0.08, note: "\u52A0\u85AA 8%\uFF01" } }
   },
@@ -1621,7 +1640,7 @@ var DECISIONS = [
     title: "\u56DE\u5B66\u6821\u8BFB\u4E66",
     icon: "cap",
     text: "\u8BFB\u793E\u533A\u5927\u5B66\uFF082 \u5E74\uFF09\u6216\u5927\u5B66\uFF084 \u5E74\uFF09\u3002\u8BFB\u4E66\u671F\u95F4\u53EA\u80FD\u505A\u517C\u804C\uFF0C\u53EF\u4EE5\u9886 Pell \u52A9\u5B66\u91D1\u548C\u5B66\u751F\u8D37\u6B3E\u3002",
-    eligible: (s4) => !s4.school && s4.edu < 2 && s4.age <= 40 && !s4.business,
+    eligible: (s4) => !s4.service && !s4.school && s4.edu < 2 && s4.age <= 40 && !s4.business,
     choices: [{ id: "both", label: "\u793E\u533A\u5927\u5B66\uFF0C\u8FB9\u8BFB\u8FB9\u505A\u517C\u804C\uFF082 \u5E74\uFF09" }, { id: "study", label: "\u56DB\u5E74\u5236\u5927\u5B66\uFF084 \u5E74\uFF09", needsEdu: 0 }]
   },
   { id: "dropout", title: "\u9000\u5B66\u53BB\u5DE5\u4F5C", icon: "briefcase", text: "\u4E0D\u8BFB\u4E86\uFF0C\u517C\u804C\u53D8\u56DE\u5168\u804C\u3002\u5DF2\u7ECF\u501F\u7684\u5B66\u751F\u8D37\u6B3E\u8FD8\u662F\u8981\u8FD8\u3002", eligible: (s4) => !!s4.school },
@@ -1639,9 +1658,9 @@ var DECISIONS = [
     id: "side",
     title: "\u5F00\u59CB\u526F\u4E1A",
     icon: "star",
-    text: "\u6295\u5165 $500 \u548C\u6BCF\u5468\u51E0\u4E2A\u665A\u4E0A\u3002\u526F\u4E1A\u6536\u5165\u6CA1\u6709\u4EBA\u5E2E\u4F60\u9884\u6263\u7A0E\uFF0C\u5E74\u5E95\u8981\u8865\u3002",
+    text: "\u4FDD\u7559\u5DE5\u4F5C\uFF0C\u7528\u665A\u4E0A\u548C\u5468\u672B\u8BD5\u4E00\u4E2A\u60F3\u6CD5\uFF0C\u542F\u52A8\u8981 $500\u3002\u526F\u4E1A\u6536\u5165\u6CA1\u4EBA\u5E2E\u4F60\u9884\u6263\u7A0E\uFF0C\u62A5\u7A0E\u65F6\u8981\u8865\u3002\u505A\u5F97\u8D77\u6765\uFF0C\u4EE5\u540E\u53EF\u4EE5\u8F6C\u5168\u804C\u3002",
     cost: 500,
-    eligible: (s4) => !s4.side && !s4.business && s4.age >= 18,
+    eligible: (s4) => !s4.service && !s4.side && !s4.business && s4.age >= 18,
     throw: { stat: "discipline", label: "\u575A\u6301", game: "catch" },
     outcomes: { fail: { side: 150, note: "\u526F\u4E1A\u8D77\u6B65\u6162\uFF0C\u6BCF\u6708\u7EA6 $150\u3002" }, ok: { side: 400, note: "\u6BCF\u6708\u591A\u8D5A\u7EA6 $400\u3002" }, great: { side: 800, note: "\u526F\u4E1A\u5F88\u987A\uFF0C\u6BCF\u6708\u7EA6 $800\u3002" } }
   },
@@ -1649,15 +1668,15 @@ var DECISIONS = [
     id: "startup",
     title: "\u521B\u4E1A",
     icon: "star",
-    text: "\u8F9E\u6389\u5DE5\u4F5C\u5168\u804C\u521B\u4E1A\u3002\u53EF\u80FD\u8D5A\u5F97\u6BD4\u6253\u5DE5\u591A\uFF0C\u4E5F\u53EF\u80FD\u6BCF\u6708\u4E8F\u94B1\u3002",
-    eligible: (s4) => !s4.business && !s4.school && s4.age >= 18,
-    choices: [{ id: "truck", label: "\u5F00\u4E00\u8F86\u9910\u8F66\uFF08\u542F\u52A8\u8D44\u91D1 $8,000\uFF09", cost: 8e3, base: 1600 }, { id: "shop", label: "\u5F00\u7F51\u5E97\uFF08\u542F\u52A8\u8D44\u91D1 $3,000\uFF09", cost: 3e3, base: 900 }, { id: "studio", label: "\u5F00\u8BBE\u8BA1\u5DE5\u4F5C\u5BA4\uFF08$5,000\uFF0C\u8981\u804C\u4E1A\u80FD\u529B \u2265 1\uFF09", cost: 5e3, base: 2600, needCareer: 1 }],
+    text: "\u5168\u804C\u7ECF\u8425\u4E00\u95E8\u751F\u610F\u3002\u5728\u7F8E\u56FD\uFF0C\u5927\u7EA6\u4E94\u5206\u4E4B\u4E00\u7684\u65B0\u4F01\u4E1A\u7B2C\u4E00\u5E74\u5C31\u5173\u95E8\uFF0C\u4E94\u5E74\u5185\u7EA6\u4E00\u534A\u5173\u95E8\u3002\u4ECE\u5DF2\u7ECF\u8D5A\u94B1\u7684\u526F\u4E1A\u8F6C\u8FC7\u6765\uFF0C\u80DC\u7B97\u66F4\u5927\u3002",
+    eligible: (s4) => !s4.service && !s4.business && !s4.school && s4.age >= 18,
+    choices: [{ id: "own", label: "\u628A\u526F\u4E1A\u8F6C\u6210\u5168\u804C\uFF08\u542F\u52A8 $1,000\uFF0C\u526F\u4E1A\u6708\u5165\u8981\u5230 $300\uFF09", cost: 1e3, base: 1400, needSide: 300 }, { id: "truck", label: "\u5F00\u4E00\u8F86\u9910\u8F66\uFF08\u542F\u52A8\u8D44\u91D1 $8,000\uFF09", cost: 8e3, base: 1600 }, { id: "shop", label: "\u5F00\u7F51\u5E97\uFF08\u542F\u52A8\u8D44\u91D1 $3,000\uFF09", cost: 3e3, base: 900 }, { id: "studio", label: "\u5F00\u8BBE\u8BA1\u5DE5\u4F5C\u5BA4\uFF08$5,000\uFF0C\u8981\u804C\u4E1A\u80FD\u529B \u2265 1\uFF09", cost: 5e3, base: 2600, needCareer: 1 }],
     throw: { stat: "career", label: "\u5F00\u4E1A", game: "catch" },
     outcomes: { fail: { bizMult: -0.3, note: "\u5F00\u4E1A\u4E0D\u987A\uFF0C\u6BCF\u6708\u5728\u4E8F\u94B1\u3002" }, ok: { bizMult: 1, note: "\u751F\u610F\u4E0A\u4E86\u8F68\u9053\u3002" }, great: { bizMult: 1.8, note: "\u751F\u610F\u706B\u7206\uFF01" } }
   },
-  { id: "closebiz", title: "\u5173\u6389\u751F\u610F\uFF0C\u56DE\u53BB\u6253\u5DE5", icon: "briefcase", text: "\u7ED3\u675F\u751F\u610F\u3002\u5927\u7EA6 2 \u4E2A\u6708\u540E\u627E\u5230\u4E00\u4EFD\u5165\u95E8\u5DE5\u4F5C\uFF08\u5E74\u85AA $45,000 \u4EE5\u5185\uFF09\uFF0C\u4EE5\u540E\u53EF\u4EE5\u518D\u5728\u804C\u4F4D\u677F\u6362\u66F4\u597D\u7684\u3002", eligible: (s4) => !!s4.business },
-  { id: "cheaper", title: "\u642C\u5230\u4FBF\u5B9C\u7684\u4F4F\u5904", icon: "house", text: "\u548C\u5BA4\u53CB\u5408\u79DF\uFF0C\u6BCF\u6708\u623F\u79DF\u5C11 $200\u3002", eligible: (s4) => !s4.home && s4.essentials.housing >= 650, choices: MOVE_CHOICES({}) },
-  { id: "nicer", title: "\u642C\u5230\u66F4\u597D\u7684\u4F4F\u5904", icon: "house", text: "\u6BCF\u6708\u623F\u79DF\u591A $400\u3002\u7A7A\u95F4\u66F4\u5927\uFF0C\u79BB\u516C\u53F8\u66F4\u8FD1\u3002", eligible: (s4) => !s4.home, choices: MOVE_CHOICES({}) },
+  { id: "closebiz", title: "\u5173\u6389\u751F\u610F\uFF0C\u56DE\u53BB\u6253\u5DE5", icon: "briefcase", text: "\u7ED3\u675F\u751F\u610F\u3002\u5927\u7EA6 2 \u4E2A\u6708\u540E\u627E\u5230\u5165\u95E8\u5DE5\u4F5C\uFF08\u5E74\u85AA\u6700\u9AD8 $45,000\uFF09\uFF0C\u6536\u5165\u53EF\u4EE5\u4ECE\u8FD9\u91CC\u6162\u6162\u6062\u590D\u3002", eligible: (s4) => !!s4.business },
+  { id: "cheaper", title: "\u642C\u5230\u4FBF\u5B9C\u7684\u4F4F\u5904", icon: "house", text: "\u548C\u5BA4\u53CB\u5408\u79DF\uFF0C\u6BCF\u6708\u623F\u79DF\u5C11 $200\u3002", eligible: (s4) => !s4.service && !s4.home && s4.essentials.housing >= 650, choices: MOVE_CHOICES({}) },
+  { id: "nicer", title: "\u642C\u5230\u66F4\u597D\u7684\u4F4F\u5904", icon: "house", text: "\u6BCF\u6708\u623F\u79DF\u591A $400\u3002\u7A7A\u95F4\u66F4\u5927\uFF0C\u79BB\u516C\u53F8\u66F4\u8FD1\u3002", eligible: (s4) => !s4.service && !s4.home, choices: MOVE_CHOICES({}) },
   {
     id: "buycar",
     title: "\u4E70\u8F66",
@@ -1667,7 +1686,7 @@ var DECISIONS = [
     choices: [{ id: "used", label: "\u4E8C\u624B\u8F66 $12,000\uFF08\u9996\u4ED8 $1,500\uFF0C\u8F66\u8D37 5 \u5E74\uFF09", price: 12e3, down: 1500, cost: 1500 }, { id: "new", label: "\u65B0\u8F66 $32,000\uFF08\u9996\u4ED8 $3,000\uFF0C\u8F66\u8D37 6 \u5E74\uFF09", price: 32e3, down: 3e3, cost: 3e3 }]
   },
   { id: "sellcar", title: "\u5356\u6389\u8F66\uFF0C\u6539\u5750\u516C\u4EA4", icon: "car", text: "\u5356\u8F66\u7684\u94B1\u5148\u8FD8\u8F66\u8D37\uFF1B\u6BCF\u6708\u4EA4\u901A\u8D39\u5C11 $220\u3002", eligible: (s4) => s4.car },
-  { id: "buyhome", title: "\u4E70\u623F", icon: "house", text: "$260,000 \u7684\u623F\u5B50\uFF1A\u9996\u4ED8 10% \u52A0\u4EA4\u6613\u8D39\u7528\u5171 $30,000\uFF0C30 \u5E74\u623F\u8D37\uFF08\u5E74\u5229\u7387 6.25%\uFF09\u3002\u623F\u8D37\u3001\u623F\u4EA7\u7A0E\u548C\u4FDD\u9669\u53D6\u4EE3\u623F\u79DF\u3002", eligible: (s4) => !s4.home && s4.age >= 22 },
+  { id: "buyhome", title: "\u4E70\u623F", icon: "house", text: "$260,000 \u7684\u623F\u5B50\uFF1A\u9996\u4ED8 10% \u52A0\u4EA4\u6613\u8D39\u7528\u5171 $30,000\uFF0C30 \u5E74\u623F\u8D37\uFF08\u5E74\u5229\u7387 6.25%\uFF09\u3002\u623F\u8D37\u3001\u623F\u4EA7\u7A0E\u548C\u4FDD\u9669\u53D6\u4EE3\u623F\u79DF\u3002", eligible: (s4) => !s4.service && !s4.home && s4.age >= 22 },
   {
     id: "bankruptcy",
     title: "\u7533\u8BF7\u4E2A\u4EBA\u7834\u4EA7",
@@ -1701,7 +1720,7 @@ var CARDS = [
     title: "\u901A\u52E4\u592A\u96BE",
     text: "\u516C\u4EA4\u5355\u7A0B\u8981 1 \u4E2A\u534A\u5C0F\u65F6\uFF0C\u7ECF\u5E38\u8FDF\u5230\u3002",
     month: 3,
-    when: (s4) => !s4.car && s4.region !== "PA" && s4.job.employed,
+    when: (s4) => !s4.service && !s4.car && s4.region !== "PA" && s4.job.employed,
     weight: 2,
     options: [{ id: "bear", label: "\u5FCD\u7740\uFF08\u901A\u52E4\u75B2\u60EB\uFF1A\u804C\u4E1A\u5224\u5B9A \u22121\uFF0C\u6301\u7EED 1 \u5E74\uFF09", status: "tired" }, { id: "ride", label: "\u6BCF\u5929\u6253\u8F66\uFF08\u6BCF\u6708 +$150\uFF09", recurring: { fun: 150 } }, { id: "usedcar", label: "\u8D37\u6B3E\u4E70\u4E00\u8F86 $8,000 \u7684\u4E8C\u624B\u8F66", buyCar: { price: 8e3, down: 0 } }]
   },
@@ -1713,7 +1732,7 @@ var CARDS = [
     title: "\u516C\u53F8\u88C1\u5458",
     text: "\u4F60\u7684\u90E8\u95E8\u88AB\u88C1\u64A4\u4E86\u3002\u5931\u4E1A\u671F\u95F4\u53EF\u4EE5\u9886\u5931\u4E1A\u6551\u6D4E\u91D1\uFF08\u6BCF\u5468\u6700\u591A $350\uFF0C\u6700\u591A 12 \u5468\uFF09\uFF0C\u6551\u6D4E\u91D1\u8981\u4EA4\u6240\u5F97\u7A0E\u3002",
     month: 5,
-    when: (s4) => s4.job.employed && !s4.school && !s4.business,
+    when: (s4) => !s4.service && s4.job.employed && !s4.school && !s4.business,
     throw: { stat: "career", label: "\u518D\u5C31\u4E1A", game: "catch" },
     outcomes: { fail: { unemployed: 6, note: "\u627E\u4E86 6 \u4E2A\u6708\u624D\u627E\u5230\u65B0\u5DE5\u4F5C\u3002" }, ok: { unemployed: 3, note: "3 \u4E2A\u6708\u540E\u627E\u5230\u65B0\u5DE5\u4F5C\u3002" }, great: { unemployed: 1, note: "1 \u4E2A\u6708\u540E\u5C31\u627E\u5230\u4E86\u65B0\u5DE5\u4F5C\u3002" } },
     options: [{ id: "accept", label: "\u5F00\u59CB\u627E\u5DE5\u4F5C", throwOutcome: true }]
@@ -1724,12 +1743,12 @@ var CARDS = [
     title: "\u7ECF\u6D4E\u4E0D\u666F\u6C14",
     text: "\u516C\u53F8\u4E1A\u7EE9\u4E0B\u6ED1\uFF0C\u8981\u6C42\u90E8\u5206\u5458\u5DE5\u51CF\u85AA\u3002",
     month: 7,
-    when: (s4) => s4.job.employed && !s4.school && s4.age >= 24,
+    when: (s4) => !s4.service && s4.job.employed && !s4.school && s4.age >= 24,
     throw: { stat: "career", label: "\u4FDD\u4F4F\u5DE5\u8D44", game: "catch" },
     outcomes: { fail: { salaryPct: -0.06, note: "\u5DE5\u8D44\u88AB\u51CF\u4E86 6%\u3002" }, ok: { note: "\u4F60\u4FDD\u4F4F\u4E86\u539F\u6765\u7684\u5DE5\u8D44\u3002" }, great: { note: "\u4F60\u4FDD\u4F4F\u4E86\u5DE5\u8D44\uFF0C\u8FD8\u88AB\u7559\u4E0B\u6765\u5E26\u65B0\u4EBA\u3002", status: "inspired" } },
     options: [{ id: "accept", label: "\u9762\u5BF9\u5B83", throwOutcome: true }]
   },
-  { id: "rent-up", type: "life", title: "\u623F\u4E1C\u6DA8\u79DF", text: "\u7EED\u7EA6\u65F6\u623F\u4E1C\u628A\u6708\u79DF\u63D0\u9AD8\u4E86 $150\u3002", month: 8, when: (s4) => !s4.home && !s4.status.some((x) => x.id === "couch"), options: [{ id: "accept", label: "\u63A5\u53D7\u6DA8\u79DF", recurring: { essentials: { housing: 150 } } }, { id: "move", label: "\u81EA\u5DF1\u642C\u8D70\uFF08$300\uFF0C\u53EF\u80FD\u95EA\u4E86\u8170\uFF09", pay: "checking", cost: 300, risk: "backache" }] },
+  { id: "rent-up", type: "life", title: "\u623F\u4E1C\u6DA8\u79DF", text: "\u7EED\u7EA6\u65F6\u623F\u4E1C\u628A\u6708\u79DF\u63D0\u9AD8\u4E86 $150\u3002", month: 8, when: (s4) => !s4.service && !s4.home && !s4.status.some((x) => x.id === "couch"), options: [{ id: "accept", label: "\u63A5\u53D7\u6DA8\u79DF", recurring: { essentials: { housing: 150 } } }, { id: "move", label: "\u81EA\u5DF1\u642C\u8D70\uFF08$300\uFF0C\u53EF\u80FD\u95EA\u4E86\u8170\uFF09", pay: "checking", cost: 300, risk: "backache" }] },
   { id: "family-help", type: "life", title: "\u5BB6\u4EBA\u9700\u8981\u5E2E\u5FD9", text: "\u5BB6\u91CC\u6709\u4EBA\u751F\u75C5\uFF0C\u9700\u8981\u4F60\u5E2E\u5FD9 $1,500\u3002", month: 9, options: pays(1500, [{ id: "decline", label: "\u8FD9\u6B21\u5E2E\u4E0D\u4E86", decline: true, status: "stressed" }]) },
   {
     id: "parent-care",
@@ -1741,7 +1760,7 @@ var CARDS = [
     options: [{ id: "pay", label: "\u8BF7\u62A4\u5DE5 3 \u4E2A\u6708\uFF08$3,000\uFF09", pay: "checking", cost: 3e3 }, { id: "leave", label: "\u81EA\u5DF1\u8BF7 2 \u4E2A\u6708\u65E0\u85AA\u5047", unpaidMonths: 2 }]
   },
   { id: "roof", type: "life", title: "\u5C4B\u9876\u6F0F\u6C34", text: "\u623F\u5B50\u7684\u5C4B\u9876\u8981\u4FEE\uFF0C$4,000\u3002\u623F\u4E3B\u8981\u81EA\u5DF1\u627F\u62C5\u7EF4\u4FEE\u3002", month: 7, when: (s4) => !!s4.home, options: pays(4e3) },
-  { id: "washer", type: "life", title: "\u6D17\u8863\u673A\u574F\u4E86", text: "\u6362\u4E00\u53F0\u65B0\u7684 $700\u3002", month: 11, when: (s4) => s4.age >= 24, options: pays(700) },
+  { id: "washer", type: "life", title: "\u6D17\u8863\u673A\u574F\u4E86", text: "\u6362\u4E00\u53F0\u65B0\u7684 $700\u3002", month: 11, when: (s4) => !s4.service && s4.age >= 24, options: pays(700) },
   { id: "phone-broke", type: "life", title: "\u624B\u673A\u6454\u574F\u4E86", text: "\u5C4F\u5E55\u788E\u4E86\uFF0C\u6362\u4E00\u53F0\u4E2D\u6863\u624B\u673A $500\u3002", month: 10, options: pays(500) },
   {
     id: "fraud",
@@ -1778,14 +1797,14 @@ var CARDS = [
     options: [{ id: "lend", label: "\u501F\u7ED9\u4ED6", pay: "checking", cost: 1e3, gamble: { win: 0.6, winMult: 1, loseMult: 0, label: "\u670B\u53CB\u8FD8\u94B1" } }, { id: "no", label: "\u5A49\u62D2", decline: true, status: "stressed" }]
   },
   /* ---- opportunities ---- */
-  { id: "match-start", type: "opportunity", title: "\u516C\u53F8\u5F00\u59CB 401(k) \u914D\u6BD4", text: "\u516C\u53F8\u5BA3\u5E03\uFF1A\u4F60\u5B58\u5165\u5DE5\u8D44\u7684\u524D 4%\uFF0C\u516C\u53F8 100% \u914D\u6BD4\u3002\u8FD9\u662F\u201C\u767D\u7ED9\u7684\u94B1\u201D\u3002", month: 1, when: (s4) => s4.job.employed && !s4.job.match && !s4.business, options: [{ id: "accept", label: "\u597D\u7684\uFF08\u5728\u53D1\u85AA\u65E5\u628A 401(k) \u8C03\u5230 4%\uFF09", match: { rate: 1, upTo: 0.04 } }] },
+  { id: "match-start", type: "opportunity", title: "\u516C\u53F8\u5F00\u59CB 401(k) \u914D\u6BD4", text: "\u516C\u53F8\u5BA3\u5E03\uFF1A\u4F60\u5B58\u5165\u5DE5\u8D44\u7684\u524D 4%\uFF0C\u516C\u53F8 100% \u914D\u6BD4\u3002\u8FD9\u662F\u201C\u767D\u7ED9\u7684\u94B1\u201D\u3002", month: 1, when: (s4) => !s4.service && s4.job.employed && !s4.job.match && !s4.business, options: [{ id: "accept", label: "\u597D\u7684\uFF08\u5728\u53D1\u85AA\u65E5\u628A 401(k) \u8C03\u5230 4%\uFF09", match: { rate: 1, upTo: 0.04 } }] },
   {
     id: "bonus",
     type: "opportunity",
     title: "\u5E74\u7EC8\u5956",
     text: "\u516C\u53F8\u4E1A\u7EE9\u4E0D\u9519\uFF0C\u4F60\u53EF\u80FD\u62FF\u5230\u5956\u91D1\u3002\u5956\u91D1\u4E5F\u8981\u4EA4\u7A0E\u3002",
     month: 12,
-    when: (s4) => s4.job.employed && !s4.school && !s4.business,
+    when: (s4) => !s4.service && s4.job.employed && !s4.school && !s4.business,
     throw: { stat: "career", label: "\u7EE9\u6548", game: "catch" },
     outcomes: { fail: { bonus: 500, note: "\u5956\u91D1 $500\u3002" }, ok: { bonus: 2e3, note: "\u5956\u91D1 $2,000\u3002" }, great: { bonus: 4e3, note: "\u5956\u91D1 $4,000\uFF01" } },
     options: [{ id: "accept", label: "\u6536\u4E0B\u5956\u91D1", throwOutcome: true }]
@@ -1796,7 +1815,7 @@ var CARDS = [
     title: "\u9886\u5BFC\u8BA9\u4F60\u5E26\u9879\u76EE",
     text: "\u9879\u76EE\u505A\u597D\u4E86\u6709\u673A\u4F1A\u5347\u804C\uFF0C\u505A\u7838\u4E86\u4F1A\u5F88\u6709\u538B\u529B\u3002",
     month: 3,
-    when: (s4) => s4.job.employed && !s4.school && !s4.business && s4.age >= 22,
+    when: (s4) => !s4.service && s4.job.employed && !s4.school && !s4.business && s4.age >= 22,
     throw: { stat: "career", label: "\u5E26\u9879\u76EE", game: "catch" },
     outcomes: { fail: { status: "stressed", note: "\u9879\u76EE\u5EF6\u671F\uFF0C\u538B\u529B\u5F88\u5927\u3002" }, ok: { salaryPct: 0.06, note: "\u9879\u76EE\u6210\u529F\uFF0C\u52A0\u85AA 6%\u3002" }, great: { salaryPct: 0.12, career: 1, note: "\u5347\u804C\u4E86\uFF01\u52A0\u85AA 12%\uFF0C\u804C\u4E1A\u80FD\u529B +1\u3002" } },
     options: [{ id: "go", label: "\u63A5\u4E0B\u6765", throwOutcome: true }, { id: "no", label: "\u5A49\u62D2", decline: true }]
@@ -1807,7 +1826,7 @@ var CARDS = [
     title: "\u670B\u53CB\u5185\u63A8",
     text: "\u670B\u53CB\u63A8\u8350\u4F60\u53BB\u4E00\u5BB6\u66F4\u597D\u7684\u516C\u53F8\u9762\u8BD5\u3002",
     month: 4,
-    when: (s4) => s4.job.employed && !s4.school && !s4.business,
+    when: (s4) => !s4.service && s4.job.employed && !s4.school && !s4.business,
     throw: { stat: "career", label: "\u9762\u8BD5", game: "catch" },
     outcomes: { fail: { note: "\u6CA1\u901A\u8FC7\uFF0C\u4F46\u79EF\u7D2F\u4E86\u9762\u8BD5\u7ECF\u9A8C\u3002" }, ok: { salaryPct: 0.1, newEmployer: true, note: "\u62FF\u5230\u5DE5\u4F5C\uFF0C\u6DA8\u85AA 10%\u3002" }, great: { salaryPct: 0.18, newEmployer: true, note: "\u62FF\u5230\u5DE5\u4F5C\uFF0C\u6DA8\u85AA 18%\u3002" } },
     options: [{ id: "go", label: "\u53BB\u9762\u8BD5", throwOutcome: true }, { id: "stay", label: "\u4E0D\u53BB", decline: true }]
@@ -1821,7 +1840,7 @@ var CARDS = [
     when: (s4) => s4.debts.some((d) => d.kind === "card" && d.balance >= 1e3) && s4.credit >= 640,
     options: [{ id: "take", label: "\u501F\u6765\u8FD8\u6E05\u4FE1\u7528\u5361\uFF08\u5229\u606F\u4ECE 25% \u964D\u5230 11%\uFF09", refinance: { apr: 0.11, months: 36 } }, { id: "no", label: "\u4E0D\u9700\u8981", decline: true }]
   },
-  { id: "free-course", type: "opportunity", title: "\u516C\u53F8\u4ED8\u8D39\u57F9\u8BAD", text: "\u516C\u53F8\u613F\u610F\u514D\u8D39\u8BA9\u4F60\u53C2\u52A0\u4E00\u4E2A\u665A\u95F4\u57F9\u8BAD\u3002", month: 3, when: (s4) => s4.job.employed && !s4.business, options: [{ id: "go", label: "\u53C2\u52A0\uFF08\u804C\u4E1A\u80FD\u529B +1\uFF09", career: 1 }, { id: "no", label: "\u592A\u7D2F\u4E86\uFF0C\u4E0D\u53BB", decline: true }] },
+  { id: "free-course", type: "opportunity", title: "\u516C\u53F8\u4ED8\u8D39\u57F9\u8BAD", text: "\u516C\u53F8\u613F\u610F\u514D\u8D39\u8BA9\u4F60\u53C2\u52A0\u4E00\u4E2A\u665A\u95F4\u57F9\u8BAD\u3002", month: 3, when: (s4) => !s4.service && s4.job.employed && !s4.business, options: [{ id: "go", label: "\u53C2\u52A0\uFF08\u804C\u4E1A\u80FD\u529B +1\uFF09", career: 1 }, { id: "no", label: "\u592A\u7D2F\u4E86\uFF0C\u4E0D\u53BB", decline: true }] },
   {
     id: "scholarship",
     type: "opportunity",
@@ -1834,7 +1853,7 @@ var CARDS = [
     options: [{ id: "go", label: "\u8BA4\u771F\u5199\u7533\u8BF7", throwOutcome: true }]
   },
   { id: "meet", type: "opportunity", title: "\u9047\u89C1\u559C\u6B22\u7684\u4EBA", text: "\u670B\u53CB\u805A\u4F1A\u4E0A\uFF0C\u4F60\u548C\u4E00\u4E2A\u4EBA\u804A\u5F97\u7279\u522B\u6295\u673A\u3002", month: 5, when: (s4) => !s4.partner && !s4.spouse && s4.age <= 45, options: [{ id: "go", label: "\u7EA6 TA \u51FA\u6765\uFF08\u5F00\u59CB\u604B\u7231\uFF0C\u7EA6\u4F1A\u6BCF\u6708 +$80\uFF09", partner: true, status: "inLove", recurring: { fun: 80 } }, { id: "no", label: "\u5148\u4E13\u5FC3\u5DE5\u4F5C", decline: true }] },
-  { id: "gig", type: "opportunity", title: "\u670B\u53CB\u627E\u4F60\u505A\u517C\u804C", text: "\u5468\u672B\u5E2E\u670B\u53CB\u7684\u5E97\u505A\u4E8B\uFF0C\u6BCF\u6708\u591A $300\uFF08\u6CA1\u6709\u9884\u6263\u7A0E\uFF09\u3002", month: 2, when: (s4) => !s4.side && !s4.business, options: [{ id: "go", label: "\u63A5\uFF08\u6BCF\u6708 +$300\uFF09", side: 300 }, { id: "no", label: "\u5468\u672B\u60F3\u4F11\u606F", decline: true, status: "recharged" }] },
+  { id: "gig", type: "opportunity", title: "\u670B\u53CB\u627E\u4F60\u505A\u517C\u804C", text: "\u5468\u672B\u5E2E\u670B\u53CB\u7684\u5E97\u505A\u4E8B\uFF0C\u6BCF\u6708\u591A $300\uFF08\u6CA1\u6709\u9884\u6263\u7A0E\uFF09\u3002", month: 2, when: (s4) => !s4.service && !s4.side && !s4.business, options: [{ id: "go", label: "\u63A5\uFF08\u6BCF\u6708 +$300\uFF09", side: 300 }, { id: "no", label: "\u5468\u672B\u60F3\u4F11\u606F", decline: true, status: "recharged" }] },
   {
     id: "stock-tip",
     type: "opportunity",
@@ -1941,7 +1960,7 @@ var CARDS = [
     title: "\u60F3\u4F4F\u5F97\u5927\u4E00\u70B9",
     text: "\u770B\u4E2D\u4E00\u5957\u66F4\u5927\u7684\u516C\u5BD3\uFF0C\u6BCF\u6708\u8D35 $300\u3002",
     month: 6,
-    when: (s4) => !s4.home,
+    when: (s4) => !s4.service && !s4.home,
     throw: { stat: "discipline", label: "\u5FCD\u4F4F", game: "dodge" },
     options: [{ id: "move", label: "\u642C\uFF08\u6BCF\u6708 +$300\uFF0C\u8BF7\u642C\u5BB6\u516C\u53F8 $1,200\uFF09", pay: "checking", cost: 1200, recurring: { essentials: { housing: 300 } } }, { id: "skip", label: "\u73B0\u5728\u7684\u591F\u4F4F", decline: true, needs: "ok" }]
   },
@@ -2054,6 +2073,7 @@ var removeStatus = (s4, id) => {
   s4.status = s4.status.filter((x) => x.id !== id);
 };
 function startEssentials(gross, path, col) {
+  if (path === "military") return { housing: 0, food: 200, transport: 150, insurance: 40, other: Math.round(200 * col.other) };
   if (path === "study") return { housing: Math.round(650 * col.housing), food: 300, transport: 60, insurance: 100, other: Math.round(120 * col.other) };
   const housing = Math.round(Math.min(1100, Math.max(550, gross / 12 * 0.3)) / 10) * 10;
   return { housing: Math.round(housing * col.housing), food: 400, transport: 120, insurance: 130, other: Math.round(200 * col.other) };
@@ -2105,7 +2125,7 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
     flags: { ...fx.flags || {} },
     credit: reels.age === 18 ? 0 : 660,
     essentials: null,
-    fun: (path === "study" ? 80 : reels.salary >= 4e4 ? 200 : 120) + (fx.fun || 0),
+    fun: (path === "military" ? 350 : path === "study" ? 80 : reels.salary >= 4e4 ? 200 : 120) + (fx.fun || 0),
     accounts: { checking: 0, emergency: 0, goal: 0, k401: 0, roth: 0, brokerage: 0 },
     debts: [],
     plan: { k401Pct: 0, emergency: 0, goal: 0, roth: 0, brokerage: 0, extra: {}, lockLifestyle: false, livingLoan: true },
@@ -2125,6 +2145,15 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
   if (path === "both") {
     s4.school = { kind: "both", yearsLeft: SCHOOL.both.years, tuition: SCHOOL.both.tuition };
     setJob(s4, jobFromSalary(salary || 27e3, 0, 0), { salary: (salary || 27e3) * 0.5, part: true });
+  }
+  if (path === "cert") {
+    s4.school = { kind: "cert", yearsLeft: SCHOOL.cert.years, tuition: SCHOOL.cert.tuition };
+    setJob(s4, jobFromSalary(salary || 27e3, 0, 0), { salary: (salary || 27e3) * 0.5, part: true });
+  }
+  if (path === "military") {
+    s4.service = { yearsLeft: 4 };
+    s4.stats.discipline = Math.min(3, s4.stats.discipline + 1);
+    s4.job = { employed: true, id: "enlisted", title: "\u73B0\u5F79\u58EB\u5175", salary: SERVICE_PAY[0], part: false, has401k: true, match: null, unemployedLeft: 0 };
   }
   if (path === "study") {
     s4.school = { kind: "study", yearsLeft: bs.id === "two-years-college" ? 2 : SCHOOL.study.years, tuition: SCHOOL.study.tuition };
@@ -2151,6 +2180,7 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
   rollMarket(s4);
   s4.debtAtStart = r22(consumerDebtOf(s4) + sum(s4.debts.filter((d) => d.kind === "auto").map((d) => d.balance)));
   s4.records.push({ age: s4.age, kind: "start", text: `${region.name} \xB7 ${bs.title}` + (s4.school ? s4.school.kind === "study" ? " \xB7 \u5168\u804C\u8BFB\u5927\u5B66" : " \xB7 \u8FB9\u8BFB\u793E\u533A\u5927\u5B66\u8FB9\u6253\u5DE5" : ` \xB7 ${s4.job.title}`), big: true });
+  if (path === "cert" || path === "military") s4.records.at(-1).text = `${region.name} \xB7 ${bs.title} \xB7 ${path === "cert" ? "\u8BFB\u804C\u6821\uFF0C\u540C\u65F6\u6253\u96F6\u5DE5" : "\u5165\u4F0D"}`;
   s4.learn = freshLearn();
   pickLesson(s4);
   return s4;
@@ -2277,7 +2307,7 @@ function profile(s4) {
     job: s4.business ? `${s4.business.label}\u8001\u677F` : s4.school ? s4.job.employed ? s4.job.title : "\u5728\u8BFB" : s4.job.employed ? s4.job.title : "\u6CA1\u6709\u5DE5\u4F5C",
     salary: s4.business ? s4.business.profit * 12 : s4.job.employed ? s4.job.salary : 0,
     love: s4.spouse ? "\u5DF2\u5A5A" : s4.partner ? "\u604B\u7231\u4E2D" : "\u5355\u8EAB",
-    home: s4.home ? "\u81EA\u6709\u4F4F\u623F" : s4.status.some((x) => x.id === "couch") ? "\u501F\u4F4F\u670B\u53CB\u5BB6" : "\u79DF\u623F",
+    home: s4.service ? "\u8425\u623F" : s4.home ? "\u81EA\u6709\u4F4F\u623F" : s4.status.some((x) => x.id === "couch") ? "\u501F\u4F4F\u670B\u53CB\u5BB6" : "\u79DF\u623F",
     career: modFor(s4, "career"),
     careerBase: s4.stats.career,
     discipline: modFor(s4, "discipline"),
@@ -2572,6 +2602,7 @@ function blockReason(s4, d) {
 }
 function choiceBlock(s4, d, c) {
   if (c.cost && liquid(s4) < c.cost) return `\u9700\u8981 ${money(c.cost)}\u3002`;
+  if (c.needSide && (s4.side || 0) < c.needSide) return "\u526F\u4E1A\u6708\u5165\u8981\u5230 $300\u3002";
   if (c.needCareer && s4.stats.career < c.needCareer) return `\u8981\u6C42\u804C\u4E1A\u80FD\u529B \u2265 ${c.needCareer}\u3002`;
   if (d.id === "buycar" && s4.credit && s4.credit < 500) return "\u4FE1\u7528\u5206\u592A\u4F4E\uFF0C\u8F66\u8D37\u4E0D\u6279\u3002";
   return null;
@@ -2582,7 +2613,7 @@ function rollDecision(s4, id, { choice = null, jobId = null } = {}) {
   if (!d?.throw) throw Error("\u8FD9\u4E2A\u51B3\u5B9A\u4E0D\u7528\u63B7\u9AB0\u5B50\u3002");
   if (d.blocked) throw Error(d.blocked);
   const n = clone(s4);
-  n.throw = { source: "decision", id, choice, jobId, stat: d.throw.stat, label: d.throw.label, game: d.throw.game, roll: d6(n), mod: modFor(n, d.throw.stat), pen: id === "jobhunt" && jobId ? jobsFor(s4).find((j) => j.id === jobId)?.jump || 0 : 0 };
+  n.throw = { source: "decision", id, choice, jobId, stat: d.throw.stat, label: d.throw.label, game: d.throw.game, roll: d6(n), mod: modFor(n, d.throw.stat) + (choice === "own" ? 1 : 0), pen: id === "jobhunt" && jobId ? jobsFor(s4).find((j) => j.id === jobId)?.jump || 0 : 0 };
   return n;
 }
 function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0 } = {}) {
@@ -2625,10 +2656,16 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0 } = {})
       if (k === "study") n.job = { employed: true, id: "campus", title: "\u6821\u5185\u517C\u804C", salary: ASSUME.campusJob, part: true, has401k: false, match: null, unemployedLeft: 0 };
       else if (n.job.employed && !n.job.part) n.job = { ...n.job, title: n.job.title + "\uFF08\u517C\u804C\uFF09", salary: Math.round(n.job.salary * 0.5), part: true };
       for (const x of n.debts) if (x.kind === "student") x.deferUntilAge = 99;
+      if (n.flags.giBill) {
+        n.flags.giBill = false;
+        n.school.tuition = 0;
+        n.support = { monthly: GI_HOUSING, untilAge: n.age + SCHOOL[k].years, label: "GI Bill \u4F4F\u623F\u8865\u8D34", gi: true };
+      }
       break;
     }
     case "dropout":
       n.school = null;
+      if (n.support?.gi) n.support = null;
       if (n.job.id === "campus") n.pending.push({ month: 2, kind: "hire", job: JOBS[0].id, salary: JOBS[0].salary, part: false, label: "\u5F00\u59CB\u5168\u804C\u5DE5\u4F5C" });
       else if (n.job.employed && n.job.part) setJob(n, JOBS.find((x) => x.id === n.job.id), {});
       for (const x of n.debts) if (x.kind === "student" && x.deferUntilAge === 99) {
@@ -2652,9 +2689,10 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0 } = {})
       applyFx(n, outcome, 1, d.title);
       break;
     case "startup": {
-      const profit = Math.round(ch.base * outcome.bizMult / 10) * 10;
-      n.business = { type: ch.id, label: ch.label.replace(/（.*$/, "").replace(/^开(一辆|网|设计)?/, ""), profit, since: n.age, base: ch.base };
-      n.business.label = { truck: "\u9910\u8F66", shop: "\u7F51\u5E97", studio: "\u8BBE\u8BA1\u5DE5\u4F5C\u5BA4" }[ch.id];
+      const own = ch.id === "own", profit = Math.round((own ? Math.max(ch.base, n.side * 3) : ch.base) * outcome.bizMult / 10) * 10;
+      n.business = { type: ch.id, label: ch.label.replace(/（.*$/, "").replace(/^开(一辆|网|设计)?/, ""), profit, since: n.age, base: ch.base, own };
+      if (own) n.side = 0;
+      n.business.label = { own: "\u526F\u4E1A\u751F\u610F", truck: "\u9910\u8F66", shop: "\u7F51\u5E97", studio: "\u8BBE\u8BA1\u5DE5\u4F5C\u5BA4" }[ch.id];
       n.job = { employed: false, title: "\u5168\u804C\u521B\u4E1A", salary: 0, has401k: false, match: null, unemployedLeft: 0 };
       break;
     }
@@ -2663,6 +2701,12 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0 } = {})
       n.job = { employed: false, title: "\u6CA1\u6709\u5DE5\u4F5C", salary: 0, has401k: false, match: null, unemployedLeft: 0 };
       const back = jobsFor(n).filter((j) => !j.blocked && j.salary <= 45e3).sort((a, b) => b.salary - a.salary)[0] || JOBS[0];
       n.pending.push({ month: 3, kind: "hire", job: back.id, salary: back.salary, part: false, label: `\u5F00\u59CB\u505A${back.title}` });
+      break;
+    }
+    case "rehire": {
+      n.flags.bizFailedAt = null;
+      const back = jobsFor(n).filter((j) => !j.blocked && j.salary <= 45e3).sort((a, b) => b.salary - a.salary)[0] || JOBS[0];
+      n.pending.push({ month: 2, kind: "hire", job: back.id, salary: back.salary, part: false, label: back.title });
       break;
     }
     case "cheaper":
@@ -3174,7 +3218,7 @@ function simulateYear(s0, { returnRate = s0.marketReturn ?? ASSUME.stockReturnMe
     const left = charge(m, ess, "\u5FC5\u8981\u5F00\u9500");
     if (left > 0) {
       overdue(m, left, "\u5FC5\u8981\u5F00\u9500");
-      if (!s4.home && left >= s4.essentials.housing * 0.5) rentMissed++;
+      if (!s4.home && !s4.service && left >= s4.essentials.housing * 0.5) rentMissed++;
     } else rentMissed = 0;
     if (rentMissed >= 3 && !s4.home && !s4.status.some((x) => x.id === "couch")) {
       s4.essentials.housing = 300;
@@ -3393,7 +3437,7 @@ function nextYear(s4) {
     n.school.yearsLeft--;
     if (n.school.yearsLeft <= 0) graduate(n);
   }
-  if (n.job.employed && !n.school) raiseSalary(n, n.job.salary * (1 + ASSUME.meritRaise));
+  if (n.job.employed && !n.school && !n.service) raiseSalary(n, n.job.salary * (1 + ASSUME.meritRaise));
   if (n.business) {
     const die = d6(n), r = die + modFor(n, "career"), t = tierOf(r, die);
     const old = n.business.profit;
@@ -3403,6 +3447,19 @@ function nextYear(s4) {
   if (!n.job.employed && !n.business && !n.school && !n.job.unemployedLeft && !(n.spouse && n.spouse.salary)) {
     setJob(n, JOBS[0], {});
     n.records.push({ age: n.age, kind: "note", text: `\u4E00\u6574\u5E74\u6CA1\u6709\u6536\u5165\uFF0C\u53EA\u597D\u5148\u53BB\u505A${n.job.title}\uFF08\u5E74\u85AA ${money(n.job.salary)}\uFF09\u3002` });
+  }
+  if (n.flags.bizFailedAt != null && n.flags.bizFailedAt <= n.age) n.flags.bizFailedAt = null;
+  if (n.service) {
+    n.service.yearsLeft--;
+    if (n.service.yearsLeft <= 0) leaveService(n);
+    else {
+      n.job.salary = SERVICE_PAY[4 - n.service.yearsLeft];
+      if (n.service.yearsLeft <= 2 && !n.job.match) n.job.match = { rate: 1, upTo: 0.05 };
+    }
+  }
+  if (n.business) {
+    const risk = BIZ_FAIL[Math.min(n.age - n.business.since, BIZ_FAIL.length - 1)] * (n.business.own ? 0.67 : 1) * (n.business.profit >= BIZ_SOLD_PROFIT ? 0.5 : 1);
+    if (rand(n) < risk) closeFailed(n);
   }
   n.age++;
   n.year = null;
@@ -3430,8 +3487,39 @@ function nextYear(s4) {
   pickLesson(n);
   return n;
 }
+function leaveService(n) {
+  const col = STATES[n.region].costOfLiving, base = startEssentials(45e3, "work", col);
+  n.service = null;
+  n.flags.giBill = true;
+  n.stats.career = Math.min(3, n.stats.career + 1);
+  for (const k of Object.keys(base)) n.essentials[k] = Math.max(n.essentials[k], base[k]);
+  const j = jobFromSalary(44e3, n.edu, n.stats.career);
+  setJob(n, j, { salary: j.salary });
+  n.records.push({ age: n.age, kind: "big", text: "\u670D\u5F79 4 \u5E74\u7ED3\u675F\u3002\u804C\u4E1A\u80FD\u529B +1\uFF1B\u4E4B\u540E\u56DE\u53BB\u4E0A\u5B66\uFF0CGI Bill \u53EF\u4EE5\u4ED8\u5B66\u8D39\u3002", big: true }, { age: n.age, kind: "note", text: `\u56DE\u5230\u666E\u901A\u751F\u6D3B\uFF0C\u4F60\u5F00\u59CB\u505A ${n.job.title}: ${money(n.job.salary)}` });
+}
+function closeFailed(n) {
+  const b = n.business, bill = BIZ_BILLS[b.type] || 500, sold = b.profit >= BIZ_SOLD_PROFIT, sale = Math.round(b.profit * BIZ_SALE_MONTHS / 100) * 100;
+  n.business = null;
+  n.flags.bizFailedAt = n.age + 1;
+  n.job = { employed: false, title: "Unemployed", salary: 0, has401k: false, match: null, unemployedLeft: 0 };
+  if (sold) {
+    n.pending.push({ month: 1, kind: "income", amount: sale, label: `\u5356\u6389\u751F\u610F: ${b.label}` });
+    n.records.push({ age: n.age, kind: "big", text: `${b.label}: \u5356\u4E86 ${money(sale)}.`, big: true });
+    return;
+  }
+  n.pending.push({ month: 1, kind: "cost", amount: bill, from: "checking", label: "\u5DF2\u5173\u95E8\u751F\u610F\u7684\u8D26\u5355" });
+  n.records.push({ age: n.age, kind: "big", text: `${b.label}: \u5173\u95E8\u4E86\u3002\u4F60\u672C\u4EBA\u62C5\u4FDD\u7684\u8D26\u5355\u8FD8\u8981\u8FD8 (${money(bill)}).`, big: true });
+}
 function graduate(n) {
   const k = n.school.kind, sc2 = SCHOOL[k];
+  if (k === "cert") {
+    n.stats.career = Math.min(3, n.stats.career + sc2.career);
+    n.school = null;
+    const j2 = jobFromSalary(44e3, n.edu, n.stats.career);
+    setJob(n, j2, { salary: j2.salary });
+    n.records.push({ age: n.age, kind: "big", text: `\u62FF\u5230\u804C\u4E1A\u8BC1\u4E66\uFF0C\u5F00\u59CB\u505A ${n.job.title}: ${money(n.job.salary)}`, big: true });
+    return;
+  }
   if (k === "study" && !n.home) {
     n.essentials.housing = Math.max(n.essentials.housing, Math.round(850 * STATES[n.region].costOfLiving.housing));
     n.essentials.food = Math.max(n.essentials.food, 400);
@@ -4118,6 +4206,7 @@ var T2 = {
   creep: "\u52A0\u85AA\u540E\u4E0D\u63D0\u9AD8\u5A31\u4E50\u5F00\u9500",
   useLoans: "\u7528\u5B66\u751F\u8D37\u6B3E\u4ED8\u751F\u6D3B\u8D39",
   unassigned: "\u6CA1\u5206\u914D\uFF0C\u7559\u5728\u65E5\u5E38\u8D26\u6237",
+  pathNote: "\u6BD4\u4F8B\u662F\u5BF9\u7F8E\u56FD 2024 \u5E74\u79CB\u5B63\u5E94\u5C4A\u9AD8\u4E2D\u6BD5\u4E1A\u751F\u7684\u7C97\u7565\u4F30\u7B97\uFF08BLS\u3001\u519B\u65B9\u6570\u636E\uFF09\uFF0C\u8BC1\u4E66\u7B97\u5728\u793E\u533A\u5B66\u9662\u91CC\u3002\u53E6\u5916\u7EA6 17 \u4E2A\u4E00\u5F00\u59CB\u65E2\u6CA1\u5DE5\u4F5C\u4E5F\u6CA1\u4E0A\u5B66\uFF0C\u8FD9\u91CC\u6682\u65F6\u6CA1\u6709\u8FD9\u6761\u8DEF\u5F84\u3002",
   repeatPlan: "\u7167\u53BB\u5E74\u7684\u5206\u6CD5",
   askTag: "\u4ECA\u5E74\u7684\u51B3\u5B9A",
   askSelf: "\u6211\u81EA\u5DF1\u5206",
@@ -4869,18 +4958,18 @@ function winHtml(reached = 0) {
 }
 function pathScreen() {
   const r = reelsObj(), need = needsPath(r), p = previewStart(), pay = payday(p);
-  const TAG = { work: "\u9A6C\u4E0A\u5F00\u59CB\u8D5A\u94B1", both: "\u793E\u533A\u5927\u5B66 + \u517C\u804C \xB7 2 \u5E74", study: "\u5DDE\u7ACB\u5927\u5B66 \xB7 4 \u5E74" };
+  const TAG = { cert: "\u804C\u6821 + \u6253\u96F6\u5DE5 \xB7 1 \u5E74", military: "4 \u5E74\u5408\u540C \xB7 \u5305\u5403\u4F4F", work: "\u9A6C\u4E0A\u5F00\u59CB\u8D5A\u94B1", both: "\u793E\u533A\u5927\u5B66 + \u517C\u804C \xB7 2 \u5E74", study: "\u5DDE\u7ACB\u5927\u5B66 \xB7 4 \u5E74" };
   const pathCard = (x) => {
     const qq = previewStart(x.id), sc2 = SCHOOL[x.id], lvl = sc2 ? sc2.edu : 0;
     const aid = payday(qq).aid, fee = sc2 ? Math.round(sc2.years * 12 * (aid.tuitionLoan + aid.livingLoan)) : 0;
     const top = JOBS.filter((j) => j.edu <= lvl && j.career <= 2).sort((a, b) => b.salary - a.salary)[0], full = qq.job.part ? qq.job.salary * 2 : qq.job.salary, best = full > top.salary ? { title: qq.job.title.replace(/ \(.*$|（.*$/, ""), salary: full } : top;
     const row = (lbl, v, max, cls, sub) => `<span class="pm-row"><em>${lbl}</em>${meter(v, max, cls)}<b>${sub}</b></span>`;
-    return `<button class="path-opt ${setup.path === x.id ? "on" : ""}" data-go="path" data-id="${x.id}" aria-pressed="${setup.path === x.id}" title="${h(x.text)}">${icon[x.icon]}<b>${h(x.title)}</b><span>${h(TAG[x.id] || "")}</span>
+    return `<button class="path-opt ${setup.path === x.id ? "on" : ""}" data-go="path" data-id="${x.id}" aria-pressed="${setup.path === x.id}" title="${h(x.text)}">${icon[x.icon]}<b>${h(x.title)}</b><span>${h(TAG[x.id] || "")}</span><span class="path-share">${h(x.share || "")}</span>
       ${row("\u73B0\u5728\u6536\u5165", qq.job.salary, 45e3, "ok", money2(qq.job.salary) + "/\u5E74")}${row("\u9884\u8BA1\u5B66\u751F\u8D37\u6B3E", fee, 5e4, "tax", fee ? money2(fee) : "$0")}${row("\u4EE5\u540E\u6700\u597D\u7684\u5DE5\u4F5C", best.salary, 1e5, "held", money2(best.salary) + "/\u5E74")}
       <small>${h(best.title)}</small></button>`;
   };
   setupFrame("path", `<section class="goal-stage">
-    ${need ? `<header class="wiz-title"><h1>\u4F60\u6253\u7B97\u600E\u4E48\u5F00\u59CB\uFF1F</h1><p>\u8F6C\u76D8\u53EA\u51B3\u5B9A\u94B1\u3002\u8BFB\u4E0D\u8BFB\u4E66\u7531\u4F60\u9009\uFF0C\u4EE5\u540E\u4E5F\u53EF\u4EE5\u6539\u3002</p></header><div class="path-pick">${PATHS.map(pathCard).join("")}</div>` : `<header class="wiz-title"><h1>${r.age} \u5C81\uFF0C\u4F60\u5DF2\u7ECF\u5728\u5DE5\u4F5C\u4E86</h1><p>${h(backstoryFor(setup.seed, r).title)}\u3002\u4EE5\u540E\u6BCF\u5E74\u90FD\u53EF\u4EE5\u6362\u5DE5\u4F5C\u3001\u56DE\u5B66\u6821\u3001\u521B\u4E1A\u6216\u642C\u5BB6\u3002</p></header>`}
+    ${need ? `<header class="wiz-title"><h1>\u4F60\u6253\u7B97\u600E\u4E48\u5F00\u59CB\uFF1F</h1><p>\u8F6C\u76D8\u53EA\u51B3\u5B9A\u94B1\u3002\u8BFB\u4E0D\u8BFB\u4E66\u7531\u4F60\u9009\uFF0C\u4EE5\u540E\u4E5F\u53EF\u4EE5\u6539\u3002</p></header><div class="path-pick">${PATHS.map(pathCard).join("")}</div><p class="path-note">${h(T2.pathNote)}</p>` : `<header class="wiz-title"><h1>${r.age} \u5C81\uFF0C\u4F60\u5DF2\u7ECF\u5728\u5DE5\u4F5C\u4E86</h1><p>${h(backstoryFor(setup.seed, r).title)}\u3002\u4EE5\u540E\u6BCF\u5E74\u90FD\u53EF\u4EE5\u6362\u5DE5\u4F5C\u3001\u56DE\u5B66\u6821\u3001\u521B\u4E1A\u6216\u642C\u5BB6\u3002</p></header>`}
     ${winHtml(0)}
     <div class="start-sum">${avatar(setup.look, { cls: "mid", label: false })}<label class="name-field dark"><span>\u540D\u5B57</span><input id="player-name" maxlength="20" value="${h(setup.name)}" placeholder="\u53EF\u4EE5\u7559\u7A7A" autocomplete="off"></label>
       </div>

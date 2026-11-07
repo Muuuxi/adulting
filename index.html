@@ -1406,6 +1406,15 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 /* Round 18 */
 .ask-facts { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
 @media (max-width: 760px) { .modal.small-modal, .modal.wide-modal, .modal.game-host { width: 100%; } }
+
+/* Round 19 */
+.path-pick { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; } .path-opt { padding: 8px 9px; } .path-opt .pm-row { grid-template-columns: minmax(0, 1fr) auto; gap: 2px 6px; font-size: .74rem; } .path-opt .pm-row em { grid-column: 1 / -1; } .path-opt .pm-row b { min-width: 0; font-size: .76rem; } .path-opt > span { font-size: .76rem; line-height: 1.25; }
+.path-opt .path-share { font-weight: 800; color: #1c6b45; font-size: .74rem; } .path-note { margin: 6px 2px 0; font-size: .74rem; color: var(--ink-2); }
+@media (max-width: 760px) { .path-pick { grid-template-columns: minmax(0, 1fr); } .path-opt .pm-row { grid-template-columns: minmax(0, 9.5em) minmax(0, 1fr) auto; } .path-opt .pm-row em { grid-column: auto; } }
+@media (min-width: 761px) { .path-opt { grid-template-columns: auto minmax(0, 1fr); column-gap: 6px; row-gap: 2px; } .path-opt > * { grid-column: 1 / -1; } .path-opt > .ico { grid-column: 1; width: 22px; height: 22px; } .path-opt > b { grid-column: 2; align-self: center; font-size: .98rem; line-height: 1.15; }
+  .page.wizard .goal-stage { gap: 6px; } .goal-stage .wiz-title h1 { font-size: 1.5rem; } .goal-stage .wiz-title p { margin-top: 0; font-size: .86rem; } .path-note { margin-top: 0; } .win-panel h2 { margin-bottom: 4px; font-size: 1.1rem; } .win-tile { padding: 6px 10px; } .win-stairs { height: 36px; margin-top: 2px; } .start-sum { padding: 4px 10px; } .start-sum .avatar, .start-sum .mid { width: 44px; height: 44px; } .goal-stage .look-foot { padding-top: 4px; } }
+.pd-flow .fl.total b { font-size: clamp(1rem, 1.5vw, 1.35rem); white-space: nowrap; }
+@media (min-width: 761px) { .win-stairs { height: 48px; } }
 </style>
 </head>
 <body>
@@ -1549,14 +1558,23 @@ var BACKSTORIES = [
 ];
 var backstoriesFor = (reels) => BACKSTORIES.filter((b) => b.ages.includes(reels.age) && (!b.when || b.when(reels)) && (!b.minDebt || reels.debt >= b.minDebt));
 var PATHS = [
-  { id: "work", title: "Work full-time", text: "Get a full-time job and start earning now. You can still go back to school later.", icon: "briefcase" },
-  { id: "both", title: "Study and work", text: "Two years of community college ($4,000/yr tuition) with a part-time job. You get half of a Pell Grant; student loans cover the rest.", icon: "cap" },
-  { id: "study", title: "Study full-time", text: "Four years at a state university ($11,000/yr tuition) with only a campus job. Pell Grants and student loans pay for tuition and living costs; afterwards you can apply for jobs that need a bachelor\u2019s degree.", icon: "cap" }
+  { id: "work", share: "About 19 of 100 grads", title: "Work full-time", text: "Get a full-time job and start earning now. You can still go back to school later.", icon: "briefcase" },
+  { id: "both", share: "About 18 of 100", title: "Study and work", text: "Two years of community college ($4,000/yr tuition) with a part-time job. You get half of a Pell Grant; student loans cover the rest.", icon: "cap" },
+  { id: "study", share: "About 41 of 100", title: "Study full-time", text: "Four years at a state university ($11,000/yr tuition) with only a campus job. Pell Grants and student loans pay for tuition and living costs; afterwards you can apply for jobs that need a bachelor\u2019s degree.", icon: "cap" },
+  { id: "cert", share: "No separate figure", title: "Trade certificate", text: "One year of trade school ($4,150 tuition) with a part-time job, then a skilled job. No degree, but career skill +1.", icon: "cap" },
+  { id: "military", share: "At most 4 of 100", title: "Enlist", text: "A 4-year contract you can\u2019t quit early. Barracks and meals are covered. Pay starts near $29,000 and reaches about $38,000. Service can mean danger and long periods away. Afterward, the GI Bill pays for school.", icon: "shield" }
 ];
 var SCHOOL = {
   both: { years: 2, tuition: 4e3, pellShare: 0.5, edu: 1, career: 1 },
-  study: { years: 4, tuition: 11e3, pellShare: 1, edu: 2, career: 1 }
+  study: { years: 4, tuition: 11e3, pellShare: 1, edu: 2, career: 1 },
+  cert: { years: 1, tuition: 4150, pellShare: 0.5, edu: 0, career: 1 }
 };
+var SERVICE_PAY = [28900, 32400, 34900, 37700];
+var GI_HOUSING = 1500;
+var BIZ_FAIL = [0.2, 0.125, 0.1, 0.09, 0.08, 0.07, 0.07, 0.07, 0.07, 0.07, 0.04];
+var BIZ_BILLS = { truck: 6e3, studio: 3e3, shop: 1e3, own: 500 };
+var BIZ_SOLD_PROFIT = 2e3;
+var BIZ_SALE_MONTHS = 12;
 var AID = { pellMax: 7395, loanCapYear: 12500, pellSavingsLimit: 1e4 };
 var EDU = ["High school", "Associate (community college)", "Bachelor\u2019s"];
 var STUDENT_APR = 0.0639;
@@ -1597,12 +1615,13 @@ var MOVE_CHOICES = (extra) => [
 ].map((c) => ({ ...c, ...extra }));
 var DECISIONS = [
   { id: "keep", title: "Keep things as they are", icon: "loop", text: "No big changes this year.", eligible: () => true },
+  { id: "rehire", title: "Go back to work", icon: "briefcase", text: "Your business closed. Most people who fail go back to a paycheck and recover. No interview: you start within about 2 months (up to $45,000/yr). You can also try again with \u201CStart a business\u201D.", eligible: (s4) => s4.flags.bizFailedAt === s4.age && !s4.job.employed && !s4.business && !s4.school },
   {
     id: "jobhunt",
     title: "Find / change jobs",
     icon: "briefcase",
     text: "Pick a job from the job board and interview. While in school you can only work part-time (half pay).",
-    eligible: (s4) => !s4.business,
+    eligible: (s4) => !s4.service && !s4.business,
     throw: { stat: "career", label: "Interview", game: "catch" },
     outcomes: { fail: { note: "The interview didn\u2019t go well." }, ok: { hire: 1, note: "You got the job." }, great: { hire: 1.05, note: "You got it, and negotiated 5% more." } }
   },
@@ -1611,7 +1630,7 @@ var DECISIONS = [
     title: "Ask for a raise",
     icon: "chart",
     text: "Prepare your case and talk to your boss. You can try once every two years.",
-    eligible: (s4) => s4.job.employed && !s4.school && !s4.business,
+    eligible: (s4) => !s4.service && s4.job.employed && !s4.school && !s4.business,
     throw: { stat: "career", label: "Negotiation", game: "catch" },
     outcomes: { fail: { note: "No luck this time." }, ok: { salaryPct: 0.04, note: "4% raise." }, great: { salaryPct: 0.08, note: "8% raise!" } }
   },
@@ -1621,7 +1640,7 @@ var DECISIONS = [
     title: "Go back to school",
     icon: "cap",
     text: "Community college (2 years) or university (4 years). Only part-time work while studying; Pell Grants and student loans available.",
-    eligible: (s4) => !s4.school && s4.edu < 2 && s4.age <= 40 && !s4.business,
+    eligible: (s4) => !s4.service && !s4.school && s4.edu < 2 && s4.age <= 40 && !s4.business,
     choices: [{ id: "both", label: "Community college, part-time job (2 years)" }, { id: "study", label: "Four-year university (4 years)", needsEdu: 0 }]
   },
   { id: "dropout", title: "Drop out and work", icon: "briefcase", text: "Quit school; your part-time job goes back to full-time. Student loans you already took still have to be repaid.", eligible: (s4) => !!s4.school },
@@ -1639,9 +1658,9 @@ var DECISIONS = [
     id: "side",
     title: "Start a side hustle",
     icon: "star",
-    text: "Put in $500 and a few evenings a week. Nobody withholds tax on side income, so you\u2019ll owe at tax time.",
+    text: "Keep your job and test an idea on evenings and weekends: $500 to start. Nobody withholds tax on side income, so you\u2019ll owe at tax time. If it holds up, you can go full-time later.",
     cost: 500,
-    eligible: (s4) => !s4.side && !s4.business && s4.age >= 18,
+    eligible: (s4) => !s4.service && !s4.side && !s4.business && s4.age >= 18,
     throw: { stat: "discipline", label: "Persistence", game: "catch" },
     outcomes: { fail: { side: 150, note: "Slow start: about $150 a month." }, ok: { side: 400, note: "About $400 extra a month." }, great: { side: 800, note: "It took off: about $800 a month." } }
   },
@@ -1649,15 +1668,15 @@ var DECISIONS = [
     id: "startup",
     title: "Start a business",
     icon: "star",
-    text: "Quit your job to run a business full-time. You might earn more than a paycheck \u2014 or lose money every month.",
-    eligible: (s4) => !s4.business && !s4.school && s4.age >= 18,
-    choices: [{ id: "truck", label: "Food truck (startup cost $8,000)", cost: 8e3, base: 1600 }, { id: "shop", label: "Online shop (startup cost $3,000)", cost: 3e3, base: 900 }, { id: "studio", label: "Design studio ($5,000, needs career skill \u2265 1)", cost: 5e3, base: 2600, needCareer: 1 }],
+    text: "Run a business full-time. In the US about 1 in 5 new businesses close in year one and about half by year five. Starting from a side hustle that already earns gives better odds.",
+    eligible: (s4) => !s4.service && !s4.business && !s4.school && s4.age >= 18,
+    choices: [{ id: "own", label: "Go full-time with your side hustle (startup cost $1,000, needs $300+/mo side income)", cost: 1e3, base: 1400, needSide: 300 }, { id: "truck", label: "Food truck (startup cost $8,000)", cost: 8e3, base: 1600 }, { id: "shop", label: "Online shop (startup cost $3,000)", cost: 3e3, base: 900 }, { id: "studio", label: "Design studio ($5,000, needs career skill \u2265 1)", cost: 5e3, base: 2600, needCareer: 1 }],
     throw: { stat: "career", label: "Launch", game: "catch" },
     outcomes: { fail: { bizMult: -0.3, note: "Rough launch: losing money every month." }, ok: { bizMult: 1, note: "The business is on track." }, great: { bizMult: 1.8, note: "Business is booming!" } }
   },
-  { id: "closebiz", title: "Close the business, get a job", icon: "briefcase", text: "Wind down the business. In about 2 months you land an entry-level job (up to $45,000/yr); you can trade up on the job board later.", eligible: (s4) => !!s4.business },
-  { id: "cheaper", title: "Move somewhere cheaper", icon: "house", text: "Get a roommate: rent drops $200 a month.", eligible: (s4) => !s4.home && s4.essentials.housing >= 650, choices: MOVE_CHOICES({}) },
-  { id: "nicer", title: "Move somewhere nicer", icon: "house", text: "Rent goes up $400 a month. More space, closer to work.", eligible: (s4) => !s4.home, choices: MOVE_CHOICES({}) },
+  { id: "closebiz", title: "Close the business, get a job", icon: "briefcase", text: "Wind down the business. In about 2 months you land an entry-level job (up to $45,000/yr), and your pay can recover from there.", eligible: (s4) => !!s4.business },
+  { id: "cheaper", title: "Move somewhere cheaper", icon: "house", text: "Get a roommate: rent drops $200 a month.", eligible: (s4) => !s4.service && !s4.home && s4.essentials.housing >= 650, choices: MOVE_CHOICES({}) },
+  { id: "nicer", title: "Move somewhere nicer", icon: "house", text: "Rent goes up $400 a month. More space, closer to work.", eligible: (s4) => !s4.service && !s4.home, choices: MOVE_CHOICES({}) },
   {
     id: "buycar",
     title: "Buy a car",
@@ -1667,7 +1686,7 @@ var DECISIONS = [
     choices: [{ id: "used", label: "Used car $12,000 ($1,500 down, 5-year loan)", price: 12e3, down: 1500, cost: 1500 }, { id: "new", label: "New car $32,000 ($3,000 down, 6-year loan)", price: 32e3, down: 3e3, cost: 3e3 }]
   },
   { id: "sellcar", title: "Sell the car, take the bus", icon: "car", text: "The sale pays off the car loan first; transportation costs drop $220 a month.", eligible: (s4) => s4.car },
-  { id: "buyhome", title: "Buy a home", icon: "house", text: "A $260,000 home: 10% down plus closing costs, $30,000 total, and a 30-year mortgage at 6.25%. Mortgage, property tax and insurance replace rent.", eligible: (s4) => !s4.home && s4.age >= 22 },
+  { id: "buyhome", title: "Buy a home", icon: "house", text: "A $260,000 home: 10% down plus closing costs, $30,000 total, and a 30-year mortgage at 6.25%. Mortgage, property tax and insurance replace rent.", eligible: (s4) => !s4.service && !s4.home && s4.age >= 22 },
   {
     id: "bankruptcy",
     title: "File for bankruptcy",
@@ -1701,7 +1720,7 @@ var CARDS = [
     title: "Brutal commute",
     text: "The bus takes an hour and a half each way, and you\u2019re often late.",
     month: 3,
-    when: (s4) => !s4.car && s4.region !== "PA" && s4.job.employed,
+    when: (s4) => !s4.service && !s4.car && s4.region !== "PA" && s4.job.employed,
     weight: 2,
     options: [{ id: "bear", label: "Put up with it (commute fatigue: career throws \u22121 for 1 year)", status: "tired" }, { id: "ride", label: "Take rideshares every day (+$150 a month)", recurring: { fun: 150 } }, { id: "usedcar", label: "Finance an $8,000 used car", buyCar: { price: 8e3, down: 0 } }]
   },
@@ -1713,7 +1732,7 @@ var CARDS = [
     title: "Layoffs",
     text: "Your department was cut. You can collect unemployment while you look (up to $350 a week for up to 12 weeks); it\u2019s taxable income.",
     month: 5,
-    when: (s4) => s4.job.employed && !s4.school && !s4.business,
+    when: (s4) => !s4.service && s4.job.employed && !s4.school && !s4.business,
     throw: { stat: "career", label: "Job search", game: "catch" },
     outcomes: { fail: { unemployed: 6, note: "It took 6 months to find a new job." }, ok: { unemployed: 3, note: "Found a new job after 3 months." }, great: { unemployed: 1, note: "Found a new job within a month." } },
     options: [{ id: "accept", label: "Start job hunting", throwOutcome: true }]
@@ -1724,12 +1743,12 @@ var CARDS = [
     title: "Economic downturn",
     text: "Business is down and the company asks some staff to take a pay cut.",
     month: 7,
-    when: (s4) => s4.job.employed && !s4.school && s4.age >= 24,
+    when: (s4) => !s4.service && s4.job.employed && !s4.school && s4.age >= 24,
     throw: { stat: "career", label: "Keep your pay", game: "catch" },
     outcomes: { fail: { salaryPct: -0.06, note: "Your pay was cut 6%." }, ok: { note: "You kept your pay." }, great: { note: "You kept your pay and were asked to train new hires.", status: "inspired" } },
     options: [{ id: "accept", label: "Face it", throwOutcome: true }]
   },
-  { id: "rent-up", type: "life", title: "Rent increase", text: "At renewal, your landlord raised the rent $150 a month.", month: 8, when: (s4) => !s4.home && !s4.status.some((x) => x.id === "couch"), options: [{ id: "accept", label: "Accept the increase", recurring: { essentials: { housing: 150 } } }, { id: "move", label: "Move out yourself ($300, may hurt your back)", pay: "checking", cost: 300, risk: "backache" }] },
+  { id: "rent-up", type: "life", title: "Rent increase", text: "At renewal, your landlord raised the rent $150 a month.", month: 8, when: (s4) => !s4.service && !s4.home && !s4.status.some((x) => x.id === "couch"), options: [{ id: "accept", label: "Accept the increase", recurring: { essentials: { housing: 150 } } }, { id: "move", label: "Move out yourself ($300, may hurt your back)", pay: "checking", cost: 300, risk: "backache" }] },
   { id: "family-help", type: "life", title: "Family needs help", text: "Someone in your family is sick and needs $1,500.", month: 9, options: pays(1500, [{ id: "decline", label: "I can\u2019t help this time", decline: true, status: "stressed" }]) },
   {
     id: "parent-care",
@@ -1741,7 +1760,7 @@ var CARDS = [
     options: [{ id: "pay", label: "Hire a caregiver for 3 months ($3,000)", pay: "checking", cost: 3e3 }, { id: "leave", label: "Take 2 months of unpaid leave yourself", unpaidMonths: 2 }]
   },
   { id: "roof", type: "life", title: "Leaky roof", text: "The roof needs repairs: $4,000. Homeowners pay for their own repairs.", month: 7, when: (s4) => !!s4.home, options: pays(4e3) },
-  { id: "washer", type: "life", title: "Washer died", text: "A new one costs $700.", month: 11, when: (s4) => s4.age >= 24, options: pays(700) },
+  { id: "washer", type: "life", title: "Washer died", text: "A new one costs $700.", month: 11, when: (s4) => !s4.service && s4.age >= 24, options: pays(700) },
   { id: "phone-broke", type: "life", title: "Cracked phone", text: "The screen shattered. A mid-range replacement costs $500.", month: 10, options: pays(500) },
   {
     id: "fraud",
@@ -1778,14 +1797,14 @@ var CARDS = [
     options: [{ id: "lend", label: "Lend it", pay: "checking", cost: 1e3, gamble: { win: 0.6, winMult: 1, loseMult: 0, label: "Friend repays" } }, { id: "no", label: "Politely decline", decline: true, status: "stressed" }]
   },
   /* ---- opportunities ---- */
-  { id: "match-start", type: "opportunity", title: "Your company starts a 401(k) match", text: "Your company announces it will match 100% of the first 4% of pay you put in. That\u2019s free money.", month: 1, when: (s4) => s4.job.employed && !s4.job.match && !s4.business, options: [{ id: "accept", label: "Great (set your 401(k) to 4% on payday)", match: { rate: 1, upTo: 0.04 } }] },
+  { id: "match-start", type: "opportunity", title: "Your company starts a 401(k) match", text: "Your company announces it will match 100% of the first 4% of pay you put in. That\u2019s free money.", month: 1, when: (s4) => !s4.service && s4.job.employed && !s4.job.match && !s4.business, options: [{ id: "accept", label: "Great (set your 401(k) to 4% on payday)", match: { rate: 1, upTo: 0.04 } }] },
   {
     id: "bonus",
     type: "opportunity",
     title: "Year-end bonus",
     text: "The company had a good year and you might get a bonus. Bonuses are taxed too.",
     month: 12,
-    when: (s4) => s4.job.employed && !s4.school && !s4.business,
+    when: (s4) => !s4.service && s4.job.employed && !s4.school && !s4.business,
     throw: { stat: "career", label: "Performance", game: "catch" },
     outcomes: { fail: { bonus: 500, note: "Bonus $500." }, ok: { bonus: 2e3, note: "Bonus $2,000." }, great: { bonus: 4e3, note: "Bonus $4,000!" } },
     options: [{ id: "accept", label: "Take the bonus", throwOutcome: true }]
@@ -1796,7 +1815,7 @@ var CARDS = [
     title: "Your boss asks you to lead a project",
     text: "Nail it and you may get promoted; blow it and you\u2019ll be under a lot of pressure.",
     month: 3,
-    when: (s4) => s4.job.employed && !s4.school && !s4.business && s4.age >= 22,
+    when: (s4) => !s4.service && s4.job.employed && !s4.school && !s4.business && s4.age >= 22,
     throw: { stat: "career", label: "Lead the project", game: "catch" },
     outcomes: { fail: { status: "stressed", note: "The project slipped and you\u2019re stressed out." }, ok: { salaryPct: 0.06, note: "The project succeeded: 6% raise." }, great: { salaryPct: 0.12, career: 1, note: "Promoted! 12% raise and career skill +1." } },
     options: [{ id: "go", label: "Take it on", throwOutcome: true }, { id: "no", label: "Politely decline", decline: true }]
@@ -1807,7 +1826,7 @@ var CARDS = [
     title: "A friend\u2019s referral",
     text: "A friend refers you for an interview at a better company.",
     month: 4,
-    when: (s4) => s4.job.employed && !s4.school && !s4.business,
+    when: (s4) => !s4.service && s4.job.employed && !s4.school && !s4.business,
     throw: { stat: "career", label: "Interview", game: "catch" },
     outcomes: { fail: { note: "Didn\u2019t get it, but you got interview practice." }, ok: { salaryPct: 0.1, newEmployer: true, note: "Got the job: 10% raise." }, great: { salaryPct: 0.18, newEmployer: true, note: "Got the job: 18% raise." } },
     options: [{ id: "go", label: "Go to the interview", throwOutcome: true }, { id: "stay", label: "Pass", decline: true }]
@@ -1821,7 +1840,7 @@ var CARDS = [
     when: (s4) => s4.debts.some((d) => d.kind === "card" && d.balance >= 1e3) && s4.credit >= 640,
     options: [{ id: "take", label: "Take it and pay off the card (interest drops from 25% to 11%)", refinance: { apr: 0.11, months: 36 } }, { id: "no", label: "No thanks", decline: true }]
   },
-  { id: "free-course", type: "opportunity", title: "Company-paid training", text: "Your company offers to pay for an evening training course.", month: 3, when: (s4) => s4.job.employed && !s4.business, options: [{ id: "go", label: "Go (career skill +1)", career: 1 }, { id: "no", label: "Too tired, skip it", decline: true }] },
+  { id: "free-course", type: "opportunity", title: "Company-paid training", text: "Your company offers to pay for an evening training course.", month: 3, when: (s4) => !s4.service && s4.job.employed && !s4.business, options: [{ id: "go", label: "Go (career skill +1)", career: 1 }, { id: "no", label: "Too tired, skip it", decline: true }] },
   {
     id: "scholarship",
     type: "opportunity",
@@ -1834,7 +1853,7 @@ var CARDS = [
     options: [{ id: "go", label: "Write a strong application", throwOutcome: true }]
   },
   { id: "meet", type: "opportunity", title: "Meeting someone special", text: "At a friend\u2019s party, you really hit it off with someone.", month: 5, when: (s4) => !s4.partner && !s4.spouse && s4.age <= 45, options: [{ id: "go", label: "Ask them out (start dating, dates +$80 a month)", partner: true, status: "inLove", recurring: { fun: 80 } }, { id: "no", label: "Focus on work for now", decline: true }] },
-  { id: "gig", type: "opportunity", title: "A friend offers weekend work", text: "Help at a friend\u2019s shop on weekends for $300 more a month (no tax withheld).", month: 2, when: (s4) => !s4.side && !s4.business, options: [{ id: "go", label: "Take it (+$300 a month)", side: 300 }, { id: "no", label: "I want my weekends", decline: true, status: "recharged" }] },
+  { id: "gig", type: "opportunity", title: "A friend offers weekend work", text: "Help at a friend\u2019s shop on weekends for $300 more a month (no tax withheld).", month: 2, when: (s4) => !s4.service && !s4.side && !s4.business, options: [{ id: "go", label: "Take it (+$300 a month)", side: 300 }, { id: "no", label: "I want my weekends", decline: true, status: "recharged" }] },
   {
     id: "stock-tip",
     type: "opportunity",
@@ -1941,7 +1960,7 @@ var CARDS = [
     title: "Wanting a bigger place",
     text: "You\u2019ve found a bigger apartment that costs $300 more a month.",
     month: 6,
-    when: (s4) => !s4.home,
+    when: (s4) => !s4.service && !s4.home,
     throw: { stat: "discipline", label: "Resist", game: "dodge" },
     options: [{ id: "move", label: "Move (+$300 a month, movers $1,200)", pay: "checking", cost: 1200, recurring: { essentials: { housing: 300 } } }, { id: "skip", label: "This place is big enough", decline: true, needs: "ok" }]
   },
@@ -2054,6 +2073,7 @@ var removeStatus = (s4, id) => {
   s4.status = s4.status.filter((x) => x.id !== id);
 };
 function startEssentials(gross, path, col) {
+  if (path === "military") return { housing: 0, food: 200, transport: 150, insurance: 40, other: Math.round(200 * col.other) };
   if (path === "study") return { housing: Math.round(650 * col.housing), food: 300, transport: 60, insurance: 100, other: Math.round(120 * col.other) };
   const housing = Math.round(Math.min(1100, Math.max(550, gross / 12 * 0.3)) / 10) * 10;
   return { housing: Math.round(housing * col.housing), food: 400, transport: 120, insurance: 130, other: Math.round(200 * col.other) };
@@ -2105,7 +2125,7 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
     flags: { ...fx.flags || {} },
     credit: reels.age === 18 ? 0 : 660,
     essentials: null,
-    fun: (path === "study" ? 80 : reels.salary >= 4e4 ? 200 : 120) + (fx.fun || 0),
+    fun: (path === "military" ? 350 : path === "study" ? 80 : reels.salary >= 4e4 ? 200 : 120) + (fx.fun || 0),
     accounts: { checking: 0, emergency: 0, goal: 0, k401: 0, roth: 0, brokerage: 0 },
     debts: [],
     plan: { k401Pct: 0, emergency: 0, goal: 0, roth: 0, brokerage: 0, extra: {}, lockLifestyle: false, livingLoan: true },
@@ -2125,6 +2145,15 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
   if (path === "both") {
     s4.school = { kind: "both", yearsLeft: SCHOOL.both.years, tuition: SCHOOL.both.tuition };
     setJob(s4, jobFromSalary(salary || 27e3, 0, 0), { salary: (salary || 27e3) * 0.5, part: true });
+  }
+  if (path === "cert") {
+    s4.school = { kind: "cert", yearsLeft: SCHOOL.cert.years, tuition: SCHOOL.cert.tuition };
+    setJob(s4, jobFromSalary(salary || 27e3, 0, 0), { salary: (salary || 27e3) * 0.5, part: true });
+  }
+  if (path === "military") {
+    s4.service = { yearsLeft: 4 };
+    s4.stats.discipline = Math.min(3, s4.stats.discipline + 1);
+    s4.job = { employed: true, id: "enlisted", title: "Enlisted service member", salary: SERVICE_PAY[0], part: false, has401k: true, match: null, unemployedLeft: 0 };
   }
   if (path === "study") {
     s4.school = { kind: "study", yearsLeft: bs.id === "two-years-college" ? 2 : SCHOOL.study.years, tuition: SCHOOL.study.tuition };
@@ -2151,6 +2180,7 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
   rollMarket(s4);
   s4.debtAtStart = r22(consumerDebtOf(s4) + sum(s4.debts.filter((d) => d.kind === "auto").map((d) => d.balance)));
   s4.records.push({ age: s4.age, kind: "start", text: `${region.name} \xB7 ${bs.title}` + (s4.school ? s4.school.kind === "study" ? " \xB7 full-time university" : " \xB7 community college while working" : ` \xB7 ${s4.job.title}`), big: true });
+  if (path === "cert" || path === "military") s4.records.at(-1).text = `${region.name} \xB7 ${bs.title} \xB7 ${path === "cert" ? "trade school with a part-time job" : "enlisted in the military"}`;
   s4.learn = freshLearn();
   pickLesson(s4);
   return s4;
@@ -2277,7 +2307,7 @@ function profile(s4) {
     job: s4.business ? `${s4.business.label} owner` : s4.school ? s4.job.employed ? s4.job.title : "Student" : s4.job.employed ? s4.job.title : "Unemployed",
     salary: s4.business ? s4.business.profit * 12 : s4.job.employed ? s4.job.salary : 0,
     love: s4.spouse ? "Married" : s4.partner ? "Dating" : "Single",
-    home: s4.home ? "Own home" : s4.status.some((x) => x.id === "couch") ? "Couch-surfing" : "Renting",
+    home: s4.service ? "Barracks" : s4.home ? "Own home" : s4.status.some((x) => x.id === "couch") ? "Couch-surfing" : "Renting",
     career: modFor(s4, "career"),
     careerBase: s4.stats.career,
     discipline: modFor(s4, "discipline"),
@@ -2572,6 +2602,7 @@ function blockReason(s4, d) {
 }
 function choiceBlock(s4, d, c) {
   if (c.cost && liquid(s4) < c.cost) return `Costs ${money(c.cost)}.`;
+  if (c.needSide && (s4.side || 0) < c.needSide) return "Needs a side hustle earning at least $300 a month.";
   if (c.needCareer && s4.stats.career < c.needCareer) return `Requires career skill \u2265 ${c.needCareer}.`;
   if (d.id === "buycar" && s4.credit && s4.credit < 500) return "Credit score too low for a car loan.";
   return null;
@@ -2582,7 +2613,7 @@ function rollDecision(s4, id, { choice = null, jobId = null } = {}) {
   if (!d?.throw) throw Error("This decision doesn\u2019t need a roll.");
   if (d.blocked) throw Error(d.blocked);
   const n = clone(s4);
-  n.throw = { source: "decision", id, choice, jobId, stat: d.throw.stat, label: d.throw.label, game: d.throw.game, roll: d6(n), mod: modFor(n, d.throw.stat), pen: id === "jobhunt" && jobId ? jobsFor(s4).find((j) => j.id === jobId)?.jump || 0 : 0 };
+  n.throw = { source: "decision", id, choice, jobId, stat: d.throw.stat, label: d.throw.label, game: d.throw.game, roll: d6(n), mod: modFor(n, d.throw.stat) + (choice === "own" ? 1 : 0), pen: id === "jobhunt" && jobId ? jobsFor(s4).find((j) => j.id === jobId)?.jump || 0 : 0 };
   return n;
 }
 function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0 } = {}) {
@@ -2625,10 +2656,16 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0 } = {})
       if (k === "study") n.job = { employed: true, id: "campus", title: "Campus job", salary: ASSUME.campusJob, part: true, has401k: false, match: null, unemployedLeft: 0 };
       else if (n.job.employed && !n.job.part) n.job = { ...n.job, title: n.job.title + " (part-time)", salary: Math.round(n.job.salary * 0.5), part: true };
       for (const x of n.debts) if (x.kind === "student") x.deferUntilAge = 99;
+      if (n.flags.giBill) {
+        n.flags.giBill = false;
+        n.school.tuition = 0;
+        n.support = { monthly: GI_HOUSING, untilAge: n.age + SCHOOL[k].years, label: "GI Bill housing allowance", gi: true };
+      }
       break;
     }
     case "dropout":
       n.school = null;
+      if (n.support?.gi) n.support = null;
       if (n.job.id === "campus") n.pending.push({ month: 2, kind: "hire", job: JOBS[0].id, salary: JOBS[0].salary, part: false, label: "Start a full-time job" });
       else if (n.job.employed && n.job.part) setJob(n, JOBS.find((x) => x.id === n.job.id), {});
       for (const x of n.debts) if (x.kind === "student" && x.deferUntilAge === 99) {
@@ -2652,9 +2689,10 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0 } = {})
       applyFx(n, outcome, 1, d.title);
       break;
     case "startup": {
-      const profit = Math.round(ch.base * outcome.bizMult / 10) * 10;
-      n.business = { type: ch.id, label: ch.label.replace(/ \(.*$/, "").replace(/^$/, ""), profit, since: n.age, base: ch.base };
-      n.business.label = { truck: "food truck", shop: "online shop", studio: "design studio" }[ch.id];
+      const own = ch.id === "own", profit = Math.round((own ? Math.max(ch.base, n.side * 3) : ch.base) * outcome.bizMult / 10) * 10;
+      n.business = { type: ch.id, label: ch.label.replace(/ \(.*$/, "").replace(/^$/, ""), profit, since: n.age, base: ch.base, own };
+      if (own) n.side = 0;
+      n.business.label = { own: "side business", truck: "food truck", shop: "online shop", studio: "design studio" }[ch.id];
       n.job = { employed: false, title: "Self-employed", salary: 0, has401k: false, match: null, unemployedLeft: 0 };
       break;
     }
@@ -2663,6 +2701,12 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0 } = {})
       n.job = { employed: false, title: "Unemployed", salary: 0, has401k: false, match: null, unemployedLeft: 0 };
       const back = jobsFor(n).filter((j) => !j.blocked && j.salary <= 45e3).sort((a, b) => b.salary - a.salary)[0] || JOBS[0];
       n.pending.push({ month: 3, kind: "hire", job: back.id, salary: back.salary, part: false, label: `Start as ${back.title}` });
+      break;
+    }
+    case "rehire": {
+      n.flags.bizFailedAt = null;
+      const back = jobsFor(n).filter((j) => !j.blocked && j.salary <= 45e3).sort((a, b) => b.salary - a.salary)[0] || JOBS[0];
+      n.pending.push({ month: 2, kind: "hire", job: back.id, salary: back.salary, part: false, label: back.title });
       break;
     }
     case "cheaper":
@@ -3174,7 +3218,7 @@ function simulateYear(s0, { returnRate = s0.marketReturn ?? ASSUME.stockReturnMe
     const left = charge(m, ess, "Essentials");
     if (left > 0) {
       overdue(m, left, "Essentials");
-      if (!s4.home && left >= s4.essentials.housing * 0.5) rentMissed++;
+      if (!s4.home && !s4.service && left >= s4.essentials.housing * 0.5) rentMissed++;
     } else rentMissed = 0;
     if (rentMissed >= 3 && !s4.home && !s4.status.some((x) => x.id === "couch")) {
       s4.essentials.housing = 300;
@@ -3393,7 +3437,7 @@ function nextYear(s4) {
     n.school.yearsLeft--;
     if (n.school.yearsLeft <= 0) graduate(n);
   }
-  if (n.job.employed && !n.school) raiseSalary(n, n.job.salary * (1 + ASSUME.meritRaise));
+  if (n.job.employed && !n.school && !n.service) raiseSalary(n, n.job.salary * (1 + ASSUME.meritRaise));
   if (n.business) {
     const die = d6(n), r = die + modFor(n, "career"), t = tierOf(r, die);
     const old = n.business.profit;
@@ -3403,6 +3447,19 @@ function nextYear(s4) {
   if (!n.job.employed && !n.business && !n.school && !n.job.unemployedLeft && !(n.spouse && n.spouse.salary)) {
     setJob(n, JOBS[0], {});
     n.records.push({ age: n.age, kind: "note", text: `A whole year with no income, so you took a job as ${n.job.title} (salary ${money(n.job.salary)}).` });
+  }
+  if (n.flags.bizFailedAt != null && n.flags.bizFailedAt <= n.age) n.flags.bizFailedAt = null;
+  if (n.service) {
+    n.service.yearsLeft--;
+    if (n.service.yearsLeft <= 0) leaveService(n);
+    else {
+      n.job.salary = SERVICE_PAY[4 - n.service.yearsLeft];
+      if (n.service.yearsLeft <= 2 && !n.job.match) n.job.match = { rate: 1, upTo: 0.05 };
+    }
+  }
+  if (n.business) {
+    const risk = BIZ_FAIL[Math.min(n.age - n.business.since, BIZ_FAIL.length - 1)] * (n.business.own ? 0.67 : 1) * (n.business.profit >= BIZ_SOLD_PROFIT ? 0.5 : 1);
+    if (rand(n) < risk) closeFailed(n);
   }
   n.age++;
   n.year = null;
@@ -3430,8 +3487,39 @@ function nextYear(s4) {
   pickLesson(n);
   return n;
 }
+function leaveService(n) {
+  const col = STATES[n.region].costOfLiving, base = startEssentials(45e3, "work", col);
+  n.service = null;
+  n.flags.giBill = true;
+  n.stats.career = Math.min(3, n.stats.career + 1);
+  for (const k of Object.keys(base)) n.essentials[k] = Math.max(n.essentials[k], base[k]);
+  const j = jobFromSalary(44e3, n.edu, n.stats.career);
+  setJob(n, j, { salary: j.salary });
+  n.records.push({ age: n.age, kind: "big", text: "Finished 4 years of service. Career skill +1, and the GI Bill will now cover tuition if you go back to school.", big: true }, { age: n.age, kind: "note", text: `Back in civilian life, you started as ${n.job.title}: ${money(n.job.salary)}` });
+}
+function closeFailed(n) {
+  const b = n.business, bill = BIZ_BILLS[b.type] || 500, sold = b.profit >= BIZ_SOLD_PROFIT, sale = Math.round(b.profit * BIZ_SALE_MONTHS / 100) * 100;
+  n.business = null;
+  n.flags.bizFailedAt = n.age + 1;
+  n.job = { employed: false, title: "Unemployed", salary: 0, has401k: false, match: null, unemployedLeft: 0 };
+  if (sold) {
+    n.pending.push({ month: 1, kind: "income", amount: sale, label: `Sold your business: ${b.label}` });
+    n.records.push({ age: n.age, kind: "big", text: `${b.label}: sold for ${money(sale)}.`, big: true });
+    return;
+  }
+  n.pending.push({ month: 1, kind: "cost", amount: bill, from: "checking", label: "Bills from the closed business" });
+  n.records.push({ age: n.age, kind: "big", text: `${b.label}: closed. You still owe bills you personally guaranteed (${money(bill)}).`, big: true });
+}
 function graduate(n) {
   const k = n.school.kind, sc2 = SCHOOL[k];
+  if (k === "cert") {
+    n.stats.career = Math.min(3, n.stats.career + sc2.career);
+    n.school = null;
+    const j2 = jobFromSalary(44e3, n.edu, n.stats.career);
+    setJob(n, j2, { salary: j2.salary });
+    n.records.push({ age: n.age, kind: "big", text: `Earned your trade certificate and started as ${n.job.title}: ${money(n.job.salary)}`, big: true });
+    return;
+  }
   if (k === "study" && !n.home) {
     n.essentials.housing = Math.max(n.essentials.housing, Math.round(850 * STATES[n.region].costOfLiving.housing));
     n.essentials.food = Math.max(n.essentials.food, 400);
@@ -4118,6 +4206,7 @@ var T2 = {
   creep: "Don\u2019t raise fun money when I get a raise",
   useLoans: "Use student loans for living costs",
   unassigned: "Unassigned, stays in checking",
+  pathNote: "Rough estimate for new US high school grads, fall 2024 (BLS, military data). Certificates are counted with community college. About 17 of 100 start out neither working nor in school; that isn\u2019t a path here yet.",
   repeatPlan: "Same as last year",
   askTag: "This year\u2019s decision",
   askSelf: "I\u2019ll split it myself",
@@ -4869,18 +4958,18 @@ function winHtml(reached = 0) {
 }
 function pathScreen() {
   const r = reelsObj(), need = needsPath(r), p = previewStart(), pay = payday(p);
-  const TAG = { work: "Start earning now", both: "Community college + part-time job \xB7 2 yrs", study: "State university \xB7 4 yrs" };
+  const TAG = { cert: "Trade school + part-time job \xB7 1 yr", military: "4-year contract \xB7 barracks and meals", work: "Start earning now", both: "Community college + part-time job \xB7 2 yrs", study: "State university \xB7 4 yrs" };
   const pathCard = (x) => {
     const qq = previewStart(x.id), sc2 = SCHOOL[x.id], lvl = sc2 ? sc2.edu : 0;
     const aid = payday(qq).aid, fee = sc2 ? Math.round(sc2.years * 12 * (aid.tuitionLoan + aid.livingLoan)) : 0;
     const top = JOBS.filter((j) => j.edu <= lvl && j.career <= 2).sort((a, b) => b.salary - a.salary)[0], full = qq.job.part ? qq.job.salary * 2 : qq.job.salary, best = full > top.salary ? { title: qq.job.title.replace(/ \(.*$|（.*$/, ""), salary: full } : top;
     const row = (lbl, v, max, cls, sub) => `<span class="pm-row"><em>${lbl}</em>${meter(v, max, cls)}<b>${sub}</b></span>`;
-    return `<button class="path-opt ${setup.path === x.id ? "on" : ""}" data-go="path" data-id="${x.id}" aria-pressed="${setup.path === x.id}" title="${h(x.text)}">${icon[x.icon]}<b>${h(x.title)}</b><span>${h(TAG[x.id] || "")}</span>
+    return `<button class="path-opt ${setup.path === x.id ? "on" : ""}" data-go="path" data-id="${x.id}" aria-pressed="${setup.path === x.id}" title="${h(x.text)}">${icon[x.icon]}<b>${h(x.title)}</b><span>${h(TAG[x.id] || "")}</span><span class="path-share">${h(x.share || "")}</span>
       ${row("Pay now", qq.job.salary, 45e3, "ok", money2(qq.job.salary) + "/yr")}${row("Est. student loans", fee, 5e4, "tax", fee ? money2(fee) : "$0")}${row("Best job later", best.salary, 1e5, "held", money2(best.salary) + "/yr")}
       <small>${h(best.title)}</small></button>`;
   };
   setupFrame("path", `<section class="goal-stage">
-    ${need ? `<header class="wiz-title"><h1>How do you want to start?</h1><p>The reels only decide the money. Whether you study is up to you, and you can change it later.</p></header><div class="path-pick">${PATHS.map(pathCard).join("")}</div>` : `<header class="wiz-title"><h1>${r.age} and already working</h1><p>${h(backstoryFor(setup.seed, r).title)}. Every year you can change jobs, go back to school, start a business or move.</p></header>`}
+    ${need ? `<header class="wiz-title"><h1>How do you want to start?</h1><p>The reels only decide the money. Whether you study is up to you, and you can change it later.</p></header><div class="path-pick">${PATHS.map(pathCard).join("")}</div><p class="path-note">${h(T2.pathNote)}</p>` : `<header class="wiz-title"><h1>${r.age} and already working</h1><p>${h(backstoryFor(setup.seed, r).title)}. Every year you can change jobs, go back to school, start a business or move.</p></header>`}
     ${winHtml(0)}
     <div class="start-sum">${avatar(setup.look, { cls: "mid", label: false })}<label class="name-field dark"><span>Name</span><input id="player-name" maxlength="20" value="${h(setup.name)}" placeholder="Optional" autocomplete="off"></label>
       </div>

@@ -1430,6 +1430,13 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 @media (max-width: 760px) { .path-opt .pm-row { grid-template-columns: 16px minmax(0, 1fr) auto; } .path-opt .pm-row em { grid-column: auto; } }
 .win-tile { align-items: center; } .win-pic { grid-column: 1 / -1; display: flex; align-items: flex-end; gap: 4px; height: 44px; margin-top: 4px; } .win-pic i { flex: 1; border: 2px solid var(--ink); border-radius: 4px 4px 1px 1px; } .win-pic .pay { background: #5ccf8f; height: 100%; } .win-pic .bill { background: #ffb3a7; height: 68%; } .win-life { align-items: center; gap: 2px; } .win-life i { height: 10px; border-radius: 3px; background: var(--sky-3); } .win-life i.end { background: var(--sun); height: 20px; }
 .surv-bars { max-width: 380px; } .jc-legend { margin: 0 0 4px; font-size: .76rem; font-weight: 700; color: var(--ink-2); display: flex; align-items: center; gap: 4px; } .jc-legend .ico { width: 15px; height: 15px; }
+/* Round 22: insurance is visible; one real-life question; labels no longer cut off */
+.cover-row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 2px dashed #d9d3c0; font-size: .86rem; }
+.cover-row .ico { width: 16px; height: 16px; flex: none; } .cover { display: inline-flex; gap: 4px; align-items: center; padding: 2px 8px; background: #d9f7e4; border: 2px solid var(--ink); border-radius: 999px; font-weight: 700; }
+.cover-row small { display: inline-flex; gap: 3px; align-items: center; color: #1c6b45; font-weight: 700; }
+.yr-real { background: #e2f1ff; } .yr-real b { margin-right: 2px; }
+.pd-flow .fl.total { flex-wrap: wrap; } .pd-flow .fl.total > span { white-space: nowrap; }
+.impact .ba-lab { white-space: normal; overflow: visible; text-overflow: clip; display: flex; line-height: 1.15; }
 </style>
 </head>
 <body>
@@ -3410,7 +3417,11 @@ function liveYear(s4) {
 }
 function nextYear(s4) {
   assertPhase(s4, "review");
-  const n = clone(s4), sm = n.year.summary, mo = n.year.months;
+  const n = clone(s4), sm = n.year.summary, mo = n.year.months, rn = realNote(s4);
+  if (rn) {
+    n.flags.realSeen = [...n.flags.realSeen || [], rn.id];
+    n.flags.realAt = s4.age;
+  }
   const maxM = mo.reduce((b, x) => x.spend > b.spend ? x : b, mo[0]), minM = mo.reduce((b, x) => x.spend < b.spend ? x : b, mo[0]);
   n.history.push({
     age: n.age,
@@ -3559,6 +3570,23 @@ function yearNotes(s4) {
   const b = s4.business;
   if (b?.plan && b.since === s4.age) out.push(fill20(R20.review, { m: b.plan.months.toFixed(1), now: monthsLeft(liquid(s4), monthlyOut(s4)).toFixed(1), p: money(b.profit), need: money(b.plan.need) }));
   return out;
+}
+var R22 = { "debt": "Do you know the interest rate on your own credit card? It\u2019s on the statement.", "bill": "A {x} surprise. Could your real savings pay that today?", "health": "Do you know your own health plan\u2019s deductible, or where to find it?", "job": "If your pay stopped, how many months of rent and food could you cover?", "rent": "What share of your income goes to rent right now?", "family": "How much could you give someone without touching your bills?", "impulse": "Your last impulse buy: would you buy it again a week later?", "subs": "Which of your own subscriptions went unused last month?", "risk": "Has anyone pitched you a sure thing? What would you check first?", "match": "Does your job, or your next one, match retirement savings?", "fraud": "When did you last read your own card statement?", "car": "Thinking about a car? Add up payment, insurance and gas per month.", "home": "What would a home near you cost per month, with tax and insurance?", "biz": "What\u2019s the smallest version of your idea you could test first?", "school": "What would your course cost after aid, and what job would it lead to?" };
+var REAL_CARD = { bill: ["car-repair", "fender", "washer", "phone-broke", "roof", "flood"], health: ["er-visit", "dental", "checkup", "insurance-up"], job: ["layoff", "recession"], rent: ["rent-up", "bigger"], family: ["family-help", "parent-care", "friend-wedding", "friend-loan"], impulse: ["new-phone", "takeout", "concert", "trip", "console", "bag", "upgrade-car", "tv"], subs: ["subs", "gym", "lottery"], risk: ["stock-tip", "crypto", "casino", "timeshare"], match: ["match-start"], fraud: ["fraud"] };
+var REAL_DEC = { buycar: "car", buyhome: "home", startup: "biz", side: "biz", enroll: "school", course: "school", jobhunt: "match" };
+function realNote(s4) {
+  const y = s4.year;
+  if (!y?.lines) return null;
+  const at = s4.flags?.realAt, seen = s4.flags?.realSeen || [];
+  if (at != null && s4.age - at < 2) return null;
+  const charged = sum(y.lines.filter((l) => l.type === "card-charge" || l.type === "overdue").map((l) => l.amount)), want = [];
+  if (charged >= 50) want.push("debt");
+  for (const [id2, cards] of Object.entries(REAL_CARD)) if (cards.includes(s4.card?.id)) want.push(id2);
+  if (REAL_DEC[s4.decision?.id]) want.push(REAL_DEC[s4.decision.id]);
+  const id = want.find((x) => !seen.includes(x));
+  if (!id) return null;
+  const cost = CARDS.find((c) => c.id === s4.card?.id)?.options?.find((o) => o.cost)?.cost || 0;
+  return { id, text: fill20(R22[id], { x: money(cost) }) };
 }
 function leaveService(n) {
   const col = STATES[n.region].costOfLiving, base = startEssentials(45e3, "work", col);
@@ -4171,7 +4199,7 @@ var GLOSSARY = {
   emergency: ["Emergency fund", "Money set aside only for surprises: job loss, illness, car repairs. Kept in a high-yield savings account. Aim for 3\u20136 months of essential costs."],
   goalfund: ["Savings fund", "Money you\u2019ll need in 1\u20135 years, like a down payment, a trip, or a car."],
   checking: ["Checking", "Paychecks come in and bills go out. No interest."],
-  available: ["Left to plan", "Take-home pay minus essentials, fun money and minimum debt payments: what\u2019s left is yours to plan. Negative means you spend more than you earn \u2014 the game dips into savings first, then the credit card, and finally bills go overdue."],
+  available: ["Left to split", "Take-home pay minus essentials, fun money and minimum debt payments: what\u2019s left is yours to split. Negative means you spend more than you earn \u2014 the game dips into savings first, then the credit card, and finally bills go overdue."],
   minimum: [" minimum payment", "The least you must pay on each debt every month; the game takes it automatically. Miss one and it\u2019s overdue: $30 late fee and your credit score drops."],
   extra: ["Extra payment:", "Paying more than the minimum. The higher the interest rate, the more it\u2019s worth paying that debt off first."],
   apr: ["APR (annual interest rate)", "The price of borrowing. Owe $1,000 at 25% APR and you\u2019ll pay about $250 in interest a year."],
@@ -4192,6 +4220,7 @@ var GLOSSARY = {
   status: ["Status", "Good or bad conditions that affect throws for a while, e.g. \u201CInspired\u201D gives career throws +1 and \u201CGaming binge\u201D gives career throws \u22121. They wear off on their own."],
   dice: ["How a throw works", "First play a 12-second mini-game; your score becomes a bonus of 0 / +1 / +2. Then roll one die (1\u20136). Die + skill + status + mini-game bonus: \u22643 fail, 4\u20136 success, \u22657 great success. You can also skip the game and just roll. A roll of 1 always fails, however high your skill. When job hunting, aiming more than $15,000 above your current pay costs \u22121 per step (max \u22123)."],
   essentials: ["Essentials", "Money you must pay every month: housing costs beyond rent or mortgage, food, transportation, insurance, utilities and phone."],
+  insurance: ["Insurance", "Health, car and home cover are on automatically. The cost is already in Essentials, so there is nothing to buy. Life cards can raise it."],
   fun: ["Fun money", "Eating out, entertainment, subscriptions \u2014 spending you can cut. It grows automatically with raises (lifestyle creep), but you can lock it on payday."]
 };
 var TUTS = [
@@ -4238,6 +4267,13 @@ var T2 = {
   ifTrouble: "If trouble hits",
   canLast: "Can last {n} mo",
   wealth: "Your wealth",
+  realLife: "In real life:",
+  insurance: "Insurance",
+  coverHealth: "Health",
+  coverCar: "Car",
+  coverHome: "Home",
+  coverIn: "Already in Essentials",
+  perMo: "/mo",
   monthMoney: "This month\u2019s money",
   grossPay: "Pay",
   taxes: "Taxes",
@@ -4246,7 +4282,7 @@ var T2 = {
   essentials: "Essentials",
   fun: "Fun money",
   minimums: "Least you must repay",
-  available: "Left to plan",
+  available: "Left to split",
   extraIn: "Extra money in",
   lineByLine: "Line by line",
   grossMonthly: "Gross monthly pay",
@@ -5289,7 +5325,7 @@ function reviewPage() {
   const legend = (segs) => `<ul class="io-legend">${segs.filter((x) => x.v > 0.5).map((x) => `<li class="k-${x.cls}"><i></i>${x.label}<b>${money2(x.v)}</b></li>`).join("")}</ul>`;
   const baRow = (label, a0, b0, better, show) => `<div class="ba-row"><span class="ba-lab">${label}</span>${beforeAfter(a0, b0, better)}<b>${show}</b></div>`;
   frame("review", `<section class="ty-review"><header class="page-head"><h1>${fmt(past ? T2.ageLookBack : T2.ageDone, { age })}</h1>${y.news ? `<p class="news">${icon.chart}${h(y.news)} (${fmt(T2.marketNote, { r: pct(sm.returnRate, 1) })})</p>` : ""}${pastPicker(past)}</header>
-    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans}</p>${past ? "" : yearNotes(s2).map((x) => `<p class="yr-note">${icon.piggy}<span>${h(x)}</span></p>`).join("")}
+    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans}</p>${past ? "" : yearNotes(s2).map((x) => `<p class="yr-note">${icon.piggy}<span>${h(x)}</span></p>`).join("")}${!past && realNote(s2) ? `<p class="yr-note yr-real">${icon.pin}<span><b>${T2.realLife}</b> ${h(realNote(s2).text)}</span></p>` : ""}
     <div class="ty-months ${anim ? "anim" : ""}">${y.months.map((mo, i) => {
     const e = ev(mo.month), b2 = e.find((l) => bad.includes(l.type)) || e[0];
     return `<div class="ty-mo ${e.some((l) => bad.includes(l.type)) ? "hasbad" : ""}" style="--i:${i}" title="${h(fmt(T2.cashIn, { m: money2(mo.checking) }))}"><small>${h(fmt(LT2.month, { m: mo.month }))}</small><span class="mo-bar"><i style="height:${Math.max(4, moTotal(mo) / moMax * 100)}%"></i></span><b>${money2(moTotal(mo))}</b>${b2 ? `<em class="${bad.includes(b2.type) ? "bad" : ""}" title="${h(b2.label)}">${h(b2.label.replace(/[:：].*$/, ""))}</em>` : ""}</div>`;
@@ -5360,12 +5396,12 @@ function overviewPage() {
 }
 function sheet(m) {
   const a = s2.accounts, assets = [["Checking", a.checking, "checking"], [`Emergency fund (${m.runway.toFixed(1)} mo)`, a.emergency, "emergency"], [s2.goal === "home" ? "Down payment fund" : "Savings fund", a.goal, "goalfund"], ["401(k)", a.k401, "k401"], ["Roth IRA", a.roth, "roth"], ["Other investing", a.brokerage, "brokerage"], ...s2.home ? [["Home (estimated value)", s2.home.value, ""]] : []];
-  const debts = s2.debts.filter((d) => d.balance > 5e-3).map((d) => [d.label, d.balance, "", d.apr]);
+  const debts = s2.debts.filter((d) => d.balance > 5e-3).map((d) => [d.label, d.balance, "", d.apr, d.kind === "medical" ? d.payment : 0]);
   const top = Math.max(1, ...assets.map((x) => x[1]), ...debts.map((x) => x[1]));
-  const rows = (list) => list.map(([n, v, k, apr]) => `<li><span>${h(n)} ${k ? q(k) : ""}${apr != null ? `<small> ${pct(apr, 1)}</small>` : ""}</span><i style="width:${Math.max(1, v / top * 100)}%"></i><b>${money2(v)}</b></li>`).join("");
+  const rows = (list) => list.map(([n, v, k, apr, perMo]) => `<li><span>${h(n)} ${k ? q(k) : ""}${apr != null ? `<small> ${pct(apr, 1)}${perMo ? ` \xB7 ${money2(perMo)}${T2.perMo}` : ""}</small>` : ""}</span><i style="width:${Math.max(1, v / top * 100)}%"></i><b>${money2(v)}</b></li>`).join("");
   return `<section class="panel sheet"><h3>${icon.bank}What you own \u2212 what you owe = wealth ${q("netWorth")}</h3><div class="sheet-cols">
     <div class="own"><small>Own ${money2(m.assets)}</small><ul>${rows(assets)}</ul></div><div class="owe"><small>owes ${money2(m.totalDebt)}</small><ul>${rows(debts) || '<li class="hint">No debt</li>'}</ul></div></div>
-    <p class="sheet-total">= Your wealth <b class="${m.netWorth < 0 ? "neg" : "pos"}">${money2(m.netWorth)}</b></p></section>`;
+    <p class="sheet-total">= Your wealth <b class="${m.netWorth < 0 ? "neg" : "pos"}">${money2(m.netWorth)}</b></p><div class="cover-row">${icon.shield}<b>${T2.insurance}</b>${q("insurance")}<span class="cover">${icon.heart}${T2.coverHealth} ${money2(s2.essentials.insurance)}${T2.perMo}</span>${s2.car ? `<span class="cover">${icon.car}${T2.coverCar}</span>` : ""}${s2.home ? `<span class="cover">${icon.house}${T2.coverHome}</span>` : ""}<small>${icon.check}${T2.coverIn}</small></div></section>`;
 }
 function stagePath() {
   const st = stage(s2);

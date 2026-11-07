@@ -1415,6 +1415,10 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
   .page.wizard .goal-stage { gap: 6px; } .goal-stage .wiz-title h1 { font-size: 1.5rem; } .goal-stage .wiz-title p { margin-top: 0; font-size: .86rem; } .path-note { margin-top: 0; } .win-panel h2 { margin-bottom: 4px; font-size: 1.1rem; } .win-tile { padding: 6px 10px; } .win-stairs { height: 36px; margin-top: 2px; } .start-sum { padding: 4px 10px; } .start-sum .avatar, .start-sum .mid { width: 44px; height: 44px; } .goal-stage .look-foot { padding-top: 4px; } }
 .pd-flow .fl.total b { font-size: clamp(1rem, 1.5vw, 1.35rem); white-space: nowrap; }
 @media (min-width: 761px) { .win-stairs { height: 48px; } }
+
+/* Round 20 */
+.biz-think { border: 2.5px dashed var(--ink); border-radius: 12px; background: #fff8dc; padding: 8px 10px; margin: 8px 0; } .biz-think small { font-weight: 800; color: var(--ink-2); } .biz-think p { margin: 2px 0 6px; font-weight: 700; } .biz-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.opt-effect { display: block; color: #1c6b45; font-weight: 700; } .yr-note { display: flex; gap: 8px; align-items: center; margin: 4px 0 8px; padding: 6px 10px; background: #fff8dc; border: 2px solid var(--ink); border-radius: 10px; font-weight: 700; font-size: .88rem; } .yr-note .ico { flex: none; width: 20px; height: 20px; }
 </style>
 </head>
 <body>
@@ -2616,7 +2620,7 @@ function rollDecision(s4, id, { choice = null, jobId = null } = {}) {
   n.throw = { source: "decision", id, choice, jobId, stat: d.throw.stat, label: d.throw.label, game: d.throw.game, roll: d6(n), mod: modFor(n, d.throw.stat) + (choice === "own" ? 1 : 0), pen: id === "jobhunt" && jobId ? jobsFor(s4).find((j) => j.id === jobId)?.jump || 0 : 0 };
   return n;
 }
-function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0 } = {}) {
+function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0, bizPlan = null } = {}) {
   assertPhase(s4, "decision");
   const d = decisions(s4).find((x) => x.id === id);
   if (!d) throw Error("\u4ECA\u5E74\u4E0D\u80FD\u505A\u8FD9\u4E2A\u9009\u62E9\u3002");
@@ -2691,12 +2695,17 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0 } = {})
     case "startup": {
       const own = ch.id === "own", profit = Math.round((own ? Math.max(ch.base, n.side * 3) : ch.base) * outcome.bizMult / 10) * 10;
       n.business = { type: ch.id, label: ch.label.replace(/（.*$/, "").replace(/^开(一辆|网|设计)?/, ""), profit, since: n.age, base: ch.base, own };
+      if (bizPlan) {
+        const k = startupCheck(s4, ch.id);
+        n.business.plan = { months: k.months, need: k.need, worst: bizPlan[2] || null };
+      }
       if (own) n.side = 0;
       n.business.label = { own: "\u526F\u4E1A\u751F\u610F", truck: "\u9910\u8F66", shop: "\u7F51\u5E97", studio: "\u8BBE\u8BA1\u5DE5\u4F5C\u5BA4" }[ch.id];
       n.job = { employed: false, title: "\u5168\u804C\u521B\u4E1A", salary: 0, has401k: false, match: null, unemployedLeft: 0 };
       break;
     }
     case "closebiz": {
+      noteClose(n, n.business, false);
       n.business = null;
       n.job = { employed: false, title: "\u6CA1\u6709\u5DE5\u4F5C", salary: 0, has401k: false, match: null, unemployedLeft: 0 };
       const back = jobsFor(n).filter((j) => !j.blocked && j.salary <= 45e3).sort((a, b) => b.salary - a.salary)[0] || JOBS[0];
@@ -3487,6 +3496,59 @@ function nextYear(s4) {
   pickLesson(n);
   return n;
 }
+var R20 = { "q1": "\u5982\u679C\u7B2C\u4E00\u5E74\u4E00\u5206\u94B1\u6CA1\u8D5A\uFF0C\u4F60\u7684\u94B1\u5927\u7EA6\u80FD\u6491 {n} \u4E2A\u6708\u3002\u591F\u5417\uFF1F", "q1o": [["yes", "\u591F"], ["no", "\u4E0D\u592A\u591F"], ["risk", "\u4E0D\u591F\uFF0C\u4F46\u6211\u613F\u610F\u5192\u9669"]], "q2": "\u4F60\u6BCF\u5E74\u8981\u653E\u5F03 {give} \u5DE5\u8D44\u548C\u798F\u5229\u3002\u751F\u610F\u6BCF\u6708\u8981\u8D5A\u7EA6 {need} \u624D\u8FFD\u5F97\u4E0A\u3002\u503C\u5F97\u5417\uFF1F", "q2b": "\u4F60\u6BCF\u6708\u81F3\u5C11\u8981 {need} \u624D\u591F\u5F00\u9500\u3002\u8FD9\u95E8\u751F\u610F\u8D5A\u5F97\u5230\u5417\uFF1F", "q2o": [["yes", "\u503C\u5F97"], ["unsure", "\u8FD8\u4E0D\u786E\u5B9A"], ["no", "\u53EF\u80FD\u4E0D\u503C\u5F97"]], "q3": "\u5982\u679C\u5931\u8D25\uFF0C\u8FD8\u8981\u8FD8\u7EA6 {bill} \u8D26\u5355\u3002\u4F60\u6253\u7B97\u600E\u4E48\u529E\uFF1F", "q3o": [["work", "\u56DE\u53BB\u5DE5\u4F5C"], ["again", "\u518D\u8BD5\u4E00\u6B21"], ["savings", "\u5148\u9760\u5B58\u6B3E\u6491\u4E00\u9635"]], "review": "\u5F00\u4E1A\u65F6\u4F60\u7B97\u8FC7\u94B1\u80FD\u6491 {m} \u4E2A\u6708\uFF0C\u73B0\u5728\u80FD\u6491 {now} \u4E2A\u6708\u3002\u751F\u610F\u6BCF\u6708\u8D5A {p}\uFF1B\u4F60\u5F53\u65F6\u7B97\u7684\u662F\u8981\u8D5A {need}\u3002", "reflect": "\u4F60\u7684{label}\u7ECF\u8425\u4E86 {y} \u5E74\u3002\u4E0B\u6B21\u4F60\u4F1A\u6539\u4EC0\u4E48\uFF1F", "reflectPlan": "\u5F53\u65F6\u4F60\u8BF4\u5931\u8D25\u540E\u8981\uFF1A\u201C{w}\u201D\u3002", "reflectO": [["save", "\u5148\u591A\u5B58\u70B9\u94B1"], ["side", "\u5148\u5F53\u526F\u4E1A\u8BD5\u8BD5"], ["small", "\u505A\u5C0F\u4E00\u70B9"], ["none", "\u8FD8\u662F\u62FF\u5DE5\u8D44"], ["same", "\u4E0D\u6539\uFF0C\u8FD8\u4F1A\u8FD9\u6837\u505A"]], "reflectRec": "\u4E0B\u6B21\uFF1A{x}\u3002", "caught": "\u4ECA\u5E74\u5B58\u6B3E\u66FF\u4F60\u6321\u4E0B\u4E86 {x}\u3002\u5982\u679C\u5237 {r}% \u7684\u4FE1\u7528\u5361\uFF0C\u4E00\u5E74\u5927\u7EA6\u8981\u591A\u4ED8 {i} \u5229\u606F\u3002", "carded": "\u4ECA\u5E74\u6709 {x} \u4E0A\u4E86\u4FE1\u7528\u5361\u6216\u903E\u671F\uFF1A\u4E0D\u8FD8\u6E05\u7684\u8BDD\uFF0C\u4E00\u5E74\u5927\u7EA6\u8981\u4ED8 {i} \u5229\u606F\u3002", "could": " \u4F60\u7684\u5E94\u6025\u91D1\u672C\u6765\u591F\u4ED8\u3002", "bigger": " \u5E94\u6025\u91D1\u518D\u591A\u4E00\u4E9B\u5C31\u4E0D\u7528\u8FD9\u6837\u3002", "optFund": "\u6CA1\u6709\u5229\u606F\u3002\u80FD\u6491\u7684\u65F6\u95F4\u4ECE {a} \u4E2A\u6708\u53D8\u6210 {b} \u4E2A\u6708\u3002", "optCard": "\u4E0D\u8FD8\u6E05\u7684\u8BDD\uFF0C\u4E00\u5E74\u5927\u7EA6\u4ED8 {i} \u5229\u606F\u3002" };
+var fill20 = (t, v) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "");
+var monthlyOut = (s4) => essentialsMonthly(s4) + s4.fun + sum(minimums(s4).map((x) => x.due));
+var monthsLeft = (cash, out) => out > 0 ? Math.round(cash / out * 10) / 10 : 99;
+function startupCheck(s4, choiceId) {
+  const ch = DECISIONS.find((d) => d.id === "startup").choices.find((c) => c.id === choiceId);
+  if (!ch) return null;
+  const out = monthlyOut(s4), months = monthsLeft(Math.max(0, liquid(s4) - (ch.cost || 0)), out), pay = s4.job.employed ? s4.job.salary : 0, match = s4.job.match && pay ? pay * s4.job.match.rate * s4.job.match.upTo : 0, give = pay + match + (ch.id === "own" ? (s4.side || 0) * 12 : 0);
+  const need = Math.ceil((give > 0 ? give / 12 : out) / 10) * 10, bill = BIZ_BILLS[ch.id] || 500, pick = (o) => o.map(([id, label]) => ({ id, label }));
+  return { months, need, give, bill, questions: [
+    { text: fill20(R20.q1, { n: months.toFixed(1) }), opts: pick(R20.q1o) },
+    { text: fill20(give > 0 ? R20.q2 : R20.q2b, { give: money(give), need: money(need) }), opts: pick(R20.q2o) },
+    { text: fill20(R20.q3, { bill: money(bill) }), opts: pick(R20.q3o) }
+  ] };
+}
+function noteClose(n, b, sold) {
+  n.flags.bizReflect = { label: b.label, years: Math.max(1, n.age - b.since + 1), sold: !!sold, worst: b.plan?.worst || null };
+}
+function reflectPrompt(s4) {
+  const r = s4.flags?.bizReflect;
+  if (!r) return null;
+  const w = r.worst ? R20.q3o.find((o) => o[0] === r.worst)?.[1] : null;
+  return { title: fill20(R20.reflect, { label: r.label, y: r.years, u: r.years === 1 ? "year" : "years" }), plan: w ? fill20(R20.reflectPlan, { w }) : "", options: R20.reflectO.map(([id, label]) => ({ id, label })) };
+}
+function answerReflect(s4, id) {
+  const n = clone(s4), o = R20.reflectO.find((x) => x[0] === id);
+  n.flags.bizReflect = null;
+  if (o) n.records.push({ age: n.age, kind: "note", text: fill20(R20.reflectRec, { x: o[1] }) });
+  return n;
+}
+function optionEffect(s4, o) {
+  if (o.blocked || !o.cost) return null;
+  if (o.pay === "emergency") {
+    const ess = essentialsMonthly(s4);
+    return ess > 0 ? fill20(R20.optFund, { a: (s4.accounts.emergency / ess).toFixed(1), b: (Math.max(0, s4.accounts.emergency - o.cost) / ess).toFixed(1) }) : null;
+  }
+  if (o.pay === "card") {
+    const apr = s4.debts.find((d) => d.kind === "card")?.apr ?? CARD.apr;
+    return fill20(R20.optCard, { i: money(o.cost * apr) });
+  }
+  return null;
+}
+function yearNotes(s4) {
+  const y = s4.year, out = [];
+  if (!y?.lines) return out;
+  const total = (test) => sum(y.lines.filter(test).map((l) => l.amount)), apr = s4.debts.find((d) => d.kind === "card" && !d.closed)?.apr ?? CARD.apr;
+  const bad = total((l) => l.type === "card-charge" || l.type === "overdue"), good = total((l) => l.type === "shortfall" && l.from === "emergency" || l.type === "pay" && l.from === "emergency");
+  if (bad >= 50) out.push(fill20(R20.carded, { x: money(bad), i: money(bad * apr) }) + ((y.before?.emergency || 0) >= bad ? R20.could : R20.bigger));
+  else if (good >= 50) out.push(fill20(R20.caught, { x: money(good), r: Math.round(apr * 100), i: money(good * apr) }));
+  const b = s4.business;
+  if (b?.plan && b.since === s4.age) out.push(fill20(R20.review, { m: b.plan.months.toFixed(1), now: monthsLeft(liquid(s4), monthlyOut(s4)).toFixed(1), p: money(b.profit), need: money(b.plan.need) }));
+  return out;
+}
 function leaveService(n) {
   const col = STATES[n.region].costOfLiving, base = startEssentials(45e3, "work", col);
   n.service = null;
@@ -3499,6 +3561,7 @@ function leaveService(n) {
 }
 function closeFailed(n) {
   const b = n.business, bill = BIZ_BILLS[b.type] || 500, sold = b.profit >= BIZ_SOLD_PROFIT, sale = Math.round(b.profit * BIZ_SALE_MONTHS / 100) * 100;
+  noteClose(n, b, sold);
   n.business = null;
   n.flags.bizFailedAt = n.age + 1;
   n.job = { employed: false, title: "Unemployed", salary: 0, has401k: false, match: null, unemployedLeft: 0 };
@@ -5116,11 +5179,11 @@ function cardPage() {
   }
   const tp = TYPE[c.type], judged = c.roll == null || c.judged;
   const opts = judged ? cardOptions(s2) : [];
-  frame("card", `<section class="card-stage"><div class="ty-card t-${c.type} flip-in"><header>${icon[tp.ico]}<span>${tp.en}</span></header>${cardArt(c.id, c.type)}<h2>${h(c.title)}</h2><p>${h(c.text)}</p>${c.month ? `<small>${c.month} \u6708\u53D1\u751F</small>` : ""}</div>
+  frame("card", `<section class="card-stage"><div class="ty-card t-${c.type} flip-in"><header>${icon[tp.ico]}<span>${tp.name}</span></header>${cardArt(c.id, c.type)}<h2>${h(c.title)}</h2><p>${h(c.text)}</p>${c.month ? `<small>${c.month} \u6708\u53D1\u751F</small>` : ""}</div>
     <div class="card-side">
       ${c.roll != null ? judged ? `<div class="panel">${diceBox(c.roll, c.mod, c.bonus, c.throwLabel, c.stat)}</div>` : `<div class="panel judge"><h3>${icon.dice}\u5224\u5B9A\uFF1A${h(c.throwLabel)} ${q("dice")}</h3><p>\u5148\u73A9 12 \u79D2\u5C0F\u6E38\u620F\u62FF\u52A0\u503C\uFF08\u6700\u591A +2\uFF09\uFF0C\u518D\u63B7\u9AB0\u5B50\u3002\u4F60\u73B0\u5728\u7684${STAT[c.stat]}\uFF1A${c.mod}\u3002</p>
           <div class="row">${btn("card-game", c.game === "dodge" ? "\u5148\u73A9\u201C\u5FCD\u4F4F\u8BF1\u60D1\u201D" : "\u5148\u73A9\u201C\u6293\u4F4F\u673A\u4F1A\u201D", { cls: "btn blue", ico: "star", attrs: reduced ? "disabled" : "data-autofocus" })}${btn("card-roll", "\u76F4\u63A5\u63B7\u9AB0\u5B50", { cls: "btn ghost", ico: "dice" })}</div></div>` : ""}
-      ${judged ? `<div class="panel"><h3>\u4F60\u600E\u4E48\u5E94\u5BF9\uFF1F</h3><div class="opts">${opts.map((o) => `<button class="opt ${o.blocked ? "blocked" : ""}" data-go="card-opt" data-id="${o.id}" ${o.blocked ? "disabled" : ""}><b>${h(o.label)}</b>${o.cost ? `<small>${money2(o.cost)}${o.pay === "card" ? ` \xB7 \u6CA1\u8FD8\u6E05\u7684\u90E8\u5206\u6309\u5E74\u5229\u7387 ${pct(s2.debts.find((d) => d.kind === "card")?.apr ?? CARD.apr, 2)} \u8BA1\u606F` : ""}</small>` : ""}${o.blocked ? `<small class="why">${h(o.blocked)}</small>` : ""}</button>`).join("")}</div></div>` : ""}
+      ${judged ? `<div class="panel"><h3>\u4F60\u600E\u4E48\u5E94\u5BF9\uFF1F</h3><div class="opts">${opts.map((o) => `<button class="opt ${o.blocked ? "blocked" : ""}" data-go="card-opt" data-id="${o.id}" ${o.blocked ? "disabled" : ""}><b>${h(o.label)}</b>${o.cost ? `<small>${money2(o.cost)}${o.pay === "card" ? ` \xB7 \u6CA1\u8FD8\u6E05\u7684\u90E8\u5206\u6309\u5E74\u5229\u7387 ${pct(s2.debts.find((d) => d.kind === "card")?.apr ?? CARD.apr, 2)} \u8BA1\u606F` : ""}</small>` : ""}${optionEffect(s2, o) ? `<small class="opt-effect">${h(optionEffect(s2, o))}</small>` : ""}${o.blocked ? `<small class="why">${h(o.blocked)}</small>` : ""}</button>`).join("")}</div></div>` : ""}
     </div></section>`);
 }
 function diceBox(roll, mod, bonus, label, stat, pen = 0) {
@@ -5198,7 +5261,7 @@ function reviewPage() {
   const legend = (segs) => `<ul class="io-legend">${segs.filter((x) => x.v > 0.5).map((x) => `<li class="k-${x.cls}"><i></i>${x.label}<b>${money2(x.v)}</b></li>`).join("")}</ul>`;
   const baRow = (label, a0, b0, better, show) => `<div class="ba-row"><span class="ba-lab">${label}</span>${beforeAfter(a0, b0, better)}<b>${show}</b></div>`;
   frame("review", `<section class="ty-review"><header class="page-head"><h1>${fmt(past ? T2.ageLookBack : T2.ageDone, { age })}</h1>${y.news ? `<p class="news">${icon.chart}${h(y.news)} (${fmt(T2.marketNote, { r: pct(sm.returnRate, 1) })})</p>` : ""}${pastPicker(past)}</header>
-    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans}</p>
+    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans}</p>${past ? "" : yearNotes(s2).map((x) => `<p class="yr-note">${icon.piggy}<span>${h(x)}</span></p>`).join("")}
     <div class="ty-months ${anim ? "anim" : ""}">${y.months.map((mo, i) => {
     const e = ev(mo.month), b2 = e.find((l) => bad.includes(l.type)) || e[0];
     return `<div class="ty-mo ${e.some((l) => bad.includes(l.type)) ? "hasbad" : ""}" style="--i:${i}" title="${h(fmt(T2.cashIn, { m: money2(mo.checking) }))}"><small>${h(fmt(LT2.month, { m: mo.month }))}</small><span class="mo-bar"><i style="height:${Math.max(4, moTotal(mo) / moMax * 100)}%"></i></span><b>${money2(moTotal(mo))}</b>${b2 ? `<em class="${bad.includes(b2.type) ? "bad" : ""}" title="${h(b2.label)}">${h(b2.label.replace(/[:：].*$/, ""))}</em>` : ""}</div>`;
@@ -5322,10 +5385,12 @@ function modalHtml() {
       <span class="jc-pay">${meter(j.salary, capMax)}<b>${money2(j.salary)}</b><small>${h(TEXT.upTo)} ${money2(j.cap)}</small></span>
       <span class="jc-tags">${j.blocked ? `<em class="why" title="${h(j.blocked)}">${icon.lock}${T2.locked}</em>` : `<em>${icon.cap}${EDU[j.edu]}</em>${j.career ? `<em>${icon.star}${j.career}</em>` : ""}${j.needCar ? `<em>${icon.car}</em>` : ""}${j.jump ? `<em class="warn">${h(TEXT.jump)} \u2212${j.jump}</em>` : ""}`}<em class="ben ${/no 401|没有|不提供/i.test(j.benefit) ? "no" : ""}" title="${h(j.benefit)}">${icon.bank}${h(j.benefit)}</em></span></label>`).join("")}</div>` : "";
     const out = d.throw ? `<p class="mini">${h(TEXT.nat1.replace(/^./, (c) => c.toUpperCase()))}</p>${dieStrip({ fail: d.outcomes.fail?.note || "", ok: d.outcomes.ok?.note || "", great: d.outcomes.great?.note || "" })}` : "";
-    const ready = (!d.choices || F.choice) && (!jobs || F.jobId);
+    const biz = d.id === "startup" && F.choice ? startupCheck(s2, F.choice) : null, bizAns = biz && F.bizChoice === F.choice ? F.bizA || [] : [], bizQ = biz ? biz.questions[bizAns.length] : null;
+    const bizBlock = biz ? `<div class="biz-think"><small>${bizAns.length + (bizQ ? 1 : 0)} / 3</small>${bizQ ? `<p>${h(bizQ.text)}</p><div class="biz-opts">${bizQ.opts.map((o) => `<button class="btn ghost small" data-go="biz-q" data-id="${o.id}">${h(o.label)}</button>`).join("")}</div>` : `<p>${icon.check}${h(biz.questions[2].opts.find((o) => o.id === bizAns[2])?.label || "")}</p>`}</div>` : "";
+    const ready = (!d.choices || F.choice) && (!jobs || F.jobId) && (d.id !== "startup" || bizAns.length === 3);
     return wrap(`<header class="m-head"><span class="ribbon-tag">\u4ECA\u5E74\u7684\u5927\u51B3\u5B9A</span><h2>${h(d.title)}</h2><p>${h(d.text)}</p>${btn("close", "\u5173\u95ED", { cls: "icon-btn", ico: "close" })}</header>
-      ${choice}${board}${d.throw ? `<div class="judge-info">${icon.dice}<div><b>\u8981\u5224\u5B9A\uFF1A\u9AB0\u5B50 + ${STAT[d.throw.stat]} ${modFor(s2, d.throw.stat)}${jobs && F.jobId && jobs.find((j) => j.id === F.jobId)?.jump ? ` \u2212 ${h(TEXT.jump)} ${jobs.find((j) => j.id === F.jobId).jump}` : ""} + \u5C0F\u6E38\u620F\u52A0\u503C</b> ${q("dice")}${out}</div></div>` : ""}
-      ${d.blocked ? `<p class="risk">${icon.lock}<span>${h(d.blocked)}</span></p>` : !ready ? `<p class="hint">${jobs ? "\u5148\u5728\u4E0A\u9762\u9009\u4E00\u4EFD\u5DE5\u4F5C\u3002" : "\u5148\u9009\u4E00\u4E2A\u9009\u9879\u3002"}</p>` : ""}
+      ${choice}${bizBlock}${board}${d.throw ? `<div class="judge-info">${icon.dice}<div><b>\u8981\u5224\u5B9A\uFF1A\u9AB0\u5B50 + ${STAT[d.throw.stat]} ${modFor(s2, d.throw.stat)}${jobs && F.jobId && jobs.find((j) => j.id === F.jobId)?.jump ? ` \u2212 ${h(TEXT.jump)} ${jobs.find((j) => j.id === F.jobId).jump}` : ""} + \u5C0F\u6E38\u620F\u52A0\u503C</b> ${q("dice")}${out}</div></div>` : ""}
+      ${d.blocked ? `<p class="risk">${icon.lock}<span>${h(d.blocked)}</span></p>` : !ready && !biz ? `<p class="hint">${jobs ? "\u5148\u5728\u4E0A\u9762\u9009\u4E00\u4EFD\u5DE5\u4F5C\u3002" : "\u5148\u9009\u4E00\u4E2A\u9009\u9879\u3002"}</p>` : ""}
       <div class="m-foot">${btn("close", "\u518D\u60F3\u60F3", { cls: "btn ghost" })}${d.throw ? `${btn("dec-roll", "\u76F4\u63A5\u63B7\u9AB0\u5B50", { cls: "btn ghost", ico: "dice", attrs: ready && !d.blocked ? "" : "disabled" })}${btn("dec-game", "\u5148\u73A9\u5C0F\u6E38\u620F\uFF0C\u518D\u63B7\u9AB0\u5B50", { cls: "btn blue", ico: "star", attrs: (ready && !d.blocked && !reduced ? "" : "disabled") + " data-autofocus" })}` : btn("dec-go", "\u5C31\u8FD9\u4E48\u51B3\u5B9A", { cls: "btn green", ico: "check", attrs: (ready && !d.blocked ? "" : "disabled") + " data-autofocus" })}</div>`, "wide-modal");
   }
   if (M.kind === "lesson" && s2.learn?.pending) {
@@ -5338,6 +5403,14 @@ function modalHtml() {
       <div class="m-foot">${done ? btn("lesson-ok", LT2.gotIt, { cls: "btn green big", ico: "check", attrs: "data-autofocus" }) : btn("lg", LG.skip, { id: "skip", cls: "btn ghost small" })}</div>`, "small-modal lesson-modal");
   }
   if (M.kind === "guide") return wrap(guideHtml(), "wide-modal guide-modal");
+  if (M.kind === "reflect") {
+    const A = reflectPrompt(s2);
+    if (!A) {
+      ui.modal = null;
+      return "";
+    }
+    return wrap(`<header class="m-head"><h2>${h(A.title)}</h2>${A.plan ? `<p>${h(A.plan)}</p>` : ""}</header><div class="rv-opts">${A.options.map((o, i) => `<button class="rv-opt" data-go="reflect-pick" data-id="${o.id}" ${i === 0 ? "data-autofocus" : ""}>${h(o.label)}</button>`).join("")}</div>`, "small-modal review-modal reflect-modal");
+  }
   if (M.kind === "ask") {
     const A = planPrompt(s2);
     if (!A) {
@@ -5387,7 +5460,7 @@ function finishFlow(bonus) {
   const F = ui.flow;
   try {
     if (F.source === "decision") {
-      const next = chooseDecision(s2, F.id, { choice: F.choice, jobId: F.jobId, bonus });
+      const next = chooseDecision(s2, F.id, { choice: F.choice, jobId: F.jobId, bonus, bizPlan: F.bizChoice === F.choice ? F.bizA : null });
       commitStay(next);
       ui.modal = { kind: next.decision.roll != null ? "dice" : "done" };
     } else {
@@ -5500,6 +5573,7 @@ function update(scroll = true) {
     const page = ui.page || PHASE_PAGE[s2.phase];
     maybeTour(page);
     if (s2.learn?.pending && s2.phase === "plan" && page === "payday" && !ui.modal && !ui.tour) ui.modal = { kind: "lesson" };
+    if (s2.phase === "plan" && page === "payday" && !s2.learn?.pending && !ui.modal && !ui.tour && reflectPrompt(s2)) ui.modal = { kind: "reflect" };
     if (!s2.learn?.pending && s2.phase === "plan" && page === "payday" && !ui.modal && !ui.tour && ui.askedAge !== s2.age && planPrompt(s2)) {
       ui.askedAge = s2.age;
       ui.modal = { kind: "ask" };
@@ -5878,6 +5952,20 @@ document.addEventListener("click", (e) => {
       case "pick-decision":
         ui.modal = { kind: "decision", id };
         ui.flow = { source: "decision", id };
+        return update(false);
+      case "biz-q": {
+        const F = ui.flow;
+        if (F.bizChoice !== F.choice) {
+          F.bizChoice = F.choice;
+          F.bizA = [];
+        }
+        F.bizA = [...F.bizA, id];
+        return update(false);
+      }
+      case "reflect-pick":
+        s2 = answerReflect(s2, id);
+        ls.set(SAVE_KEY, s2);
+        ui.modal = null;
         return update(false);
       case "dec-go":
       case "dec-roll":

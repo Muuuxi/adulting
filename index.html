@@ -1419,6 +1419,17 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 /* Round 20 */
 .biz-think { border: 2.5px dashed var(--ink); border-radius: 12px; background: #fff8dc; padding: 8px 10px; margin: 8px 0; } .biz-think small { font-weight: 800; color: var(--ink-2); } .biz-think p { margin: 2px 0 6px; font-weight: 700; } .biz-opts { display: flex; flex-wrap: wrap; gap: 6px; }
 .opt-effect { display: block; color: #1c6b45; font-weight: 700; } .yr-note { display: flex; gap: 8px; align-items: center; margin: 4px 0 8px; padding: 6px 10px; background: #fff8dc; border: 2px solid var(--ink); border-radius: 10px; font-weight: 700; font-size: .88rem; } .yr-note .ico { flex: none; width: 20px; height: 20px; }
+
+/* Round 21 */
+.dc-tags { display: flex; flex-wrap: wrap; gap: 4px; } .cost-badge { background: #fff4c9; } .throw-badge .ico { width: 15px; height: 15px; }
+.surv { margin: 6px 0; } .surv small { font-weight: 800; color: var(--ink-2); } .surv-bars { display: flex; align-items: flex-end; gap: 8px; height: 82px; margin-top: 2px; } .surv-bars span { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; } .surv-bars b { font-size: .78rem; } .surv-bars i { width: 100%; background: var(--blue); border: 2px solid var(--ink); border-radius: 5px 5px 2px 2px; } .surv-bars em { font-style: normal; font-size: .7rem; color: var(--ink-2); }
+.path-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; font-size: .78rem; font-weight: 700; color: var(--ink-2); } .path-legend span { display: inline-flex; align-items: center; gap: 4px; } .path-legend .ico { width: 16px; height: 16px; }
+.path-opt .pm-row { grid-template-columns: 16px minmax(0, 1fr) auto; } .path-opt .pm-row em { grid-column: auto; display: inline-flex; } .path-opt .pm-row em .ico { width: 15px; height: 15px; }
+.path-note { font-size: .74rem; color: var(--ink-2); } .fi-bar { display: flex; align-items: center; gap: 10px; } .fi-bar .meter { flex: 1; } .learn-list li b .ico { width: 18px; height: 18px; color: var(--ink-2); }
+.lp-row { display: grid; grid-template-columns: 20px minmax(0, 8em) minmax(0, 1fr) auto; align-items: center; gap: 8px; margin: 4px 0; font-size: .86rem; font-weight: 700; } .lp-row .ico { width: 18px; height: 18px; } .lp-row b { min-width: 4.5em; text-align: right; }
+@media (max-width: 760px) { .path-opt .pm-row { grid-template-columns: 16px minmax(0, 1fr) auto; } .path-opt .pm-row em { grid-column: auto; } }
+.win-tile { align-items: center; } .win-pic { grid-column: 1 / -1; display: flex; align-items: flex-end; gap: 4px; height: 44px; margin-top: 4px; } .win-pic i { flex: 1; border: 2px solid var(--ink); border-radius: 4px 4px 1px 1px; } .win-pic .pay { background: #5ccf8f; height: 100%; } .win-pic .bill { background: #ffb3a7; height: 68%; } .win-life { align-items: center; gap: 2px; } .win-life i { height: 10px; border-radius: 3px; background: var(--sky-3); } .win-life i.end { background: var(--sun); height: 20px; }
+.surv-bars { max-width: 380px; } .jc-legend { margin: 0 0 4px; font-size: .76rem; font-weight: 700; color: var(--ink-2); display: flex; align-items: center; gap: 4px; } .jc-legend .ico { width: 15px; height: 15px; }
 </style>
 </head>
 <body>
@@ -2006,10 +2017,10 @@ var LADDER = [
   { id: "roth", title: "Roth IRA", why: "Tax-free when you withdraw it later." },
   { id: "more", title: "Other investing account", why: "Invest for the long run; compounding grows with time." }
 ];
-var INTRO = { "steps": [["Meet Maya.", "She\u2019s 22 and just got her first full-time job: $42,000 a year."], ["Payday!", "After taxes, about $2,900 lands in her account each month. Rent, food and her car take most of it."], ["Then her car breaks down.", "The repair is $2,500. She has no emergency fund, so it goes on a credit card at 25% interest."], ["Maya makes a plan.", "$100 a month into an emergency fund, and 4% of her pay into her 401(k) \u2014 her company adds another 4% for free."], ["Small steps, many years.", "The card gets paid off and the savings keep growing. At 50, Maya isn\u2019t rich \u2014 but she\u2019s secure, and the choices are hers."], ["That was Maya\u2019s story.", "Now make your own character, choose your own strategies, and write your own story."]], "cta": "Make my character", "skip": "Skip", "next": "Next", "back": "Back", "replay": "Watch the opening story" };
+var INTRO = { "steps": [["Meet Maya.", "22. First full-time job: $42,000."], ["Payday!", "About $2,900 a month after taxes."], ["Then her car breaks down.", "$2,500, and no emergency fund. It goes on a 25% card."], ["Maya makes a plan.", "$100 a month saved, and 4% into her 401(k). Her company adds 4%."], ["Small steps, many years.", "At 50, she isn\u2019t rich, but she\u2019s secure."], ["That was Maya\u2019s story.", "Now write yours."]], "cta": "Make my character", "skip": "Skip", "next": "Next", "back": "Back", "replay": "Watch the opening story" };
 var LESSONS = [{ "id": "paycheck", "title": "Gross pay isn\u2019t what you take home", "short": "Budget with take-home pay, not salary.", "body": "Your pay is {gross} a month before tax, but only {net} reaches your checking account. Federal and state tax and Social Security & Medicare (plus any 401(k) savings) come out first. Always budget with the take-home number.", "q": [{ "q": "Your job pays {salary} a year. What should your monthly budget be based on?", "opts": ["{salaryM} a month (salary \xF7 12)", "What actually lands in checking after taxes and deductions", "Last month\u2019s pay plus your next raise"], "ok": 1, "why": "Taxes and deductions come out before you ever see the money. Only take-home pay can be spent." }, { "q": "Which of these is NOT taken out of your paycheck before it reaches you?", "opts": ["Social Security & Medicare tax", "Federal income tax", "Rent"], "ok": 2, "why": "Taxes are withheld from your pay automatically; rent is paid out of what\u2019s left." }] }, { "id": "emergency", "title": "An emergency fund comes first", "short": "Keep 3\u20136 months of essentials for surprises.", "body": "Surprises are guaranteed: car repairs, ER bills, a layoff. Three months of your essential costs is {ef3}; you have {ef} set aside. Without it, a $2,500 repair goes on a 25% credit card and ends up costing much more.", "q": [{ "q": "Your car needs a $1,200 repair. What\u2019s the best way to pay?", "opts": ["Put it on a credit card and pay the minimum", "Pay from your emergency fund", "Skip this month\u2019s rent"], "ok": 1, "why": "That\u2019s exactly what an emergency fund is for: no interest, no late fees, no new debt." }, { "q": "How big should an emergency fund be?", "opts": ["About $100", "3\u20136 months of essential costs (for you, {ef3}\u2013{ef6})", "A full year of salary before you do anything else"], "ok": 1, "why": "3\u20136 months covers most job losses and big repairs without borrowing." }] }, { "id": "debt", "title": "High-interest debt grows against you", "short": "Pay off 25% card debt before investing.", "body": "Credit cards charge about 25% a year, and interest is charged on interest. {bal} paid off at the minimum takes about {minYears} years and costs {minInterest} in interest. Paying {fixed} a month clears it in {fixMonths} months for {fixInterest} in interest.", "q": [{ "q": "You owe {bal} on a 25% credit card and have {bal} to spare. Best move?", "opts": ["Invest it: the stock market averages more", "Pay off the card", "Keep paying only the minimum"], "ok": 1, "why": "Paying off a 25% card is a guaranteed 25% return. No normal investment reliably beats that." }, { "q": "Paying only the minimum on a credit card means\u2026", "opts": ["You pay it off fastest", "Most of each payment goes to interest, so it takes years", "The interest rate goes down"], "ok": 1, "why": "Least you must repay are mostly interest, so the balance barely moves." }] }, { "id": "match", "title": "The employer match is free money", "short": "Contribute enough to get the full match.", "body": "Your employer adds to your 401(k) when you do. At your pay, the full match is worth {free} a year: an instant 100% return. If you don\u2019t contribute, you don\u2019t get it.", "bodyNoMatch": "Many employers add to your 401(k) when you do (a \u201Cmatch\u201D). Your job doesn\u2019t offer one, but at your pay a 4% match would be worth {free4} a year: an instant 100% return. Count it when you compare job offers.", "q": [{ "q": "Your employer matches {r}% of what you put in, up to {m}% of pay. How much should you contribute at least?", "opts": ["0%: keep the cash", "{m}%", "1%"], "ok": 1, "why": "Putting in {m}% collects every dollar of the free match." }, { "q": "Which comes first: getting a 100% employer match, or paying extra on a 5% car loan?", "opts": ["The 100% match", "The 5% car loan", "Neither"], "ok": 0, "why": "A 100% match is worth far more than saving 5% interest." }] }, { "id": "compound", "title": "Start investing early", "short": "Time matters more than amount.", "body": "Investments grow, and then the growth grows too. $200 a month from age {age} to 65 could reach about {now} (5% a year after inflation). Start at {age10} instead and it\u2019s about {later}. Waiting 10 years costs far more than the money it saves.", "q": [{ "q": "Alex invests $200 a month from {age} to 65. Sam invests the same from {age10} to 65. Roughly how much more does Alex end up with?", "opts": ["About the same", "About $24,000 more (the extra money put in)", "About {diff} more"], "ok": 2, "why": "Alex put in only $24,000 more, but those early dollars had decades to grow: about {now} vs {later}." }, { "q": "Which usually grows the most?", "opts": ["A big amount invested for 5 years", "A smaller amount invested for 30 years", "Cash kept in checking"], "ok": 1, "why": "Compounding needs time. Long periods matter more than big amounts." }] }, { "id": "creep", "title": "Don\u2019t let raises disappear", "short": "Save about half of every raise.", "body": "When pay goes up, spending tends to follow: that\u2019s lifestyle creep. Your latest raise is about {raise} a year. Saving half of it until 50 could grow to about {fv}. A raise is the easiest time to save, because you haven\u2019t gotten used to spending it yet.", "q": [{ "q": "You get a {raise} raise. Which habit builds the most wealth?", "opts": ["Upgrade your car and apartment right away", "Save about half, enjoy the other half", "Spend it all: you earned it"], "ok": 1, "why": "Saving half locks in progress while you still enjoy part of the raise." }, { "q": "What is lifestyle creep?", "opts": ["Your spending rising every time your income rises", "A slow raise schedule at work", "Prices rising every year"], "ok": 0, "why": "It\u2019s your own spending growing with your pay, so savings stay flat." }] }];
 var MOMENTS = [["Birthday money from family", 50], ["Sold an old jacket online", 40], ["Found $20 in a winter coat", 20], ["Cash back from your bank card", 35], ["Helped a neighbor move", 60], ["Parking ticket", -45], ["A friend\u2019s birthday dinner", -60], ["Forgot to cancel a free trial", -15], ["Coffee runs added up", -40], ["Gift for a coworker\u2019s farewell", -30], ["Late-night pizza", -28], ["Lost your bus pass", -35], ["Pharmacy visit", -55], ["Haircut", -30]];
-var LT = { "lesson": "Lesson {k} of {n}", "gotIt": "Got it", "perYear": "/yr", "perMonth": "/mo", "quick": "Quick check", "right": "Right!", "wrong": "Not quite.", "cont": "Continue", "walkTitle": "Age {age}: the year goes by", "walkSub": "Month by month: paychecks in, bills out, your plan runs, and life happens.", "toReview": "See the year-end review", "learned": "What you\u2019ve learned", "later": "Coming up later", "score": "{c} of {t} quick checks right", "taughtAt": "learned at age {age}", "rerollOnce": "You can re-spin once.", "noReroll": "No more re-spins: like real life, you play the hand you\u2019re dealt.", "diffLock": "Pick before you pull: it locks once the reels spin.", "skipWalk": "Skip ahead", "month": "Month {m}" };
+var LT = { "lesson": "Lesson {k} of {n}", "gotIt": "Got it", "perYear": "/yr", "perMonth": "/mo", "quick": "Quick check", "right": "Right!", "wrong": "Not quite.", "cont": "Continue", "walkTitle": "Age {age}: the year goes by", "walkSub": "", "toReview": "See the year-end review", "learned": "What you\u2019ve learned", "later": "Coming up later", "score": "{c}/{t} \u2713", "taughtAt": "learned at age {age}", "rerollOnce": "You can re-spin once.", "noReroll": "No more re-spins: like real life, you play the hand you\u2019re dealt.", "diffLock": "Pick before you pull: it locks once the reels spin.", "skipWalk": "Skip ahead", "month": "{m}" };
 
 // engine/core.js
 var VERSION = 2;
@@ -2376,7 +2387,7 @@ function confirmPlan(s4) {
   n.phase = "decision";
   return n;
 }
-var PROMPT_TXT = { "title": { "first": "First paycheck: {a} a month is left to plan. What comes first?", "newdebt": "New debt: {label} at {apr}%. You have {a} a month to plan. What comes first now?", "debtfree": "Your high-interest debt is gone. {a} a month is free. Where next?", "match": "Your job now matches your 401(k), up to {m}% of pay. You have {a} a month to plan. What comes first?", "jobloss": "Your paycheck has stopped. {a} a month is still left to plan. Where should it go?", "runway": "Your safety cushion fell to {n} months. You have {a} a month to plan. What comes first?", "funded": "Your cushion now covers 3 months. {a} a month is left to plan. Where next?", "raise": "You have {d} more a month than when you last decided. Where does it go?", "tight": "You have {d} less a month than when you last decided. What comes first now?", "checkin": "It\u2019s been a few years since you rethought your plan. {a} a month is left to plan. What comes first?" }, "opt": { "debt": "Pay extra on {label} ({apr}%)", "ef": "Build the emergency fund", "invest": "Invest for later", "match": "Get the 401(k) match, then invest", "goal": "Save for a big purchase", "keep": "Leave it in checking" }, "note": { "debt": "{label}: {v}/mo extra saves about {x} in interest this year.", "ef": "Emergency fund: {v}/mo. You could last {b} months by year-end, up from {n}.", "invest": "Investing {v}/mo. If it keeps growing until 50 at 5%, this habit reaches about {fv}.", "goal": "Savings fund: {v}/mo adds {y} this year.", "keep": "{a}/mo stays in checking. It\u2019s flexible, but it doesn\u2019t grow and is easy to spend.", "owe": " You\u2019d still pay about {i} in interest this year.", "same": " That matches the usual order. You can still adjust it.", "usual": " The usual order starts with \u201C{x}\u201D. You can change your mind below." }, "fact": { "debt": "{label}: {bal} at {apr}%", "runway": "Can last {n} months" } };
+var PROMPT_TXT = { "title": { "first": "First paycheck: {a} a month is left to plan. What comes first?", "newdebt": "New debt: {label} at {apr}%. You have {a} a month to plan. What comes first now?", "debtfree": "Your high-interest debt is gone. {a} a month is free. Where next?", "match": "Your job now matches your 401(k), up to {m}% of pay. You have {a} a month to plan. What comes first?", "jobloss": "Your paycheck has stopped. {a} a month is still left to plan. Where should it go?", "runway": "Your safety cushion fell to {n} months. You have {a} a month to plan. What comes first?", "funded": "Your cushion now covers 3 months. {a} a month is left to plan. Where next?", "raise": "You have {d} more a month than when you last decided. Where does it go?", "tight": "You have {d} less a month than when you last decided. What comes first now?", "checkin": "It\u2019s been a few years since you rethought your plan. {a} a month is left to plan. What comes first?" }, "opt": { "debt": "Pay extra on {label} ({apr}%)", "ef": "Build the emergency fund", "invest": "Invest for later", "match": "Get the 401(k) match, then invest", "goal": "Save for a big purchase", "keep": "Leave it in checking" }, "note": { "debt": "{label}: {v}/mo extra saves about {x} in interest this year.", "ef": "Emergency fund: {v}/mo. You could last {b} months by year-end, up from {n}.", "invest": "Investing {v}/mo. If it keeps growing until 50 at 5%, this habit reaches about {fv}.", "goal": "Savings fund: {v}/mo adds {y} this year.", "keep": "{a}/mo stays in checking. It\u2019s flexible, but it doesn\u2019t grow and is easy to spend.", "owe": " You\u2019d still pay about {i} in interest this year.", "same": " Usual order. You can adjust.", "usual": " Usual order starts with \u201C{x}\u201D." }, "fact": { "debt": "{label}: {bal} at {apr}%", "runway": "Can last {n} months" } };
 var tf = (t, v) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "");
 var highDebts = (s4) => debtOrder(s4).filter((d) => d.balance > 5e-3 && !d.closed && d.kind !== "mortgage" && (d.apr >= 0.08 || d.kind === "arrears"));
 function planCtx(s4) {
@@ -3496,7 +3507,7 @@ function nextYear(s4) {
   pickLesson(n);
   return n;
 }
-var R20 = { "q1": "If year one earns nothing, your money lasts about {n} months. Is that enough?", "q1o": [["yes", "Enough"], ["no", "Not really"], ["risk", "Not enough, I\u2019ll take the risk"]], "q2": "You\u2019d give up {give} a year in pay and benefits. The business must make about {need}/mo to match. Worth it?", "q2b": "You need about {need}/mo just to cover your costs. Can this business make that?", "q2o": [["yes", "Worth it"], ["unsure", "Not sure yet"], ["no", "Probably not"]], "q3": "If it fails, you\u2019d owe about {bill} in bills. What would you do?", "q3o": [["work", "Go back to work"], ["again", "Try again"], ["savings", "Live on savings for a while"]], "review": "When you opened, you figured your money would last {m} months. It would last {now} now. The business makes {p}/mo; you figured you\u2019d need {need}/mo.", "reflect": "Your {label} ran for {y} {u}. What would you change next time?", "reflectPlan": "Your plan if it failed: \u201C{w}\u201D.", "reflectO": [["save", "Save more first"], ["side", "Test it as a side hustle first"], ["small", "Start smaller"], ["none", "Stick to a paycheck"], ["same", "Nothing, I\u2019d do it again"]], "reflectRec": "Next time: {x}.", "caught": "Your savings covered {x} of trouble this year. On a {r}% card, that would have cost about {i} a year in interest.", "carded": "{x} ended up on your card or overdue this year: about {i} a year in interest unless you pay it off.", "could": " Your emergency fund could have covered it.", "bigger": " A bigger emergency fund would have covered it.", "optFund": "No interest. You could last {a} \u2192 {b} months.", "optCard": "About {i} a year in interest if it isn\u2019t paid off." };
+var R20 = { "q1": "If year one earns nothing, your money lasts about {n} months. Is that enough?", "q1o": [["yes", "Enough"], ["no", "Not really"], ["risk", "Not enough, I\u2019ll take the risk"]], "q2": "You\u2019d give up {give} a year in pay and benefits. The business must make about {need}/mo to match. Worth it?", "q2b": "You need about {need}/mo just to cover your costs. Can this business make that?", "q2o": [["yes", "Worth it"], ["unsure", "Not sure yet"], ["no", "Probably not"]], "q3": "If it fails, you\u2019d owe about {bill} in bills. What would you do?", "q3o": [["work", "Go back to work"], ["again", "Try again"], ["savings", "Live on savings for a while"]], "review": "Money lasts: planned {m} mo, now {now} mo. Profit: {p}/mo, needed {need}/mo.", "reflect": "Your {label} ran for {y} {u}. What would you change next time?", "reflectPlan": "Your plan if it failed: \u201C{w}\u201D.", "reflectO": [["save", "Save more first"], ["side", "Test it as a side hustle first"], ["small", "Start smaller"], ["none", "Stick to a paycheck"], ["same", "Nothing, I\u2019d do it again"]], "reflectRec": "Next time: {x}.", "caught": "Savings caught {x}. On a {r}% card: about {i}/yr in interest.", "carded": "{x} went on your card or overdue: about {i}/yr in interest.", "could": " Your emergency fund could have covered it.", "bigger": " A bigger emergency fund would have covered it.", "optFund": "No interest \xB7 lasts {a} \u2192 {b} mo", "optCard": "About {i}/yr in interest" };
 var fill20 = (t, v) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "");
 var monthlyOut = (s4) => essentialsMonthly(s4) + s4.fun + sum(minimums(s4).map((x) => x.due));
 var monthsLeft = (cash, out) => out > 0 ? Math.round(cash / out * 10) / 10 : 99;
@@ -4255,7 +4266,7 @@ var T2 = {
   modeLabel: "How to set savings",
   modeUsd: "$/mo",
   modePct: "% of take-home",
-  handOut: "Hand out the money you have available",
+  handOut: "Split your money",
   emergency: "Emergency fund",
   monthsOf6: "{n} / 6 mo",
   downPayment: "Down payment fund",
@@ -4270,6 +4281,21 @@ var T2 = {
   useLoans: "Use student loans for living costs",
   unassigned: "Unassigned, stays in checking",
   pathNote: "Rough estimate for new US high school grads, fall 2024 (BLS, military data). Certificates are counted with community college. About 17 of 100 start out neither working nor in school; that isn\u2019t a path here yet.",
+  stillOpen: "New businesses still open",
+  yearN: "Yr {n}",
+  legendPay: "Pay now",
+  legendLoan: "Est. student loans",
+  legendBest: "Best job later",
+  pathNoteS: "Where do these numbers come from?",
+  lpYou: "You have",
+  lpGoal: "3 months of costs",
+  lpRepair: "One car repair",
+  lpYouPut: "You put in",
+  lpCompany: "Your company adds",
+  lpRaise: "Your raise",
+  lpSaveHalf: "Save half",
+  lpBy50: "By age 50",
+  benLegend: "401(k) \xB7 +% = company match",
   repeatPlan: "Same as last year",
   askTag: "This year\u2019s decision",
   askSelf: "I\u2019ll split it myself",
@@ -4293,7 +4319,7 @@ var T2 = {
   thisDecision: "This year\u2019s decision: ",
   confirmFirst: "Confirm your payday plan first.",
   bigDecision: "This year\u2019s big decision",
-  oneAYear: "Pick one a year. A die means you roll.",
+  oneAYear: "Pick one a year.",
   partTime: "In school: part-time only, half pay",
   reviewLater: "The year-end review comes after you live the year.",
   paychecks: "Paychecks (before tax)",
@@ -4305,8 +4331,8 @@ var T2 = {
   ageLookBack: "Age {age}: looking back",
   ageDone: "Age {age}: the year is done",
   marketNote: "market {r} this year, after inflation",
-  boxMeans: "Bar = everything saved at month end.",
-  redMeans: "Red = a problem that month.",
+  boxMeans: "Bar: total saved.",
+  redMeans: "Red: trouble.",
   cashIn: "Cash in checking: {m}",
   refundIn: "Refund, paid into checking",
   taxDue: "Tax due, taken from checking",
@@ -4969,12 +4995,11 @@ function slotScreen() {
   const kind = bs ? { student: "in student loans", auto: "on a car loan", card: bs.id === "gambling" ? "on a credit card (gambling debt)" : "on a credit card" }[bs.debtKind] : "";
   const leverLabel = setup.pulls === 0 ? "Pull the lever to spin" : all ? "All five stopped" : `Pull again to stop reel ${n + 1} (${REELS[n].label})`;
   setupFrame("slot", `<section class="slot-stage tycoon-slot">
-    <header class="wiz-title"><h1>Pull the lever to spin your starting point</h1><p>The first pull spins all five reels; each pull after that stops one. You can also press <kbd>Space</kbd> or <kbd>\u2193</kbd>.</p></header>
-    <div class="diff-pick" role="radiogroup" aria-label="${TEXT.difficulty}" title="${h(LT2.diffLock)}"><span>${TEXT.difficulty} ${q("difficulty")}</span>${Object.entries(DIFFICULTY).map(([k, d]) => `<button class="diff-opt ${setup.difficulty === k ? "on" : ""} d-${k}" data-go="diff" data-id="${k}" ${setup.pulls || setup.rerolls ? "disabled" : ""} role="radio" aria-checked="${setup.difficulty === k}"><b>${h(d.name)}</b><small>${h(d.text)}</small></button>`).join("")}</div>
+    <header class="wiz-title"><h1>Pull the lever to spin your starting point</h1><p><kbd>Space</kbd> / <kbd>\u2193</kbd></p></header>
+    <div class="diff-pick" role="radiogroup" aria-label="${TEXT.difficulty}" title="${h(LT2.diffLock)}"><span>${TEXT.difficulty} ${q("difficulty")}</span>${Object.entries(DIFFICULTY).map(([k, d]) => `<button class="diff-opt ${setup.difficulty === k ? "on" : ""} d-${k}" data-go="diff" data-id="${k}" ${setup.pulls || setup.rerolls ? "disabled" : ""} role="radio" aria-checked="${setup.difficulty === k}" title="${h(d.text)}"><b>${h(d.name)}</b></button>`).join("")}</div>
     <div class="machine"><div class="cabinet"><div class="marquee">${logo("slot-logo")}<span>Life Slot Machine</span></div><div class="reels five">${REELS.map(reel).join("")}</div><p class="lever-hint" aria-live="polite">${leverLabel}</p></div>
       <button class="lever ${spinning ? "armed" : ""}" data-go="pull" ${all ? "disabled" : "data-autofocus"} aria-label="${h(leverLabel)}"><span class="rod"></span><span class="knob"></span><span class="base"></span></button></div>
-    ${all ? `<div class="slot-side reveal"><section class="backstory-card"><span class="ribbon-tag">Backstory \xB7 age ${r.age}</span><h2>${h(bs.title)}</h2><p>${h(bs.text)}</p>
-      <p class="facts">${STATES[r.region].name} (${STATES[r.region].rate ? "state tax " + pct(STATES[r.region].rate, 2) : "no state income tax"}) \xB7 ${r.salary ? "A job offer paying " + money2(r.salary) + " " : "No job yet"} \xB7 savings ${money2(r.savings)} \xB7 ${r.debt ? "owes " + money2(r.debt) + " " + kind : "No debt"}</p></section>
+    ${all ? `<div class="slot-side reveal"><section class="backstory-card"><span class="ribbon-tag">Backstory \xB7 age ${r.age}</span><h2>${h(bs.title)}</h2><p>${h(bs.text)}</p></section>
       <div class="row"><span class="row">${btn("to-look", "Back to look", { cls: "btn ghost", ico: "back" })}${btn("slot-again", "Pull again", { cls: "btn ghost", ico: "loop", attrs: setup.rerolls ? "disabled" : "" })}</span><button class="btn green big" data-go="slot-next" aria-label="Confirm, next" data-autofocus>${icon.check}<span>Continue</span></button></div><p class="mini reroll-note">${h(setup.rerolls ? LT2.noReroll : LT2.rerollOnce)}</p></div>` : `
     <footer class="look-foot">${btn("to-look", "Back to look", { cls: "btn ghost", ico: "back" })}</footer>`}</section>`);
 }
@@ -5017,7 +5042,7 @@ var previewStart = (path = setup.path, goal = setup.goal) => newGame({ seed: set
 function winHtml(reached = 0) {
   const tiles = [["shield", "Stay afloat", "Pay the bills every month and keep an emergency fund, so one bad break can\u2019t sink you."], ["up", "Climb 6 stages", "From Survival to Financial Independence. Each step is a safer, freer life."], ["flag", "Reach 50", "The game ends at 50. The higher your stage, the better your ending."]];
   const stairs = `<div class="win-stairs">${STAGES.slice(1).map((x) => `<i class="st-${x.id} ${x.id <= reached ? "on" : ""}" style="height:${28 + x.id * 12}%" title="${h(x.name)}: ${h(x.enter)}"><b>${x.id}</b></i>`).join("")}<span class="win-top">${icon.trophy}</span></div><div class="win-ends"><small>1 ${h(STAGES[1].name)}</small><small>6 ${h(STAGES[6].name)}</small></div>`;
-  return `<section class="win-panel"><h2>${icon.trophy}How to win</h2><div class="win-row">${tiles.map(([ic, t, d], k) => `<div class="win-tile"><span class="win-n">${k + 1}</span>${icon[ic]}<b>${t}</b><span>${d}</span>${k === 1 ? stairs : ""}</div>`).join("")}</div></section>`;
+  return `<section class="win-panel"><h2>${icon.trophy}How to win</h2><div class="win-row">${tiles.map(([ic, t, d], k) => `<div class="win-tile"><span class="win-n">${k + 1}</span>${icon[ic]}<b title="${d}">${t}</b>${k === 0 ? '<div class="win-pic" aria-hidden="true"><i class="pay"></i><i class="bill"></i><i class="pay"></i><i class="bill"></i><i class="pay"></i><i class="bill"></i></div>' : k === 2 ? `<div class="win-pic win-life" aria-hidden="true">${"<i></i>".repeat(9)}<i class="end"></i></div>` : ""}${k === 1 ? stairs : ""}</div>`).join("")}</div></section>`;
 }
 function pathScreen() {
   const r = reelsObj(), need = needsPath(r), p = previewStart(), pay = payday(p);
@@ -5026,13 +5051,14 @@ function pathScreen() {
     const qq = previewStart(x.id), sc2 = SCHOOL[x.id], lvl = sc2 ? sc2.edu : 0;
     const aid = payday(qq).aid, fee = sc2 ? Math.round(sc2.years * 12 * (aid.tuitionLoan + aid.livingLoan)) : 0;
     const top = JOBS.filter((j) => j.edu <= lvl && j.career <= 2).sort((a, b) => b.salary - a.salary)[0], full = qq.job.part ? qq.job.salary * 2 : qq.job.salary, best = full > top.salary ? { title: qq.job.title.replace(/ \(.*$|（.*$/, ""), salary: full } : top;
-    const row = (lbl, v, max, cls, sub) => `<span class="pm-row"><em>${lbl}</em>${meter(v, max, cls)}<b>${sub}</b></span>`;
+    let ri = 0;
+    const row = (lbl, v, max, cls, sub) => `<span class="pm-row"><em title="${lbl}">${icon[["coin", "receipt", "up"][ri++ % 3]]}</em>${meter(v, max, cls)}<b>${sub}</b></span>`;
     return `<button class="path-opt ${setup.path === x.id ? "on" : ""}" data-go="path" data-id="${x.id}" aria-pressed="${setup.path === x.id}" title="${h(x.text)}">${icon[x.icon]}<b>${h(x.title)}</b><span>${h(TAG[x.id] || "")}</span><span class="path-share">${h(x.share || "")}</span>
       ${row("Pay now", qq.job.salary, 45e3, "ok", money2(qq.job.salary) + "/yr")}${row("Est. student loans", fee, 5e4, "tax", fee ? money2(fee) : "$0")}${row("Best job later", best.salary, 1e5, "held", money2(best.salary) + "/yr")}
       <small>${h(best.title)}</small></button>`;
   };
   setupFrame("path", `<section class="goal-stage">
-    ${need ? `<header class="wiz-title"><h1>How do you want to start?</h1><p>The reels only decide the money. Whether you study is up to you, and you can change it later.</p></header><div class="path-pick">${PATHS.map(pathCard).join("")}</div><p class="path-note">${h(T2.pathNote)}</p>` : `<header class="wiz-title"><h1>${r.age} and already working</h1><p>${h(backstoryFor(setup.seed, r).title)}. Every year you can change jobs, go back to school, start a business or move.</p></header>`}
+    ${need ? `<header class="wiz-title"><h1>How do you want to start?</h1></header><div class="path-legend"><span>${icon.coin}${h(T2.legendPay)}</span><span>${icon.receipt}${h(T2.legendLoan)}</span><span>${icon.up}${h(T2.legendBest)}</span></div><div class="path-pick">${PATHS.map(pathCard).join("")}</div><details class="more path-note"><summary>${h(T2.pathNoteS)}</summary>${h(T2.pathNote)}</details>` : `<header class="wiz-title"><h1>${r.age} and already working</h1><p>${h(backstoryFor(setup.seed, r).title)}. Every year you can change jobs, go back to school, start a business or move.</p></header>`}
     ${winHtml(0)}
     <div class="start-sum">${avatar(setup.look, { cls: "mid", label: false })}<label class="name-field dark"><span>Name</span><input id="player-name" maxlength="20" value="${h(setup.name)}" placeholder="Optional" autocomplete="off"></label>
       </div>
@@ -5137,7 +5163,7 @@ function paydayPage() {
     ${show.brokerage ? row("chart", T2.brokerage, "brokerage", "", money2(s2.accounts.brokerage), sv("brokerage", T2.brokerage, !editable)) : ""}
     ${debts.map((d) => row(d.kind === "auto" ? "car" : d.kind === "mortgage" ? "house" : d.kind === "student" ? "cap" : "receipt", h(d.label), "extra", `${chip((d.apr >= 0.08 ? icon.flame : "") + fmt(T2.aprChip, { r: pct(d.apr, 1) }), d.apr >= 0.08 ? "hot" : "")}${d.deferUntilAge && s2.age < d.deferUntilAge ? chip(T2.deferred) : ""}`, money2(d.balance), stepper("extra:" + d.id, p.extra?.[d.id] || 0, d.label, !editable), "alloc-debt")).join("")}
     </tbody></table>
-    ${hidden.length ? `<p class="hint alloc-later">${icon.lock}<span>${fmt(T2.laterAccts, { list: hidden.join(", ") })}</span></p>` : ""}
+    ${hidden.length ? `<p class="hint alloc-later">${icon.lock}<span title="${h(fmt(T2.laterAccts, { list: hidden.join(", ") }))}">+${hidden.length}</span></p>` : ""}
     <div class="toggles">${yr >= 2 || p.lockLifestyle ? `<label><input type="checkbox" data-go="creep" ${p.lockLifestyle ? "checked" : ""} ${editable ? "" : "disabled"}> ${T2.creep} ${q("creep")}</label>` : ""}
       ${s2.school ? `<label><input type="checkbox" data-go="living" ${p.livingLoan !== false ? "checked" : ""} ${editable ? "" : "disabled"}> ${T2.useLoans} ${q("livingLoan")}</label>` : ""}</div>
     ${editable ? `<div class="pd-foot">${pay.available < -0.5 ? '<div class="left-to"></div>' : `<div class="left-to"><small>${T2.unassigned}</small><b class="${pay.left < 0 ? "neg" : ""}">${money2(pay.left)}</b></div>`}
@@ -5157,13 +5183,15 @@ function paydayPage() {
     <div class="ladder-steps"><small>${T2.nextStepFor}</small><ol>${LADDER.map((x, i) => `<li class="${i < ni || ni < 0 ? "done" : i === ni ? "now" : ""}" title="${i + 1}. ${h(x.title)}">${icon[LICO[x.id]] || icon.star}</li>`).join("")}</ol><p class="ls-now">${next ? `<b>${ni + 1}.</b> ${h(next.title)}` : h(T2.allSteps)}</p></div></section>`;
   frame("payday", `<section class="payday"><div class="pd-grid">${flow}${alloc}${impact}</div></section>`);
 }
-var throwTag = (t) => t ? `<span class="throw-badge">${icon.dice}Throw \xB7 ${STAT[t.stat]} ${modFor(s2, t.stat)}</span>` : "";
+var throwTag = (t) => t ? `<span class="throw-badge" title="${h(STAT[t.stat])}">${icon.dice}${icon[t.stat === "career" ? "briefcase" : "shield"]}+${modFor(s2, t.stat)}</span>` : "";
+var costOf = (d) => d.cost || (d.choices ? Math.min(...d.choices.map((c) => c.cost || c.down || 0)) : 0);
+var costTag = (d) => costOf(d) ? `<span class="throw-badge cost-badge">${icon.coin}${money2(costOf(d))}</span>` : "";
 function decisionPage() {
   if (s2.phase !== "decision") return frame("decision", `<section class="panel">${s2.decision ? `<h2>${T2.thisDecision}${h(s2.decision.title)}${s2.decision.choice ? " \xB7 " + h(s2.decision.choice) : ""}</h2><p>${h(s2.decision.note || "")}</p>` : `<p>${T2.confirmFirst}</p>`}${goNext()}</section>`);
   const tones = ["blue", "gold", "green", "red", "purple"];
   frame("decision", `<section><header class="page-head"><h1>${T2.bigDecision}</h1><p>${icon.dice}${T2.oneAYear} ${q("dice")}</p></header>
     <div class="dec-grid">${decisions(s2).map((d, i) => `<button class="dec-card ${d.blocked ? "blocked" : ""}" data-go="pick-decision" data-id="${d.id}" title="${h(d.text)}">
-      <span class="dc-top"><span class="dc-art t-${tones[i % tones.length]}">${icon[d.icon] || icon.star}</span><b>${h(d.title)}</b></span><span class="dc-text">${h(firstSentence(d.text))}</span>${throwTag(d.throw)}${d.blocked ? `<small class="why" title="${h(d.blocked)}">${icon.lock}${h(firstClause(d.blocked))}</small>` : ""}</button>`).join("")}</div></section>`);
+      <span class="dc-top"><span class="dc-art t-${tones[i % tones.length]}">${icon[d.icon] || icon.star}</span><b>${h(d.title)}</b></span><span class="dc-tags">${costTag(d)}${throwTag(d.throw)}</span>${d.blocked ? `<small class="why" title="${h(d.blocked)}">${icon.lock}${h(firstClause(d.blocked))}</small>` : ""}</button>`).join("")}</div></section>`);
 }
 var firstSentence = (t) => String(t || "").split(/(?<=[.!?])\s+|(?<=[。！？])/)[0];
 var firstClause = (t) => String(t || "").split(/[，；;:]|,(?!\d)/)[0];
@@ -5183,7 +5211,7 @@ function cardPage() {
     <div class="card-side">
       ${c.roll != null ? judged ? `<div class="panel">${diceBox(c.roll, c.mod, c.bonus, c.throwLabel, c.stat)}</div>` : `<div class="panel judge"><h3>${icon.dice}Throw: ${h(c.throwLabel)} ${q("dice")}</h3><p>First play a 12-second mini-game for a bonus (up to +2), then roll. Your current ${STAT[c.stat]}: ${c.mod}.</p>
           <div class="row">${btn("card-game", c.game === "dodge" ? "Play \u201CResist the temptation\u201D first" : "Play \u201CSeize the chance\u201D first", { cls: "btn blue", ico: "star", attrs: reduced ? "disabled" : "data-autofocus" })}${btn("card-roll", "Just roll", { cls: "btn ghost", ico: "dice" })}</div></div>` : ""}
-      ${judged ? `<div class="panel"><h3>How do you respond?</h3><div class="opts">${opts.map((o) => `<button class="opt ${o.blocked ? "blocked" : ""}" data-go="card-opt" data-id="${o.id}" ${o.blocked ? "disabled" : ""}><b>${h(o.label)}</b>${o.cost ? `<small>${money2(o.cost)}${o.pay === "card" ? ` \xB7 any unpaid balance accrues interest at ${pct(s2.debts.find((d) => d.kind === "card")?.apr ?? CARD.apr, 2)} APR` : ""}</small>` : ""}${optionEffect(s2, o) ? `<small class="opt-effect">${h(optionEffect(s2, o))}</small>` : ""}${o.blocked ? `<small class="why">${h(o.blocked)}</small>` : ""}</button>`).join("")}</div></div>` : ""}
+      ${judged ? `<div class="panel"><h3>How do you respond?</h3><div class="opts">${opts.map((o) => `<button class="opt ${o.blocked ? "blocked" : ""}" data-go="card-opt" data-id="${o.id}" ${o.blocked ? "disabled" : ""}><b>${h(o.label)}</b>${o.cost ? `<small>${money2(o.cost)}</small>` : ""}${optionEffect(s2, o) ? `<small class="opt-effect">${h(optionEffect(s2, o))}</small>` : ""}${o.blocked ? `<small class="why">${h(o.blocked)}</small>` : ""}</button>`).join("")}</div></div>` : ""}
     </div></section>`);
 }
 function diceBox(roll, mod, bonus, label, stat, pen = 0) {
@@ -5269,9 +5297,9 @@ function reviewPage() {
     <div class="ty-rv-grid">
       <section class="panel rv-tax"><h3>${icon.receipt}${T2.taxReturn} ${q("refund")}</h3>
         <div class="big-num ${sm.refund >= 0 ? "pos" : "neg"}"><small>${sm.refund >= 0 ? T2.refundIn : T2.taxDue}</small><b>${money2(Math.abs(sm.refund))}</b></div>
-        <div class="tax-pair"><span>${T2.owed}<b>${money2(t.total)}</b>${meter(t.total, Math.max(t.total, sm.withheld, 1), "tax")}</span><span>${T2.withheld}<b>${money2(sm.withheld)}</b>${meter(sm.withheld, Math.max(t.total, sm.withheld, 1), "held")}</span></div>
         ${t.fedTaxable < 1 && t.gross > 0 ? `<p class="mini">${icon.check}${T2.underDeduction}</p>` : ""}
         <details class="more"><summary>${T2.lineByLine}</summary>
+        <div class="tax-pair"><span>${T2.owed}<b>${money2(t.total)}</b>${meter(t.total, Math.max(t.total, sm.withheld, 1), "tax")}</span><span>${T2.withheld}<b>${money2(sm.withheld)}</b>${meter(sm.withheld, Math.max(t.total, sm.withheld, 1), "held")}</span></div>
         <div class="kv"><span>${T2.totalIncome}</span><b>${money2(t.gross)}</b></div>
         ${t.pretax ? `<div class="kv small"><span>\u2212 ${T2.pretax} ${q("k401")}</span><b>\u2212${money2(t.pretax)}</b></div>` : ""}
         <div class="kv small"><span>\u2212 ${T2.stdDeduction} ${q("stdDeduction")}</span><b>\u2212${money2(t.agi - t.fedTaxable)}</b></div>
@@ -5294,7 +5322,7 @@ function reviewPage() {
         ${baRow(T2.emergency, before.runway, after.runway, "up", fmt(T2.monthsN, { n: after.runway.toFixed(1) }))}
         ${baRow(T2.consumerDebt, before.consumerDebt, after.consumerDebt, "down", money2(after.consumerDebt))}
         ${baRow(T2.retirement, before.retirement, after.retirement, "up", money2(after.retirement))}
-        <div class="stage-change st-${stNow.id}">${stNow.id > stBefore.id ? T2.levelUp : stNow.id < stBefore.id ? T2.movedBack : T2.lifeStage} <b>${stNow.id}. ${stNow.name}</b><small>${stNow.id < 6 ? T2.nextStage + h(STAGES[stNow.id + 1].enter) : T2.topStage}</small></div></section></div>
+        <div class="stage-change st-${stNow.id}">${stNow.id > stBefore.id ? T2.levelUp : stNow.id < stBefore.id ? T2.movedBack : T2.lifeStage} <b>${stNow.id}. ${stNow.name}</b><small title="${stNow.id < 6 ? h(STAGES[stNow.id + 1].enter) : ""}">${stNow.id < 6 ? T2.nextStage + h(STAGES[stNow.id + 1].name) : T2.topStage}</small></div></section></div>
     <div class="center row">${past ? btn("past-year", s2.phase === "review" ? fmt(T2.backThisYear, { age: s2.age }) : T2.backJournal, { cls: "btn green big", ico: "back", attrs: "data-autofocus" }) : `${btn("ledger", fmt(T2.ledgerN, { n: y.lines.length }), { cls: "btn ghost small", ico: "book" })}${btn("next-year", s2.age + 1 >= FINAL_AGE ? T2.turn50 : fmt(T2.onToAge, { age: s2.age + 1 }), { cls: "btn green big", ico: "arrow", attrs: "data-autofocus" })}`}</div></section>`);
 }
 var CAT_NAME = { housing: "Housing", food: "Food", transport: "Transportation", insurance: "Insurance & health", other: "Utilities, phone etc.", fun: "Fun", interest: "Interest", tax: "Tax", oneoff: "One-off costs", education: "Tuition" };
@@ -5316,7 +5344,7 @@ function finishPage() {
   if (i < slides.length) return frame("finish", `<section class="wrapped"><div class="sl-wrap">${slides[i]}</div>
     <div class="sl-nav">${btn("slide", "Previous", { id: i - 1, cls: "btn ghost small", attrs: i ? "" : "disabled" })}<span class="dots">${slides.map((_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("")}</span>${btn("slide", i === slides.length - 1 ? "See the full record" : "Next", { id: i + 1, cls: "btn green", ico: "arrow", attrs: "data-autofocus" })}</div></section>`);
   frame("finish", `<section><header class="page-head"><h1>The road you traveled</h1>${btn("slide", "Replay the report", { id: 0, cls: "btn ghost small" })}</header>
-    <section class="panel"><ol class="timeline">${s2.records.map((r) => `<li class="${r.big ? "big" : ""}"><b>Age ${r.age}</b><span>${h(r.text)}</span></li>`).join("")}</ol></section>
+    <section class="panel"><ol class="timeline">${s2.records.filter((r) => r.big).map((r) => `<li class="${r.big ? "big" : ""}"><b>Age ${r.age}</b><span>${h(r.text)}</span></li>`).join("")}</ol></section>
     <div class="center">${btn("new-life", "Live another life", { cls: "btn green big", ico: "loop" })}</div></section>`);
 }
 function sparkline(vals) {
@@ -5327,8 +5355,7 @@ function sparkline(vals) {
 function overviewPage() {
   const m = metrics(s2), pay = payday(s2);
   frame("overview", `<section><div class="ov-grid">
-    <section class="panel"><h3>${icon.flag}What to do this year</h3><p>You\u2019re on <b>${STEPS.find((x) => x[0] === s2.phase)?.[1] || "Life review"}</b>.</p>${s2.phase !== "finish" ? btn("nav", "Go", { id: PHASE_PAGE[s2.phase], cls: "btn green", ico: "arrow", attrs: "data-autofocus" }) : ""}
-      <p class="mini">Take-home each month ${money2(pay.income)}, costs ${money2(pay.costs)}, available ${money2(pay.available)}.</p></section>
+    <section class="panel"><h3>${icon.flag}What to do this year</h3><p>You\u2019re on <b>${STEPS.find((x) => x[0] === s2.phase)?.[1] || "Life review"}</b>.</p>${s2.phase !== "finish" ? btn("nav", "Go", { id: PHASE_PAGE[s2.phase], cls: "btn green", ico: "arrow", attrs: "data-autofocus" }) : ""}</section>
     ${sheet(m)}</div>${stagePath()}</section>`);
 }
 function sheet(m) {
@@ -5342,7 +5369,7 @@ function sheet(m) {
 }
 function stagePath() {
   const st = stage(s2);
-  return `<section class="panel stage-path"><h3>${icon.map}The path to a brighter you ${q("stage")}</h3><ol>${STAGES.slice(1).map((x) => `<li class="st-${x.id} ${x.id <= st.id ? "reached" : ""} ${x.id === st.id ? "here" : ""}"><i>${x.id}</i><div><b>${x.name}</b><span>${h(x.enter)}</span></div></li>`).join("")}</ol></section>`;
+  return `<section class="panel stage-path"><h3>${icon.map}The path to a brighter you ${q("stage")}</h3><ol>${STAGES.slice(1).map((x) => `<li class="st-${x.id} ${x.id <= st.id ? "reached" : ""} ${x.id === st.id ? "here" : ""}"><i>${x.id}</i><div title="${h(x.enter)}"><b>${x.name}</b>${x.id === st.id + 1 ? `<span>${h(x.enter)}</span>` : ""}</div></li>`).join("")}</ol></section>`;
 }
 function accountsPage() {
   const can = s2.phase === "plan", X = ui.xfer, P2 = ui.pay, movable = ["checking", "emergency", "goal", "brokerage"], debts = s2.debts.filter((d) => d.balance > 5e-3 && !d.closed);
@@ -5359,14 +5386,22 @@ function accountsPage() {
 function goalsPage() {
   const m = metrics(s2);
   frame("goals", `<section><section class="panel">${winHtml(stage(s2).id)}</section>
-    <section class="panel"><h3>Your financial independence number ${q("fi")}</h3><p>A year of spending ${money2(m.annualSpend)} \xD7 25 = <b>${money2(m.fiNumber)}</b>. Your investable assets ${money2(m.invested)}, at a 4% withdrawal rate, can pay ${money2(m.passive)}/yr.</p></section>
-    <section class="panel learn-panel"><h3>${icon.star}${h(LT2.learned)}</h3><ul class="learn-list">${mastery(s2).map((x) => `<li class="${x.taughtAt != null ? "ok" : ""}"><b>${h(x.taughtAt != null ? x.title : LT2.later)}</b><small>${x.taughtAt != null ? h(x.short) + (x.asked ? " \xB7 " + h(fmt(LT2.score, { c: x.right, t: x.asked })) : "") : ""}</small></li>`).join("")}</ul></section>
+    <section class="panel"><h3>Your financial independence number ${q("fi")}</h3><div class="fi-bar">${meter(m.invested, m.fiNumber, "ok")}<b>${money2(m.invested)} / ${money2(m.fiNumber)}</b></div></section>
+    <section class="panel learn-panel"><h3>${icon.star}${h(LT2.learned)}</h3><ul class="learn-list">${mastery(s2).map((x) => `<li class="${x.taughtAt != null ? "ok" : ""}"><b title="${x.taughtAt != null ? h(x.short) : h(LT2.later)}">${x.taughtAt != null ? h(x.title) : icon.lock}</b><small>${x.asked ? h(fmt(LT2.score, { c: x.right, t: x.asked })) : ""}</small></li>`).join("")}</ul></section>
     ${stagePath()}${goNext()}</section>`);
 }
 function journalPage() {
   frame("journal", `<section><section class="panel"><h3>${icon.book}The road you traveled</h3><ol class="timeline">${s2.records.map((r) => `<li class="${r.big ? "big" : ""}"><b>Age ${r.age}</b><span>${h(r.text)}</span></li>`).join("")}</ol></section>
     ${s2.history.length ? `<section class="panel"><h3 class="alloc-h"><span>By year</span>${pastPicker()}</h3><table class="debts"><thead><tr><th>Age</th><th>earned</th><th>Tax</th><th>Your wealth</th><th>Stage</th><th>Market</th><th>That year</th></tr></thead><tbody>${s2.history.map((x) => `<tr><td>${x.age}</td><td>${money2(x.income)}</td><td>${money2(x.tax)}</td><td>${money2(x.netWorth)}</td><td>${STAGES[x.stage].name}</td><td>${pct(x.returnRate, 1)}</td><td>${h([x.decisionTitle, x.cardTitle].filter(Boolean).join(" \xB7 "))}</td></tr>`).join("")}</tbody></table></section>` : ""}
     ${goNext()}</section>`);
+}
+function survivalBars() {
+  let alive = 100;
+  const bars = [0, 1, 2, 3, 4].map((k) => {
+    alive *= 1 - BIZ_FAIL[k];
+    return Math.round(alive);
+  });
+  return `<div class="surv" role="img" aria-label="${h(T2.stillOpen)}"><small>${h(T2.stillOpen)}</small><div class="surv-bars">${bars.map((v, k) => `<span><b>${v}%</b><i style="height:${v * 0.42}px"></i><em>${fmt(T2.yearN, { n: k + 1 })}</em></span>`).join("")}</div></div>`;
 }
 function modalHtml() {
   if (!ui.modal) return "";
@@ -5380,16 +5415,16 @@ function modalHtml() {
     const d = decisions(s2).find((x) => x.id === M.id), F = ui.flow || {}, jobs = d.id === "jobhunt" ? jobsFor(s2) : null;
     const choice = d.choices ? `<div class="choices">${d.choices.map((c) => `<label class="choice ${c.blocked ? "blocked" : ""}"><input type="radio" name="choice" value="${c.id}" ${F.choice === c.id ? "checked" : ""} ${c.blocked ? "disabled" : ""}><span>${h(c.label)}${c.blocked ? `<small class="why">${h(c.blocked)}</small>` : ""}</span></label>`).join("")}</div>` : "";
     const capMax = jobs ? Math.max(1, ...jobs.map((j) => j.cap)) : 1;
-    const board = jobs ? `${s2.school ? `<p class="chip warn">${icon.cap}${T2.partTime}</p>` : ""}<div class="jobcards">${jobs.map((j) => `<label class="jobcard ${j.blocked ? "blocked" : ""} ${F.jobId === j.id ? "on" : ""}"><input type="radio" name="job" value="${j.id}" ${F.jobId === j.id ? "checked" : ""} ${j.blocked ? "disabled" : ""} aria-label="${h(j.title)}">
+    const board = jobs ? `<p class="jc-legend">${icon.bank}${h(T2.benLegend)}</p>${s2.school ? `<p class="chip warn">${icon.cap}${T2.partTime}</p>` : ""}<div class="jobcards">${jobs.map((j) => `<label class="jobcard ${j.blocked ? "blocked" : ""} ${F.jobId === j.id ? "on" : ""}"><input type="radio" name="job" value="${j.id}" ${F.jobId === j.id ? "checked" : ""} ${j.blocked ? "disabled" : ""} aria-label="${h(j.title)}">
       <span class="jc-head"><span class="jc-ico">${icon[j.needCar ? "car" : j.edu >= 2 ? "cap" : "briefcase"]}</span><b>${h(j.title)}</b></span>
-      <span class="jc-pay">${meter(j.salary, capMax)}<b>${money2(j.salary)}</b><small>${h(TEXT.upTo)} ${money2(j.cap)}</small></span>
-      <span class="jc-tags">${j.blocked ? `<em class="why" title="${h(j.blocked)}">${icon.lock}${T2.locked}</em>` : `<em>${icon.cap}${EDU[j.edu]}</em>${j.career ? `<em>${icon.star}${j.career}</em>` : ""}${j.needCar ? `<em>${icon.car}</em>` : ""}${j.jump ? `<em class="warn">${h(TEXT.jump)} \u2212${j.jump}</em>` : ""}`}<em class="ben ${/no 401|没有|不提供/i.test(j.benefit) ? "no" : ""}" title="${h(j.benefit)}">${icon.bank}${h(j.benefit)}</em></span></label>`).join("")}</div>` : "";
-    const out = d.throw ? `<p class="mini">${h(TEXT.nat1.replace(/^./, (c) => c.toUpperCase()))}</p>${dieStrip({ fail: d.outcomes.fail?.note || "", ok: d.outcomes.ok?.note || "", great: d.outcomes.great?.note || "" })}` : "";
+      <span class="jc-pay">${meter(j.salary, capMax)}<b>${money2(j.salary)}</b></span>
+      <span class="jc-tags">${j.blocked ? `<em class="why" title="${h(j.blocked)}">${icon.lock}${T2.locked}</em>` : `${j.edu ? `<em title="${h(EDU[j.edu])}">${icon.cap}${h(EDU[j.edu].split(/[ （(]/)[0])}</em>` : ""}${j.career ? `<em>${icon.star}${j.career}</em>` : ""}${j.needCar ? `<em>${icon.car}</em>` : ""}${j.jump ? `<em class="warn">${h(TEXT.jump)} \u2212${j.jump}</em>` : ""}`}<em class="ben ${PLANS[j.plan]?.has401k ? "" : "no"}" title="${h(j.benefit)}">${icon.bank}${PLANS[j.plan]?.match ? "+" + Math.round(PLANS[j.plan].match.rate * PLANS[j.plan].match.upTo * 100) + "%" : PLANS[j.plan]?.has401k ? "" : "\u2715"}</em></span></label>`).join("")}</div>` : "";
+    const out = d.throw ? `${dieStrip({ fail: d.outcomes.fail?.note || "", ok: d.outcomes.ok?.note || "", great: d.outcomes.great?.note || "" })}` : "";
     const biz = d.id === "startup" && F.choice ? startupCheck(s2, F.choice) : null, bizAns = biz && F.bizChoice === F.choice ? F.bizA || [] : [], bizQ = biz ? biz.questions[bizAns.length] : null;
     const bizBlock = biz ? `<div class="biz-think"><small>${bizAns.length + (bizQ ? 1 : 0)} / 3</small>${bizQ ? `<p>${h(bizQ.text)}</p><div class="biz-opts">${bizQ.opts.map((o) => `<button class="btn ghost small" data-go="biz-q" data-id="${o.id}">${h(o.label)}</button>`).join("")}</div>` : `<p>${icon.check}${h(biz.questions[2].opts.find((o) => o.id === bizAns[2])?.label || "")}</p>`}</div>` : "";
     const ready = (!d.choices || F.choice) && (!jobs || F.jobId) && (d.id !== "startup" || bizAns.length === 3);
-    return wrap(`<header class="m-head"><span class="ribbon-tag">This year\u2019s big decision</span><h2>${h(d.title)}</h2><p>${h(d.text)}</p>${btn("close", "Close", { cls: "icon-btn", ico: "close" })}</header>
-      ${choice}${bizBlock}${board}${d.throw ? `<div class="judge-info">${icon.dice}<div><b>Needs a throw: die + ${STAT[d.throw.stat]} ${modFor(s2, d.throw.stat)}${jobs && F.jobId && jobs.find((j) => j.id === F.jobId)?.jump ? ` \u2212 ${h(TEXT.jump)} ${jobs.find((j) => j.id === F.jobId).jump}` : ""} + mini-game bonus</b> ${q("dice")}${out}</div></div>` : ""}
+    return wrap(`<header class="m-head"><span class="ribbon-tag">This year\u2019s big decision</span><h2>${h(d.title)}</h2><p>${h(firstSentence(d.text))}</p>${btn("close", "Close", { cls: "icon-btn", ico: "close" })}</header>
+      ${d.id === "startup" ? survivalBars() : firstSentence(d.text) !== d.text ? `<details class="more"><summary>${h(LG.more)}</summary><p>${h(d.text)}</p></details>` : ""}${choice}${bizBlock}${board}${d.throw ? `<div class="judge-info">${icon.dice}<div><b>Needs a throw: die + ${STAT[d.throw.stat]} ${modFor(s2, d.throw.stat)}${jobs && F.jobId && jobs.find((j) => j.id === F.jobId)?.jump ? ` \u2212 ${h(TEXT.jump)} ${jobs.find((j) => j.id === F.jobId).jump}` : ""} + mini-game bonus</b> ${q("dice")}${out}</div></div>` : ""}
       ${d.blocked ? `<p class="risk">${icon.lock}<span>${h(d.blocked)}</span></p>` : !ready && !biz ? `<p class="hint">${jobs ? "Pick a job above first." : "Pick an option first."}</p>` : ""}
       <div class="m-foot">${btn("close", "Let me think", { cls: "btn ghost" })}${d.throw ? `${btn("dec-roll", "Just roll", { cls: "btn ghost", ico: "dice", attrs: ready && !d.blocked ? "" : "disabled" })}${btn("dec-game", "Play the mini-game, then roll", { cls: "btn blue", ico: "star", attrs: (ready && !d.blocked && !reduced ? "" : "disabled") + " data-autofocus" })}` : btn("dec-go", "Decide", { cls: "btn green", ico: "check", attrs: (ready && !d.blocked ? "" : "disabled") + " data-autofocus" })}</div>`, "wide-modal");
   }
@@ -5398,7 +5433,7 @@ function modalHtml() {
     const P2 = s2.learn.pending, G = hasGame(P2);
     if (G && !M.g) M.g = gameInit(s2, P2, t, fvMonthly);
     const done = !G || M.g.done, short = done ? `<p class="lesson-short">${icon.star}<b>${h(t.short)}</b></p>` : "";
-    const mid = G ? `${lessonGame(M.g, { money: money2, btn, icon })}${M.g.done ? `<p class="lg-debrief">${h(debrief(M.g, { money: money2 }))}</p><details class="more"><summary>${h(LG.more)}</summary><p class="lesson-body">${h(t.body)}</p></details>` : ""}` : `${lessonPic(P2)}<p class="lesson-body">${h(t.body)}</p>`;
+    const mid = G ? `${lessonGame(M.g, { money: money2, btn, icon })}${M.g.done ? `<p class="lg-debrief">${h(debrief(M.g, { money: money2 }))}</p><details class="more"><summary>${h(LG.more)}</summary><p class="lesson-body">${h(t.body)}</p></details>` : ""}` : `${lessonPic(P2)}<details class="more"><summary>${h(LG.more)}</summary><p class="lesson-body">${h(t.body)}</p></details>`;
     return wrap(`<header class="m-head lesson-head">${bubbleArt(LICO[0], LICO[1])}<div><span class="ribbon-tag">${h(fmt(LT2.lesson, t))}</span><h2>${h(t.title)}</h2></div></header>${short}${mid}
       <div class="m-foot">${done ? btn("lesson-ok", LT2.gotIt, { cls: "btn green big", ico: "check", attrs: "data-autofocus" }) : btn("lg", LG.skip, { id: "skip", cls: "btn ghost small" })}</div>`, "small-modal lesson-modal");
   }
@@ -5543,9 +5578,18 @@ function lessonPic(id) {
     const pay = payday(s2), gone = pay.gross - pay.net;
     return `<div class="lesson-pic">${segBar([{ v: gone, cls: "tax", label: T2.taxes }, { v: pay.net, cls: "net", label: T2.takeHome }], pay.gross)}<div class="lp-keys"><span class="k-tax"><i></i>${T2.taxes} ${money2(gone)}</span><span><i class="k-net"></i>${T2.takeHome} ${money2(pay.net)}</span></div></div>`;
   }
+  const row = (ico, label, v, max, cls, val) => `<div class="lp-row">${icon[ico]}<span>${h(label)}</span>${meter(v, max, cls)}<b>${val}</b></div>`;
   if (id === "emergency") {
-    const m = metrics(s2);
-    return `<div class="lesson-pic">${meter(m.runway, 3, m.runway >= 3 ? "ok" : "")}<div class="lp-keys"><span>${icon.piggy}${fmt(T2.monthsN, { n: m.runway.toFixed(1) })} / 3</span></div></div>`;
+    const m = metrics(s2), goal = m.essentials * 3;
+    return `<div class="lesson-pic">${row("piggy", T2.lpYou, m.emergency, Math.max(goal, m.emergency, 1), m.runway >= 3 ? "ok" : "tax", money2(m.emergency))}${row("shield", T2.lpGoal, goal, Math.max(goal, m.emergency, 1), "held", money2(goal))}${row("car", T2.lpRepair, 2500, Math.max(goal, m.emergency, 2500), "tax", "$2,500")}</div>`;
+  }
+  if (id === "match") {
+    const salary = Math.max(s2.job.salary || 0, 3e4), mt = s2.job.match || { rate: 1, upTo: 0.04 }, you = salary * mt.upTo, free = you * mt.rate;
+    return `<div class="lesson-pic">${row("coin", T2.lpYouPut, you, you + free, "held", money2(you))}${row("hands", T2.lpCompany, free, you + free, "ok", "+" + money2(free))}</div>`;
+  }
+  if (id === "creep") {
+    const h0 = s2.history.at(-1), raise = h0?.salary && s2.job.salary > h0.salary ? s2.job.salary - h0.salary : 5e3, fv2 = fvMonthly(raise / 24, Math.max(5, 50 - s2.age));
+    return `<div class="lesson-pic">${row("up", T2.lpRaise, raise, raise, "held", money2(raise))}${row("piggy", T2.lpSaveHalf, raise / 2, raise, "ok", money2(raise / 2))}${row("sprout", T2.lpBy50, fv2, fv2, "ok", money2(fv2))}</div>`;
   }
   return "";
 }

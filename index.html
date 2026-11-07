@@ -1402,6 +1402,10 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 
 /* Round 16 */
 .odds li { grid-template-columns: 24px 110px minmax(0, 1fr) 46px; } @media (max-width: 720px) { .odds li { grid-template-columns: 24px 96px minmax(0, 1fr) 44px; } }
+
+/* Round 18 */
+.ask-facts { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
+@media (max-width: 760px) { .modal.small-modal, .modal.wide-modal, .modal.game-host { width: 100%; } }
 </style>
 </head>
 <body>
@@ -1980,7 +1984,7 @@ var LADDER = [
   { id: "more", title: "Other investing account", why: "Invest for the long run; compounding grows with time." }
 ];
 var INTRO = { "steps": [["Meet Maya.", "She\u2019s 22 and just got her first full-time job: $42,000 a year."], ["Payday!", "After taxes, about $2,900 lands in her account each month. Rent, food and her car take most of it."], ["Then her car breaks down.", "The repair is $2,500. She has no emergency fund, so it goes on a credit card at 25% interest."], ["Maya makes a plan.", "$100 a month into an emergency fund, and 4% of her pay into her 401(k) \u2014 her company adds another 4% for free."], ["Small steps, many years.", "The card gets paid off and the savings keep growing. At 50, Maya isn\u2019t rich \u2014 but she\u2019s secure, and the choices are hers."], ["That was Maya\u2019s story.", "Now make your own character, choose your own strategies, and write your own story."]], "cta": "Make my character", "skip": "Skip", "next": "Next", "back": "Back", "replay": "Watch the opening story" };
-var LESSONS = [{ "id": "paycheck", "title": "Gross pay isn\u2019t what you take home", "short": "Budget with take-home pay, not salary.", "body": "Your pay is {gross} a month before tax, but only {net} reaches your checking account. Federal and state tax and Social Security & Medicare (plus any 401(k) savings) come out first. Always budget with the take-home number.", "q": [{ "q": "Your job pays $48,000 a year. What should your monthly budget be based on?", "opts": ["$4,000 a month (salary \xF7 12)", "What actually lands in checking after taxes and deductions", "Last month\u2019s pay plus your next raise"], "ok": 1, "why": "Taxes and deductions come out before you ever see the money. Only take-home pay can be spent." }, { "q": "Which of these is NOT taken out of your paycheck before it reaches you?", "opts": ["Social Security & Medicare tax", "Federal income tax", "Rent"], "ok": 2, "why": "Taxes are withheld from your pay automatically; rent is paid out of what\u2019s left." }] }, { "id": "emergency", "title": "An emergency fund comes first", "short": "Keep 3\u20136 months of essentials for surprises.", "body": "Surprises are guaranteed: car repairs, ER bills, a layoff. Three months of your essential costs is {ef3}; you have {ef} set aside. Without it, a $2,500 repair goes on a 25% credit card and ends up costing much more.", "q": [{ "q": "Your car needs a $1,200 repair. What\u2019s the best way to pay?", "opts": ["Put it on a credit card and pay the minimum", "Pay from your emergency fund", "Skip this month\u2019s rent"], "ok": 1, "why": "That\u2019s exactly what an emergency fund is for: no interest, no late fees, no new debt." }, { "q": "How big should an emergency fund be?", "opts": ["About $100", "3\u20136 months of essential costs", "A full year of salary before you do anything else"], "ok": 1, "why": "3\u20136 months covers most job losses and big repairs without borrowing." }] }, { "id": "debt", "title": "High-interest debt grows against you", "short": "Pay off 25% card debt before investing.", "body": "Credit cards charge about 25% a year, and interest is charged on interest. {bal} paid off at the minimum takes about {minYears} years and costs {minInterest} in interest. Paying {fixed} a month clears it in {fixMonths} months for {fixInterest} in interest.", "q": [{ "q": "You owe $2,000 on a 25% credit card and have $2,000 to spare. Best move?", "opts": ["Invest it: the stock market averages more", "Pay off the card", "Keep paying only the minimum"], "ok": 1, "why": "Paying off a 25% card is a guaranteed 25% return. No normal investment reliably beats that." }, { "q": "Paying only the minimum on a credit card means\u2026", "opts": ["You pay it off fastest", "Most of each payment goes to interest, so it takes years", "The interest rate goes down"], "ok": 1, "why": "Least you must repay are mostly interest, so the balance barely moves." }] }, { "id": "match", "title": "The employer match is free money", "short": "Contribute enough to get the full match.", "body": "Your employer adds to your 401(k) when you do. At your pay, the full match is worth {free} a year: an instant 100% return. If you don\u2019t contribute, you don\u2019t get it.", "bodyNoMatch": "Many employers add to your 401(k) when you do (a \u201Cmatch\u201D). Your job doesn\u2019t offer one, but at your pay a 4% match would be worth {free4} a year: an instant 100% return. Count it when you compare job offers.", "q": [{ "q": "Your employer matches 100% of what you put in, up to 4% of pay. How much should you contribute at least?", "opts": ["0%: keep the cash", "4%", "1%"], "ok": 1, "why": "Putting in 4% collects every dollar of the free match." }, { "q": "Which comes first: getting a 100% employer match, or paying extra on a 5% car loan?", "opts": ["The 100% match", "The 5% car loan", "Neither"], "ok": 0, "why": "A 100% match is worth far more than saving 5% interest." }] }, { "id": "compound", "title": "Start investing early", "short": "Time matters more than amount.", "body": "Investments grow, and then the growth grows too. $200 a month from age {age} to 65 could reach about {now} (5% a year after inflation). Start at {age10} instead and it\u2019s about {later}. Waiting 10 years costs far more than the money it saves.", "q": [{ "q": "Alex invests $200 a month from 25 to 65. Sam invests the same from 35 to 65. Roughly how much more does Alex end up with?", "opts": ["About the same", "About $24,000 more (the extra money put in)", "About $140,000 more"], "ok": 2, "why": "Alex put in only $24,000 more, but those early dollars had decades to grow: about $305k vs $166k." }, { "q": "Which usually grows the most?", "opts": ["A big amount invested for 5 years", "A smaller amount invested for 30 years", "Cash kept in checking"], "ok": 1, "why": "Compounding needs time. Long periods matter more than big amounts." }] }, { "id": "creep", "title": "Don\u2019t let raises disappear", "short": "Save about half of every raise.", "body": "When pay goes up, spending tends to follow: that\u2019s lifestyle creep. Your latest raise is about {raise} a year. Saving half of it until 50 could grow to about {fv}. A raise is the easiest time to save, because you haven\u2019t gotten used to spending it yet.", "q": [{ "q": "You get a $4,000 raise. Which habit builds the most wealth?", "opts": ["Upgrade your car and apartment right away", "Save about half, enjoy the other half", "Spend it all: you earned it"], "ok": 1, "why": "Saving half locks in progress while you still enjoy part of the raise." }, { "q": "What is lifestyle creep?", "opts": ["Your spending rising every time your income rises", "A slow raise schedule at work", "Prices rising every year"], "ok": 0, "why": "It\u2019s your own spending growing with your pay, so savings stay flat." }] }];
+var LESSONS = [{ "id": "paycheck", "title": "Gross pay isn\u2019t what you take home", "short": "Budget with take-home pay, not salary.", "body": "Your pay is {gross} a month before tax, but only {net} reaches your checking account. Federal and state tax and Social Security & Medicare (plus any 401(k) savings) come out first. Always budget with the take-home number.", "q": [{ "q": "Your job pays {salary} a year. What should your monthly budget be based on?", "opts": ["{salaryM} a month (salary \xF7 12)", "What actually lands in checking after taxes and deductions", "Last month\u2019s pay plus your next raise"], "ok": 1, "why": "Taxes and deductions come out before you ever see the money. Only take-home pay can be spent." }, { "q": "Which of these is NOT taken out of your paycheck before it reaches you?", "opts": ["Social Security & Medicare tax", "Federal income tax", "Rent"], "ok": 2, "why": "Taxes are withheld from your pay automatically; rent is paid out of what\u2019s left." }] }, { "id": "emergency", "title": "An emergency fund comes first", "short": "Keep 3\u20136 months of essentials for surprises.", "body": "Surprises are guaranteed: car repairs, ER bills, a layoff. Three months of your essential costs is {ef3}; you have {ef} set aside. Without it, a $2,500 repair goes on a 25% credit card and ends up costing much more.", "q": [{ "q": "Your car needs a $1,200 repair. What\u2019s the best way to pay?", "opts": ["Put it on a credit card and pay the minimum", "Pay from your emergency fund", "Skip this month\u2019s rent"], "ok": 1, "why": "That\u2019s exactly what an emergency fund is for: no interest, no late fees, no new debt." }, { "q": "How big should an emergency fund be?", "opts": ["About $100", "3\u20136 months of essential costs (for you, {ef3}\u2013{ef6})", "A full year of salary before you do anything else"], "ok": 1, "why": "3\u20136 months covers most job losses and big repairs without borrowing." }] }, { "id": "debt", "title": "High-interest debt grows against you", "short": "Pay off 25% card debt before investing.", "body": "Credit cards charge about 25% a year, and interest is charged on interest. {bal} paid off at the minimum takes about {minYears} years and costs {minInterest} in interest. Paying {fixed} a month clears it in {fixMonths} months for {fixInterest} in interest.", "q": [{ "q": "You owe {bal} on a 25% credit card and have {bal} to spare. Best move?", "opts": ["Invest it: the stock market averages more", "Pay off the card", "Keep paying only the minimum"], "ok": 1, "why": "Paying off a 25% card is a guaranteed 25% return. No normal investment reliably beats that." }, { "q": "Paying only the minimum on a credit card means\u2026", "opts": ["You pay it off fastest", "Most of each payment goes to interest, so it takes years", "The interest rate goes down"], "ok": 1, "why": "Least you must repay are mostly interest, so the balance barely moves." }] }, { "id": "match", "title": "The employer match is free money", "short": "Contribute enough to get the full match.", "body": "Your employer adds to your 401(k) when you do. At your pay, the full match is worth {free} a year: an instant 100% return. If you don\u2019t contribute, you don\u2019t get it.", "bodyNoMatch": "Many employers add to your 401(k) when you do (a \u201Cmatch\u201D). Your job doesn\u2019t offer one, but at your pay a 4% match would be worth {free4} a year: an instant 100% return. Count it when you compare job offers.", "q": [{ "q": "Your employer matches {r}% of what you put in, up to {m}% of pay. How much should you contribute at least?", "opts": ["0%: keep the cash", "{m}%", "1%"], "ok": 1, "why": "Putting in {m}% collects every dollar of the free match." }, { "q": "Which comes first: getting a 100% employer match, or paying extra on a 5% car loan?", "opts": ["The 100% match", "The 5% car loan", "Neither"], "ok": 0, "why": "A 100% match is worth far more than saving 5% interest." }] }, { "id": "compound", "title": "Start investing early", "short": "Time matters more than amount.", "body": "Investments grow, and then the growth grows too. $200 a month from age {age} to 65 could reach about {now} (5% a year after inflation). Start at {age10} instead and it\u2019s about {later}. Waiting 10 years costs far more than the money it saves.", "q": [{ "q": "Alex invests $200 a month from {age} to 65. Sam invests the same from {age10} to 65. Roughly how much more does Alex end up with?", "opts": ["About the same", "About $24,000 more (the extra money put in)", "About {diff} more"], "ok": 2, "why": "Alex put in only $24,000 more, but those early dollars had decades to grow: about {now} vs {later}." }, { "q": "Which usually grows the most?", "opts": ["A big amount invested for 5 years", "A smaller amount invested for 30 years", "Cash kept in checking"], "ok": 1, "why": "Compounding needs time. Long periods matter more than big amounts." }] }, { "id": "creep", "title": "Don\u2019t let raises disappear", "short": "Save about half of every raise.", "body": "When pay goes up, spending tends to follow: that\u2019s lifestyle creep. Your latest raise is about {raise} a year. Saving half of it until 50 could grow to about {fv}. A raise is the easiest time to save, because you haven\u2019t gotten used to spending it yet.", "q": [{ "q": "You get a {raise} raise. Which habit builds the most wealth?", "opts": ["Upgrade your car and apartment right away", "Save about half, enjoy the other half", "Spend it all: you earned it"], "ok": 1, "why": "Saving half locks in progress while you still enjoy part of the raise." }, { "q": "What is lifestyle creep?", "opts": ["Your spending rising every time your income rises", "A slow raise schedule at work", "Prices rising every year"], "ok": 0, "why": "It\u2019s your own spending growing with your pay, so savings stay flat." }] }];
 var MOMENTS = [["Birthday money from family", 50], ["Sold an old jacket online", 40], ["Found $20 in a winter coat", 20], ["Cash back from your bank card", 35], ["Helped a neighbor move", 60], ["Parking ticket", -45], ["A friend\u2019s birthday dinner", -60], ["Forgot to cancel a free trial", -15], ["Coffee runs added up", -40], ["Gift for a coworker\u2019s farewell", -30], ["Late-night pizza", -28], ["Lost your bus pass", -35], ["Pharmacy visit", -55], ["Haircut", -30]];
 var LT = { "lesson": "Lesson {k} of {n}", "gotIt": "Got it", "perYear": "/yr", "perMonth": "/mo", "quick": "Quick check", "right": "Right!", "wrong": "Not quite.", "cont": "Continue", "walkTitle": "Age {age}: the year goes by", "walkSub": "Month by month: paychecks in, bills out, your plan runs, and life happens.", "toReview": "See the year-end review", "learned": "What you\u2019ve learned", "later": "Coming up later", "score": "{c} of {t} quick checks right", "taughtAt": "learned at age {age}", "rerollOnce": "You can re-spin once.", "noReroll": "No more re-spins: like real life, you play the hand you\u2019re dealt.", "diffLock": "Pick before you pull: it locks once the reels spin.", "skipWalk": "Skip ahead", "month": "Month {m}" };
 
@@ -2143,7 +2147,7 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
     s4.essentials.housing = Math.round(fx.home.value * region.propertyTax / 12 + 120);
     s4.debts.push(debt(s4, "mortgage", fx.home.mortgage, { apr: fx.home.apr, payment: r22(amortized(fx.home.mortgage, fx.home.apr, fx.home.years * 12)) }));
   }
-  s4.plan = autoPlan(s4).plan;
+  s4.plan = { ...s4.plan, k401Pct: 0, emergency: 0, goal: 0, roth: 0, brokerage: 0, extra: {} };
   rollMarket(s4);
   s4.debtAtStart = r22(consumerDebtOf(s4) + sum(s4.debts.filter((d) => d.kind === "auto").map((d) => d.balance)));
   s4.records.push({ age: s4.age, kind: "start", text: `${region.name} \xB7 ${bs.title}` + (s4.school ? s4.school.kind === "study" ? " \xB7 full-time university" : " \xB7 community college while working" : ` \xB7 ${s4.job.title}`), big: true });
@@ -2285,6 +2289,7 @@ function profile(s4) {
 function setPlan(s4, plan) {
   assertPhase(s4, "plan");
   const p = {
+    repeated: !!plan.repeated,
     lockLifestyle: !!plan.lockLifestyle,
     livingLoan: plan.livingLoan !== false,
     k401Pct: clamp(+plan.k401Pct || 0, 0, 0.5),
@@ -2325,72 +2330,104 @@ function rothRoom(s4) {
   const earned = (s4.job.employed ? s4.job.salary : 0) + (s4.side || 0) * 12 + Math.max(0, s4.business?.profit || 0) * 12 + (s4.spouse ? s4.spouse.salary : 0);
   return rothLimit(earned, earned, filing(s4), s4.age);
 }
-function autoPlan(s4) {
-  const f25 = (x) => Math.max(0, Math.floor(x / 25) * 25), m = metrics(s4), notes = [];
-  const p = { ...s4.plan, k401Pct: 0, emergency: 0, goal: 0, roth: 0, brokerage: 0, extra: {} };
-  let A = payday(s4, p).available;
-  if (A < 25) {
-    notes.push(A < 0 ? `Spending more than you earn: ${money(-A)}/mo. Don\u2019t save yet. Consider a part-time job, a cheaper place, or cutting fun money.` : "Almost nothing left each month: don\u2019t save yet.");
-    return { plan: p, notes };
-  }
-  if (m.emergency < 1e3) {
-    const v = Math.min(f25(A * 0.6), Math.max(50, Math.ceil((1e3 - m.emergency) / 12 / 25) * 25));
-    p.emergency += v;
-    A -= v;
-    notes.push(`Emergency fund ${money(v)}/mo: build $1,000 first.`);
-  }
-  if (s4.job.match && s4.job.employed) {
-    const trial = { ...p, k401Pct: s4.job.match.upTo };
-    const A2 = payday(s4, trial).available - p.emergency;
-    if (A2 >= 0) {
-      p.k401Pct = s4.job.match.upTo;
-      A = A2;
-      notes.push(`401(k) at ${Math.round(p.k401Pct * 100)}%: exactly enough for the full match.`);
-    }
-  }
-  const hd = debtOrder(s4).find((d) => d.apr >= 0.08 || d.kind === "arrears");
-  if (hd && A >= 25) {
-    const v = f25(A * 0.6);
-    p.extra[hd.id] = v;
-    A -= v;
-    notes.push(`${hd.label}: pay ${money(v)}/mo extra \u2014 it has the highest rate.`);
-  }
-  if (m.runway < 3 && A >= 25) {
-    const v = f25(A * (hd ? 0.5 : 0.4));
-    p.emergency += v;
-    A -= v;
-    notes.push(`Emergency fund +${money(v)}/mo: aim for 3 months of expenses.`);
-  }
-  if (!hd && A >= 25) {
-    if (!s4.home && s4.accounts.goal < 3e4 && A >= 100 && (s4.goal === "home" || m.runway >= 3)) {
-      const v = f25(A * (s4.goal === "home" ? 0.5 : 0.25));
-      p.goal = v;
-      A -= v;
-      notes.push(`Savings fund ${money(v)}/mo: saving for the down payment.`);
-    }
-    const room = f25(rothRoom(s4) / 12);
-    if (room > 0) {
-      const v = Math.min(room, f25(A * 0.6));
-      p.roth = v;
-      A -= v;
-      if (v) notes.push(`Roth IRA per month: ${money(v)}.`);
-    }
-    if (m.runway >= 3 && A >= 50) {
-      const v = f25(A * 0.5);
-      p.brokerage = v;
-      A -= v;
-      notes.push(`Other investing per month: ${money(v)}.`);
-    }
-  }
-  notes.push(`About ${money(A)} stays in checking for pocket money and small surprises.`);
-  return { plan: p, notes };
-}
 function confirmPlan(s4) {
   assertPhase(s4, "plan");
   const n = clone(s4);
+  if (planPrompt(s4)) {
+    n.planCtx = planCtx(s4);
+    n.planAsked = n.age;
+    n.decidedYears = (n.decidedYears || 0) + 1;
+  }
+  if (s4.plan.repeated) n.repeatYears = (n.repeatYears || 0) + 1;
   n.phase = "decision";
   return n;
 }
+var PROMPT_TXT = { "title": { "first": "First paycheck: {a} a month is left to plan. What comes first?", "newdebt": "New debt: {label} at {apr}%. You have {a} a month to plan. What comes first now?", "debtfree": "Your high-interest debt is gone. {a} a month is free. Where next?", "match": "Your job now matches your 401(k), up to {m}% of pay. You have {a} a month to plan. What comes first?", "jobloss": "Your paycheck has stopped. {a} a month is still left to plan. Where should it go?", "runway": "Your safety cushion fell to {n} months. You have {a} a month to plan. What comes first?", "funded": "Your cushion now covers 3 months. {a} a month is left to plan. Where next?", "raise": "You have {d} more a month than when you last decided. Where does it go?", "tight": "You have {d} less a month than when you last decided. What comes first now?", "checkin": "It\u2019s been a few years since you rethought your plan. {a} a month is left to plan. What comes first?" }, "opt": { "debt": "Pay extra on {label} ({apr}%)", "ef": "Build the emergency fund", "invest": "Invest for later", "match": "Get the 401(k) match, then invest", "goal": "Save for a big purchase", "keep": "Leave it in checking" }, "note": { "debt": "{label}: {v}/mo extra saves about {x} in interest this year.", "ef": "Emergency fund: {v}/mo. You could last {b} months by year-end, up from {n}.", "invest": "Investing {v}/mo. If it keeps growing until 50 at 5%, this habit reaches about {fv}.", "goal": "Savings fund: {v}/mo adds {y} this year.", "keep": "{a}/mo stays in checking. It\u2019s flexible, but it doesn\u2019t grow and is easy to spend.", "owe": " You\u2019d still pay about {i} in interest this year.", "same": " That matches the usual order. You can still adjust it.", "usual": " The usual order starts with \u201C{x}\u201D. You can change your mind below." }, "fact": { "debt": "{label}: {bal} at {apr}%", "runway": "Can last {n} months" } };
+var tf = (t, v) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "");
+var highDebts = (s4) => debtOrder(s4).filter((d) => d.balance > 5e-3 && !d.closed && d.kind !== "mortgage" && (d.apr >= 0.08 || d.kind === "arrears"));
+function planCtx(s4) {
+  const m = metrics(s4), blank = { ...s4.plan, k401Pct: 0, emergency: 0, goal: 0, roth: 0, brokerage: 0, extra: {} };
+  return { round: roundOf(s4), avail: r22(payday(s4, blank).available), hd: highDebts(s4).map((d) => d.id), band: m.runway < 1 ? 0 : m.runway < 3 ? 1 : 2, employed: !!s4.job.employed, match: !!(s4.job.match && s4.job.employed) };
+}
+function promptKind(cur, c) {
+  if (!c) return "first";
+  if (cur.hd.some((id) => !c.hd.includes(id))) return "newdebt";
+  if (c.hd.length && !cur.hd.length) return "debtfree";
+  if (cur.match && !c.match) return "match";
+  if (c.employed && !cur.employed) return "jobloss";
+  const gap = cur.round - c.round;
+  if (gap < 3) return null;
+  if (cur.band < c.band) return "runway";
+  if (cur.band === 2 && c.band < 2) return "funded";
+  const d = cur.avail - c.avail;
+  if (d >= 150 && d >= Math.abs(c.avail) * 0.25) return "raise";
+  if (-d >= 150 && -d >= Math.abs(c.avail) * 0.25) return "tight";
+  if (gap >= 5) return "checkin";
+  return null;
+}
+var aprText = (d) => String(Math.round(d.apr * 1e3) / 10);
+function promptRec(s4, m, hd) {
+  const matchOpen = s4.job.match && s4.job.employed && s4.plan.k401Pct < s4.job.match.upTo - 1e-9;
+  return m.emergency < 1e3 ? "ef" : matchOpen ? "invest" : hd ? "debt" : m.runway < 3 ? "ef" : "invest";
+}
+function planPrompt(s4) {
+  if (s4.phase !== "plan") return null;
+  const cur = planCtx(s4);
+  if (cur.avail < 25) return null;
+  const kind = promptKind(cur, s4.planCtx);
+  if (!kind) return null;
+  const m = metrics(s4), hd = highDebts(s4)[0], c = s4.planCtx, n = m.runway.toFixed(1);
+  const v = { a: money(cur.avail), d: money(Math.abs(cur.avail - (c?.avail || 0))), n, m: s4.job.match ? Math.round(s4.job.match.upTo * 100) : 0, label: hd?.label || "", apr: hd ? aprText(hd) : "", bal: hd ? money(hd.balance) : "" };
+  const ids = [...hd ? ["debt"] : [], "ef", "invest", ...!hd && !s4.home ? ["goal"] : [], "keep"];
+  const hasMatch = s4.job.match && s4.job.employed;
+  return {
+    kind,
+    title: tf(PROMPT_TXT.title[kind], v),
+    rec: promptRec(s4, m, hd),
+    facts: [...hd ? [tf(PROMPT_TXT.fact.debt, v)] : [], tf(PROMPT_TXT.fact.runway, v)],
+    options: ids.map((id) => ({ id, label: tf(PROMPT_TXT.opt[id === "invest" && hasMatch ? "match" : id], v) }))
+  };
+}
+function answerPrompt(s4, id) {
+  const f25 = (x) => Math.max(0, Math.floor(x / 25) * 25), m = metrics(s4), hd = highDebts(s4)[0];
+  const p = { ...s4.plan, k401Pct: 0, emergency: 0, goal: 0, roth: 0, brokerage: 0, extra: {} };
+  const blank = { ...p, extra: {} };
+  let A = payday(s4, p).available, note = "";
+  if (id === "debt" && hd) {
+    const v = f25(A * 0.7);
+    p.extra[hd.id] = v;
+    note = tf(PROMPT_TXT.note.debt, { label: hd.label, v: money(v), x: money(Math.max(0, previewYear(s4, blank).summary.interest - previewYear(s4, p).summary.interest)) });
+  } else if (id === "ef") {
+    const v = f25(A * 0.7), ess = essentialsMonthly(s4);
+    p.emergency = v;
+    note = tf(PROMPT_TXT.note.ef, { v: money(v), n: m.runway.toFixed(1), b: (ess > 0 ? (m.emergency + v * 12) / ess : 0).toFixed(1) });
+  } else if (id === "invest") {
+    let month = 0;
+    if (s4.job.match && s4.job.employed) {
+      const trial = { ...p, k401Pct: s4.job.match.upTo }, A2 = payday(s4, trial).available;
+      if (A2 >= 0) {
+        p.k401Pct = s4.job.match.upTo;
+        A = A2;
+        month += s4.job.salary * p.k401Pct / 12;
+      }
+    }
+    const v = f25(A * 0.7), room = f25(rothRoom(s4) / 12);
+    p.roth = Math.min(v, room);
+    p.brokerage = v - p.roth;
+    month += v;
+    note = tf(PROMPT_TXT.note.invest, { v: money(month), fv: money(fvMonthly(month, Math.max(1, FINAL_AGE - s4.age))) });
+  } else if (id === "goal") {
+    const v = f25(A * 0.7);
+    p.goal = v;
+    note = tf(PROMPT_TXT.note.goal, { v: money(v), y: money(v * 12) });
+  } else note = tf(PROMPT_TXT.note.keep, { a: money(A) });
+  const owe = hd && id !== "debt" ? tf(PROMPT_TXT.note.owe, { i: money(previewYear(s4, p).summary.interest) }) : "";
+  const rec = promptRec(s4, m, hd), recLabel = PROMPT_TXT.opt[rec === "invest" && s4.job.match && s4.job.employed ? "match" : rec];
+  const after = rec === id ? PROMPT_TXT.note.same : tf(PROMPT_TXT.note.usual, { x: tf(recLabel, { label: hd?.label || "", apr: hd ? aprText(hd) : "" }) });
+  return { plan: p, notes: [note + owe + after] };
+}
+var PLAN_KEYS = ["lockLifestyle", "k401Pct", "emergency", "goal", "roth", "brokerage"];
+var samePlan = (a, b) => PLAN_KEYS.every((k) => (+a[k] || 0) === (+b[k] || 0)) && JSON.stringify(a.extra || {}) === JSON.stringify(b.extra || {});
 function assertPhase(s4, ph) {
   if (s4.phase !== ph) throw Error(`You can\u2019t do that right now (current phase: ${s4.phase}).`);
 }
@@ -3301,7 +3338,7 @@ function liveYear(s4) {
   if (rid) {
     let month = 3 + Math.floor(rand(n) * 8);
     while (moments.some((m) => m.month === month)) month = month === 10 ? 3 : month + 1;
-    n.year.review = { id: rid, variant: n.learn.reviews[rid].n % LESSONS.find((l) => l.id === rid).q.length, month, answered: null };
+    n.year.review = { id: rid, variant: n.learn.log.filter((x) => x.id === rid).length % LESSONS.find((l) => l.id === rid).q.length, rot: n.age % LESSONS.find((l) => l.id === rid).q[0].opts.length, vals: quickVals(n), month, answered: null };
   }
   if (n.year.news && pre.invested > 500) n.records.push({ age: n.age, kind: "market", text: `${n.year.news}: your investments ${r.summary.growth >= 0 ? "gained" : "lost"} ${money(Math.abs(r.summary.growth))}`, big: Math.abs(r.summary.growth) > 5e3 });
   if (r.summary.evicted) n.records.push({ age: n.age, kind: "big", text: "Couldn\u2019t pay rent, got evicted, now couch-surfing at a friend\u2019s.", big: true });
@@ -3389,6 +3426,7 @@ function nextYear(s4) {
   rollMarket(n);
   n.phase = "plan";
   rescalePlan(n);
+  n.plan.repeated = false;
   pickLesson(n);
   return n;
 }
@@ -3483,9 +3521,20 @@ function ackLesson(s4) {
   return n;
 }
 function dueReview(n) {
-  const Ln = n.learn, r = roundOf(n);
-  const list = Object.entries(Ln.reviews).filter(([id, R2]) => R2.due <= r && Ln.taught[id] !== r).sort((a, b) => a[1].due - b[1].due);
+  const Ln = n.learn, r = roundOf(n), last = Ln.log.at(-1)?.id;
+  if (n.planAsked === n.age) return null;
+  const list = Object.entries(Ln.reviews).filter(([id, R2]) => !R2.done && id !== last && R2.due <= r && Ln.taught[id] !== r).sort((a, b) => a[1].due - b[1].due);
   return list[0]?.[0] || null;
+}
+function quickVals(n) {
+  const salary = n.job.salary || 48e3, ess = essentialsMonthly(n), card = n.debts.find((d) => d.kind === "card" && d.balance > 200), h2 = n.history.at(-1), mt = n.job.match || { rate: 1, upTo: 0.04 }, now = fvMonthly(200, 65 - n.age), later = fvMonthly(200, 55 - n.age);
+  return { salary: money(salary), salaryM: money(salary / 12), ef3: money(ess * 3), ef6: money(ess * 6), bal: money(Math.round(card?.balance || 2e3)), r: Math.round(mt.rate * 100), m: Math.round(mt.upTo * 100), age: n.age, age10: n.age + 10, now: money(now), later: money(later), diff: money(Math.round((now - later) / 1e3) * 1e3), raise: money(h2?.salary && n.job.salary > h2.salary ? n.job.salary - h2.salary : 4e3) };
+}
+function quickCheck(s4) {
+  const R2 = s4.year?.review;
+  if (!R2) return null;
+  const Ld = LESSONS.find((l) => l.id === R2.id), q2 = Ld.q[R2.variant], vals = R2.vals || quickVals(s4), fill = (t) => String(t).replace(/\{(\w+)\}/g, (_, k) => vals[k] ?? "");
+  return { title: Ld.title, q: fill(q2.q), opts: q2.opts.map(fill), why: fill(q2.why), ok: q2.ok, order: q2.opts.map((_, i) => (i + (R2.rot || 0)) % q2.opts.length) };
 }
 function answerReview(s4, choice) {
   const rv = s4.year?.review;
@@ -3496,8 +3545,9 @@ function answerReview(s4, choice) {
   n.learn.log.push({ id: rv.id, age: n.age, ok });
   if (ok) {
     R2.n++;
-    R2.due = r + REVIEW_GAPS[Math.min(R2.n, REVIEW_GAPS.length - 1)];
-  } else R2.due = r + 2;
+    R2.done = true;
+  } else if (n.learn.log.filter((x) => x.id === rv.id).length >= 2) R2.done = true;
+  else R2.due = r + 2;
   return n;
 }
 var fvMonthly = (m, years) => {
@@ -3985,7 +4035,7 @@ var GLOSSARY = {
 var TUTS = [
   { id: "payday", page: "payday", name: "Payday", steps: [
     [".fl.total", "Step 1: Is it enough?", "Green means money to spare. Red shows how much you\u2019re short.", "coin", "green"],
-    ['[data-go="autoplan"]', "Step 2: Tap \u201CAuto-plan\u201D", "Not sure how to split it? Let the game do it for you.", "star", "gold"],
+    [".alloc", "Step 2: You decide", "Choose what comes first. The game won\u2019t do it for you.", "star", "gold"],
     ['[data-go="plan-confirm"]', "Step 3: Confirm", "Your plan then runs every month this year.", "check", "green"]
   ] },
   { id: "debt", page: "payday", name: "Debt", need: (s4) => s4.debts.some((d) => d.balance > 5e-3 && !d.closed && d.kind !== "arrears"), steps: [
@@ -4068,7 +4118,10 @@ var T2 = {
   creep: "Don\u2019t raise fun money when I get a raise",
   useLoans: "Use student loans for living costs",
   unassigned: "Unassigned, stays in checking",
-  autoPlan: "Auto-plan",
+  repeatPlan: "Same as last year",
+  askTag: "This year\u2019s decision",
+  askSelf: "I\u2019ll split it myself",
+  finishPlan: "You rethought your plan in {d} years and reused it in {r}.",
   clear: "Clear",
   confirm: "Confirm plan",
   overAssigned: "You\u2019ve assigned {m} more than you have: the extra won\u2019t happen.",
@@ -4879,6 +4932,7 @@ function draft() {
   if (!ui.draft) ui.draft = structuredClone(s2.plan);
   return ui.draft;
 }
+var isRepeat = () => roundOf(s2) >= 2 && !planPrompt(s2) && samePlan(draft(), s2.plan);
 function stepper(key, value, label, disabled) {
   return `${value > 0 ? `<small class="per-yr">= ${money2(value * 12)}${LT2.perYear}</small>` : ""}<div class="ty-stepper ${disabled ? "off" : ""}"><button data-go="amt" data-key="${key}" data-d="-25" ${disabled ? "disabled" : ""} aria-label="${label} decrease">\u2212</button><input type="number" inputmode="numeric" min="0" step="25" data-amt="${key}" value="${value}" aria-label="${label} monthly amount" ${disabled ? "disabled" : ""}><button data-go="amt" data-key="${key}" data-d="25" ${disabled ? "disabled" : ""} aria-label="${label} increase">+</button></div>`;
 }
@@ -4935,7 +4989,7 @@ function paydayPage() {
     <div class="toggles">${yr >= 2 || p.lockLifestyle ? `<label><input type="checkbox" data-go="creep" ${p.lockLifestyle ? "checked" : ""} ${editable ? "" : "disabled"}> ${T2.creep} ${q("creep")}</label>` : ""}
       ${s2.school ? `<label><input type="checkbox" data-go="living" ${p.livingLoan !== false ? "checked" : ""} ${editable ? "" : "disabled"}> ${T2.useLoans} ${q("livingLoan")}</label>` : ""}</div>
     ${editable ? `<div class="pd-foot">${pay.available < -0.5 ? '<div class="left-to"></div>' : `<div class="left-to"><small>${T2.unassigned}</small><b class="${pay.left < 0 ? "neg" : ""}">${money2(pay.left)}</b></div>`}
-      ${btn("autoplan", T2.autoPlan, { cls: "btn gold", ico: "star" })}${btn("plan-clear", T2.clear, { cls: "btn ghost small" })}${btn("plan-confirm", T2.confirm, { cls: "btn green", ico: "check" })}</div>
+      ${btn("plan-clear", T2.clear, { cls: "btn ghost small" })}${btn("plan-confirm", isRepeat() ? T2.repeatPlan : T2.confirm, { cls: "btn green", ico: "check" })}</div>
       ${pay.available < -0.5 ? `<p class="risk">${icon.alert}<span>${T2.notEnough}</span></p>` : pay.left < -0.5 ? `<p class="risk">${icon.alert}<span>${fmt(T2.overAssigned, { m: money2(-pay.left) })}</span></p>` : ""}` : `<p class="hint">${T2.confirmed}</p>${goNext()}`}
     ${ui.autoNotes ? `<div class="autonotes">${icon.star}<div><p>${h(ui.autoNotes[0])}</p>${ui.autoNotes.length > 1 ? `<details class="more"><summary>${T2.lineByLine}</summary><ul>${ui.autoNotes.slice(1).map((n) => `<li>${h(n)}</li>`).join("")}</ul></details>` : ""}</div></div>` : ""}</section>`;
   const done = { starter: m.emergency >= 1e3, match: !match || p.k401Pct >= match.upTo - 1e-9 || !s2.job.employed, highdebt: !m.highDebt, ef: m.runway >= 3, roth: p.roth > 0 || !rothRoom2, more: p.brokerage > 0 };
@@ -5103,7 +5157,7 @@ function finishPage() {
     `<div class="sl"><small>Where the money went</small><h2>#1: ${CAT_NAME[w.topCat[0]]}</h2><ul class="catbars">${cats.slice(0, 6).map(([k, v]) => `<li><span>${CAT_NAME[k]}</span><i style="width:${v / catMax * 100}%"></i><b>${money2(v)}</b></li>`).join("")}</ul></div>`,
     `<div class="sl"><small>Your most memorable year</small><h2>Age ${w.swingYear.age}</h2><p>Your wealth this year ${w.swingYear.delta >= 0 ? "gained" : "lost"} <b>${money2(Math.abs(w.swingYear.delta))}</b>.</p>${w.memorable ? `<p class="quote">\u201C${h(w.memorable.text)}\u201D</p>` : ""}${w.crashes.length ? `<p>You lived through ${w.crashes.length} stock market crashes (at age ${w.crashes.join(", ")}).</p>` : ""}</div>`,
     `<div class="sl"><small>Your wealth over time</small>${sparkline(w.worth)}<p>At 50: <b>${money2(m.netWorth)}</b>, investable assets <b>${money2(m.invested)}</b>.</p></div>`,
-    `<div class="sl"><small>${h(LT2.learned)}</small><h2>${mastery(s2).filter((x) => x.taughtAt != null).length} / ${LESSONS.length}</h2><ul class="learn-list big">${mastery(s2).map((x) => `<li class="${x.taughtAt != null ? "ok" : ""}"><b>${h(x.title)}</b><small>${x.asked ? h(fmt(LT2.score, { c: x.right, t: x.asked })) : ""}</small></li>`).join("")}</ul></div>`,
+    `<div class="sl"><small>${h(LT2.learned)}</small><h2>${mastery(s2).filter((x) => x.taughtAt != null).length} / ${LESSONS.length}</h2><ul class="learn-list big">${mastery(s2).map((x) => `<li class="${x.taughtAt != null ? "ok" : ""}"><b>${h(x.title)}</b><small>${x.asked ? h(fmt(LT2.score, { c: x.right, t: x.asked })) : ""}</small></li>`).join("")}</ul><p>${h(fmt(T2.finishPlan, { d: s2.decidedYears || 0, r: s2.repeatYears || 0 }))}</p></div>`,
     `<div class="sl s-end"><small>Your ending</small><h1>${h(w.ending.title)}</h1><p>${h(w.ending.text)}</p><p>Life stage <b>${st.id}. ${st.name}</b></p></div>`
   ];
   const i = Math.min(ui.slide, slides.length);
@@ -5195,10 +5249,20 @@ function modalHtml() {
       <div class="m-foot">${done ? btn("lesson-ok", LT2.gotIt, { cls: "btn green big", ico: "check", attrs: "data-autofocus" }) : btn("lg", LG.skip, { id: "skip", cls: "btn ghost small" })}</div>`, "small-modal lesson-modal");
   }
   if (M.kind === "guide") return wrap(guideHtml(), "wide-modal guide-modal");
+  if (M.kind === "ask") {
+    const A = planPrompt(s2);
+    if (!A) {
+      ui.modal = null;
+      return "";
+    }
+    return wrap(`<header class="m-head"><span class="ribbon-tag">${icon.star}${h(T2.askTag)}</span><h2>${h(A.title)}</h2><p class="ask-facts">${A.facts.map((x) => `<span class="chip">${h(x)}</span>`).join("")}</p></header>
+      <div class="rv-opts">${A.options.map((o, i) => `<button class="rv-opt" data-go="ask-pick" data-id="${o.id}" ${i === 0 ? "data-autofocus" : ""}>${h(o.label)}</button>`).join("")}</div>
+      <div class="m-foot">${btn("ask-self", T2.askSelf, { cls: "btn ghost small" })}</div>`, "small-modal review-modal ask-modal");
+  }
   if (M.kind === "review" && s2.year?.review) {
-    const R2 = s2.year.review, Ld = LESSONS.find((l) => l.id === R2.id), q2 = Ld.q[R2.variant], done = R2.answered != null;
-    return wrap(`<header class="m-head"><span class="ribbon-tag">${icon.star}${h(LT2.quick)} \xB7 ${h(Ld.title)}</span><h2>${h(q2.q)}</h2></header>
-      <div class="rv-opts">${q2.opts.map((o, i) => `<button class="rv-opt ${done && i === q2.ok ? "right" : ""} ${done && i === R2.answered && i !== q2.ok ? "wrong" : ""}" data-go="rv-ans" data-id="${i}" ${done ? "disabled" : i === 0 ? "data-autofocus" : ""}>${h(o)}</button>`).join("")}</div>
+    const R2 = s2.year.review, q2 = quickCheck(s2), done = R2.answered != null;
+    return wrap(`<header class="m-head"><span class="ribbon-tag">${icon.star}${h(LT2.quick)} \xB7 ${h(q2.title)}</span><h2>${h(q2.q)}</h2></header>
+      <div class="rv-opts">${q2.order.map((i, at) => [q2.opts[i], i, at]).map(([o, i, at]) => `<button class="rv-opt ${done && i === q2.ok ? "right" : ""} ${done && i === R2.answered && i !== q2.ok ? "wrong" : ""}" data-go="rv-ans" data-id="${i}" ${done ? "disabled" : at === 0 ? "data-autofocus" : ""}>${h(o)}</button>`).join("")}</div>
       ${done ? `<p class="rv-why ${R2.ok ? "ok" : "no"}"><b>${h(R2.ok ? LT2.right : LT2.wrong)}</b> ${h(q2.why)}</p><div class="m-foot">${btn("rv-cont", LT2.cont, { cls: "btn green", ico: "arrow", attrs: "data-autofocus" })}</div>` : ""}`, "small-modal review-modal");
   }
   if (M.kind === "dice") {
@@ -5347,6 +5411,10 @@ function update(scroll = true) {
     const page = ui.page || PHASE_PAGE[s2.phase];
     maybeTour(page);
     if (s2.learn?.pending && s2.phase === "plan" && page === "payday" && !ui.modal && !ui.tour) ui.modal = { kind: "lesson" };
+    if (!s2.learn?.pending && s2.phase === "plan" && page === "payday" && !ui.modal && !ui.tour && ui.askedAge !== s2.age && planPrompt(s2)) {
+      ui.askedAge = s2.age;
+      ui.modal = { kind: "ask" };
+    }
     ({ overview: overviewPage, payday: paydayPage, decision: decisionPage, card: cardPage, live: livePage, review: reviewPage, finish: finishPage, accounts: accountsPage, goals: goalsPage, journal: journalPage })[page]();
     if (ui.modal?.kind === "game") requestAnimationFrame(startGame);
     animateDice();
@@ -5676,8 +5744,12 @@ document.addEventListener("click", (e) => {
       case "living":
         draft().livingLoan = b.checked;
         return update(false);
-      case "autoplan": {
-        const cur = draft(), r = autoPlan({ ...s2, plan: cur });
+      case "ask-self":
+        ui.modal = null;
+        return update(false);
+      case "ask-pick": {
+        const cur = draft(), r = answerPrompt({ ...s2, plan: cur }, id);
+        ui.modal = null;
         ui.draft = { ...r.plan, lockLifestyle: cur.lockLifestyle, livingLoan: cur.livingLoan };
         if (cur.byPct) {
           ui.draft.pcts = pctsFromDollars({ ...s2, plan: ui.draft }, ui.draft);
@@ -5700,7 +5772,7 @@ document.addEventListener("click", (e) => {
         ui.autoNotes = null;
         return update(false);
       case "plan-confirm": {
-        const next = confirmPlan(setPlan(s2, draft()));
+        const next = confirmPlan(setPlan(s2, { ...draft(), repeated: isRepeat() }));
         ui.draft = null;
         ui.autoNotes = null;
         return commit(next);

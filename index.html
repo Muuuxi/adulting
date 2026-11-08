@@ -1437,6 +1437,13 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .yr-real { background: #e2f1ff; } .yr-real b { margin-right: 2px; }
 .pd-flow .fl.total { flex-wrap: wrap; } .pd-flow .fl.total > span { white-space: nowrap; }
 .impact .ba-lab { white-space: normal; overflow: visible; text-overflow: clip; display: flex; line-height: 1.15; }
+/* Round 23: money-idea games */
+.cg-arena { position: relative; margin: 8px 0; } .cg-arena canvas { height: 330px; }
+.cg-cover { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 6px; text-align: center; background: rgba(255, 253, 246, .86); border-radius: inherit; font-size: 1.15rem; padding: 12px; }
+.cg-cover .ico { width: 34px; height: 34px; } .cg-cover small { color: var(--muted); font-weight: 800; font-size: .8rem; }
+.cg-result { display: grid; gap: 6px; margin: 10px 0 4px; } .cg-row { display: grid; grid-template-columns: minmax(0, 7.5em) minmax(0, 1fr) auto; gap: 8px; align-items: center; font-weight: 700; font-size: .9rem; } .cg-row b { white-space: nowrap; }
+.cg-modal .m-foot { flex-wrap: wrap; }
+@media (max-width: 720px) { .cg-arena canvas { height: 300px; } }
 </style>
 </head>
 <body>
@@ -2182,7 +2189,7 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
     s4.job = { employed: true, id: "campus", title: "Campus job", salary: ASSUME.campusJob, part: true, has401k: false, match: null, unemployedLeft: 0 };
   }
   s4.essentials = startEssentials(s4.job.salary || 27e3, path, col);
-  for (const [k, v] of Object.entries(fx.essentials || {})) s4.essentials[k] += v;
+  for (const [k2, v] of Object.entries(fx.essentials || {})) s4.essentials[k2] += v;
   if (fx.spouse) s4.spouse = { salary: fx.spouse.salary }, s4.partner = true;
   const sav = reels.savings;
   s4.accounts.checking = Math.round(sav / 3 / 100) * 100;
@@ -2263,7 +2270,7 @@ function payday(s4, plan = s4.plan) {
     spouseGross: R2(spouseGross),
     k401: R2(k401),
     match: R2(match),
-    tax: Object.fromEntries(Object.entries(tax).map(([k, v]) => [k, R2(v)])),
+    tax: Object.fromEntries(Object.entries(tax).map(([k2, v]) => [k2, R2(v)])),
     annualTax: t,
     net: R2(net),
     support,
@@ -2316,12 +2323,12 @@ function stage(s4, year = s4.history.at(-1)) {
     () => m.passive >= m.annualSpend * 0.5,
     () => m.invested >= m.fiNumber && m.fiNumber > 0
   ];
-  let k = 0;
+  let k2 = 0;
   for (const c of checks) {
-    if (c()) k++;
+    if (c()) k2++;
     else break;
   }
-  return STAGES[k];
+  return STAGES[k2];
 }
 function profile(s4) {
   return {
@@ -2349,12 +2356,12 @@ function setPlan(s4, plan) {
     goal: nn(plan.goal),
     roth: nn(plan.roth),
     brokerage: nn(plan.brokerage),
-    extra: Object.fromEntries(Object.entries(plan.extra || {}).map(([k, v]) => [k, nn(v)]).filter(([k, v]) => v > 0 && s4.debts.some((d) => d.id === k)))
+    extra: Object.fromEntries(Object.entries(plan.extra || {}).map(([k2, v]) => [k2, nn(v)]).filter(([k2, v]) => v > 0 && s4.debts.some((d) => d.id === k2)))
   };
   if (!s4.job.has401k) p.k401Pct = 0;
   if (plan.byPct) {
     p.byPct = true;
-    p.pcts = Object.fromEntries(PCT_KEYS.map((k) => [k, clamp(Math.round((+plan.pcts?.[k] || 0) * 100) / 100, 0, 1)]));
+    p.pcts = Object.fromEntries(PCT_KEYS.map((k2) => [k2, clamp(Math.round((+plan.pcts?.[k2] || 0) * 100) / 100, 0, 1)]));
     Object.assign(p, pctDollars(s4, p));
   }
   const lim = rothRoom(s4);
@@ -2364,11 +2371,11 @@ function setPlan(s4, plan) {
 var PCT_KEYS = ["emergency", "goal", "roth", "brokerage"];
 function pctDollars(s4, p) {
   const net = Math.max(0, payday(s4, p).net);
-  return Object.fromEntries(PCT_KEYS.map((k) => [k, Math.round(net * (p.pcts?.[k] || 0) / 5) * 5]));
+  return Object.fromEntries(PCT_KEYS.map((k2) => [k2, Math.round(net * (p.pcts?.[k2] || 0) / 5) * 5]));
 }
 function pctsFromDollars(s4, p) {
   const net = payday(s4, p).net;
-  return Object.fromEntries(PCT_KEYS.map((k) => [k, net > 0 ? Math.min(1, Math.floor((p[k] || 0) / net * 100 + 1e-6) / 100) : 0]));
+  return Object.fromEntries(PCT_KEYS.map((k2) => [k2, net > 0 ? Math.min(1, Math.floor((p[k2] || 0) / net * 100 + 1e-6) / 100) : 0]));
 }
 function rescalePlan(n) {
   if (!n.plan.byPct) return;
@@ -2395,7 +2402,7 @@ function confirmPlan(s4) {
   return n;
 }
 var PROMPT_TXT = { "title": { "first": "First paycheck: {a} a month is left to plan. What comes first?", "newdebt": "New debt: {label} at {apr}%. You have {a} a month to plan. What comes first now?", "debtfree": "Your high-interest debt is gone. {a} a month is free. Where next?", "match": "Your job now matches your 401(k), up to {m}% of pay. You have {a} a month to plan. What comes first?", "jobloss": "Your paycheck has stopped. {a} a month is still left to plan. Where should it go?", "runway": "Your safety cushion fell to {n} months. You have {a} a month to plan. What comes first?", "funded": "Your cushion now covers 3 months. {a} a month is left to plan. Where next?", "raise": "You have {d} more a month than when you last decided. Where does it go?", "tight": "You have {d} less a month than when you last decided. What comes first now?", "checkin": "It\u2019s been a few years since you rethought your plan. {a} a month is left to plan. What comes first?" }, "opt": { "debt": "Pay extra on {label} ({apr}%)", "ef": "Build the emergency fund", "invest": "Invest for later", "match": "Get the 401(k) match, then invest", "goal": "Save for a big purchase", "keep": "Leave it in checking" }, "note": { "debt": "{label}: {v}/mo extra saves about {x} in interest this year.", "ef": "Emergency fund: {v}/mo. You could last {b} months by year-end, up from {n}.", "invest": "Investing {v}/mo. If it keeps growing until 50 at 5%, this habit reaches about {fv}.", "goal": "Savings fund: {v}/mo adds {y} this year.", "keep": "{a}/mo stays in checking. It\u2019s flexible, but it doesn\u2019t grow and is easy to spend.", "owe": " You\u2019d still pay about {i} in interest this year.", "same": " Usual order. You can adjust.", "usual": " Usual order starts with \u201C{x}\u201D." }, "fact": { "debt": "{label}: {bal} at {apr}%", "runway": "Can last {n} months" } };
-var tf = (t, v) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "");
+var tf = (t, v) => t.replace(/\{(\w+)\}/g, (_, k2) => v[k2] ?? "");
 var highDebts = (s4) => debtOrder(s4).filter((d) => d.balance > 5e-3 && !d.closed && d.kind !== "mortgage" && (d.apr >= 0.08 || d.kind === "arrears"));
 function planCtx(s4) {
   const m = metrics(s4), blank = { ...s4.plan, k401Pct: 0, emergency: 0, goal: 0, roth: 0, brokerage: 0, extra: {} };
@@ -2479,7 +2486,7 @@ function answerPrompt(s4, id) {
   return { plan: p, notes: [note + owe + after] };
 }
 var PLAN_KEYS = ["lockLifestyle", "k401Pct", "emergency", "goal", "roth", "brokerage"];
-var samePlan = (a, b) => PLAN_KEYS.every((k) => (+a[k] || 0) === (+b[k] || 0)) && JSON.stringify(a.extra || {}) === JSON.stringify(b.extra || {});
+var samePlan = (a, b) => PLAN_KEYS.every((k2) => (+a[k2] || 0) === (+b[k2] || 0)) && JSON.stringify(a.extra || {}) === JSON.stringify(b.extra || {});
 function assertPhase(s4, ph) {
   if (s4.phase !== ph) throw Error(`You can\u2019t do that right now (current phase: ${s4.phase}).`);
 }
@@ -2520,7 +2527,7 @@ function applyFx(n, fx, month, label) {
   }
   if (fx.installment) n.debts.push(debt(n, "medical", fx.installment.monthly * fx.installment.months, { apr: 0, payment: fx.installment.monthly }));
   if (fx.installment) n.pending.push({ month, kind: "expenseFinanced", amount: fx.installment.monthly * fx.installment.months, label });
-  for (const [k, v] of Object.entries(fx.recurring?.essentials || {})) n.pending.push({ month, kind: "essentials", key: k, delta: v, label });
+  for (const [k2, v] of Object.entries(fx.recurring?.essentials || {})) n.pending.push({ month, kind: "essentials", key: k2, delta: v, label });
   if (fx.recurring?.fun) n.pending.push({ month, kind: "fun", delta: fx.recurring.fun, label });
   if (fx.status) addStatus(n, fx.status);
   if (fx.removeStatus) removeStatus(n, fx.removeStatus);
@@ -2673,15 +2680,15 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0, bizPla
       n.stats.career = Math.min(3, n.stats.career + 1);
       break;
     case "enroll": {
-      const k = ch.id;
-      n.school = { kind: k, yearsLeft: SCHOOL[k].years, tuition: SCHOOL[k].tuition };
-      if (k === "study") n.job = { employed: true, id: "campus", title: "Campus job", salary: ASSUME.campusJob, part: true, has401k: false, match: null, unemployedLeft: 0 };
+      const k2 = ch.id;
+      n.school = { kind: k2, yearsLeft: SCHOOL[k2].years, tuition: SCHOOL[k2].tuition };
+      if (k2 === "study") n.job = { employed: true, id: "campus", title: "Campus job", salary: ASSUME.campusJob, part: true, has401k: false, match: null, unemployedLeft: 0 };
       else if (n.job.employed && !n.job.part) n.job = { ...n.job, title: n.job.title + " (part-time)", salary: Math.round(n.job.salary * 0.5), part: true };
       for (const x of n.debts) if (x.kind === "student") x.deferUntilAge = 99;
       if (n.flags.giBill) {
         n.flags.giBill = false;
         n.school.tuition = 0;
-        n.support = { monthly: GI_HOUSING, untilAge: n.age + SCHOOL[k].years, label: "GI Bill housing allowance", gi: true };
+        n.support = { monthly: GI_HOUSING, untilAge: n.age + SCHOOL[k2].years, label: "GI Bill housing allowance", gi: true };
       }
       break;
     }
@@ -2714,8 +2721,8 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0, bizPla
       const own = ch.id === "own", profit = Math.round((own ? Math.max(ch.base, n.side * 3) : ch.base) * outcome.bizMult / 10) * 10;
       n.business = { type: ch.id, label: ch.label.replace(/ \(.*$/, "").replace(/^$/, ""), profit, since: n.age, base: ch.base, own };
       if (bizPlan) {
-        const k = startupCheck(s4, ch.id);
-        n.business.plan = { months: k.months, need: k.need, worst: bizPlan[2] || null };
+        const k2 = startupCheck(s4, ch.id);
+        n.business.plan = { months: k2.months, need: k2.need, worst: bizPlan[2] || null };
       }
       if (own) n.side = 0;
       n.business.label = { own: "side business", truck: "food truck", shop: "online shop", studio: "design studio" }[ch.id];
@@ -2809,7 +2816,7 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0, bizPla
 var cardWeight = (c, s4) => typeof c.weight === "function" ? c.weight(s4) : c.weight ?? (c.rare ? 0.3 : 1);
 function cardOdds(s4) {
   const seen = new Set(s4.history.map((h2) => h2.cardId).filter(Boolean));
-  const base = CARD_WEIGHTS.find((x) => s4.age <= x.until).w, luck = LUCK[s4.difficulty] || LUCK.normal, w = Object.fromEntries(Object.entries(base).map(([k, v]) => [k, v * luck[k]]));
+  const base = CARD_WEIGHTS.find((x) => s4.age <= x.until).w, luck = LUCK[s4.difficulty] || LUCK.normal, w = Object.fromEntries(Object.entries(base).map(([k2, v]) => [k2, v * luck[k2]]));
   const fresh = (c) => (c.repeatable || !seen.has(c.id)) && (!c.when || c.when(s4));
   const pool = Object.fromEntries(["life", "opportunity", "impulse"].map((t) => [t, CARDS.filter((c) => c.type === t && fresh(c))]));
   const lastQuiet = s4.history.length > 0 && s4.history.at(-1).cardId === null;
@@ -2822,7 +2829,7 @@ function cardOdds(s4) {
     if (!Object.values(weights).some((v) => v > 0)) weights.quiet = 1;
   }
   const total = sum(Object.values(weights));
-  return { pool, odds: Object.fromEntries(Object.entries(weights).map(([k, v]) => [k, v / total])), lastQuiet, seen: [...seen] };
+  return { pool, odds: Object.fromEntries(Object.entries(weights).map(([k2, v]) => [k2, v / total])), lastQuiet, seen: [...seen] };
 }
 function drawCard(s4) {
   assertPhase(s4, "card");
@@ -2830,9 +2837,9 @@ function drawCard(s4) {
   const n = clone(s4), { pool, odds } = cardOdds(n);
   const live = Object.entries(odds).filter(([, p]) => p > 0);
   let x = rand(n), type = live.at(-1)[0];
-  for (const [k, p] of live) {
+  for (const [k2, p] of live) {
     if (x < p) {
-      type = k;
+      type = k2;
       break;
     }
     x -= p;
@@ -2843,10 +2850,10 @@ function drawCard(s4) {
   }
   const list = pool[type], tw = sum(list.map((c2) => cardWeight(c2, n)));
   let y = rand(n) * tw, c = list.at(-1);
-  for (const k of list) {
-    y -= cardWeight(k, n);
+  for (const k2 of list) {
+    y -= cardWeight(k2, n);
     if (y < 0) {
-      c = k;
+      c = k2;
       break;
     }
   }
@@ -3241,7 +3248,7 @@ function simulateYear(s0, { returnRate = s0.marketReturn ?? ASSUME.stockReturnMe
     const ess = essentialsMonthly(s4);
     y.essentials += ess;
     spend += ess;
-    for (const k of Object.keys(s4.essentials)) y.cat[k] = (y.cat[k] || 0) + s4.essentials[k];
+    for (const k2 of Object.keys(s4.essentials)) y.cat[k2] = (y.cat[k2] || 0) + s4.essentials[k2];
     const left = charge(m, ess, "Essentials");
     if (left > 0) {
       overdue(m, left, "Essentials");
@@ -3380,7 +3387,7 @@ function simulateYear(s0, { returnRate = s0.marketReturn ?? ASSUME.stockReturnMe
     withheld,
     withheldParts: y.withheld,
     refund,
-    saved: Object.fromEntries(Object.entries(y.saved).map(([k, v]) => [k, r22(v)])),
+    saved: Object.fromEntries(Object.entries(y.saved).map(([k2, v]) => [k2, r22(v)])),
     netCashFlow: r22(income - outflow - y.k401),
     investRate,
     returnRate,
@@ -3519,7 +3526,7 @@ function nextYear(s4) {
   return n;
 }
 var R20 = { "q1": "If year one earns nothing, your money lasts about {n} months. Is that enough?", "q1o": [["yes", "Enough"], ["no", "Not really"], ["risk", "Not enough, I\u2019ll take the risk"]], "q2": "You\u2019d give up {give} a year in pay and benefits. The business must make about {need}/mo to match. Worth it?", "q2b": "You need about {need}/mo just to cover your costs. Can this business make that?", "q2o": [["yes", "Worth it"], ["unsure", "Not sure yet"], ["no", "Probably not"]], "q3": "If it fails, you\u2019d owe about {bill} in bills. What would you do?", "q3o": [["work", "Go back to work"], ["again", "Try again"], ["savings", "Live on savings for a while"]], "review": "Money lasts: planned {m} mo, now {now} mo. Profit: {p}/mo, needed {need}/mo.", "reflect": "Your {label} ran for {y} {u}. What would you change next time?", "reflectPlan": "Your plan if it failed: \u201C{w}\u201D.", "reflectO": [["save", "Save more first"], ["side", "Test it as a side hustle first"], ["small", "Start smaller"], ["none", "Stick to a paycheck"], ["same", "Nothing, I\u2019d do it again"]], "reflectRec": "Next time: {x}.", "caught": "Savings caught {x}. On a {r}% card: about {i}/yr in interest.", "carded": "{x} went on your card or overdue: about {i}/yr in interest.", "could": " Your emergency fund could have covered it.", "bigger": " A bigger emergency fund would have covered it.", "optFund": "No interest \xB7 lasts {a} \u2192 {b} mo", "optCard": "About {i}/yr in interest" };
-var fill20 = (t, v) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "");
+var fill20 = (t, v) => t.replace(/\{(\w+)\}/g, (_, k2) => v[k2] ?? "");
 var monthlyOut = (s4) => essentialsMonthly(s4) + s4.fun + sum(minimums(s4).map((x) => x.due));
 var monthsLeft = (cash, out) => out > 0 ? Math.round(cash / out * 10) / 10 : 99;
 function startupCheck(s4, choiceId) {
@@ -3593,7 +3600,7 @@ function leaveService(n) {
   n.service = null;
   n.flags.giBill = true;
   n.stats.career = Math.min(3, n.stats.career + 1);
-  for (const k of Object.keys(base)) n.essentials[k] = Math.max(n.essentials[k], base[k]);
+  for (const k2 of Object.keys(base)) n.essentials[k2] = Math.max(n.essentials[k2], base[k2]);
   const j = jobFromSalary(44e3, n.edu, n.stats.career);
   setJob(n, j, { salary: j.salary });
   n.records.push({ age: n.age, kind: "big", text: "Finished 4 years of service. Career skill +1, and the GI Bill will now cover tuition if you go back to school.", big: true }, { age: n.age, kind: "note", text: `Back in civilian life, you started as ${n.job.title}: ${money(n.job.salary)}` });
@@ -3613,8 +3620,8 @@ function closeFailed(n) {
   n.records.push({ age: n.age, kind: "big", text: `${b.label}: closed. You still owe bills you personally guaranteed (${money(bill)}).`, big: true });
 }
 function graduate(n) {
-  const k = n.school.kind, sc2 = SCHOOL[k];
-  if (k === "cert") {
+  const k2 = n.school.kind, sc2 = SCHOOL[k2];
+  if (k2 === "cert") {
     n.stats.career = Math.min(3, n.stats.career + sc2.career);
     n.school = null;
     const j2 = jobFromSalary(44e3, n.edu, n.stats.career);
@@ -3622,7 +3629,7 @@ function graduate(n) {
     n.records.push({ age: n.age, kind: "big", text: `Earned your trade certificate and started as ${n.job.title}: ${money(n.job.salary)}`, big: true });
     return;
   }
-  if (k === "study" && !n.home) {
+  if (k2 === "study" && !n.home) {
     n.essentials.housing = Math.max(n.essentials.housing, Math.round(850 * STATES[n.region].costOfLiving.housing));
     n.essentials.food = Math.max(n.essentials.food, 400);
     n.essentials.transport = Math.max(n.essentials.transport, 120);
@@ -3632,7 +3639,7 @@ function graduate(n) {
   n.stats.career = Math.min(3, n.stats.career + sc2.career);
   n.records.push({ age: n.age, kind: "big", text: `Graduated: earned your ${EDU[n.edu]} degree. You can now apply for jobs that require it on the job board.`, big: true });
   n.school = null;
-  const j = jobFromSalary(k === "study" ? 6e4 : 42e3, n.edu, n.stats.career), cur = n.job.part && n.job.id !== "campus" ? JOBS.find((x) => x.id === n.job.id) : null;
+  const j = jobFromSalary(k2 === "study" ? 6e4 : 42e3, n.edu, n.stats.career), cur = n.job.part && n.job.id !== "campus" ? JOBS.find((x) => x.id === n.job.id) : null;
   const pick = cur && cur.salary >= j.salary ? cur : j;
   setJob(n, pick, { salary: pick.salary });
   n.records.push({ age: n.age, kind: "note", text: `After graduating, you started as ${n.job.title}: salary ${money(n.job.salary)}` });
@@ -3651,7 +3658,7 @@ function wrapUp(s4) {
   const H = s4.history;
   if (!H.length) return null;
   const cats = { housing: 0, food: 0, transport: 0, insurance: 0, other: 0, fun: 0, interest: 0, tax: 0, oneoff: 0, education: 0 };
-  for (const h2 of H) for (const k of Object.keys(cats)) cats[k] += h2.cat?.[k] || 0;
+  for (const h2 of H) for (const k2 of Object.keys(cats)) cats[k2] += h2.cat?.[k2] || 0;
   const maxMonth = H.reduce((b, h2) => !b || h2.maxMonth.spend > b.spend ? { ...h2.maxMonth, age: h2.age } : b, null);
   const minMonth = H.reduce((b, h2) => !b || h2.minMonth.spend < b.spend ? { ...h2.minMonth, age: h2.age } : b, null);
   let best = null;
@@ -3720,12 +3727,6 @@ function quickVals(n) {
   const salary = n.job.salary || 48e3, ess = essentialsMonthly(n), card = n.debts.find((d) => d.kind === "card" && d.balance > 200), h2 = n.history.at(-1), mt = n.job.match || { rate: 1, upTo: 0.04 }, now = fvMonthly(200, 65 - n.age), later = fvMonthly(200, 55 - n.age);
   return { salary: money(salary), salaryM: money(salary / 12), ef3: money(ess * 3), ef6: money(ess * 6), bal: money(Math.round(card?.balance || 2e3)), r: Math.round(mt.rate * 100), m: Math.round(mt.upTo * 100), age: n.age, age10: n.age + 10, now: money(now), later: money(later), diff: money(Math.round((now - later) / 1e3) * 1e3), raise: money(h2?.salary && n.job.salary > h2.salary ? n.job.salary - h2.salary : 4e3) };
 }
-function quickCheck(s4) {
-  const R2 = s4.year?.review;
-  if (!R2) return null;
-  const Ld = LESSONS.find((l) => l.id === R2.id), q2 = Ld.q[R2.variant], vals = R2.vals || quickVals(s4), fill = (t) => String(t).replace(/\{(\w+)\}/g, (_, k) => vals[k] ?? "");
-  return { title: Ld.title, q: fill(q2.q), opts: q2.opts.map(fill), why: fill(q2.why), ok: q2.ok, order: q2.opts.map((_, i) => (i + (R2.rot || 0)) % q2.opts.length) };
-}
 function answerReview(s4, choice) {
   const rv = s4.year?.review;
   if (!rv || rv.answered != null) throw Error("No open quick check.");
@@ -3740,9 +3741,20 @@ function answerReview(s4, choice) {
   else R2.due = r + 2;
   return n;
 }
+function practiceReview(s4) {
+  const rv = s4.year?.review;
+  if (!rv || rv.answered != null) throw Error("No open quick check.");
+  const n = clone(s4), R2 = n.learn.reviews[rv.id];
+  n.year.review.answered = -1;
+  n.year.review.ok = true;
+  n.learn.log.push({ id: rv.id, age: n.age, ok: true, played: true });
+  R2.n++;
+  R2.done = true;
+  return n;
+}
 var fvMonthly = (m, years) => {
-  const i = 0.05 / 12, k = Math.max(1, Math.round(years * 12));
-  return m * ((1 + i) ** k - 1) / i;
+  const i = 0.05 / 12, k2 = Math.max(1, Math.round(years * 12));
+  return m * ((1 + i) ** k2 - 1) / i;
 };
 function payoffSim(bal, apr, pay) {
   let b = bal, m = 0, interest = 0;
@@ -3789,8 +3801,8 @@ function mastery(s4) {
   });
 }
 function addMoments(n) {
-  const k = 2 + (rand(n) < 0.35 ? 1 : 0), out = [];
-  for (let guard = 0; out.length < k && guard < 50; guard++) {
+  const k2 = 2 + (rand(n) < 0.35 ? 1 : 0), out = [];
+  for (let guard = 0; out.length < k2 && guard < 50; guard++) {
     const i = Math.floor(rand(n) * MOMENTS.length), month = 2 + Math.floor(rand(n) * 10);
     if (out.some((m) => m.i === i || m.month === month)) continue;
     out.push({ i, month, label: MOMENTS[i][0], amount: MOMENTS[i][1] });
@@ -3801,7 +3813,7 @@ function addMoments(n) {
 function validate(s4) {
   if (!s4 || s4.v !== VERSION || !["plan", "decision", "card", "live", "review", "finish"].includes(s4.phase)) throw Error("This save isn\u2019t from this version of Tycoon Edition.");
   s4.learn ??= freshLearn();
-  for (const [k, v] of Object.entries(s4.accounts)) if (!Number.isFinite(v)) throw Error("Corrupted account balance in save: " + k);
+  for (const [k2, v] of Object.entries(s4.accounts)) if (!Number.isFinite(v)) throw Error("Corrupted account balance in save: " + k2);
   return s4;
 }
 
@@ -4573,7 +4585,7 @@ function startMusic() {
   const play = () => {
     const ch = CHORDS[bar2 % 4];
     ch.forEach((f) => tone(f, 0, 2.3, { type: "sine", vol: 0.12, to: musicGain }));
-    [0, 1, 2, 1].forEach((k, i) => tone(ch[k] * 2, 0.5 * i + 0.05, 0.45, { type: "triangle", vol: 0.05, to: musicGain }));
+    [0, 1, 2, 1].forEach((k2, i) => tone(ch[k2] * 2, 0.5 * i + 0.05, 0.45, { type: "triangle", vol: 0.05, to: musicGain }));
     bar2++;
   };
   play();
@@ -4618,12 +4630,12 @@ var coin = (x, y, r = 13) => C(x, y, r, "#ffc531") + T(x, y + r * 0.42, "$", r *
 var arrowUp = (x, y, f = "#2fae6b") => P(`M${x} ${y + 34}V${y + 8}M${x - 12} ${y + 20}L${x} ${y + 6}L${x + 12} ${y + 20}`, "none", `stroke="${f}" stroke-width="6"`);
 var arrowDown = (x, y, f = "#e04848") => P(`M${x} ${y}V${y + 26}M${x - 12} ${y + 14}L${x} ${y + 28}L${x + 12} ${y + 14}`, "none", `stroke="${f}" stroke-width="6"`);
 var alert = (x, y) => P(`M${x} ${y}L${x + 20} ${y + 34}H${x - 20}Z`, "#ffc531") + T(x, y + 30, "!", 22);
-var heart = (x, y, k = 1, f = "#e05a8a") => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 8C-6-4-22-2-20 12-18 22-6 28 0 34 6 28 18 22 20 12 22-2 6-4 0 8Z" fill="${f}" ${s}/>`;
+var heart = (x, y, k2 = 1, f = "#e05a8a") => `<path transform="translate(${x} ${y}) scale(${k2})" d="M0 8C-6-4-22-2-20 12-18 22-6 28 0 34 6 28 18 22 20 12 22-2 6-4 0 8Z" fill="${f}" ${s}/>`;
 var star = (x, y, r = 10, f = "#ffc531") => {
   let d = "";
   for (let i = 0; i < 10; i++) {
-    const a = Math.PI / 5 * i - Math.PI / 2, rr2 = i % 2 ? r * 0.45 : r;
-    d += (i ? "L" : "M") + (x + rr2 * Math.cos(a)).toFixed(1) + " " + (y + rr2 * Math.sin(a)).toFixed(1);
+    const a = Math.PI / 5 * i - Math.PI / 2, rr3 = i % 2 ? r * 0.45 : r;
+    d += (i ? "L" : "M") + (x + rr3 * Math.cos(a)).toFixed(1) + " " + (y + rr3 * Math.sin(a)).toFixed(1);
   }
   return P(d + "Z", f);
 };
@@ -4792,27 +4804,6 @@ var LG = {
   treeEnd: (d, g) => `Waiting 10 years saved ${d} in deposits but cost about ${g} by age 65.`,
   note: "Assumes 5% a year after inflation."
 };
-var hasGame = (id) => ["paycheck", "debt", "compound"].includes(id);
-var r10 = (x) => Math.round(x / 10) * 10;
-var fv = (fn, y) => y > 0 ? fn(200, y) : 0;
-function gameInit(s4, id, t, fvMonthly2) {
-  const v = t.v;
-  if (id === "paycheck") {
-    const p = v.p, tax = p.tax || {};
-    let gross = p.gross + (p.spouseGross || 0), example = false;
-    let cuts = [[LG.fed, tax.federal], [LG.state, tax.state], [LG.fica, (tax.socialSecurity || 0) + (tax.medicare || 0)], [LG.k401, p.k401]].filter((c) => c[1] > 0.5).map(([l, a]) => ({ l, a }));
-    if (gross <= 0) {
-      gross = 3e3;
-      example = true;
-      cuts = [{ l: LG.fed, a: 270 }, { l: LG.state, a: 90 }, { l: LG.fica, a: 230 }];
-    }
-    const net = gross - cuts.reduce((n, c) => n + c.a, 0);
-    return { id, st: "guess", gross, net, cuts, i: 0, example, opts: [r10(gross * 0.6), r10(net), Math.round(gross)] };
-  }
-  if (id === "debt") return { id, bal: v.balN, apr: v.aprN, fixed: v.fixedN, b: v.balN, prev: v.balN, m: 0, interest: 0, example: !v.realCard, v };
-  const H = 65 - s4.age;
-  return { id, st: "guess", age: s4.age, H, y: 0, py: 0, fn: fvMonthly2, gap: Math.round(fv(fvMonthly2, H) - fv(fvMonthly2, H - 10)) };
-}
 function gameStep(g, act) {
   if (act === "skip") {
     g.done = true;
@@ -4836,7 +4827,7 @@ function gameStep(g, act) {
   if (g.id === "debt") {
     const extra = act === "pay:extra";
     g.prev = g.b;
-    for (let k = 0; k < 6 && g.b > 0.5; k++) {
+    for (let k2 = 0; k2 < 6 && g.b > 0.5; k2++) {
       const i = g.b * g.apr / 12, due = Math.min(g.b + i, extra ? g.fixed : Math.max(25, i + g.b * 0.01));
       g.interest += i;
       g.b = g.b + i - due;
@@ -4859,39 +4850,607 @@ function gameStep(g, act) {
   if (g.y >= g.H) g.done = true;
   return g.done ? "levelup" : "tick";
 }
-var paycheck = (g, { money: money3, btn: btn2, icon: icon2 }) => {
-  if (g.st === "guess") return `<p class="lg-q">${LG.guessPay(money3(g.gross))}</p><div class="lg-opts">${g.opts.map((o, k) => btn2("lg", money3(o), { id: "guess:" + k, cls: "btn blue", attrs: k === 0 ? "data-autofocus" : "" })).join("")}</div>`;
-  const left = (i) => g.gross - g.cuts.slice(0, i).reduce((n, c) => n + c.a, 0), pct2 = (x) => (x / g.gross * 100).toFixed(1) + "%";
-  const shown = g.skipped ? g.cuts.length : g.i, a = left(Math.max(0, shown - 1)), b = left(shown);
-  return `<div class="lg-pay"><div class="lg-track"><i style="--a:${pct2(a)};--b:${pct2(b)}"></i><b>${LG.left} ${money3(b)}</b></div>
-    <ol class="lg-gates">${g.cuts.map((c, k) => `<li class="${k < shown ? "open" : k === shown ? "now" : ""}">${k < shown ? icon2.check : icon2.lock}<span>${c.l}</span><b>${k < shown ? "\u2212" + money3(c.a) : ""}</b></li>`).join("")}</ol></div>
-    ${g.done ? "" : `<div class="lg-opts">${btn2("lg", LG.openGate(g.cuts[g.i].l), { id: "next", cls: "btn blue", ico: "arrow", attrs: "data-autofocus" })}</div>`}`;
+
+// ui/conceptgames.js
+var CG = {
+  play: "Play",
+  skip: "Show the result",
+  stop: "End early",
+  secs: (n) => `${n} seconds`,
+  how: { paycheck: "Catch your paychecks", emergency: "Block the bills with your shield", debt: "Catch coins to shrink the snowball", compound: "Catch seeds and plant them", match: "Catch your coins. The boss adds more", creep: "Catch the raise, dodge the spending" },
+  taxes: "Taxes",
+  inAccount: "In your account",
+  shield: "Shield",
+  onCard: "On card",
+  monthN: (m) => `Month ${m}`,
+  interest: "Interest",
+  ageN: (a) => `Age ${a}`,
+  youPut: "You put in",
+  boss: "Boss",
+  max: "Max",
+  kept: "Kept",
+  spent: "Spent",
+  noMatch: "No match",
+  payLine: (k2, g, n) => `${k2} paychecks: ${g} before tax, only ${n} reaches your account.`,
+  payBars: ["Before tax", "Reached you"],
+  efAll: (b) => `Your shield blocked all ${b}. Nothing went on the card.`,
+  efSome: (b, c, i) => `Your shield blocked ${b}. ${c} went on the card: about ${i} a year in interest.`,
+  efBars: ["Blocked", "On the card"],
+  debtClear: (m, i) => `Cleared in ${m} months, with ${i} in interest.`,
+  debtStill: (b, mb) => `After 3 years you still owe ${b}. Minimums only: ${mb}.`,
+  debtBars: ["Minimums only", "You"],
+  treeLine: (e, t) => `Seeds from your first 10 years grew into ${e} of your ${t} at 65.`,
+  treeBars: (a) => [`Start at ${a}`, `Start at ${a + 10}`],
+  matchLine: (p, f, m, full) => `You put in ${p}% and got ${f} free a year. The full match needs ${m}%: ${full}.`,
+  matchBars: ["You got", "Full match"],
+  creepLine: (k2, r, fv) => `You kept ${k2} of a ${r} raise. Saved every year until 50, that\u2019s about ${fv}.`,
+  creepBars: ["Kept", "Spent"]
 };
-var debt2 = (g, { money: money3, btn: btn2 }) => {
-  const size = (b) => (0.3 + 0.7 * Math.sqrt(Math.min(1.2, b / g.bal))).toFixed(3);
-  return `<div class="lg-debt-box"><div class="lg-hill"><span class="lg-ball" style="--a:${size(g.prev)};--b:${g.b <= 0.5 ? 0 : size(g.b)}"></span></div>
-    <div class="lg-nums"><div><small>${LG.owe}</small><b class="neg">${money3(g.b)}</b></div><div><small>${LG.interest}</small><b>${money3(g.interest)}</b></div><div><small>${LG.monthsIn(g.m)}</small><span class="lg-dots">${[6, 12, 18, 24, 30, 36].map((x) => `<i class="${x <= g.m ? "on" : ""}"></i>`).join("")}</span></div></div></div>
-    ${g.done ? "" : `<p class="lg-q">${LG.halfYear}</p><div class="lg-opts">${btn2("lg", LG.payMin, { id: "pay:min", cls: "btn ghost", attrs: "data-autofocus" })}${btn2("lg", LG.payExtra(money3(g.fixed)), { id: "pay:extra", cls: "btn blue" })}</div>`}`;
+var INK3 = "#1d2b4f";
+var GOLD = "#ffc531";
+var RED = "#e04848";
+var GREEN = "#2fae6b";
+var TEAL = "#7fd9b8";
+var k = (v) => {
+  const a = Math.abs(v), s4 = v < 0 ? "\u2212$" : "$";
+  return a >= 1e4 ? s4 + Math.round(a / 1e3) + "k" : a >= 1e3 ? s4 + (a / 1e3).toFixed(1).replace(/\.0$/, "") + "k" : s4 + Math.round(a);
 };
-var tree = (v, prev, max, label, money3) => {
-  const sc2 = (x) => (x > 0 ? 0.25 + 0.75 * Math.sqrt(x / max) : 0).toFixed(3);
-  return `<div class="lg-plot"><small>${label}</small><svg viewBox="0 0 100 110" aria-hidden="true"><line x1="6" y1="104" x2="94" y2="104" class="lg-ground"/>${v > 0 ? `<g class="lg-tree" style="--a:${sc2(prev)};--b:${sc2(v)}"><rect x="45" y="62" width="10" height="42" rx="3"/><circle cx="50" cy="44" r="34"/></g>` : '<circle cx="50" cy="100" r="4" class="lg-seed"/>'}</svg><b>${v > 0 ? money3(v) : LG.notYet}</b></div>`;
+var fvM = (m, years) => {
+  const i = 0.05 / 12, n = Math.max(1, Math.round(years * 12));
+  return m * ((1 + i) ** n - 1) / i;
 };
-var compound = (g, { money: money3, btn: btn2 }) => {
-  const a = g.age, gap = g.gap, opts = [24e3, Math.round(gap / 1e3) * 1e3, Math.round(gap * 3 / 1e3) * 1e3];
-  if (g.st === "guess") return `<p class="lg-q">${LG.guessTree(a, a + 10)}</p><div class="lg-opts">${opts.map((o, k) => btn2("lg", "+" + money3(o), { id: "guess:" + k, cls: "btn blue", attrs: k === 0 ? "data-autofocus" : "" })).join("")}</div>`;
-  const E = (y) => fv(g.fn, y), L = (y) => fv(g.fn, y - 10), max = E(g.H), nx = Math.min(g.H, g.y + 10);
-  return `<p class="lg-age"><b>${LG.age(a + g.y)}</b></p><div class="lg-plots">${tree(E(g.y), E(g.py), max, LG.early(a), money3)}${tree(L(g.y), L(g.py), max, LG.late(a + 10), money3)}</div>
-    ${g.done ? "" : `<div class="lg-opts">${btn2("lg", LG.ff(a + nx), { id: "ff", cls: "btn blue", ico: "arrow", attrs: "data-autofocus" })}</div>`}`;
+function setupCanvas2(canvas) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1), w = canvas.clientWidth, h2 = canvas.clientHeight;
+  canvas.width = w * dpr;
+  canvas.height = h2 * dpr;
+  const ctx2 = canvas.getContext("2d");
+  ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx: ctx2, w, h: h2 };
+}
+function input2(canvas) {
+  const st = { left: false, right: false, x: null };
+  const key = (e, on) => {
+    if (["ArrowLeft", "a", "A"].includes(e.key)) {
+      st.left = on;
+      e.preventDefault();
+    }
+    if (["ArrowRight", "d", "D"].includes(e.key)) {
+      st.right = on;
+      e.preventDefault();
+    }
+  };
+  const kd = (e) => key(e, true), ku = (e) => key(e, false), pm = (e) => {
+    const r = canvas.getBoundingClientRect();
+    st.x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+  };
+  window.addEventListener("keydown", kd);
+  window.addEventListener("keyup", ku);
+  canvas.addEventListener("pointermove", pm);
+  canvas.addEventListener("pointerdown", pm);
+  canvas.addEventListener("touchmove", pm, { passive: true });
+  canvas.tabIndex = 0;
+  canvas.focus({ preventScroll: true });
+  return { st, off() {
+    window.removeEventListener("keydown", kd);
+    window.removeEventListener("keyup", ku);
+    canvas.removeEventListener("pointermove", pm);
+    canvas.removeEventListener("pointerdown", pm);
+    canvas.removeEventListener("touchmove", pm);
+  } };
+}
+var rr2 = (ctx2, x, y, w, h2, r) => {
+  ctx2.beginPath();
+  ctx2.roundRect ? ctx2.roundRect(x, y, w, h2, r) : ctx2.rect(x, y, w, h2);
 };
-var lessonGame = (g, d) => `<div class="lg lg-${g.id}">${g.example ? `<p class="lg-eg">${LG.example}</p>` : ""}${{ paycheck, debt: debt2, compound }[g.id](g, d)}</div>`;
-function debrief(g, { money: money3 }) {
-  if (g.id === "paycheck") return g.skipped ? LG.plain(money3(g.net), money3(g.gross)) : g.guess === g.opts[1] ? LG.spot(money3(g.net), money3(g.gross)) : LG.off(money3(g.guess), money3(g.net), money3(g.gross));
-  if (g.id === "debt") {
-    const v = g.v, first = g.skipped ? "" : g.b <= 0.5 ? LG.cleared(g.m, money3(g.interest)) + " " : LG.still(money3(g.interest), money3(g.b)) + " ";
-    return first + LG.compare(v.minYears, v.minInterest, v.fixed, v.fixMonths, v.fixInterest);
+function coin2(ctx2, x, y, r, fill, label) {
+  ctx2.fillStyle = fill;
+  ctx2.strokeStyle = INK3;
+  ctx2.lineWidth = 3;
+  ctx2.beginPath();
+  ctx2.arc(x, y, r, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.stroke();
+  if (label) {
+    ctx2.fillStyle = INK3;
+    ctx2.font = `900 ${Math.max(10, Math.min(14, r * 0.62))}px system-ui`;
+    ctx2.fillText(label, x, y + 1);
   }
-  return (g.skipped ? "" : g.pick === 1 ? LG.treeOk : LG.treeNo) + LG.treeEnd(money3(24e3), money3(Math.round(g.gap / 1e3) * 1e3)) + " " + LG.note;
+}
+function basket(ctx2, px, h2) {
+  ctx2.save();
+  ctx2.translate(px, h2 - 40);
+  ctx2.fillStyle = "#e8bf8a";
+  ctx2.strokeStyle = INK3;
+  ctx2.lineWidth = 3;
+  ctx2.beginPath();
+  ctx2.moveTo(-42, -8);
+  ctx2.lineTo(42, -8);
+  ctx2.lineTo(32, 16);
+  ctx2.lineTo(-32, 16);
+  ctx2.closePath();
+  ctx2.fill();
+  ctx2.stroke();
+  ctx2.beginPath();
+  ctx2.moveTo(-14, -8);
+  ctx2.lineTo(-11, 16);
+  ctx2.moveTo(14, -8);
+  ctx2.lineTo(11, 16);
+  ctx2.stroke();
+  ctx2.restore();
+}
+var inCatch = (it, px, h2, half = 46) => it.y > h2 - 58 && it.y < h2 - 24 && Math.abs(it.x - px) < half;
+var lane = (seq, w) => 34 + seq * 173 % Math.max(1, w - 68);
+var GAMES = {
+  paycheck(p, w, h2, S2) {
+    const items = [], chunks = [], band = h2 * 0.42, f = p.net / p.gross;
+    let spawn = 0, seq = 0, caught = 0, n = 0;
+    return {
+      update(dt, t, px, pop) {
+        spawn -= dt;
+        if (spawn <= 0 && t < S2 - 1.4) {
+          seq++;
+          n++;
+          items.push({ x: lane(seq, w), y: -24, vy: 150 + seq % 4 * 22 });
+          spawn = 0.75;
+        }
+        for (const it of items) {
+          if (it.gone) continue;
+          it.y += it.vy * dt;
+          if (!it.cut && it.y > band) {
+            it.cut = true;
+            chunks.push({ x: it.x, y: it.y, vx: seq % 2 ? 140 : -140, vy: -80, life: 0.9 });
+            pop(it.x + 34, band - 8, "\u2212" + k(p.gross - p.net));
+          }
+          if (inCatch(it, px, h2)) {
+            it.gone = true;
+            caught++;
+            pop(px, h2 - 72, "+" + k(p.net), true);
+          }
+          if (it.y > h2 + 30) it.gone = true;
+        }
+        for (const c of chunks) {
+          c.life -= dt;
+          c.x += c.vx * dt;
+          c.vy += 300 * dt;
+          c.y += c.vy * dt;
+        }
+      },
+      draw(ctx2, px) {
+        ctx2.setLineDash([10, 8]);
+        ctx2.strokeStyle = RED;
+        ctx2.lineWidth = 4;
+        ctx2.beginPath();
+        ctx2.moveTo(0, band);
+        ctx2.lineTo(w, band);
+        ctx2.stroke();
+        ctx2.setLineDash([]);
+        rr2(ctx2, 8, band - 30, 74, 22, 11);
+        ctx2.fillStyle = RED;
+        ctx2.fill();
+        ctx2.fillStyle = "#fff";
+        ctx2.font = "800 12px system-ui";
+        ctx2.fillText("\u2702 " + CG.taxes, 45, band - 18);
+        for (const c of chunks) if (c.life > 0) {
+          ctx2.globalAlpha = Math.min(1, c.life * 2);
+          coin2(ctx2, c.x, c.y, 10, RED);
+          ctx2.globalAlpha = 1;
+        }
+        for (const it of items) if (!it.gone) coin2(ctx2, it.x, it.y, it.cut ? 22 * Math.sqrt(f) : 22, GOLD, k(it.cut ? p.net : p.gross));
+        basket(ctx2, px, h2);
+      },
+      hud: () => `${CG.inAccount} ${k(caught * p.net)}`,
+      result: () => ({ caught, n: Math.max(n, caught) })
+    };
+  },
+  emergency(p, w, h2, S2) {
+    const capMax = Math.max(p.fund, p.ess * 3, 1), mult = [0.6, 1, 0.4, 1.4, 0.8, 0.5, 1.2, 0.7], items = [];
+    let cap = p.fund, spawn = 0.3, seq = 0, blocked = 0, carded = 0;
+    const width = () => 44 + 130 * cap / capMax;
+    return {
+      half: () => width() / 2,
+      update(dt, t, px, pop) {
+        spawn -= dt;
+        if (spawn <= 0 && t < S2 - 1.4) {
+          const amt = Math.max(50, Math.round(p.ess * mult[seq % mult.length] / 50) * 50);
+          seq++;
+          items.push({ x: lane(seq, w), y: -20, vy: 140 + seq % 3 * 25, amt });
+          spawn = 1.35;
+        }
+        for (const it of items) {
+          if (it.gone) continue;
+          it.y += it.vy * dt;
+          if (it.y > h2 - 70 && it.y < h2 - 34 && Math.abs(it.x - px) < width() / 2 + 18) {
+            it.gone = true;
+            const a = Math.min(cap, it.amt), rest = it.amt - a;
+            cap -= a;
+            blocked += a;
+            carded += rest;
+            if (a > 0) pop(px, h2 - 84, "\u2212" + k(a), true);
+            if (rest > 0) pop(px + 40, h2 - 64, CG.onCard + " +" + k(rest));
+          }
+          if (it.y > h2 + 20) {
+            it.gone = true;
+            carded += it.amt;
+            pop(it.x, h2 - 20, CG.onCard + " +" + k(it.amt));
+          }
+        }
+      },
+      draw(ctx2, px) {
+        for (const it of items) if (!it.gone) {
+          rr2(ctx2, it.x - 34, it.y - 15, 68, 30, 6);
+          ctx2.fillStyle = "#ffd2cc";
+          ctx2.fill();
+          ctx2.strokeStyle = INK3;
+          ctx2.lineWidth = 3;
+          ctx2.stroke();
+          ctx2.fillStyle = "#9b1c1c";
+          ctx2.font = "900 13px system-ui";
+          ctx2.fillText(k(it.amt), it.x, it.y + 1);
+        }
+        const wd = width();
+        rr2(ctx2, px - wd / 2, h2 - 56, wd, 26, 13);
+        ctx2.fillStyle = cap > 0 ? TEAL : "#d6d9e2";
+        ctx2.fill();
+        ctx2.strokeStyle = INK3;
+        ctx2.lineWidth = 3;
+        ctx2.stroke();
+        ctx2.fillStyle = INK3;
+        ctx2.font = "900 12px system-ui";
+        ctx2.fillText("\u{1F6E1} " + k(cap), px, h2 - 42);
+        rr2(ctx2, w - 128, 10, 118, 28, 14);
+        ctx2.fillStyle = carded ? RED : "rgba(29,43,79,.25)";
+        ctx2.fill();
+        ctx2.fillStyle = "#fff";
+        ctx2.font = "800 12px system-ui";
+        ctx2.fillText("\u{1F525} " + CG.onCard + " " + k(carded), w - 69, 25);
+      },
+      hud: () => `${CG.shield} ${k(cap)}`,
+      result: () => ({ blocked, carded })
+    };
+  },
+  debt(p, w, h2, S2) {
+    const bal = p.balN, apr = p.aprN, md = S2 / 36, min0 = Math.max(25, bal * apr / 12 + bal * 0.01), coinV = Math.max(10, Math.round((p.fixedN - min0) * 1.5 / 5) * 5), items = [];
+    let b = bal, interest = 0, m = 0, acc = 0, spawn = 0.2, seq = 0, spin2 = 0, paidAt = null;
+    return {
+      update(dt, t, px, pop) {
+        acc += dt;
+        spin2 += dt * 3;
+        while (acc >= md && m < 36) {
+          acc -= md;
+          m++;
+          if (b > 0.5) {
+            const i = b * apr / 12, due = Math.min(b + i, Math.max(25, i + b * 0.01));
+            interest += i;
+            b = b + i - due;
+          }
+        }
+        spawn -= dt;
+        if (spawn <= 0 && t < S2 - 1) {
+          seq++;
+          items.push({ x: lane(seq, w), y: 120, vy: 150 + seq % 4 * 20 });
+          spawn = 0.45;
+        }
+        for (const it of items) {
+          if (it.gone) continue;
+          it.y += it.vy * dt;
+          if (inCatch(it, px, h2)) {
+            it.gone = true;
+            if (b > 0.5) {
+              b = Math.max(0, b - coinV);
+              pop(w / 2 + 60, 70, "\u2212" + k(coinV), true);
+            }
+          }
+          if (it.y > h2 + 30) it.gone = true;
+        }
+        if (b <= 0.5 && paidAt == null) paidAt = Math.max(1, m);
+      },
+      draw(ctx2, px) {
+        const r = b > 0.5 ? 14 + 46 * Math.sqrt(Math.min(1.3, b / bal)) : 0;
+        ctx2.strokeStyle = INK3;
+        ctx2.lineWidth = 3;
+        ctx2.beginPath();
+        ctx2.moveTo(0, 116);
+        ctx2.lineTo(w, 116);
+        ctx2.stroke();
+        if (r) {
+          coin2(ctx2, w / 2, 116 - r, r, "#ffc9c2");
+          ctx2.save();
+          ctx2.translate(w / 2, 116 - r);
+          ctx2.rotate(spin2);
+          ctx2.strokeStyle = "rgba(29,43,79,.35)";
+          ctx2.beginPath();
+          ctx2.moveTo(-r * 0.6, 0);
+          ctx2.lineTo(r * 0.6, 0);
+          ctx2.stroke();
+          ctx2.restore();
+          ctx2.fillStyle = "#9b1c1c";
+          ctx2.font = "900 14px system-ui";
+          ctx2.fillText(k(b), w / 2, 116 - r);
+        } else {
+          ctx2.fillStyle = GREEN;
+          ctx2.font = "900 22px system-ui";
+          ctx2.fillText("\u2713", w / 2, 90);
+        }
+        for (const it of items) if (!it.gone) coin2(ctx2, it.x, it.y, 15, GOLD, "$");
+        basket(ctx2, px, h2);
+      },
+      hud: () => `${CG.monthN(m)} \xB7 ${CG.interest} ${k(interest)}`,
+      result: () => ({ b, interest, m: paidAt ?? m })
+    };
+  },
+  compound(p, w, h2, S2) {
+    const H = p.H, N2 = 24, dep = 2400 * H / N2, items = [], trees = [];
+    let spawn = 0.1, seq = 0, yr = 0;
+    const gx = (y) => 16 + (w - 32) * y / H, ground2 = 118;
+    return {
+      update(dt, t, px, pop) {
+        yr = Math.min(H, H * t / S2);
+        spawn -= dt;
+        if (spawn <= 0 && seq < N2) {
+          items.push({ x: lane(seq + 1, w), y: ground2 + 10, vy: 160, start: H * seq / N2 });
+          seq++;
+          spawn = (S2 - 1) / N2;
+        }
+        for (const it of items) {
+          if (it.gone) continue;
+          it.y += it.vy * dt;
+          if (inCatch(it, px, h2)) {
+            it.gone = true;
+            trees.push({ start: it.start });
+            pop(px, h2 - 72, "\u{1F331}", true);
+          }
+          if (it.y > h2 + 30) it.gone = true;
+        }
+      },
+      draw(ctx2, px) {
+        ctx2.strokeStyle = INK3;
+        ctx2.lineWidth = 3;
+        ctx2.beginPath();
+        ctx2.moveTo(10, ground2);
+        ctx2.lineTo(w - 10, ground2);
+        ctx2.stroke();
+        ctx2.fillStyle = INK3;
+        ctx2.font = "800 11px system-ui";
+        ctx2.fillText(String(p.age), 18, ground2 + 12);
+        ctx2.fillText("65", w - 22, ground2 + 12);
+        ctx2.fillStyle = "rgba(47,111,228,.25)";
+        ctx2.fillRect(16, ground2 - 2, (w - 32) * yr / H, 4);
+        const maxV = dep * 1.05 ** H;
+        for (const tr of trees) {
+          const v = dep * 1.05 ** Math.max(0, yr - tr.start), s4 = 6 + 34 * Math.sqrt(v / maxV), x = gx(tr.start);
+          ctx2.fillStyle = "#8a5a33";
+          ctx2.fillRect(x - 2, ground2 - s4 * 0.7, 4, s4 * 0.7);
+          coin2(ctx2, x, ground2 - s4 * 0.8, s4 * 0.5, "#9fe0a8");
+        }
+        for (const it of items) if (!it.gone) {
+          ctx2.font = '22px "Segoe UI Emoji", system-ui';
+          ctx2.fillText("\u{1F330}", it.x, it.y);
+        }
+        basket(ctx2, px, h2);
+      },
+      hud: () => CG.ageN(Math.round(p.age + yr)),
+      result: () => ({ starts: trees.map((t) => t.start) })
+    };
+  },
+  match(p, w, h2, S2) {
+    const cap = Math.round(p.upTo * 100), items = [];
+    let spawn = 0.2, seq = 0, pct2 = 0, boss = [], free = 0;
+    return {
+      update(dt, t, px, pop) {
+        spawn -= dt;
+        if (spawn <= 0 && t < S2 - 1.2) {
+          seq++;
+          items.push({ x: lane(seq, w), y: -20, vy: 160 + seq % 4 * 20 });
+          spawn = 0.55;
+        }
+        for (const it of items) {
+          if (it.gone) continue;
+          it.y += it.vy * dt;
+          if (inCatch(it, px, h2)) {
+            it.gone = true;
+            pct2++;
+            if (pct2 <= cap) {
+              const v = p.salary * 0.01 * p.rate;
+              free += v;
+              boss.push({ x: w - 46, y: 40, life: 1 });
+              pop(px, h2 - 72, CG.boss + " +" + k(v), true);
+            } else pop(px, h2 - 72, CG.noMatch);
+          }
+          if (it.y > h2 + 30) it.gone = true;
+        }
+        for (const c of boss) {
+          c.life -= dt;
+          c.y += 160 * dt;
+        }
+      },
+      draw(ctx2, px) {
+        const jx = w - 70, jy = 46, jh = 120;
+        rr2(ctx2, jx, jy, 50, jh, 10);
+        ctx2.fillStyle = "#fff4cf";
+        ctx2.fill();
+        ctx2.strokeStyle = INK3;
+        ctx2.lineWidth = 3;
+        ctx2.stroke();
+        const fill = Math.min(1, Math.min(pct2, cap) / cap);
+        rr2(ctx2, jx + 4, jy + jh - 4 - (jh - 8) * fill, 42, (jh - 8) * fill, 6);
+        ctx2.fillStyle = GOLD;
+        ctx2.fill();
+        ctx2.fillStyle = INK3;
+        ctx2.font = "800 11px system-ui";
+        ctx2.fillText(CG.boss, jx + 25, jy - 10);
+        ctx2.fillText(pct2 >= cap ? CG.max : `${Math.min(pct2, cap)}/${cap}%`, jx + 25, jy + jh + 12);
+        for (const c of boss) if (c.life > 0) coin2(ctx2, c.x, c.y, 12, GOLD, "$");
+        for (const it of items) if (!it.gone) coin2(ctx2, it.x, it.y, 16, "#9cc0ff", "1%");
+        basket(ctx2, px, h2);
+      },
+      hud: () => `${CG.youPut} ${pct2}%`,
+      result: () => ({ pct: pct2, free })
+    };
+  },
+  creep(p, w, h2, S2) {
+    const TEMPT = ["\u{1F4F1}", "\u{1F6CD}", "\u{1F697}", "\u{1F354}", "\u{1F3AE}", "\u{1F3E0}"], items = [];
+    let spawn = 0.2, seq = 0, kept = 0, spent = 0, coins = 0;
+    const nCoins = Math.max(1, Math.floor((S2 - 1.2) / 0.5 * 2 / 3)), v = p.raise / nCoins;
+    return {
+      update(dt, t, px, pop) {
+        spawn -= dt;
+        if (spawn <= 0 && t < S2 - 1.2) {
+          seq++;
+          const good = seq % 3 !== 0 && coins < nCoins;
+          if (good) coins++;
+          items.push({ x: lane(seq, w), y: -20, vy: 150 + seq % 5 * 20, good, ch: TEMPT[seq % TEMPT.length] });
+          spawn = 0.5;
+        }
+        for (const it of items) {
+          if (it.gone) continue;
+          it.y += it.vy * dt;
+          if (inCatch(it, px, h2)) {
+            it.gone = true;
+            if (it.good) {
+              kept += v;
+              pop(px, h2 - 72, "+" + k(v), true);
+            } else {
+              spent += v;
+              kept = Math.max(0, kept - v);
+              pop(px, h2 - 72, CG.spent + " " + k(v));
+            }
+          }
+          if (it.y > h2 + 30) {
+            it.gone = true;
+            if (it.good) spent += v;
+          }
+        }
+      },
+      draw(ctx2, px) {
+        for (const it of items) if (!it.gone) {
+          if (it.good) coin2(ctx2, it.x, it.y, 16, "#9fe0a8", "$");
+          else {
+            ctx2.font = '28px "Segoe UI Emoji", system-ui';
+            ctx2.fillText(it.ch, it.x, it.y);
+          }
+        }
+        basket(ctx2, px, h2);
+      },
+      hud: () => `${CG.kept} ${k(kept)} \xB7 ${CG.spent} ${k(spent)}`,
+      result: () => ({ kept: Math.min(p.raise, kept), spent: Math.max(0, p.raise - Math.min(p.raise, kept)) })
+    };
+  }
+};
+function playConcept(canvas, id, p, hooks, seconds = 12) {
+  const { ctx: ctx2, w, h: h2 } = setupCanvas2(canvas), io = input2(canvas), G = GAMES[id](p, w, h2, seconds), pops = [];
+  let px = w / 2, t = 0, last = performance.now(), raf = 0, done = false;
+  const pop = (x, y, text, ok) => pops.push({ x, y, text, ok, life: 0.8 });
+  const finish = () => {
+    if (done) return;
+    done = true;
+    cancelAnimationFrame(raf);
+    io.off();
+    hooks.onEnd(G.result());
+  };
+  function step(now) {
+    const dt = Math.min(0.033, (now - last) / 1e3);
+    last = now;
+    t += dt;
+    if (io.st.left) px -= 420 * dt;
+    if (io.st.right) px += 420 * dt;
+    if (io.st.x != null && !io.st.left && !io.st.right) px += (io.st.x - px) * Math.min(1, dt * 14);
+    const half = G.half ? G.half() : 44;
+    px = Math.max(half, Math.min(w - half, px));
+    G.update(dt, t, px, pop);
+    for (const q2 of pops) {
+      q2.life -= dt;
+      q2.y -= 40 * dt;
+    }
+    ctx2.clearRect(0, 0, w, h2);
+    const g = ctx2.createLinearGradient(0, 0, 0, h2);
+    g.addColorStop(0, "#bfe6ff");
+    g.addColorStop(1, "#fffdf6");
+    ctx2.fillStyle = g;
+    ctx2.fillRect(0, 0, w, h2);
+    ctx2.textAlign = "center";
+    ctx2.textBaseline = "middle";
+    G.draw(ctx2, px, t);
+    for (const q2 of pops) if (q2.life > 0) {
+      ctx2.globalAlpha = Math.min(1, q2.life * 2);
+      ctx2.font = '900 15px system-ui, "Segoe UI Emoji"';
+      ctx2.fillStyle = q2.ok ? "#13784a" : "#b3262b";
+      ctx2.fillText(q2.text, q2.x, q2.y);
+    }
+    ctx2.globalAlpha = 1;
+    const hud2 = `${G.hud()} \xB7 ${Math.ceil(Math.max(0, seconds - t))}s`;
+    ctx2.font = "800 13px system-ui";
+    const tw = ctx2.measureText(hud2).width + 20;
+    rr2(ctx2, 10, 10, tw, 26, 13);
+    ctx2.fillStyle = "rgba(29,43,79,.85)";
+    ctx2.fill();
+    ctx2.fillStyle = "#fff";
+    ctx2.textAlign = "left";
+    ctx2.fillText(hud2, 20, 23);
+    hooks.onTick?.(Math.max(0, seconds - t));
+    if (t >= seconds) {
+      setTimeout(finish, 200);
+      return;
+    }
+    raf = requestAnimationFrame(step);
+  }
+  raf = requestAnimationFrame(step);
+  return { stop: finish };
+}
+function cgAuto(id, p, seconds = 12) {
+  if (id === "paycheck") {
+    const n = Math.floor((seconds - 1.4) / 0.75) + 1;
+    return { caught: n, n };
+  }
+  if (id === "emergency") {
+    let cap = p.fund, blocked = 0, carded = 0;
+    const mult = [0.6, 1, 0.4, 1.4, 0.8, 0.5, 1.2, 0.7], n = Math.floor((seconds - 1.7) / 1.35) + 1;
+    for (let i = 0; i < n; i++) {
+      const amt = Math.max(50, Math.round(p.ess * mult[i % mult.length] / 50) * 50), a = Math.min(cap, amt);
+      cap -= a;
+      blocked += a;
+      carded += amt - a;
+    }
+    return { blocked, carded };
+  }
+  if (id === "debt") {
+    const min0 = Math.max(25, p.balN * p.aprN / 12 + p.balN * 0.01), coinV = Math.max(10, Math.round((p.fixedN - min0) * 1.5 / 5) * 5), perM = (seconds - 1) / 0.45 / 36;
+    let b = p.balN, interest = 0, m = 0;
+    for (; m < 36 && b > 0.5; m++) {
+      const i = b * p.aprN / 12;
+      interest += i;
+      b = Math.max(0, b + i - Math.min(b + i, Math.max(25, i + b * 0.01)) - coinV * perM);
+    }
+    return { b, interest, m: b > 0.5 ? 36 : m };
+  }
+  if (id === "compound") return { starts: Array.from({ length: 24 }, (_, i) => p.H * i / 24) };
+  if (id === "match") {
+    const cap = Math.round(p.upTo * 100);
+    return { pct: cap, free: p.salary * cap / 100 * p.rate };
+  }
+  return { kept: p.raise / 2, spent: p.raise / 2 };
+}
+function cgSummary(id, p, r, money3) {
+  const empty = { paycheck: !r.caught, emergency: !(r.blocked + r.carded), debt: r.m < 6, compound: !r.starts?.length }[id];
+  if (empty) r = cgAuto(id, p);
+  if (id === "paycheck") return { line: CG.payLine(r.caught, money3(r.caught * p.gross), money3(r.caught * p.net)), bars: [[CG.payBars[0], r.caught * p.gross, "tax"], [CG.payBars[1], r.caught * p.net, "ok"]] };
+  if (id === "emergency") return { line: r.carded > 0.5 ? CG.efSome(money3(r.blocked), money3(r.carded), money3(r.carded * p.apr)) : CG.efAll(money3(r.blocked)), bars: [[CG.efBars[0], r.blocked, "ok"], [CG.efBars[1], r.carded, "tax"]] };
+  if (id === "debt") {
+    let b = p.balN;
+    for (let m = 0; m < 36 && b > 0.5; m++) {
+      const i = b * p.aprN / 12;
+      b = b + i - Math.min(b + i, Math.max(25, i + b * 0.01));
+    }
+    return { line: r.b <= 0.5 ? CG.debtClear(r.m, money3(r.interest)) : CG.debtStill(money3(r.b), money3(b)), bars: [[CG.debtBars[0], b, "tax"], [CG.debtBars[1], r.b, r.b < b ? "ok" : "tax"]] };
+  }
+  if (id === "compound") {
+    const dep = 2400 * p.H / 24, at65 = (s4) => dep * 1.05 ** (p.H - s4), all = r.starts.reduce((n, s4) => n + at65(s4), 0), late = r.starts.filter((s4) => s4 >= 10).reduce((n, s4) => n + at65(s4), 0);
+    return { line: CG.treeLine(money3(all - late), money3(all)), bars: [[CG.treeBars(p.age)[0], all, "ok"], [CG.treeBars(p.age)[1], late, "held"]] };
+  }
+  if (id === "match") {
+    const cap = Math.round(p.upTo * 100), full = p.salary * cap / 100 * p.rate;
+    return { line: CG.matchLine(r.pct, money3(r.free), cap, money3(full)), bars: [[CG.matchBars[0], r.free, r.free >= full - 0.5 ? "ok" : "held"], [CG.matchBars[1], full, "ok"]] };
+  }
+  return { line: CG.creepLine(money3(r.kept), money3(p.raise), money3(fvM(r.kept / 12, p.years))), bars: [[CG.creepBars[0], r.kept, "ok"], [CG.creepBars[1], r.spent, "tax"]] };
 }
 
 // ui/app.js
@@ -4903,21 +5462,21 @@ var sum2 = (a) => a.reduce((n, x) => n + x, 0);
 var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 var COSMETIC = "adulting.tycoon.en.cosmetic.v1";
 var TOURKEY = "adulting.tycoon.en.tours.v1";
-var ls = { get(k, d) {
+var ls = { get(k2, d) {
   try {
-    const t = localStorage.getItem(k);
+    const t = localStorage.getItem(k2);
     return t == null ? d : JSON.parse(t);
   } catch {
     return d;
   }
-}, set(k, v) {
+}, set(k2, v) {
   try {
-    localStorage.setItem(k, JSON.stringify(v));
+    localStorage.setItem(k2, JSON.stringify(v));
   } catch {
   }
-}, del(k) {
+}, del(k2) {
   try {
-    localStorage.removeItem(k);
+    localStorage.removeItem(k2);
   } catch {
   }
 } };
@@ -4952,7 +5511,7 @@ var q = (key) => GLOSSARY[key] ? `<button class="q" data-go="tip" data-id="${key
 var bar = (p, cls = "") => `<span class="pbar ${cls}"><i style="width:${Math.max(0, Math.min(100, p * 100))}%"></i></span>`;
 var TYPE = { life: { name: "Life event", en: "LIFE EVENT", ico: "alert" }, opportunity: { name: "Opportunity", en: "OPPORTUNITY", ico: "star" }, impulse: { name: "Impulse buy", en: "IMPULSE BUY", ico: "cart" }, quiet: { name: "Quiet year", en: "QUIET YEAR", ico: "moon" } };
 var LT2 = LT;
-var fmt = (t, v) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "");
+var fmt = (t, v) => t.replace(/\{(\w+)\}/g, (_, k2) => v[k2] ?? "");
 var STAT = { career: "Career skill", discipline: "Self-control" };
 var reelText = (key, v) => v == null ? "\u2026" : key === "region" ? v : key === "age" ? "Age " + v : key === "debt" ? v ? "\u2212" + money2(v) : "$0" : money2(v);
 var toastHtml = () => notice ? `<div class="toast" role="status">${icon.alert}<span>${h(notice)}</span>${btn("dismiss", "Got it", { cls: "btn ghost small" })}</div>` : "";
@@ -4976,7 +5535,7 @@ function introScreen() {
   clearTimeout(introTimer);
   const i = setup.introStep, n = INTRO.steps.length, [title, body2] = INTRO.steps[i], last = i === n - 1;
   const maya = { hairStyle: "long", hairColor: i === 4 ? "#b8bfcc" : "#24170f", skin: "#c98a5e", expr: i === 2 ? "wow" : i === 4 ? "calm" : "smile", topStyle: i >= 3 ? "collar" : "hoodie", topColor: i >= 3 ? "#2fae6b" : "#7a6ff0" };
-  const growth = `<svg class="card-art" viewBox="0 0 300 130" aria-hidden="true"><rect width="300" height="130" fill="#e3f4ff"/><rect x="-4" y="112" width="308" height="24" fill="#a8dcc0"/><path d="M-4 112H304" stroke="#1d2b4f" stroke-width="3"/>${[0, 1, 2, 3, 4, 5, 6].map((k) => `<rect x="${40 + k * 32}" y="${108 - (8 + k * k * 2.2)}" width="22" height="${8 + k * k * 2.2}" rx="4" fill="${k < 6 ? "#7fd0fb" : "#2fae6b"}" stroke="#1d2b4f" stroke-width="3" style="animation: grow .5s ${0.15 * k}s both"/>`).join("")}<path d="M44 96 L272 18" stroke="#2fae6b" stroke-width="5" stroke-dasharray="8 7" fill="none"/></svg>`;
+  const growth = `<svg class="card-art" viewBox="0 0 300 130" aria-hidden="true"><rect width="300" height="130" fill="#e3f4ff"/><rect x="-4" y="112" width="308" height="24" fill="#a8dcc0"/><path d="M-4 112H304" stroke="#1d2b4f" stroke-width="3"/>${[0, 1, 2, 3, 4, 5, 6].map((k2) => `<rect x="${40 + k2 * 32}" y="${108 - (8 + k2 * k2 * 2.2)}" width="22" height="${8 + k2 * k2 * 2.2}" rx="4" fill="${k2 < 6 ? "#7fd0fb" : "#2fae6b"}" stroke="#1d2b4f" stroke-width="3" style="animation: grow .5s ${0.15 * k2}s both"/>`).join("")}<path d="M44 96 L272 18" stroke="#2fae6b" stroke-width="5" stroke-dasharray="8 7" fill="none"/></svg>`;
   const art = [
     cardArt("intro-job", "opportunity"),
     cardArt("intro-pay", "opportunity"),
@@ -4991,7 +5550,7 @@ function introScreen() {
       <div class="intro-art ${last ? "wide" : ""}">${art}</div>
     </div>
     <div class="intro-cap"><h1>${h(title)}</h1><p>${h(body2)}</p></div>
-    <div class="intro-foot"><span class="intro-dots">${INTRO.steps.map((_, k) => `<i class="${k === i ? "on" : k < i ? "done" : ""}"></i>`).join("")}</span>
+    <div class="intro-foot"><span class="intro-dots">${INTRO.steps.map((_, k2) => `<i class="${k2 === i ? "on" : k2 < i ? "done" : ""}"></i>`).join("")}</span>
       <span class="row">${btn("intro-skip", INTRO.skip, { cls: "btn ghost small" })}${i > 0 ? btn("intro-back", INTRO.back, { cls: "btn ghost small", ico: "back" }) : ""}${last ? btn("intro-skip", INTRO.cta, { cls: "btn green big", ico: "arrow", attrs: "data-autofocus" }) : btn("intro-next", INTRO.next, { cls: "btn blue", ico: "arrow", attrs: "data-autofocus" })}</span></div>
     ${last || reduced ? "" : '<div class="intro-timer"><i></i></div>'}
   </main></div>`;
@@ -5032,7 +5591,7 @@ function slotScreen() {
   const leverLabel = setup.pulls === 0 ? "Pull the lever to spin" : all ? "All five stopped" : `Pull again to stop reel ${n + 1} (${REELS[n].label})`;
   setupFrame("slot", `<section class="slot-stage tycoon-slot">
     <header class="wiz-title"><h1>Pull the lever to spin your starting point</h1><p><kbd>Space</kbd> / <kbd>\u2193</kbd></p></header>
-    <div class="diff-pick" role="radiogroup" aria-label="${TEXT.difficulty}" title="${h(LT2.diffLock)}"><span>${TEXT.difficulty} ${q("difficulty")}</span>${Object.entries(DIFFICULTY).map(([k, d]) => `<button class="diff-opt ${setup.difficulty === k ? "on" : ""} d-${k}" data-go="diff" data-id="${k}" ${setup.pulls || setup.rerolls ? "disabled" : ""} role="radio" aria-checked="${setup.difficulty === k}" title="${h(d.text)}"><b>${h(d.name)}</b></button>`).join("")}</div>
+    <div class="diff-pick" role="radiogroup" aria-label="${TEXT.difficulty}" title="${h(LT2.diffLock)}"><span>${TEXT.difficulty} ${q("difficulty")}</span>${Object.entries(DIFFICULTY).map(([k2, d]) => `<button class="diff-opt ${setup.difficulty === k2 ? "on" : ""} d-${k2}" data-go="diff" data-id="${k2}" ${setup.pulls || setup.rerolls ? "disabled" : ""} role="radio" aria-checked="${setup.difficulty === k2}" title="${h(d.text)}"><b>${h(d.name)}</b></button>`).join("")}</div>
     <div class="machine"><div class="cabinet"><div class="marquee">${logo("slot-logo")}<span>Life Slot Machine</span></div><div class="reels five">${REELS.map(reel).join("")}</div><p class="lever-hint" aria-live="polite">${leverLabel}</p></div>
       <button class="lever ${spinning ? "armed" : ""}" data-go="pull" ${all ? "disabled" : "data-autofocus"} aria-label="${h(leverLabel)}"><span class="rod"></span><span class="knob"></span><span class="base"></span></button></div>
     ${all ? `<div class="slot-side reveal"><section class="backstory-card"><span class="ribbon-tag">Backstory \xB7 age ${r.age}</span><h2>${h(bs.title)}</h2><p>${h(bs.text)}</p></section>
@@ -5078,7 +5637,7 @@ var previewStart = (path = setup.path, goal = setup.goal) => newGame({ seed: set
 function winHtml(reached = 0) {
   const tiles = [["shield", "Stay afloat", "Pay the bills every month and keep an emergency fund, so one bad break can\u2019t sink you."], ["up", "Climb 6 stages", "From Survival to Financial Independence. Each step is a safer, freer life."], ["flag", "Reach 50", "The game ends at 50. The higher your stage, the better your ending."]];
   const stairs = `<div class="win-stairs">${STAGES.slice(1).map((x) => `<i class="st-${x.id} ${x.id <= reached ? "on" : ""}" style="height:${28 + x.id * 12}%" title="${h(x.name)}: ${h(x.enter)}"><b>${x.id}</b></i>`).join("")}<span class="win-top">${icon.trophy}</span></div><div class="win-ends"><small>1 ${h(STAGES[1].name)}</small><small>6 ${h(STAGES[6].name)}</small></div>`;
-  return `<section class="win-panel"><h2>${icon.trophy}How to win</h2><div class="win-row">${tiles.map(([ic, t, d], k) => `<div class="win-tile"><span class="win-n">${k + 1}</span>${icon[ic]}<b title="${d}">${t}</b>${k === 0 ? '<div class="win-pic" aria-hidden="true"><i class="pay"></i><i class="bill"></i><i class="pay"></i><i class="bill"></i><i class="pay"></i><i class="bill"></i></div>' : k === 2 ? `<div class="win-pic win-life" aria-hidden="true">${"<i></i>".repeat(9)}<i class="end"></i></div>` : ""}${k === 1 ? stairs : ""}</div>`).join("")}</div></section>`;
+  return `<section class="win-panel"><h2>${icon.trophy}How to win</h2><div class="win-row">${tiles.map(([ic, t, d], k2) => `<div class="win-tile"><span class="win-n">${k2 + 1}</span>${icon[ic]}<b title="${d}">${t}</b>${k2 === 0 ? '<div class="win-pic" aria-hidden="true"><i class="pay"></i><i class="bill"></i><i class="pay"></i><i class="bill"></i><i class="pay"></i><i class="bill"></i></div>' : k2 === 2 ? `<div class="win-pic win-life" aria-hidden="true">${"<i></i>".repeat(9)}<i class="end"></i></div>` : ""}${k2 === 1 ? stairs : ""}</div>`).join("")}</div></section>`;
 }
 function pathScreen() {
   const r = reelsObj(), need = needsPath(r), p = previewStart(), pay = payday(p);
@@ -5129,10 +5688,10 @@ function idCard() {
 }
 function frame(active, body2) {
   const items = [["overview", "Overview", "pin"], ["payday", "Payday", "coin"], ["accounts", "Accounts", "bank"], ["goals", "How to win", "trophy"], ["journal", "Journal", "book"]];
-  const k = STEPS.findIndex((x) => x[0] === s2.phase);
+  const k2 = STEPS.findIndex((x) => x[0] === s2.phase);
   root.innerHTML = `<div class="page tycoon">${hud()}${toastHtml()}<div class="tycoon-grid">
     <aside class="side"><nav aria-label="Game areas">${items.map(([id, n, ico]) => `<button class="side-item ${active === id ? "on" : ""}" data-go="nav" data-id="${id}">${icon[ico]}<span>${n}</span></button>`).join("")}</nav>${idCard()}</aside>
-    <main id="main" class="t-main">${s2.phase !== "finish" ? `<ol class="phase-steps">${STEPS.map(([ph, n], i) => `<li class="${ph === s2.phase ? "on" : i < k ? "done" : ""}"><button data-go="nav" data-id="${PHASE_PAGE[ph]}" ${i > k ? "disabled" : ""}><i>${i < k ? "\u2713" : i + 1}</i>${n}</button></li>`).join("")}</ol>` : ""}${body2}</main></div>
+    <main id="main" class="t-main">${s2.phase !== "finish" ? `<ol class="phase-steps">${STEPS.map(([ph, n], i) => `<li class="${ph === s2.phase ? "on" : i < k2 ? "done" : ""}"><button data-go="nav" data-id="${PHASE_PAGE[ph]}" ${i > k2 ? "disabled" : ""}><i>${i < k2 ? "\u2713" : i + 1}</i>${n}</button></li>`).join("")}</ol>` : ""}${body2}</main></div>
     ${modalHtml()}${tipHtml()}${tourHtml()}</div>`;
   const m = root.querySelector(".modal"), key = ui.modal ? ui.modal.kind + (ui.modal.id || "") : "";
   if (m && key === lastModal) m.classList.add("steady");
@@ -5370,7 +5929,7 @@ function finishPage() {
     `<div class="sl s-cover"><small>Ages ${s2.startAge}\u201350 \xB7 ${STATES[s2.region].name} \xB7 ${h(DIFFICULTY[s2.difficulty || "normal"].name)}</small><h1>${s2.name ? h(s2.name) + "\u2019s" : "Your"} ${50 - s2.startAge} years</h1><p>Starting from \u201C${h(BACKSTORIES.find((b) => b.id === s2.backstory)?.title)}\u201D.</p>${avatar(look(), { cls: "big-av", label: false })}</div>`,
     `<div class="sl"><small>Over these years you</small><h2>earned ${money2(w.income)}</h2><p>paid <b>${money2(w.tax)}</b> in tax and <b>${money2(w.interest)}</b> in interest.</p><p>Your employer\u2019s match gave you <b class="pos">${money2(w.match)}</b>, and market moves added up to <b class="${w.growth < 0 ? "neg" : "pos"}">${money2(w.growth)}</b>.</p></div>`,
     `<div class="sl"><small>Your biggest spending month</small><h2>Age ${w.maxMonth.age}, month ${w.maxMonth.month}: ${money2(w.maxMonth.spend)}</h2><small>Your thriftiest month</small><h3>Age ${w.minMonth.age}, month ${w.minMonth.month}: ${money2(w.minMonth.spend)}</h3></div>`,
-    `<div class="sl"><small>Where the money went</small><h2>#1: ${CAT_NAME[w.topCat[0]]}</h2><ul class="catbars">${cats.slice(0, 6).map(([k, v]) => `<li><span>${CAT_NAME[k]}</span><i style="width:${v / catMax * 100}%"></i><b>${money2(v)}</b></li>`).join("")}</ul></div>`,
+    `<div class="sl"><small>Where the money went</small><h2>#1: ${CAT_NAME[w.topCat[0]]}</h2><ul class="catbars">${cats.slice(0, 6).map(([k2, v]) => `<li><span>${CAT_NAME[k2]}</span><i style="width:${v / catMax * 100}%"></i><b>${money2(v)}</b></li>`).join("")}</ul></div>`,
     `<div class="sl"><small>Your most memorable year</small><h2>Age ${w.swingYear.age}</h2><p>Your wealth this year ${w.swingYear.delta >= 0 ? "gained" : "lost"} <b>${money2(Math.abs(w.swingYear.delta))}</b>.</p>${w.memorable ? `<p class="quote">\u201C${h(w.memorable.text)}\u201D</p>` : ""}${w.crashes.length ? `<p>You lived through ${w.crashes.length} stock market crashes (at age ${w.crashes.join(", ")}).</p>` : ""}</div>`,
     `<div class="sl"><small>Your wealth over time</small>${sparkline(w.worth)}<p>At 50: <b>${money2(m.netWorth)}</b>, investable assets <b>${money2(m.invested)}</b>.</p></div>`,
     `<div class="sl"><small>${h(LT2.learned)}</small><h2>${mastery(s2).filter((x) => x.taughtAt != null).length} / ${LESSONS.length}</h2><ul class="learn-list big">${mastery(s2).map((x) => `<li class="${x.taughtAt != null ? "ok" : ""}"><b>${h(x.title)}</b><small>${x.asked ? h(fmt(LT2.score, { c: x.right, t: x.asked })) : ""}</small></li>`).join("")}</ul><p>${h(fmt(T2.finishPlan, { d: s2.decidedYears || 0, r: s2.repeatYears || 0 }))}</p></div>`,
@@ -5378,7 +5937,7 @@ function finishPage() {
   ];
   const i = Math.min(ui.slide, slides.length);
   if (i < slides.length) return frame("finish", `<section class="wrapped"><div class="sl-wrap">${slides[i]}</div>
-    <div class="sl-nav">${btn("slide", "Previous", { id: i - 1, cls: "btn ghost small", attrs: i ? "" : "disabled" })}<span class="dots">${slides.map((_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("")}</span>${btn("slide", i === slides.length - 1 ? "See the full record" : "Next", { id: i + 1, cls: "btn green", ico: "arrow", attrs: "data-autofocus" })}</div></section>`);
+    <div class="sl-nav">${btn("slide", "Previous", { id: i - 1, cls: "btn ghost small", attrs: i ? "" : "disabled" })}<span class="dots">${slides.map((_, k2) => `<i class="${k2 === i ? "on" : ""}"></i>`).join("")}</span>${btn("slide", i === slides.length - 1 ? "See the full record" : "Next", { id: i + 1, cls: "btn green", ico: "arrow", attrs: "data-autofocus" })}</div></section>`);
   frame("finish", `<section><header class="page-head"><h1>The road you traveled</h1>${btn("slide", "Replay the report", { id: 0, cls: "btn ghost small" })}</header>
     <section class="panel"><ol class="timeline">${s2.records.filter((r) => r.big).map((r) => `<li class="${r.big ? "big" : ""}"><b>Age ${r.age}</b><span>${h(r.text)}</span></li>`).join("")}</ol></section>
     <div class="center">${btn("new-life", "Live another life", { cls: "btn green big", ico: "loop" })}</div></section>`);
@@ -5398,7 +5957,7 @@ function sheet(m) {
   const a = s2.accounts, assets = [["Checking", a.checking, "checking"], [`Emergency fund (${m.runway.toFixed(1)} mo)`, a.emergency, "emergency"], [s2.goal === "home" ? "Down payment fund" : "Savings fund", a.goal, "goalfund"], ["401(k)", a.k401, "k401"], ["Roth IRA", a.roth, "roth"], ["Other investing", a.brokerage, "brokerage"], ...s2.home ? [["Home (estimated value)", s2.home.value, ""]] : []];
   const debts = s2.debts.filter((d) => d.balance > 5e-3).map((d) => [d.label, d.balance, "", d.apr, d.kind === "medical" ? d.payment : 0]);
   const top = Math.max(1, ...assets.map((x) => x[1]), ...debts.map((x) => x[1]));
-  const rows = (list) => list.map(([n, v, k, apr, perMo]) => `<li><span>${h(n)} ${k ? q(k) : ""}${apr != null ? `<small> ${pct(apr, 1)}${perMo ? ` \xB7 ${money2(perMo)}${T2.perMo}` : ""}</small>` : ""}</span><i style="width:${Math.max(1, v / top * 100)}%"></i><b>${money2(v)}</b></li>`).join("");
+  const rows = (list) => list.map(([n, v, k2, apr, perMo]) => `<li><span>${h(n)} ${k2 ? q(k2) : ""}${apr != null ? `<small> ${pct(apr, 1)}${perMo ? ` \xB7 ${money2(perMo)}${T2.perMo}` : ""}</small>` : ""}</span><i style="width:${Math.max(1, v / top * 100)}%"></i><b>${money2(v)}</b></li>`).join("");
   return `<section class="panel sheet"><h3>${icon.bank}What you own \u2212 what you owe = wealth ${q("netWorth")}</h3><div class="sheet-cols">
     <div class="own"><small>Own ${money2(m.assets)}</small><ul>${rows(assets)}</ul></div><div class="owe"><small>owes ${money2(m.totalDebt)}</small><ul>${rows(debts) || '<li class="hint">No debt</li>'}</ul></div></div>
     <p class="sheet-total">= Your wealth <b class="${m.netWorth < 0 ? "neg" : "pos"}">${money2(m.netWorth)}</b></p><div class="cover-row">${icon.shield}<b>${T2.insurance}</b>${q("insurance")}<span class="cover">${icon.heart}${T2.coverHealth} ${money2(s2.essentials.insurance)}${T2.perMo}</span>${s2.car ? `<span class="cover">${icon.car}${T2.coverCar}</span>` : ""}${s2.home ? `<span class="cover">${icon.house}${T2.coverHome}</span>` : ""}<small>${icon.check}${T2.coverIn}</small></div></section>`;
@@ -5413,8 +5972,8 @@ function accountsPage() {
   const sel = (attr, list, cur) => `<select ${attr}>${list.map(([v, n]) => `<option value="${v}" ${cur === v ? "selected" : ""}>${h(n)}</option>`).join("")}</select>`;
   frame("accounts", `<section><div class="acct-layout">${sheet(metrics(s2))}
     <section class="panel acct-actions"><h3>Transfers and one-time debt payments</h3>${can ? `
-      <div class="xfer"><b>Transfer</b><label>From${sel('data-xfer="from"', movable.map((k) => [k, ACCOUNT_NAMES[k]]), X.from)}</label><label>to${sel('data-xfer="to"', movable.map((k) => [k, ACCOUNT_NAMES[k]]), X.to)}</label><label>Amount<input type="number" min="0" step="50" data-xfer="amount" value="${X.amount}"></label>${btn("xfer", "Transfer", { cls: "btn blue small" })}</div>
-      ${debts.length ? `<div class="xfer"><b>Pay off debt</b><label>Which debt${sel('data-pay="debt"', debts.map((d) => [d.id, `${d.label} ${money2(d.balance)} (${pct(d.apr, 1)})`]), P2.debt)}</label><label>from${sel('data-pay="from"', movable.map((k) => [k, ACCOUNT_NAMES[k]]), P2.from)}</label><label>Amount<input type="number" min="0" step="50" data-pay="amount" value="${P2.amount}"></label>${btn("payoff", "Pay", { cls: "btn green small" })}</div>
+      <div class="xfer"><b>Transfer</b><label>From${sel('data-xfer="from"', movable.map((k2) => [k2, ACCOUNT_NAMES[k2]]), X.from)}</label><label>to${sel('data-xfer="to"', movable.map((k2) => [k2, ACCOUNT_NAMES[k2]]), X.to)}</label><label>Amount<input type="number" min="0" step="50" data-xfer="amount" value="${X.amount}"></label>${btn("xfer", "Transfer", { cls: "btn blue small" })}</div>
+      ${debts.length ? `<div class="xfer"><b>Pay off debt</b><label>Which debt${sel('data-pay="debt"', debts.map((d) => [d.id, `${d.label} ${money2(d.balance)} (${pct(d.apr, 1)})`]), P2.debt)}</label><label>from${sel('data-pay="from"', movable.map((k2) => [k2, ACCOUNT_NAMES[k2]]), P2.from)}</label><label>Amount<input type="number" min="0" step="50" data-pay="amount" value="${P2.amount}"></label>${btn("payoff", "Pay", { cls: "btn green small" })}</div>
       <p class="mini">Paying the highest rate first saves the most. You can prepay student loans here too.</p>` : ""}` : '<p class="hint">Transfers and one-time debt payments are only available on payday.</p>'}
       <p class="mini">Credit score ${s2.credit || "no history yet"} ${q("credit")}</p></section></div>
     ${s2.history.length ? `<section class="panel"><h3>Your wealth by year</h3>${sparkline(s2.history.map((x) => x.netWorth))}</section>` : ""}${goNext()}</section>`);
@@ -5433,11 +5992,11 @@ function journalPage() {
 }
 function survivalBars() {
   let alive = 100;
-  const bars = [0, 1, 2, 3, 4].map((k) => {
-    alive *= 1 - BIZ_FAIL[k];
+  const bars = [0, 1, 2, 3, 4].map((k2) => {
+    alive *= 1 - BIZ_FAIL[k2];
     return Math.round(alive);
   });
-  return `<div class="surv" role="img" aria-label="${h(T2.stillOpen)}"><small>${h(T2.stillOpen)}</small><div class="surv-bars">${bars.map((v, k) => `<span><b>${v}%</b><i style="height:${v * 0.42}px"></i><em>${fmt(T2.yearN, { n: k + 1 })}</em></span>`).join("")}</div></div>`;
+  return `<div class="surv" role="img" aria-label="${h(T2.stillOpen)}"><small>${h(T2.stillOpen)}</small><div class="surv-bars">${bars.map((v, k2) => `<span><b>${v}%</b><i style="height:${v * 0.42}px"></i><em>${fmt(T2.yearN, { n: k2 + 1 })}</em></span>`).join("")}</div></div>`;
 }
 function modalHtml() {
   if (!ui.modal) return "";
@@ -5466,12 +6025,11 @@ function modalHtml() {
   }
   if (M.kind === "lesson" && s2.learn?.pending) {
     const t = lessonText(s2, s2.learn.pending), LICO = { paycheck: ["coin", "green"], emergency: ["piggy", "blue"], debt: ["flame", "red"], match: ["hands", "gold"], compound: ["sprout", "green"], creep: ["chart", "purple"] }[s2.learn.pending] || ["star", "gold"];
-    const P2 = s2.learn.pending, G = hasGame(P2);
-    if (G && !M.g) M.g = gameInit(s2, P2, t, fvMonthly);
-    const done = !G || M.g.done, short = done ? `<p class="lesson-short">${icon.star}<b>${h(t.short)}</b></p>` : "";
-    const mid = G ? `${lessonGame(M.g, { money: money2, btn, icon })}${M.g.done ? `<p class="lg-debrief">${h(debrief(M.g, { money: money2 }))}</p><details class="more"><summary>${h(LG.more)}</summary><p class="lesson-body">${h(t.body)}</p></details>` : ""}` : `${lessonPic(P2)}<details class="more"><summary>${h(LG.more)}</summary><p class="lesson-body">${h(t.body)}</p></details>`;
-    return wrap(`<header class="m-head lesson-head">${bubbleArt(LICO[0], LICO[1])}<div><span class="ribbon-tag">${h(fmt(LT2.lesson, t))}</span><h2>${h(t.title)}</h2></div></header>${short}${mid}
-      <div class="m-foot">${done ? btn("lesson-ok", LT2.gotIt, { cls: "btn green big", ico: "check", attrs: "data-autofocus" }) : btn("lg", LG.skip, { id: "skip", cls: "btn ghost small" })}</div>`, "small-modal lesson-modal");
+    const P2 = s2.learn.pending;
+    M.cg ??= { id: P2, p: cgParams(P2), st: "ready", secs: 12 };
+    const G = M.cg, done = G.st === "done", short = done ? `<p class="lesson-short">${icon.star}<b>${h(t.short)}</b></p>` : "";
+    return wrap(`<header class="m-head lesson-head">${bubbleArt(LICO[0], LICO[1])}<div><span class="ribbon-tag">${h(fmt(LT2.lesson, t))}</span><h2>${h(t.title)}</h2></div></header>${cgBlock(G)}${short}${done ? `<details class="more"><summary>${h(LG.more)}</summary><p class="lesson-body">${h(t.body)}</p></details>` : ""}
+      <div class="m-foot">${cgFoot(G, btn("lesson-ok", LT2.gotIt, { cls: "btn green big", ico: "check", attrs: "data-autofocus" }))}</div>`, "small-modal lesson-modal cg-modal");
   }
   if (M.kind === "guide") return wrap(guideHtml(), "wide-modal guide-modal");
   if (M.kind === "reflect") {
@@ -5493,10 +6051,11 @@ function modalHtml() {
       <div class="m-foot">${btn("ask-self", T2.askSelf, { cls: "btn ghost small" })}</div>`, "small-modal review-modal ask-modal");
   }
   if (M.kind === "review" && s2.year?.review) {
-    const R2 = s2.year.review, q2 = quickCheck(s2), done = R2.answered != null;
-    return wrap(`<header class="m-head"><span class="ribbon-tag">${icon.star}${h(LT2.quick)} \xB7 ${h(q2.title)}</span><h2>${h(q2.q)}</h2></header>
-      <div class="rv-opts">${q2.order.map((i, at) => [q2.opts[i], i, at]).map(([o, i, at]) => `<button class="rv-opt ${done && i === q2.ok ? "right" : ""} ${done && i === R2.answered && i !== q2.ok ? "wrong" : ""}" data-go="rv-ans" data-id="${i}" ${done ? "disabled" : at === 0 ? "data-autofocus" : ""}>${h(o)}</button>`).join("")}</div>
-      ${done ? `<p class="rv-why ${R2.ok ? "ok" : "no"}"><b>${h(R2.ok ? LT2.right : LT2.wrong)}</b> ${h(q2.why)}</p><div class="m-foot">${btn("rv-cont", LT2.cont, { cls: "btn green", ico: "arrow", attrs: "data-autofocus" })}</div>` : ""}`, "small-modal review-modal");
+    const R2 = s2.year.review, Ld = LESSONS.find((l) => l.id === R2.id);
+    M.cg ??= { id: R2.id, p: cgParams(R2.id), st: R2.answered != null ? "done" : "ready", secs: 6, review: true };
+    if (M.cg.st === "done" && !M.cg.r) M.cg.r = cgAuto(M.cg.id, M.cg.p, 6);
+    return wrap(`<header class="m-head"><span class="ribbon-tag">${icon.star}${h(LT2.quick)}</span><h2>${h(Ld.title)}</h2></header>${cgBlock(M.cg)}
+      <div class="m-foot">${cgFoot(M.cg, btn("rv-cont", LT2.cont, { cls: "btn green", ico: "arrow", attrs: "data-autofocus" }))}</div>`, "small-modal review-modal cg-modal");
   }
   if (M.kind === "dice") {
     const D = s2.decision;
@@ -5512,6 +6071,50 @@ function modalHtml() {
   return "";
 }
 var gameRun = null;
+var cgRun = null;
+function cgParams(id) {
+  if (id === "paycheck") {
+    const p = payday(s2), g = p.gross + (p.spouseGross || 0);
+    return g > 0 ? { gross: g, net: p.net } : { gross: 3e3, net: 2410 };
+  }
+  if (id === "emergency") return { fund: Math.max(0, s2.accounts.emergency), ess: Math.max(600, metrics(s2).essentials), apr: s2.debts.find((d) => d.kind === "card")?.apr ?? CARD.apr };
+  if (id === "debt") {
+    const v = lessonText(s2, "debt").v;
+    return v.balN >= 1500 ? v : { ...v, balN: 3e3, fixedN: 150 };
+  }
+  if (id === "compound") return { age: s2.age, H: Math.max(10, 65 - s2.age) };
+  if (id === "match") {
+    const mt = s2.job.match || { rate: 1, upTo: 0.04 };
+    return { salary: Math.max(s2.job.salary || 0, 3e4), rate: mt.rate, upTo: mt.upTo };
+  }
+  const h0 = s2.history.at(-1);
+  const raise = h0?.salary && s2.job.salary > h0.salary ? s2.job.salary - h0.salary : 0;
+  return { raise: raise >= 1500 ? raise : 5e3, years: Math.max(5, 50 - s2.age) };
+}
+function cgBlock(G) {
+  if (G.st !== "done") return `<div class="arena small cg-arena"><canvas id="cg-canvas"></canvas>${G.st === "ready" ? `<div class="cg-cover">${icon.star}<b>${h(CG.how[G.id])}</b><small>${h(CG.secs(G.secs))} \xB7 \u2190/\u2192</small></div>` : ""}</div>`;
+  const S2 = cgSummary(G.id, G.p, G.r, money2), max = Math.max(1, ...S2.bars.map((b) => b[1]));
+  return `<div class="cg-result">${S2.bars.map(([l, v, cls]) => `<div class="cg-row"><span>${h(l)}</span>${meter(v, max, cls)}<b>${money2(v)}</b></div>`).join("")}</div><p class="lg-debrief">${h(S2.line)}</p>`;
+}
+var cgFoot = (G, doneBtn) => G.st === "done" ? doneBtn : G.st === "ready" ? `${btn("cg-skip", CG.skip, { cls: "btn ghost small" })}${reduced ? "" : btn("cg-play", CG.play, { cls: "btn blue big", ico: "star", attrs: "data-autofocus" })}` : btn("cg-stop", CG.stop, { cls: "btn ghost small" });
+function startCg() {
+  const G = ui.modal?.cg, canvas = root.querySelector("#cg-canvas");
+  if (!G || G.st !== "play" || !canvas || cgRun) return;
+  cgRun = playConcept(canvas, G.id, G.p, { onEnd: (r) => {
+    cgRun = null;
+    endCg(G, r);
+  } }, G.secs);
+}
+function endCg(G, r) {
+  G.r = r;
+  G.st = "done";
+  sfx("good");
+  if (G.review && s2.year?.review && s2.year.review.answered == null) {
+    s2 = practiceReview(s2);
+    ls.set(SAVE_KEY, s2);
+  }
+  update(false);
+}
 function startGame() {
   const canvas = root.querySelector("#challenge");
   if (!canvas || gameRun) return;
@@ -5609,26 +6212,6 @@ function endTour() {
   ui.tour = null;
   update(false);
 }
-function lessonPic(id) {
-  if (id === "paycheck") {
-    const pay = payday(s2), gone = pay.gross - pay.net;
-    return `<div class="lesson-pic">${segBar([{ v: gone, cls: "tax", label: T2.taxes }, { v: pay.net, cls: "net", label: T2.takeHome }], pay.gross)}<div class="lp-keys"><span class="k-tax"><i></i>${T2.taxes} ${money2(gone)}</span><span><i class="k-net"></i>${T2.takeHome} ${money2(pay.net)}</span></div></div>`;
-  }
-  const row = (ico, label, v, max, cls, val) => `<div class="lp-row">${icon[ico]}<span>${h(label)}</span>${meter(v, max, cls)}<b>${val}</b></div>`;
-  if (id === "emergency") {
-    const m = metrics(s2), goal = m.essentials * 3;
-    return `<div class="lesson-pic">${row("piggy", T2.lpYou, m.emergency, Math.max(goal, m.emergency, 1), m.runway >= 3 ? "ok" : "tax", money2(m.emergency))}${row("shield", T2.lpGoal, goal, Math.max(goal, m.emergency, 1), "held", money2(goal))}${row("car", T2.lpRepair, 2500, Math.max(goal, m.emergency, 2500), "tax", "$2,500")}</div>`;
-  }
-  if (id === "match") {
-    const salary = Math.max(s2.job.salary || 0, 3e4), mt = s2.job.match || { rate: 1, upTo: 0.04 }, you = salary * mt.upTo, free = you * mt.rate;
-    return `<div class="lesson-pic">${row("coin", T2.lpYouPut, you, you + free, "held", money2(you))}${row("hands", T2.lpCompany, free, you + free, "ok", "+" + money2(free))}</div>`;
-  }
-  if (id === "creep") {
-    const h0 = s2.history.at(-1), raise = h0?.salary && s2.job.salary > h0.salary ? s2.job.salary - h0.salary : 5e3, fv2 = fvMonthly(raise / 24, Math.max(5, 50 - s2.age));
-    return `<div class="lesson-pic">${row("up", T2.lpRaise, raise, raise, "held", money2(raise))}${row("piggy", T2.lpSaveHalf, raise / 2, raise, "ok", money2(raise / 2))}${row("sprout", T2.lpBy50, fv2, fv2, "ok", money2(fv2))}</div>`;
-  }
-  return "";
-}
 function guideHtml() {
   return `<header class="m-head"><span class="ribbon-tag">${icon.help}${T2.guide}</span><h2>${T2.guideTitle}</h2>${btn("close", T2.close, { cls: "icon-btn", ico: "close" })}</header>
     <div class="guide-grid">${TUTS.map((t) => `<button class="guide-card ${toursSeen[t.id] ? "seen" : ""}" data-go="tut" data-id="${t.id}">${bubbleArt(t.steps[0][3], t.steps[0][4])}<b>${h(t.name)}</b><small>${fmt(T2.nSteps, { n: t.steps.length })}${toursSeen[t.id] ? " \xB7 " + T2.seen : ""}</small></button>`).join("")}</div>`;
@@ -5660,6 +6243,7 @@ function update(scroll = true) {
     }
     ({ overview: overviewPage, payday: paydayPage, decision: decisionPage, card: cardPage, live: livePage, review: reviewPage, finish: finishPage, accounts: accountsPage, goals: goalsPage, journal: journalPage })[page]();
     if (ui.modal?.kind === "game") requestAnimationFrame(startGame);
+    if (ui.modal?.cg?.st === "play") requestAnimationFrame(startCg);
     animateDice();
     if (ui.pendingSound) {
       sfx(ui.pendingSound);
@@ -5687,10 +6271,10 @@ function animateDice() {
     const fin = el.dataset.final, box = el.closest(".dice-box");
     box?.classList.add("hide-result");
     sfx("dice");
-    let k = 0;
+    let k2 = 0;
     const t = setInterval(() => {
       el.textContent = 1 + Math.floor(Math.random() * 6);
-      if (++k > 9) {
+      if (++k2 > 9) {
         clearInterval(t);
         el.textContent = fin;
         box?.classList.remove("hide-result");
@@ -5970,8 +6554,8 @@ document.addEventListener("click", (e) => {
         return update(false);
       // payday
       case "amt": {
-        const k = b.dataset.key, p = draft(), cur = k.startsWith("extra:") ? p.extra?.[k.slice(6)] || 0 : p[k];
-        setDraftAmount(k, cur + +b.dataset.d);
+        const k2 = b.dataset.key, p = draft(), cur = k2.startsWith("extra:") ? p.extra?.[k2.slice(6)] || 0 : p[k2];
+        setDraftAmount(k2, cur + +b.dataset.d);
         return update(false);
       }
       case "pct": {
@@ -6006,8 +6590,8 @@ document.addEventListener("click", (e) => {
         ui.autoNotes = null;
         return update(false);
       case "pk": {
-        const k = b.dataset.key;
-        setDraftPct(k, Math.round((draft().pcts?.[k] || 0) * 100) + +b.dataset.d);
+        const k2 = b.dataset.key;
+        setDraftPct(k2, Math.round((draft().pcts?.[k2] || 0) * 100) + +b.dataset.d);
         return update(false);
       }
       case "pmode":
@@ -6102,6 +6686,15 @@ document.addEventListener("click", (e) => {
         ui.walk = null;
         ui.page = "review";
         return update();
+      case "cg-play":
+        ui.modal.cg.st = "play";
+        return update(false);
+      case "cg-skip": {
+        const G = ui.modal.cg;
+        return endCg(G, cgAuto(G.id, G.p, G.secs));
+      }
+      case "cg-stop":
+        return cgRun?.stop();
       case "lg": {
         const snd = ui.modal?.g && gameStep(ui.modal.g, id);
         if (snd) sfx(snd);

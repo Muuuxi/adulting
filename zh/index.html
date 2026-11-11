@@ -1444,6 +1444,8 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .cg-result { display: grid; gap: 6px; margin: 10px 0 4px; } .cg-row { display: grid; grid-template-columns: minmax(0, 7.5em) minmax(0, 1fr) auto; gap: 8px; align-items: center; font-weight: 700; font-size: .9rem; } .cg-row b { white-space: nowrap; }
 .cg-modal .m-foot { flex-wrap: wrap; }
 @media (max-width: 720px) { .cg-arena canvas { height: 300px; } }
+/* Round 25: a tour step that waits for the player */
+.tb-wait { color: #b05a00; font-weight: 800; font-size: .85rem; }
 </style>
 </head>
 <body>
@@ -1826,7 +1828,7 @@ var CARDS = [
     options: [{ id: "lend", label: "\u501F\u7ED9\u4ED6", pay: "checking", cost: 1e3, gamble: { win: 0.6, winMult: 1, loseMult: 0, label: "\u670B\u53CB\u8FD8\u94B1", won: "\u670B\u53CB\u628A $1,000 \u8FD8\u7ED9\u4F60\u4E86\u3002", lost: "\u670B\u53CB\u6CA1\u8FD8\u94B1\uFF0C$1,000 \u62FF\u4E0D\u56DE\u6765\u4E86\u3002" } }, { id: "no", label: "\u5A49\u62D2", decline: true, status: "stressed" }]
   },
   /* ---- opportunities ---- */
-  { id: "match-start", type: "opportunity", title: "\u516C\u53F8\u5F00\u59CB 401(k) \u914D\u6BD4", text: "\u516C\u53F8\u5BA3\u5E03\uFF1A\u4F60\u5B58\u5165\u5DE5\u8D44\u7684\u524D 4%\uFF0C\u516C\u53F8 100% \u914D\u6BD4\u3002\u8FD9\u662F\u201C\u767D\u7ED9\u7684\u94B1\u201D\u3002", month: 1, when: (s4) => !s4.service && s4.job.employed && !s4.job.match && !s4.business, options: [{ id: "accept", label: "\u597D\u7684\uFF08\u5728\u53D1\u85AA\u65E5\u628A 401(k) \u8C03\u5230 4%\uFF09", match: { rate: 1, upTo: 0.04 } }] },
+  { id: "match-start", type: "opportunity", title: "\u516C\u53F8\u5F00\u59CB 401(k) \u914D\u6BD4", text: "\u516C\u53F8\u5BA3\u5E03\uFF1A\u4F60\u5B58\u5165\u5DE5\u8D44\u7684\u524D 4%\uFF0C\u516C\u53F8 100% \u914D\u6BD4\u3002\u8FD9\u7B14\u94B1\u8981\u5230\u9000\u4F11\u624D\u80FD\u53D6\u3002", month: 1, when: (s4) => !s4.service && s4.job.employed && !s4.job.match && !s4.business, options: [{ id: "accept", label: "\u77E5\u9053\u4E86\uFF08\u5728\u53D1\u85AA\u65E5\u81EA\u5DF1\u51B3\u5B9A\u5B58\u591A\u5C11\uFF09", match: { rate: 1, upTo: 0.04 } }] },
   {
     id: "bonus",
     type: "opportunity",
@@ -1938,7 +1940,7 @@ var CARDS = [
     month: 11,
     when: (s4) => s4.age <= 40 && !s4.flags.console,
     throw: { stat: "discipline", label: "\u81EA\u63A7", game: "dodge" },
-    outcomes: { fail: { status: "gaming", note: "\u4E70\u56DE\u6765\u5C31\u505C\u4E0D\u4E0B\u6765\uFF1A\u6C89\u8FF7\u6E38\u620F 1 \u5E74\u3002" }, ok: { note: "\u5076\u5C14\u73A9\u73A9\uFF0C\u6CA1\u803D\u8BEF\u4E8B\u3002" }, great: { note: "\u5076\u5C14\u73A9\u73A9\uFF0C\u6CA1\u803D\u8BEF\u4E8B\u3002" } },
+    outcomes: { fail: { status: "gaming", note: "\u4E70\u56DE\u6765\u5C31\u505C\u4E0D\u4E0B\u6765\uFF1A\u6C89\u8FF7\u6E38\u620F 1 \u5E74\u3002" }, ok: { note: "\u5076\u5C14\u73A9\u73A9\uFF0C\u6CA1\u803D\u8BEF\u4E8B\u3002" }, great: { note: "\u5076\u5C14\u73A9\u73A9\uFF0C\u8FD8\u80FD\u653E\u677E\u4E00\u4E0B\u3002" } },
     options: [{ id: "card", label: "\u5237\u4FE1\u7528\u5361\u4E70", pay: "card", cost: 500, flag: { console: true }, throwOutcome: true }, { id: "checking", label: "\u7528\u65E5\u5E38\u8D26\u6237\u4E70", pay: "checking", cost: 500, flag: { console: true }, throwOutcome: true }, { id: "skip", label: "\u4E0D\u4E70", decline: true, needs: "ok" }]
   },
   {
@@ -2025,7 +2027,7 @@ var STAGES = [
 ];
 var LADDER = [
   { id: "starter", title: "\u5148\u5B58 $1,000 \u5E94\u6025\u91D1", why: "\u5C0F\u610F\u5916\u4E0D\u7528\u5237\u5361\u3002" },
-  { id: "match", title: "401(k) \u5B58\u5230\u62FF\u6EE1\u516C\u53F8\u914D\u6BD4", why: "\u914D\u6BD4\u662F\u516C\u53F8\u767D\u7ED9\u7684\u94B1\u3002" },
+  { id: "match", title: "401(k) \u5B58\u5230\u62FF\u6EE1\u516C\u53F8\u914D\u6BD4", why: "\u516C\u53F8\u4F1A\u52A0\u94B1\uFF0C\u4F46\u8981\u9501\u5230\u9000\u4F11\u3002" },
   { id: "highdebt", title: "\u8FD8\u6E05\u9AD8\u606F\u503A\uFF08\u2265 8%\uFF09", why: "\u8FD8\u6389 25% \u7684\u5361\u503A\uFF0C\u7B49\u4E8E\u7A33\u8D5A 25%\u3002" },
   { id: "ef", title: "\u5E94\u6025\u91D1\u5B58\u5230 3 \u4E2A\u6708", why: "\u5931\u4E1A\u6216\u5927\u75C5\u65F6\u6491\u5F97\u4F4F\u3002" },
   { id: "roth", title: "Roth IRA", why: "\u4EE5\u540E\u53D6\u51FA\u65F6\u4E0D\u7528\u4EA4\u7A0E\u3002" },
@@ -2263,7 +2265,7 @@ function payday(s4, plan = s4.plan) {
   const livingRoom = s4.school ? Math.max(0, AID.loanCapYear / 12 - tuitionLoan) : 0;
   const livingLoan = s4.school && plan.livingLoan !== false ? Math.min(livingRoom, Math.max(0, -before)) : 0;
   const available = before + livingLoan;
-  const planned = plan.emergency + plan.goal + plan.roth + plan.brokerage + sum(Object.values(plan.extra || {}));
+  const planned2 = plan.emergency + plan.goal + plan.roth + plan.brokerage + sum(Object.values(plan.extra || {}));
   const R2 = (x) => r22(x);
   return {
     gross: R2(gross),
@@ -2283,8 +2285,8 @@ function payday(s4, plan = s4.plan) {
     income: R2(net + support + side + biz + grantCash + livingLoan),
     costs: R2(ess + s4.fun + mins),
     available: R2(available),
-    planned: R2(planned),
-    left: R2(available - planned)
+    planned: R2(planned2),
+    left: R2(available - planned2)
   };
 }
 function metrics(s4) {
@@ -4047,18 +4049,37 @@ function rr(ctx2, x, y, w, h2, r) {
   ctx2.roundRect ? ctx2.roundRect(x, y, w, h2, r) : ctx2.rect(x, y, w, h2);
 }
 var bonusFrom = (kind, r) => kind === "catch" ? r.ratio >= 0.7 ? 2 : r.ratio >= 0.4 ? 1 : 0 : r.hits <= 1 ? 2 : r.hits <= 3 ? 1 : 0;
-function playChallenge(canvas, kind, hooks, seconds = 12) {
+var THEMES = {
+  love: { good: ["\u2764\uFE0F", "\u{1F48C}", "\u{1F339}"], bad: ["\u{1F494}", "\u26A1"], bg: "#ffc7dd", fx: "\u{1F497}" },
+  work: { good: ["\u2B50", "\u{1F4C8}", "\u{1F4BC}"], bad: ["\u{1F4C9}", "\u23F0"], bg: "#bfe3ff", fx: "\u2B50" },
+  biz: { good: ["\u{1F4B0}", "\u{1F91D}", "\u{1F4E6}"], bad: ["\u{1F4C9}", "\u{1F9FE}"], bg: "#c8f2d4", fx: "\u{1F4B0}" },
+  school: { good: ["\u{1F4DA}", "\u{1F393}", "\u270F\uFE0F"], bad: ["\u{1F634}", "\u{1F4F1}"], bg: "#e6dcff", fx: "\u2728" },
+  tempt: { bg: "#ffd8e4", fx: "\u{1F4AA}" }
+};
+function playChallenge(canvas, kind, hooks, seconds = 12, theme = null) {
+  const TH = THEMES[theme] || null, fx = [];
+  let streak = 0, shake = 0, frost = 0;
   const { ctx: ctx2, w, h: h2 } = setupCanvas(canvas), io = input(canvas);
   let px = w / 2, t = 0, last = performance.now(), raf = 0, done = false, spawn = 0, seq = 0;
   const items = [], pops = [];
   let good = 0, caught = 0, hits = 0, bad = 0;
-  const GOOD = ["\u2605", "$"], BAD = kind === "catch" ? ["\u2715"] : ["\u{1F4F1}", "\u{1F6CD}", "\u{1F3B0}", "\u{1F354}", "\u{1F3AE}"];
+  const GOOD = TH?.good || ["\u2605", "$"], BAD = TH?.bad || (kind === "catch" ? ["\u2715"] : null) || ["\u{1F4F1}", "\u{1F6CD}", "\u{1F3B0}", "\u{1F354}", "\u{1F3AE}"];
   const finish = () => {
     if (done) return;
     done = true;
     cancelAnimationFrame(raf);
     io.off();
     hooks.onEnd({ ratio: good ? Math.max(0, caught - bad) / good : 0, caught, good, hits, bad });
+  };
+  const onGood = (x) => {
+    streak++;
+    frost = Math.max(0, frost - 0.06);
+    if (streak >= 3 && TH) for (let i = 0; i < 3; i++) fx.push({ x: x + (i - 1) * 22, y: h2 - 70, v: 70 + i * 25, life: 1.4 });
+  };
+  const onBad = () => {
+    streak = 0;
+    shake = 0.35;
+    frost = Math.min(0.6, frost + 0.18);
   };
   function step(now) {
     const dt = Math.min(0.033, (now - last) / 1e3);
@@ -4085,21 +4106,32 @@ function playChallenge(canvas, kind, hooks, seconds = 12) {
         if (kind === "catch") {
           if (it.good) {
             caught++;
+            onGood(it.x);
             pops.push({ x: it.x, y: h2 - 70, text: "+1", life: 0.7, ok: true });
           } else {
             bad++;
+            onBad();
             pops.push({ x: it.x, y: h2 - 70, text: "\u22121", life: 0.7 });
           }
         } else {
           hits++;
+          onBad();
           pops.push({ x: it.x, y: h2 - 70, text: "\u6CA1\u5FCD\u4F4F\uFF01", life: 0.8 });
         }
       }
-      if (it.y > h2 + 20) it.gone = true;
+      if (it.y > h2 + 20) {
+        it.gone = true;
+        if (kind !== "catch") onGood(it.x);
+      }
     }
     for (const p of pops) {
       p.life -= dt;
       p.y -= 40 * dt;
+    }
+    shake = Math.max(0, shake - dt);
+    for (const q2 of fx) {
+      q2.life -= dt;
+      q2.y -= q2.v * dt;
     }
     draw();
     hooks.onTick?.({ left: Math.max(0, seconds - t), caught, good, hits });
@@ -4112,16 +4144,18 @@ function playChallenge(canvas, kind, hooks, seconds = 12) {
   function draw() {
     ctx2.clearRect(0, 0, w, h2);
     const g = ctx2.createLinearGradient(0, 0, 0, h2);
-    g.addColorStop(0, kind === "catch" ? "#7fd0fb" : "#ffd8e4");
+    g.addColorStop(0, TH?.bg || (kind === "catch" ? "#7fd0fb" : "#ffd8e4"));
     g.addColorStop(1, "#fffdf6");
     ctx2.fillStyle = g;
     ctx2.fillRect(0, 0, w, h2);
+    ctx2.save();
+    if (shake > 0) ctx2.translate((Math.random() - 0.5) * 14 * shake / 0.35, (Math.random() - 0.5) * 8 * shake / 0.35);
     ctx2.font = '900 26px system-ui, "Segoe UI Emoji", sans-serif';
     ctx2.textAlign = "center";
     ctx2.textBaseline = "middle";
     for (const it of items) {
       if (it.gone) continue;
-      if (kind === "catch") {
+      if (kind === "catch" && !TH) {
         ctx2.fillStyle = it.good ? "#ffc531" : "#e04848";
         ctx2.strokeStyle = INK2;
         ctx2.lineWidth = 3;
@@ -4184,6 +4218,26 @@ function playChallenge(canvas, kind, hooks, seconds = 12) {
       ctx2.fillText(p.text, p.x, p.y);
     }
     ctx2.globalAlpha = 1;
+    if (TH) {
+      for (const q2 of fx) if (q2.life > 0) {
+        ctx2.globalAlpha = Math.min(1, q2.life);
+        ctx2.font = '22px "Segoe UI Emoji", system-ui';
+        ctx2.fillText(TH.fx, q2.x, q2.y);
+      }
+    }
+    ctx2.globalAlpha = 1;
+    if (frost > 0) {
+      ctx2.fillStyle = `rgba(150, 200, 255, ${frost * 0.8})`;
+      ctx2.fillRect(0, 0, w, h2);
+      ctx2.strokeStyle = `rgba(210, 240, 255, ${Math.min(1, frost * 2)})`;
+      ctx2.lineWidth = 6 + frost * 30;
+      ctx2.strokeRect(0, 0, w, h2);
+      ctx2.globalAlpha = Math.min(1, frost * 3);
+      ctx2.font = '28px "Segoe UI Emoji", system-ui';
+      for (let i = 0; i < Math.ceil(frost * 18); i++) ctx2.fillText("\u2744\uFE0F", (i * 97 + 30) % w, 50 + i * 61 % (h2 - 80));
+      ctx2.globalAlpha = 1;
+    }
+    ctx2.restore();
     rr(ctx2, 10, 10, 220, 28, 14);
     ctx2.fillStyle = "rgba(29,43,79,.85)";
     ctx2.fill();
@@ -4205,7 +4259,7 @@ var GLOSSARY = {
   state: ["\u5DDE\u7A0E", "\u4EA4\u7ED9\u4F60\u4F4F\u7684\u5DDE\u3002\u5317\u5361 3.99%\uFF0C\u5BBE\u5DDE 3.07%\uFF0C\u5FB7\u5DDE\u6CA1\u6709\u5DDE\u6240\u5F97\u7A0E\u3002"],
   fica: ["\u793E\u4FDD\u548C\u533B\u4FDD\u7A0E\uFF08FICA\uFF09", "\u5DE5\u8D44\u7684 7.65%\uFF08\u793E\u4FDD 6.2% + \u533B\u4FDD 1.45%\uFF09\uFF0C\u7528\u6765\u4ED8\u4EE5\u540E\u7684\u517B\u8001\u91D1\u548C\u8001\u5E74\u533B\u4FDD\u3002\u4E0D\u80FD\u5C11\u4EA4\u3002"],
   k401: ["401(k)", "\u516C\u53F8\u5E2E\u4F60\u5F00\u7684\u9000\u4F11\u8D26\u6237\u3002\u586B 4% \u7684\u610F\u601D\u662F\uFF1A\u6BCF\u4E2A\u6708\u5DE5\u8D44\u7684 4% \u76F4\u63A5\u5B58\u8FDB\u53BB\u3002\u8FD9\u90E8\u5206\u4ECA\u5E74\u4E0D\u4EA4\u6240\u5F97\u7A0E\uFF0C\u5230\u9000\u4F11\u53D6\u51FA\u65F6\u624D\u4EA4\u300259\xBD \u5C81\u524D\u53D6\u51FA\u8981\u7F5A\u6B3E\u3002\u5B83\u662F\u201C\u5DE5\u8D44\u7684\u767E\u5206\u4E4B\u51E0\u201D\uFF0C\u4E0D\u7528\u548C\u5176\u4ED6\u9879\u52A0\u5230 100%\u3002"],
-  match: ["\u516C\u53F8\u914D\u6BD4", "\u4F60\u5F80 401(k) \u5B58\u94B1\uFF0C\u516C\u53F8\u4E5F\u6309\u6BD4\u4F8B\u5E2E\u4F60\u5B58\u3002\u6BD4\u5982\u201C\u914D 100%\uFF0C\u6700\u591A 4%\u201D\uFF1A\u4F60\u5B58\u5DE5\u8D44\u7684 4%\uFF0C\u516C\u53F8\u518D\u7ED9\u4F60 4%\u3002\u4E0D\u5B58\u5C31\u62FF\u4E0D\u5230\uFF0C\u7B49\u4E8E\u653E\u5F03\u767D\u7ED9\u7684\u94B1\u3002"],
+  match: ["\u516C\u53F8\u914D\u6BD4", "\u4F60\u5F80 401(k) \u5B58\u94B1\uFF0C\u516C\u53F8\u4E5F\u6309\u6BD4\u4F8B\u5E2E\u4F60\u5B58\u3002\u6BD4\u5982\u201C\u914D 100%\uFF0C\u6700\u591A 4%\u201D\uFF1A\u4F60\u5B58\u5DE5\u8D44\u7684 4%\uFF0C\u516C\u53F8\u518D\u7ED9\u4F60 4%\u3002\u4E0D\u5B58\u5C31\u62FF\u4E0D\u5230\u8FD9\u90E8\u5206\u3002\u94B1\u8981\u9501\u5230 59\xBD \u5C81\u3002"],
   roth: ["Roth IRA", "\u81EA\u5DF1\u5F00\u7684\u9000\u4F11\u8D26\u6237\u3002\u5B58\u8FDB\u53BB\u7684\u662F\u5DF2\u7ECF\u4EA4\u8FC7\u7A0E\u7684\u94B1\uFF0C\u4EE5\u540E\u6DA8\u4E86\u591A\u5C11\u3001\u53D6\u51FA\u6765\u591A\u5C11\uFF0C\u90FD\u4E0D\u7528\u518D\u4EA4\u7A0E\u3002\u6BCF\u5E74\u6700\u591A\u5B58 $7,500\u3002"],
   brokerage: ["\u5176\u4ED6\u6295\u8D44\u8D26\u6237", "\u7528\u6765\u4E70\u6307\u6570\u57FA\u91D1\uFF08\u4E00\u6B21\u4E70\u4E0B\u51E0\u767E\u5BB6\u516C\u53F8\u7684\u80A1\u7968\uFF09\u3002\u968F\u65F6\u53EF\u4EE5\u5356\uFF0C\u4F46\u6BCF\u5E74\u6709\u6DA8\u6709\u8DCC\u3002\u672C\u6E38\u620F\u6309\u201C\u6263\u9664\u901A\u80C0\u540E\u957F\u671F\u5E73\u5747\u6BCF\u5E74 5%\u201D\u8BA1\u7B97\u3002"],
   emergency: ["\u5E94\u6025\u91D1", "\u53EA\u4E3A\u610F\u5916\u51C6\u5907\u7684\u94B1\uFF1A\u5931\u4E1A\u3001\u751F\u75C5\u3001\u4FEE\u8F66\u3002\u653E\u5728\u9AD8\u6536\u76CA\u50A8\u84C4\u8D26\u6237\u3002\u5EFA\u8BAE\u5B58\u591F 3\u20136 \u4E2A\u6708\u7684\u5FC5\u8981\u5F00\u9500\u3002"],
@@ -4235,14 +4289,18 @@ var GLOSSARY = {
   insurance: ["\u4FDD\u9669", "\u533B\u7597\u3001\u8F66\u548C\u623F\u7684\u4FDD\u9669\u90FD\u81EA\u52A8\u751F\u6548\uFF0C\u8D39\u7528\u5DF2\u7ECF\u7B97\u5728\u5FC5\u8981\u5F00\u9500\u91CC\uFF0C\u4E0D\u7528\u53E6\u5916\u4E70\u3002\u4EBA\u751F\u5361\u53EF\u80FD\u8BA9\u4FDD\u8D39\u4E0A\u6DA8\u3002"],
   fun: ["\u5A31\u4E50\u5F00\u9500", "\u5403\u559D\u73A9\u4E50\u3001\u8BA2\u9605\u7B49\u53EF\u4EE5\u7701\u7684\u94B1\u3002\u52A0\u85AA\u65F6\u4F1A\u81EA\u52A8\u53D8\u591A\uFF08\u751F\u6D3B\u81A8\u80C0\uFF09\uFF0C\u53EF\u4EE5\u5728\u53D1\u85AA\u65E5\u9501\u4F4F\u3002"]
 };
+var planned = (d) => (d.emergency || 0) + (d.goal || 0) + (d.roth || 0) + (d.brokerage || 0) + Object.values(d.extra || {}).reduce((a, b) => a + b, 0) + (d.k401Pct || 0) > 0;
 var TUTS = [
   { id: "payday", page: "payday", name: "\u53D1\u85AA\u65E5", steps: [
-    [".fl.total", "\u7B2C 1 \u6B65\uFF1A\u770B\u591F\u4E0D\u591F\u82B1", "\u7EFF\u8272\u662F\u8FD8\u591A\uFF0C\u7EA2\u8272\u662F\u5DEE\u591A\u5C11\u3002", "coin", "green"],
-    [".alloc", "\u7B2C 2 \u6B65\uFF1A\u4F60\u6765\u51B3\u5B9A", "\u9009\u8FD9\u7B14\u94B1\u5148\u653E\u54EA\u3002\u6E38\u620F\u4E0D\u4F1A\u66FF\u4F60\u51B3\u5B9A\u3002", "star", "gold"],
-    ['[data-go="plan-confirm"]', "\u7B2C 3 \u6B65\uFF1A\u786E\u8BA4", "\u786E\u8BA4\u540E\uFF0C\u4ECA\u5E74\u6BCF\u4E2A\u6708\u90FD\u6309\u8FD9\u4E2A\u8BA1\u5212\u8D70\u3002", "check", "green"]
+    [".phase-steps", "\u6BCF\u5E74 5 \u6B65", "\u6BCF\u5E74\u6309\u987A\u5E8F\u8D70 5 \u6B65\uFF1A\u53D1\u85AA\u65E5 \u2192 \u5927\u51B3\u5B9A \u2192 \u4EBA\u751F\u5361 \u2192 \u8FC7\u4E00\u5E74 \u2192 \u5E74\u7EC8\u7ED3\u7B97\u3002\u73B0\u5728\u662F\u7B2C 1 \u6B65\uFF1A\u53D1\u85AA\u65E5\u3002", "map", "gold"],
+    [".pd-flow", "\u8FD9\u4E2A\u6708\u7684\u94B1", (v) => `\u7A0E\u524D\u5DE5\u8D44 ${v.gross}\u3002\u6263\u6389\u7A0E\u3001\u5FC5\u8981\u5F00\u9500\u3001\u5A31\u4E50\u548C\u6700\u4F4E\u8FD8\u6B3E\u540E\uFF0C\u6BCF\u6708\u8FD8\u80FD\u5B89\u6392 ${v.avail}\u3002`, "coin", "green"],
+    [".alloc", "\u4F60\u6765\u5206\u8FD9\u7B14\u94B1", (v) => v.availN > 0 ? `\u7528 + \u548C \u2212 \u628A\u8FD9 ${v.avail} \u5206\u5230\u4E0B\u9762\u7684\u8D26\u6237\uFF0C\u73B0\u5728\u8BD5\u7740\u70B9\u4E00\u4E0B\u3002\u6CA1\u5206\u51FA\u53BB\u7684\u94B1\u4F1A\u7559\u5728\u65E5\u5E38\u8D26\u6237\u3002` : "\u8FD9\u4E2A\u6708\u6CA1\u6709\u591A\u4F59\u7684\u94B1\u53EF\u4EE5\u5206\u3002\u770B\u770B\u4E0A\u9762\u54EA\u4E00\u9879\u6700\u5927\uFF1B\u4EE5\u540E\u6709\u4F59\u94B1\u4E86\uFF0C\u518D\u5728\u8FD9\u91CC\u5206\u3002", "star", "gold", { wait: (d, v) => v.availN <= 0 || planned(d), hint: "\u70B9\u4E00\u4E0B + \u53F7\u518D\u7EE7\u7EED\u3002" }],
+    ['[data-go="living"]', "\u5B66\u751F\u8D37\u6B3E\u4ED8\u751F\u6D3B\u8D39", "\u52FE\u4E0A\uFF1A\u751F\u6D3B\u8D39\u4E0D\u591F\u65F6\uFF0C\u81EA\u52A8\u501F\u5B66\u751F\u8D37\u6B3E\uFF08\u4EE5\u540E\u8981\u8FD8\uFF0C\u6709\u5229\u606F\uFF09\u3002\u4E0D\u52FE\uFF1A\u5148\u7528\u5B58\u6B3E\uFF0C\u4E0D\u591F\u518D\u5237\u5361\u3002\u73B0\u5728\u9ED8\u8BA4\u52FE\u4E0A\uFF0C\u7531\u4F60\u51B3\u5B9A\u3002", "cap", "blue", { need: (s4) => !!s4.school }],
+    [".ty-stepper.pct", "401(k) \u9000\u4F11\u8D26\u6237", "\u6BCF\u6708\u5DE5\u8D44\u7684\u767E\u5206\u4E4B\u51E0\uFF0C\u5728\u6263\u7A0E\u524D\u5B58\u8FDB\u53BB\uFF0C\u4E00\u822C\u8981\u5230 59\xBD \u5C81\u624D\u80FD\u53D6\u3002\u5DE5\u4F5C\u6709\u914D\u6BD4\u7684\u8BDD\uFF0C\u516C\u53F8\u4E5F\u4F1A\u52A0\u94B1\u3002", "bank", "blue", { need: (s4) => s4.job.has401k && s4.job.employed }],
+    ['[data-go="plan-confirm"]', "\u786E\u8BA4", "\u786E\u8BA4\u540E\uFF0C\u4ECA\u5E74 12 \u4E2A\u6708\u90FD\u6309\u8FD9\u4E2A\u5206\u6CD5\u8D70\u3002\u660E\u5E74\u53EF\u4EE5\u6CBF\u7528\uFF0C\u4E5F\u53EF\u4EE5\u6539\u3002", "check", "green"]
   ] },
   { id: "debt", page: "payday", name: "\u503A\u52A1", need: (s4) => s4.debts.some((d) => d.balance > 5e-3 && !d.closed && d.kind !== "arrears"), steps: [
-    [".alloc-debt", "\u6B20\u94B1\u8981\u4ED8\u5229\u606F", "\u6BCF\u4E00\u7B14\u503A\u90FD\u5728\u6536\u5229\u606F\u3002\u5E26\u706B\u7130\u7684\u662F\u9AD8\u606F\u503A\uFF0C\u5148\u8FD8\u5B83\u3002", "flame", "red"],
+    [".alloc-debt", "\u6B20\u94B1\u8981\u4ED8\u5229\u606F", "\u6BCF\u4E00\u7B14\u503A\u90FD\u5728\u6536\u5229\u606F\u3002\u5E26\u706B\u7130\u7684\u662F\u9AD8\u606F\u503A\uFF0C\u5229\u606F\u6DA8\u5F97\u6700\u5FEB\u3002", "flame", "red"],
     [".ladder-steps", "\u4E00\u79CD\u5E38\u89C1\u505A\u6CD5", "\u591A\u51FA\u6765\u7684\u94B1\u7684\u4E00\u79CD\u5E38\u89C1\u5206\u6CD5\uFF0C\u53EA\u662F\u4E00\u79CD\u601D\u8DEF\uFF0C\u4E0D\u662F\u552F\u4E00\u6B63\u786E\u7B54\u6848\u3002", "flag", "gold"]
   ] },
   { id: "decision", page: "decision", name: "\u5927\u51B3\u5B9A", steps: [
@@ -4357,7 +4415,7 @@ var T2 = {
   retirement: "\u9000\u4F11\u8D26\u6237",
   consumerDebt: "\u4FE1\u7528\u5361\u8FD9\u7C7B\u503A",
   interestYear: "\u4ECA\u5E74\u4ED8\u7684\u5229\u606F",
-  freeMatch: "\u516C\u53F8\u914D\u6BD4\uFF08\u767D\u7ED9\uFF09",
+  freeMatch: "\u516C\u53F8\u914D\u6BD4",
   taxReturn: "\u62A5\u7A0E",
   refundOf: "\u9000 {m}",
   oweOf: "\u8865 {m}",
@@ -6065,7 +6123,7 @@ function modalHtml() {
   const M = ui.modal, wrap = (inner, cls = "") => `<div class="scrim" aria-hidden="true"></div><div class="modal ${cls}" role="dialog" aria-modal="true">${inner}</div>`;
   if (M.kind === "game") {
     const F = ui.flow;
-    return wrap(`<header class="m-head"><span class="ribbon-tag">\u5224\u5B9A\u524D\u7684\u5C0F\u6E38\u620F \xB7 12 \u79D2</span><h2>${F.game === "dodge" ? "\u5FCD\u4F4F\u8BF1\u60D1\uFF1A\u8EB2\u5F00\u6389\u4E0B\u6765\u7684\u4E1C\u897F" : "\u6293\u4F4F\u673A\u4F1A\uFF1A\u63A5\u4F4F \u2605 \u548C $\uFF0C\u8EB2\u5F00 \u2715"}</h2><p id="game-live">\u2190/\u2192\u3001A/D \u6216\u62D6\u52A8\u6765\u79FB\u52A8\u3002</p></header>
+    return wrap(`<header class="m-head"><span class="ribbon-tag">\u5224\u5B9A\u524D\u7684\u5C0F\u6E38\u620F \xB7 12 \u79D2</span><h2>${GAME_TITLE[themeOf(F)]}</h2><p id="game-live">\u2190/\u2192\u3001A/D \u6216\u62D6\u52A8\u6765\u79FB\u52A8\u3002</p></header>
       <div class="arena small"><canvas id="challenge"></canvas></div><div class="m-foot">${btn("game-stop", "\u63D0\u524D\u7ED3\u675F", { cls: "btn ghost small" })}</div>`, "game-host");
   }
   if (M.kind === "decision") {
@@ -6177,6 +6235,14 @@ function endCg(G, r) {
   }
   update(false);
 }
+var GAME_TITLE = { love: "\u6765\u7535\uFF1A\u63A5\u4F4F\u7231\u5FC3\uFF0C\u8EB2\u5F00\u5FC3\u788E", work: "\u63A5\u4F4F\u661F\u661F\uFF0C\u8EB2\u5F00\u4E0B\u6ED1", biz: "\u63A5\u4F4F\u751F\u610F\uFF0C\u8EB2\u5F00\u4E8F\u635F", school: "\u63A5\u4F4F\u4E66\u672C\uFF0C\u8EB2\u5F00\u5206\u5FC3", tempt: "\u5FCD\u4F4F\u8BF1\u60D1\uFF1A\u8EB2\u5F00\u6389\u4E0B\u6765\u7684\u4E1C\u897F" };
+function themeOf(F) {
+  const id = F.source === "decision" ? F.id : s2.card?.id;
+  if (["date", "meet", "marry"].includes(id)) return "love";
+  if (["side", "startup", "biz-boom", "biz-slump"].includes(id)) return "biz";
+  if (["scholarship", "enroll", "course"].includes(id)) return "school";
+  return F.game === "dodge" ? "tempt" : "work";
+}
 function startGame() {
   const canvas = root.querySelector("#challenge");
   if (!canvas || gameRun) return;
@@ -6190,7 +6256,7 @@ function startGame() {
       F.result = r;
       finishFlow(bonusFrom(F.game, r));
     }
-  });
+  }, 12, themeOf(F));
 }
 function finishFlow(bonus) {
   const F = ui.flow;
@@ -6227,17 +6293,23 @@ function placeTip() {
   el.style.top = (top + el.offsetHeight + 12 > innerHeight ? Math.max(12, r.top - el.offsetHeight - 8) : top) + "px";
 }
 var tutOf = (id) => TUTS.find((t) => t.id === id);
+var tourSteps = (tut) => tut ? tut.steps.filter((st) => !st[5]?.need || st[5].need(s2)) : [];
+function tourVals() {
+  const pay = payday(s2, ui.draft || s2.plan);
+  return { gross: money2(pay.gross + (pay.spouseGross || 0)), avail: money2(Math.max(0, pay.available)), availN: pay.available };
+}
 function tourHtml() {
   const T3 = ui.tour;
   if (!T3) return "";
-  const tut = tutOf(T3.id), st = tut?.steps[T3.i];
+  const tut = tutOf(T3.id), steps = tourSteps(tut), st = steps[T3.i];
   if (!st) return "";
-  return `<div class="tour-spot"></div><div class="tour-bubble" role="dialog" aria-live="polite"><div class="tb-top">${bubbleArt(st[3], st[4])}<div><small>${h(tut.name)} \xB7 ${T3.i + 1} / ${tut.steps.length}</small><b>${h(st[1])}</b><p>${h(st[2])}</p></div></div><div class="row">${btn("tour-skip", T2.skipGuide, { cls: "btn ghost small" })}${btn("tour-next", T3.i + 1 < tut.steps.length ? T2.next : T2.gotIt, { cls: "btn green small", attrs: "data-autofocus" })}</div></div>`;
+  const v = tourVals(), wait = st[5]?.wait && !st[5].wait(ui.draft || s2.plan, v);
+  return `<div class="tour-spot"></div><div class="tour-bubble" role="dialog" aria-live="polite"><div class="tb-top">${bubbleArt(st[3], st[4])}<div><small>${h(tut.name)} \xB7 ${T3.i + 1} / ${steps.length}</small><b>${h(st[1])}</b><p>${h(typeof st[2] === "function" ? st[2](v) : st[2])}</p>${wait ? `<p class="tb-wait">${h(st[5].hint)}</p>` : ""}</div></div><div class="row">${btn("tour-skip", T2.skipGuide, { cls: "btn ghost small" })}${btn("tour-next", T3.i + 1 < steps.length ? T2.next : T2.gotIt, { cls: "btn green small", attrs: wait ? "disabled" : "data-autofocus" })}</div></div>`;
 }
 function placeTour() {
   const T3 = ui.tour;
   if (!T3) return;
-  const st = tutOf(T3.id)?.steps[T3.i], el = st && document.querySelector(st[0]), spot = root.querySelector(".tour-spot"), bub = root.querySelector(".tour-bubble");
+  const st = tourSteps(tutOf(T3.id))[T3.i], el = st && document.querySelector(st[0]), spot = root.querySelector(".tour-spot"), bub = root.querySelector(".tour-bubble");
   if (!spot || !bub) return;
   if (!el) {
     spot.style.display = "none";
@@ -6469,7 +6541,7 @@ document.addEventListener("click", (e) => {
         toggleMusic();
         return update(false);
       case "tour-next":
-        if (ui.tour.i + 1 < tutOf(ui.tour.id).steps.length) {
+        if (ui.tour.i + 1 < tourSteps(tutOf(ui.tour.id)).length) {
           ui.tour.i++;
           return update(false);
         }

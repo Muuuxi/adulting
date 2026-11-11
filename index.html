@@ -1444,6 +1444,8 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .cg-result { display: grid; gap: 6px; margin: 10px 0 4px; } .cg-row { display: grid; grid-template-columns: minmax(0, 7.5em) minmax(0, 1fr) auto; gap: 8px; align-items: center; font-weight: 700; font-size: .9rem; } .cg-row b { white-space: nowrap; }
 .cg-modal .m-foot { flex-wrap: wrap; }
 @media (max-width: 720px) { .cg-arena canvas { height: 300px; } }
+/* Round 25: a tour step that waits for the player */
+.tb-wait { color: #b05a00; font-weight: 800; font-size: .85rem; }
 </style>
 </head>
 <body>
@@ -1826,7 +1828,7 @@ var CARDS = [
     options: [{ id: "lend", label: "Lend it", pay: "checking", cost: 1e3, gamble: { win: 0.6, winMult: 1, loseMult: 0, label: "Friend repays", won: "Your friend paid the $1,000 back.", lost: "Your friend never paid it back: the $1,000 is gone." } }, { id: "no", label: "Politely decline", decline: true, status: "stressed" }]
   },
   /* ---- opportunities ---- */
-  { id: "match-start", type: "opportunity", title: "Your company starts a 401(k) match", text: "Your company announces it will match 100% of the first 4% of pay you put in. That\u2019s free money.", month: 1, when: (s4) => !s4.service && s4.job.employed && !s4.job.match && !s4.business, options: [{ id: "accept", label: "Great (set your 401(k) to 4% on payday)", match: { rate: 1, upTo: 0.04 } }] },
+  { id: "match-start", type: "opportunity", title: "Your company starts a 401(k) match", text: "Your company announces it will match 100% of the first 4% of pay you put in. The money stays in the account until retirement.", month: 1, when: (s4) => !s4.service && s4.job.employed && !s4.job.match && !s4.business, options: [{ id: "accept", label: "Noted (you choose your 401(k) % on payday)", match: { rate: 1, upTo: 0.04 } }] },
   {
     id: "bonus",
     type: "opportunity",
@@ -1938,7 +1940,7 @@ var CARDS = [
     month: 11,
     when: (s4) => s4.age <= 40 && !s4.flags.console,
     throw: { stat: "discipline", label: "Self-control", game: "dodge" },
-    outcomes: { fail: { status: "gaming", note: "Once you start, you can\u2019t stop: gaming binge for 1 year." }, ok: { note: "You play now and then and it doesn\u2019t get in the way." }, great: { note: "You play now and then and it doesn\u2019t get in the way." } },
+    outcomes: { fail: { status: "gaming", note: "Once you start, you can\u2019t stop: gaming binge for 1 year." }, ok: { note: "You play now and then and it doesn\u2019t get in the way." }, great: { note: "You play now and then, and it helps you unwind." } },
     options: [{ id: "card", label: "Buy it on credit", pay: "card", cost: 500, flag: { console: true }, throwOutcome: true }, { id: "checking", label: "Buy it from checking", pay: "checking", cost: 500, flag: { console: true }, throwOutcome: true }, { id: "skip", label: "Don\u2019t buy it", decline: true, needs: "ok" }]
   },
   {
@@ -2025,7 +2027,7 @@ var STAGES = [
 ];
 var LADDER = [
   { id: "starter", title: "Save a $1,000 starter emergency fund", why: "So small surprises don\u2019t go on the credit card." },
-  { id: "match", title: "Contribute enough to get the full 401(k) match", why: "The match is free money from your employer." },
+  { id: "match", title: "Contribute enough to get the full 401(k) match", why: "Your employer adds money, but it\u2019s locked until retirement." },
   { id: "highdebt", title: "Pay off high-interest debt (\u2265 8%)", why: "Paying off a 25% card is a guaranteed 25% return." },
   { id: "ef", title: "Build the emergency fund to 3 months", why: "Enough to get through a job loss or a serious illness." },
   { id: "roth", title: "Roth IRA", why: "Tax-free when you withdraw it later." },
@@ -2263,7 +2265,7 @@ function payday(s4, plan = s4.plan) {
   const livingRoom = s4.school ? Math.max(0, AID.loanCapYear / 12 - tuitionLoan) : 0;
   const livingLoan = s4.school && plan.livingLoan !== false ? Math.min(livingRoom, Math.max(0, -before)) : 0;
   const available = before + livingLoan;
-  const planned = plan.emergency + plan.goal + plan.roth + plan.brokerage + sum(Object.values(plan.extra || {}));
+  const planned2 = plan.emergency + plan.goal + plan.roth + plan.brokerage + sum(Object.values(plan.extra || {}));
   const R2 = (x) => r22(x);
   return {
     gross: R2(gross),
@@ -2283,8 +2285,8 @@ function payday(s4, plan = s4.plan) {
     income: R2(net + support + side + biz + grantCash + livingLoan),
     costs: R2(ess + s4.fun + mins),
     available: R2(available),
-    planned: R2(planned),
-    left: R2(available - planned)
+    planned: R2(planned2),
+    left: R2(available - planned2)
   };
 }
 function metrics(s4) {
@@ -4047,18 +4049,37 @@ function rr(ctx2, x, y, w, h2, r) {
   ctx2.roundRect ? ctx2.roundRect(x, y, w, h2, r) : ctx2.rect(x, y, w, h2);
 }
 var bonusFrom = (kind, r) => kind === "catch" ? r.ratio >= 0.7 ? 2 : r.ratio >= 0.4 ? 1 : 0 : r.hits <= 1 ? 2 : r.hits <= 3 ? 1 : 0;
-function playChallenge(canvas, kind, hooks, seconds = 12) {
+var THEMES = {
+  love: { good: ["\u2764\uFE0F", "\u{1F48C}", "\u{1F339}"], bad: ["\u{1F494}", "\u26A1"], bg: "#ffc7dd", fx: "\u{1F497}" },
+  work: { good: ["\u2B50", "\u{1F4C8}", "\u{1F4BC}"], bad: ["\u{1F4C9}", "\u23F0"], bg: "#bfe3ff", fx: "\u2B50" },
+  biz: { good: ["\u{1F4B0}", "\u{1F91D}", "\u{1F4E6}"], bad: ["\u{1F4C9}", "\u{1F9FE}"], bg: "#c8f2d4", fx: "\u{1F4B0}" },
+  school: { good: ["\u{1F4DA}", "\u{1F393}", "\u270F\uFE0F"], bad: ["\u{1F634}", "\u{1F4F1}"], bg: "#e6dcff", fx: "\u2728" },
+  tempt: { bg: "#ffd8e4", fx: "\u{1F4AA}" }
+};
+function playChallenge(canvas, kind, hooks, seconds = 12, theme = null) {
+  const TH = THEMES[theme] || null, fx = [];
+  let streak = 0, shake = 0, frost = 0;
   const { ctx: ctx2, w, h: h2 } = setupCanvas(canvas), io = input(canvas);
   let px = w / 2, t = 0, last = performance.now(), raf = 0, done = false, spawn = 0, seq = 0;
   const items = [], pops = [];
   let good = 0, caught = 0, hits = 0, bad = 0;
-  const GOOD = ["\u2605", "$"], BAD = kind === "catch" ? ["\u2715"] : ["\u{1F4F1}", "\u{1F6CD}", "\u{1F3B0}", "\u{1F354}", "\u{1F3AE}"];
+  const GOOD = TH?.good || ["\u2605", "$"], BAD = TH?.bad || (kind === "catch" ? ["\u2715"] : null) || ["\u{1F4F1}", "\u{1F6CD}", "\u{1F3B0}", "\u{1F354}", "\u{1F3AE}"];
   const finish = () => {
     if (done) return;
     done = true;
     cancelAnimationFrame(raf);
     io.off();
     hooks.onEnd({ ratio: good ? Math.max(0, caught - bad) / good : 0, caught, good, hits, bad });
+  };
+  const onGood = (x) => {
+    streak++;
+    frost = Math.max(0, frost - 0.06);
+    if (streak >= 3 && TH) for (let i = 0; i < 3; i++) fx.push({ x: x + (i - 1) * 22, y: h2 - 70, v: 70 + i * 25, life: 1.4 });
+  };
+  const onBad = () => {
+    streak = 0;
+    shake = 0.35;
+    frost = Math.min(0.6, frost + 0.18);
   };
   function step(now) {
     const dt = Math.min(0.033, (now - last) / 1e3);
@@ -4085,21 +4106,32 @@ function playChallenge(canvas, kind, hooks, seconds = 12) {
         if (kind === "catch") {
           if (it.good) {
             caught++;
+            onGood(it.x);
             pops.push({ x: it.x, y: h2 - 70, text: "+1", life: 0.7, ok: true });
           } else {
             bad++;
+            onBad();
             pops.push({ x: it.x, y: h2 - 70, text: "\u22121", life: 0.7 });
           }
         } else {
           hits++;
+          onBad();
           pops.push({ x: it.x, y: h2 - 70, text: "Gave in!", life: 0.8 });
         }
       }
-      if (it.y > h2 + 20) it.gone = true;
+      if (it.y > h2 + 20) {
+        it.gone = true;
+        if (kind !== "catch") onGood(it.x);
+      }
     }
     for (const p of pops) {
       p.life -= dt;
       p.y -= 40 * dt;
+    }
+    shake = Math.max(0, shake - dt);
+    for (const q2 of fx) {
+      q2.life -= dt;
+      q2.y -= q2.v * dt;
     }
     draw();
     hooks.onTick?.({ left: Math.max(0, seconds - t), caught, good, hits });
@@ -4112,16 +4144,18 @@ function playChallenge(canvas, kind, hooks, seconds = 12) {
   function draw() {
     ctx2.clearRect(0, 0, w, h2);
     const g = ctx2.createLinearGradient(0, 0, 0, h2);
-    g.addColorStop(0, kind === "catch" ? "#7fd0fb" : "#ffd8e4");
+    g.addColorStop(0, TH?.bg || (kind === "catch" ? "#7fd0fb" : "#ffd8e4"));
     g.addColorStop(1, "#fffdf6");
     ctx2.fillStyle = g;
     ctx2.fillRect(0, 0, w, h2);
+    ctx2.save();
+    if (shake > 0) ctx2.translate((Math.random() - 0.5) * 14 * shake / 0.35, (Math.random() - 0.5) * 8 * shake / 0.35);
     ctx2.font = '900 26px system-ui, "Segoe UI Emoji", sans-serif';
     ctx2.textAlign = "center";
     ctx2.textBaseline = "middle";
     for (const it of items) {
       if (it.gone) continue;
-      if (kind === "catch") {
+      if (kind === "catch" && !TH) {
         ctx2.fillStyle = it.good ? "#ffc531" : "#e04848";
         ctx2.strokeStyle = INK2;
         ctx2.lineWidth = 3;
@@ -4184,6 +4218,26 @@ function playChallenge(canvas, kind, hooks, seconds = 12) {
       ctx2.fillText(p.text, p.x, p.y);
     }
     ctx2.globalAlpha = 1;
+    if (TH) {
+      for (const q2 of fx) if (q2.life > 0) {
+        ctx2.globalAlpha = Math.min(1, q2.life);
+        ctx2.font = '22px "Segoe UI Emoji", system-ui';
+        ctx2.fillText(TH.fx, q2.x, q2.y);
+      }
+    }
+    ctx2.globalAlpha = 1;
+    if (frost > 0) {
+      ctx2.fillStyle = `rgba(150, 200, 255, ${frost * 0.8})`;
+      ctx2.fillRect(0, 0, w, h2);
+      ctx2.strokeStyle = `rgba(210, 240, 255, ${Math.min(1, frost * 2)})`;
+      ctx2.lineWidth = 6 + frost * 30;
+      ctx2.strokeRect(0, 0, w, h2);
+      ctx2.globalAlpha = Math.min(1, frost * 3);
+      ctx2.font = '28px "Segoe UI Emoji", system-ui';
+      for (let i = 0; i < Math.ceil(frost * 18); i++) ctx2.fillText("\u2744\uFE0F", (i * 97 + 30) % w, 50 + i * 61 % (h2 - 80));
+      ctx2.globalAlpha = 1;
+    }
+    ctx2.restore();
     rr(ctx2, 10, 10, 220, 28, 14);
     ctx2.fillStyle = "rgba(29,43,79,.85)";
     ctx2.fill();
@@ -4205,7 +4259,7 @@ var GLOSSARY = {
   state: ["State income tax", "Paid to the state you live in. North Carolina 3.99%, Pennsylvania 3.07%, Texas has no state income tax."],
   fica: ["Social Security & Medicare (FICA)", "7.65% of your pay (Social Security 6.2% + Medicare 1.45%). It funds future retirement benefits and Medicare. You can\u2019t opt out."],
   k401: ["401(k)", "A retirement account your employer sets up for you. 4% means 4% of every paycheck goes straight in. That money isn\u2019t taxed this year \u2014 only when you withdraw it in retirement. Withdrawing before 59\xBD costs a penalty. It\u2019s a percent of pay, so it doesn\u2019t need to add up to 100% with anything else."],
-  match: ["Employer match", "When you put money in your 401(k), your employer adds some too. \u201C100% match up to 4%\u201D means: you put in 4% of pay, they add another 4%. If you don\u2019t contribute, you don\u2019t get it \u2014 free money left on the table."],
+  match: ["Employer match", "When you put money in your 401(k), your employer adds some too. \u201C100% match up to 4%\u201D means: you put in 4% of pay, they add another 4%. If you don\u2019t contribute, you don\u2019t get that part. The money is locked until 59\xBD."],
   roth: ["Roth IRA", "A retirement account you open yourself. You put in money you\u2019ve already paid tax on; all the growth and withdrawals later are tax-free. Up to $7,500 a year."],
   brokerage: ["Other investing account", "For buying index funds (hundreds of companies\u2019 stocks in one purchase). You can sell anytime, but it goes up and down each year. The game assumes a long-run average of 5% a year after inflation."],
   emergency: ["Emergency fund", "Money set aside only for surprises: job loss, illness, car repairs. Kept in a high-yield savings account. Aim for 3\u20136 months of essential costs."],
@@ -4235,14 +4289,18 @@ var GLOSSARY = {
   insurance: ["Insurance", "Health, car and home cover are on automatically. The cost is already in Essentials, so there is nothing to buy. Life cards can raise it."],
   fun: ["Fun money", "Eating out, entertainment, subscriptions \u2014 spending you can cut. It grows automatically with raises (lifestyle creep), but you can lock it on payday."]
 };
+var planned = (d) => (d.emergency || 0) + (d.goal || 0) + (d.roth || 0) + (d.brokerage || 0) + Object.values(d.extra || {}).reduce((a, b) => a + b, 0) + (d.k401Pct || 0) > 0;
 var TUTS = [
   { id: "payday", page: "payday", name: "Payday", steps: [
-    [".fl.total", "Step 1: Is it enough?", "Green means money to spare. Red shows how much you\u2019re short.", "coin", "green"],
-    [".alloc", "Step 2: You decide", "Choose what comes first. The game won\u2019t do it for you.", "star", "gold"],
-    ['[data-go="plan-confirm"]', "Step 3: Confirm", "Your plan then runs every month this year.", "check", "green"]
+    [".phase-steps", "Each year has 5 steps", "Every year runs in order: Payday \u2192 Big decision \u2192 Life card \u2192 Live the year \u2192 Year-end review. You\u2019re on step 1: Payday.", "map", "gold"],
+    [".pd-flow", "This month\u2019s money", (v) => `Pay before tax is ${v.gross}. After tax, essentials, fun money and minimum payments, ${v.avail} a month is yours to split.`, "coin", "green"],
+    [".alloc", "Now you split it", (v) => v.availN > 0 ? `Use + and \u2212 to put that ${v.avail} into the accounts below. Try one now. Anything you don\u2019t assign stays in checking.` : "Nothing is left to split this month. See which line above is biggest; when there\u2019s extra later, split it here.", "star", "gold", { wait: (d, v) => v.availN <= 0 || planned(d), hint: "Tap a + button to continue." }],
+    ['[data-go="living"]', "Student loans for living costs", "Checked: when living costs run short, you borrow a student loan (paid back later, with interest). Unchecked: savings cover it first, then the credit card. It starts checked; it\u2019s your call.", "cap", "blue", { need: (s4) => !!s4.school }],
+    [".ty-stepper.pct", "401(k) retirement", "A percent of your pay goes in before tax. It\u2019s usually locked until 59\xBD. If your job has a match, your employer adds some too.", "bank", "blue", { need: (s4) => s4.job.has401k && s4.job.employed }],
+    ['[data-go="plan-confirm"]', "Confirm", "Your split then runs all 12 months. Next year you can keep it or change it.", "check", "green"]
   ] },
   { id: "debt", page: "payday", name: "Debt", need: (s4) => s4.debts.some((d) => d.balance > 5e-3 && !d.closed && d.kind !== "arrears"), steps: [
-    [".alloc-debt", "Debt costs money", "Each debt row charges interest. A flame means high interest: pay those first.", "flame", "red"],
+    [".alloc-debt", "Debt costs money", "Each debt row charges interest. A flame means high interest: it grows fastest.", "flame", "red"],
     [".ladder-steps", "One common order", "A common order people use for extra money. It\u2019s one approach, not the only right one.", "flag", "gold"]
   ] },
   { id: "decision", page: "decision", name: "Big decision", steps: [
@@ -4357,7 +4415,7 @@ var T2 = {
   retirement: "Retirement",
   consumerDebt: "Card-type debt",
   interestYear: "Interest this year",
-  freeMatch: "Employer match (free money)",
+  freeMatch: "Employer match",
   taxReturn: "Tax return",
   refundOf: "refund {m}",
   oweOf: "owe {m}",
@@ -6065,7 +6123,7 @@ function modalHtml() {
   const M = ui.modal, wrap = (inner, cls = "") => `<div class="scrim" aria-hidden="true"></div><div class="modal ${cls}" role="dialog" aria-modal="true">${inner}</div>`;
   if (M.kind === "game") {
     const F = ui.flow;
-    return wrap(`<header class="m-head"><span class="ribbon-tag">Pre-throw mini-game \xB7 12 seconds</span><h2>${F.game === "dodge" ? "Resist the temptation: dodge the falling things" : "Seize the chance: catch \u2605 and $, dodge \u2715"}</h2><p id="game-live">Move with \u2190/\u2192, A/D or drag.</p></header>
+    return wrap(`<header class="m-head"><span class="ribbon-tag">Pre-throw mini-game \xB7 12 seconds</span><h2>${GAME_TITLE[themeOf(F)]}</h2><p id="game-live">Move with \u2190/\u2192, A/D or drag.</p></header>
       <div class="arena small"><canvas id="challenge"></canvas></div><div class="m-foot">${btn("game-stop", "End early", { cls: "btn ghost small" })}</div>`, "game-host");
   }
   if (M.kind === "decision") {
@@ -6177,6 +6235,14 @@ function endCg(G, r) {
   }
   update(false);
 }
+var GAME_TITLE = { love: "Chemistry: catch the hearts, dodge the heartbreak", work: "Catch the stars, dodge the slumps", biz: "Catch the deals, dodge the losses", school: "Catch the books, dodge the distractions", tempt: "Resist the temptation: dodge the falling things" };
+function themeOf(F) {
+  const id = F.source === "decision" ? F.id : s2.card?.id;
+  if (["date", "meet", "marry"].includes(id)) return "love";
+  if (["side", "startup", "biz-boom", "biz-slump"].includes(id)) return "biz";
+  if (["scholarship", "enroll", "course"].includes(id)) return "school";
+  return F.game === "dodge" ? "tempt" : "work";
+}
 function startGame() {
   const canvas = root.querySelector("#challenge");
   if (!canvas || gameRun) return;
@@ -6190,7 +6256,7 @@ function startGame() {
       F.result = r;
       finishFlow(bonusFrom(F.game, r));
     }
-  });
+  }, 12, themeOf(F));
 }
 function finishFlow(bonus) {
   const F = ui.flow;
@@ -6227,17 +6293,23 @@ function placeTip() {
   el.style.top = (top + el.offsetHeight + 12 > innerHeight ? Math.max(12, r.top - el.offsetHeight - 8) : top) + "px";
 }
 var tutOf = (id) => TUTS.find((t) => t.id === id);
+var tourSteps = (tut) => tut ? tut.steps.filter((st) => !st[5]?.need || st[5].need(s2)) : [];
+function tourVals() {
+  const pay = payday(s2, ui.draft || s2.plan);
+  return { gross: money2(pay.gross + (pay.spouseGross || 0)), avail: money2(Math.max(0, pay.available)), availN: pay.available };
+}
 function tourHtml() {
   const T3 = ui.tour;
   if (!T3) return "";
-  const tut = tutOf(T3.id), st = tut?.steps[T3.i];
+  const tut = tutOf(T3.id), steps = tourSteps(tut), st = steps[T3.i];
   if (!st) return "";
-  return `<div class="tour-spot"></div><div class="tour-bubble" role="dialog" aria-live="polite"><div class="tb-top">${bubbleArt(st[3], st[4])}<div><small>${h(tut.name)} \xB7 ${T3.i + 1} / ${tut.steps.length}</small><b>${h(st[1])}</b><p>${h(st[2])}</p></div></div><div class="row">${btn("tour-skip", T2.skipGuide, { cls: "btn ghost small" })}${btn("tour-next", T3.i + 1 < tut.steps.length ? T2.next : T2.gotIt, { cls: "btn green small", attrs: "data-autofocus" })}</div></div>`;
+  const v = tourVals(), wait = st[5]?.wait && !st[5].wait(ui.draft || s2.plan, v);
+  return `<div class="tour-spot"></div><div class="tour-bubble" role="dialog" aria-live="polite"><div class="tb-top">${bubbleArt(st[3], st[4])}<div><small>${h(tut.name)} \xB7 ${T3.i + 1} / ${steps.length}</small><b>${h(st[1])}</b><p>${h(typeof st[2] === "function" ? st[2](v) : st[2])}</p>${wait ? `<p class="tb-wait">${h(st[5].hint)}</p>` : ""}</div></div><div class="row">${btn("tour-skip", T2.skipGuide, { cls: "btn ghost small" })}${btn("tour-next", T3.i + 1 < steps.length ? T2.next : T2.gotIt, { cls: "btn green small", attrs: wait ? "disabled" : "data-autofocus" })}</div></div>`;
 }
 function placeTour() {
   const T3 = ui.tour;
   if (!T3) return;
-  const st = tutOf(T3.id)?.steps[T3.i], el = st && document.querySelector(st[0]), spot = root.querySelector(".tour-spot"), bub = root.querySelector(".tour-bubble");
+  const st = tourSteps(tutOf(T3.id))[T3.i], el = st && document.querySelector(st[0]), spot = root.querySelector(".tour-spot"), bub = root.querySelector(".tour-bubble");
   if (!spot || !bub) return;
   if (!el) {
     spot.style.display = "none";
@@ -6469,7 +6541,7 @@ document.addEventListener("click", (e) => {
         toggleMusic();
         return update(false);
       case "tour-next":
-        if (ui.tour.i + 1 < tutOf(ui.tour.id).steps.length) {
+        if (ui.tour.i + 1 < tourSteps(tutOf(ui.tour.id)).length) {
           ui.tour.i++;
           return update(false);
         }

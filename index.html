@@ -1487,6 +1487,11 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .mo-chip { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: .82rem; color: var(--ink-2); } .mo-chip .ico { width: 15px; height: 15px; }
 .hud .icon-btn.hud-ico { color: var(--ink); } .hud .icon-btn.hud-ico svg, .hud .icon-btn.hud-ico .ico { display: block; color: var(--ink); stroke: currentColor; }
 .cover.warn { background: #ffe1dc; }
+/* ---- Round 32: variants under the start cards ---- */
+.path-var { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 6px; }
+.pv-opt { border: 2px solid var(--ink); border-radius: 12px; background: #fff; padding: 3px 10px; cursor: pointer; font: inherit; display: inline-flex; gap: 6px; align-items: baseline; }
+.pv-opt.on { background: var(--sun-2); box-shadow: 0 0 0 3px var(--sun); } .pv-opt small { font-weight: 700; color: #1c6b45; font-size: .72rem; }
+.path-var p { margin: 0; font-size: .8rem; font-weight: 600; color: var(--ink-2); flex: 1 1 260px; }
 </style>
 </head>
 <body>
@@ -1637,6 +1642,17 @@ var PATHS = [
   { id: "military", share: "At most 4 of 100", title: "Enlist", text: "A 4-year contract you can\u2019t quit early. Barracks and meals are covered. Pay starts near $29,000 and reaches about $38,000. Service can mean danger and long periods away. Afterward, the GI Bill pays for school.", icon: "shield" },
   { id: "home", share: "About 17 of 100", title: "Live at home for now", text: "Not in school or working yet. You live with family and chip in about $100 a month; family adds $300 a month for the first year. Look for work under \u201CBig decision\u201D. After a whole year with no income you take the first job you can get. At 28 you move out.", icon: "house" }
 ];
+var APPRENTICE = { pay: 39500, finish: 0.42, after: 62e3, left: 45e3 };
+var PATH_VARIANTS = {
+  work: [
+    { id: "work", title: "Regular job", share: "About 17 of 100", text: "A full-time job from day one." },
+    { id: "appr", title: "Apprenticeship", share: "About 2 of 100 (rough estimate)", text: "Earn while you learn a trade: about $39,500 a year for 2 years, no tuition. About 4 in 10 apprentices finish; finishing leads to a skilled job (about $62,000). Self-control raises your odds.", best: { title: "Journeyman electrician", salary: 62e3 } }
+  ],
+  home: [
+    { id: "home", title: "Looking for work", share: "About 5 of 100", text: "You live with family and apply for jobs: interviews get +1 this year." },
+    { id: "idle", title: "Not looking yet", share: "About 12 of 100", text: "You live with family and take time off. Time away makes the first interviews harder: \u22121 this year." }
+  ]
+};
 var SCHOOL = {
   both: { years: 2, tuition: 4e3, pellShare: 0.5, edu: 1, career: 1 },
   study: { years: 4, tuition: 11e3, pellShare: 1, edu: 2, career: 1 },
@@ -1680,6 +1696,8 @@ var STATUSES = {
   backache: { label: "Back injury", stat: "career", delta: -1, years: 1, tone: "bad", why: "Your back hasn\u2019t healed; work is a struggle." },
   gambler: { label: "Gambling habit", stat: "discipline", delta: -1, years: 2, tone: "bad", why: "Always thinking about one more bet." },
   stressed: { label: "Stressed out", stat: "discipline", delta: -1, years: 1, tone: "bad", why: "Stress makes impulse buys more tempting." },
+  searching: { label: "Job hunting", stat: "career", delta: 1, years: 1, tone: "good", why: "Sending applications and practising interviews." },
+  gap: { label: "Out of the loop", stat: "career", delta: -1, years: 1, tone: "bad", why: "Time away from work and school makes interviews harder." },
   couch: { label: "Couch-surfing", stat: "career", delta: -1, years: 99, tone: "bad", why: "No place of your own and poor sleep. Ends when you move into a new place." }
 };
 var MOVE_CHOICES = (extra) => [
@@ -2148,7 +2166,7 @@ var removeStatus = (s4, id) => {
   s4.status = s4.status.filter((x) => x.id !== id);
 };
 function startEssentials(gross, path, col) {
-  if (path === "home") return { housing: 100, food: 100, transport: 60, insurance: 0, other: Math.round(40 * col.other) };
+  if (path === "home" || path === "idle") return { housing: 100, food: 100, transport: 60, insurance: 0, other: Math.round(40 * col.other) };
   if (path === "military") return { housing: 0, food: 200, transport: 150, insurance: 40, other: Math.round(200 * col.other) };
   if (path === "study") return { housing: Math.round(650 * col.housing), food: 300, transport: 60, insurance: 100, other: Math.round(120 * col.other) };
   const housing = Math.round(Math.min(1100, Math.max(550, gross / 12 * 0.3)) / 10) * 10;
@@ -2201,7 +2219,7 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
     flags: { ...fx.flags || {} },
     credit: reels.age === 18 ? 0 : 660,
     essentials: null,
-    fun: (path === "military" ? 350 : path === "study" ? 80 : path === "home" ? 60 : reels.salary >= 4e4 ? 200 : 120) + (fx.fun || 0),
+    fun: (path === "military" ? 350 : path === "study" ? 80 : path === "home" || path === "idle" ? 60 : reels.salary >= 4e4 ? 200 : 120) + (fx.fun || 0),
     accounts: { checking: 0, emergency: 0, goal: 0, k401: 0, roth: 0, brokerage: 0 },
     debts: [],
     plan: { k401Pct: 0, emergency: 0, goal: 0, roth: 0, brokerage: 0, extra: {}, lockLifestyle: false, livingLoan: null },
@@ -2235,7 +2253,11 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
     s4.school = { kind: "study", yearsLeft: bs.id === "two-years-college" ? 2 : SCHOOL.study.years, tuition: SCHOOL.study.tuition };
     s4.job = { employed: true, id: "campus", title: "Campus job", salary: ASSUME.campusJob, part: true, has401k: false, match: null, unemployedLeft: 0 };
   }
-  if (path === "home") {
+  if (path === "appr") {
+    s4.apprentice = { yearsLeft: 2 };
+    s4.job = { employed: true, id: "apprentice", title: "Apprentice (trade)", salary: APPRENTICE.pay, part: false, has401k: false, match: null, unemployedLeft: 0 };
+  }
+  if (path === "home" || path === "idle") {
     s4.atHome = true;
     s4.support = { monthly: Math.max(300, s4.support?.monthly || 0), untilAge: Math.max(s4.age + 1, s4.support?.untilAge || 0), label: "Family helps while you look" };
   }
@@ -2261,7 +2283,11 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
   s4.debtAtStart = r22(consumerDebtOf(s4) + sum(s4.debts.filter((d) => d.kind === "auto").map((d) => d.balance)));
   s4.records.push({ age: s4.age, kind: "start", text: `${region.name} \xB7 ${bs.title}` + (s4.school ? s4.school.kind === "study" ? " \xB7 full-time university" : " \xB7 community college while working" : ` \xB7 ${s4.job.title}`), big: true });
   if (path === "cert" || path === "military") s4.records.at(-1).text = `${region.name} \xB7 ${bs.title} \xB7 ${path === "cert" ? "trade school with a part-time job" : "enlisted in the military"}`;
-  if (path === "home") s4.records.at(-1).text = `${region.name} \xB7 ${bs.title} \xB7 living with family, looking for work`;
+  if (path === "home" || path === "idle") {
+    s4.records.at(-1).text = path === "home" ? `${region.name} \xB7 ${bs.title} \xB7 living with family, looking for work` : `${region.name} \xB7 ${bs.title} \xB7 living with family, taking time off`;
+    addStatus(s4, path === "home" ? "searching" : "gap", false);
+  }
+  if (path === "appr") s4.records.at(-1).text = `${region.name} \xB7 ${bs.title} \xB7 apprentice in a trade`;
   s4.learn = freshLearn();
   pickLesson(s4);
   return s4;
@@ -2750,7 +2776,11 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0, bizPla
       n.school = null;
       if (n.support?.gi) n.support = null;
       if (n.job.id === "campus") n.pending.push({ month: 2, kind: "hire", job: JOBS[0].id, salary: JOBS[0].salary, part: false, label: "Start a full-time job" });
-      else if (n.job.employed && n.job.part) setJob(n, JOBS.find((x) => x.id === n.job.id), {});
+      else if (n.job.employed && n.job.part) {
+        const jj = JOBS.find((x) => x.id === n.job.id);
+        if (jj) setJob(n, jj, {});
+        else n.job = { ...n.job, part: false, salary: n.job.salary * 2, title: n.job.title.replace(/ \(.*$|（.*$/, "") };
+      }
       for (const x of n.debts) if (x.kind === "student" && x.deferUntilAge === 99) {
         x.deferUntilAge = n.age + 1;
         x.payment = r22(amortized(x.balance, x.apr, 120));
@@ -3558,6 +3588,21 @@ function nextYear(s4) {
     n.records.push({ age: n.age, kind: "note", text: `A whole year with no income, so you took a job as ${n.job.title} (salary ${money(n.job.salary)}).` });
   }
   if (n.flags.bizFailedAt != null && n.flags.bizFailedAt <= n.age) n.flags.bizFailedAt = null;
+  if (n.apprentice) {
+    if (n.job.id !== "apprentice" || !n.job.employed || n.school || n.business) n.apprentice = null;
+    else if (--n.apprentice.yearsLeft <= 0) {
+      const done = rand(n) < Math.min(0.75, APPRENTICE.finish + 0.08 * modFor(n, "discipline"));
+      n.apprentice = null;
+      if (done) {
+        n.stats.career = Math.min(3, n.stats.career + 1);
+        n.job = { ...n.job, id: "journeyman", title: "Journeyman electrician", salary: APPRENTICE.after, has401k: true, match: { rate: 0.5, upTo: 0.06 } };
+        n.records.push({ age: n.age + 1, kind: "big", text: `Finished your apprenticeship: now a ${n.job.title} at ${money(n.job.salary)}. (About 4 in 10 apprentices finish.)`, big: true });
+      } else {
+        n.job = { ...n.job, id: "trade-helper", title: "Trade helper", salary: Math.max(n.job.salary, APPRENTICE.left) };
+        n.records.push({ age: n.age + 1, kind: "note", text: `Left the apprenticeship before finishing, like about 6 in 10: now a ${n.job.title} at ${money(n.job.salary)}.` });
+      }
+    }
+  }
   if (n.atHome && n.age + 1 >= 28) {
     const rent = Math.round(Math.round(Math.min(1100, Math.max(550, (n.job.salary || 27e3) / 12 * 0.3)) / 10) * 10 * STATES[n.region].costOfLiving.housing);
     n.atHome = false;
@@ -5880,19 +5925,20 @@ function winHtml(reached = 0) {
 }
 function pathScreen() {
   const r = reelsObj(), need = needsPath(r), p = previewStart(), pay = payday(p);
-  const TAG = { home: "With family \xB7 no paycheck yet", cert: "Trade school + part-time job \xB7 1 yr", military: "4-year contract \xB7 barracks and meals", work: "Start earning now", both: "Community college + part-time job \xB7 2 yrs", study: "State university \xB7 4 yrs" };
+  const famOf = (id) => Object.keys(PATH_VARIANTS).find((k2) => PATH_VARIANTS[k2].some((v) => v.id === id)) || id, fam = famOf(setup.path), vars = PATH_VARIANTS[fam];
+  const TAG = { appr: "Earn while you learn \xB7 2 yrs", idle: "With family \xB7 time off", home: "With family \xB7 no paycheck yet", cert: "Trade school + part-time job \xB7 1 yr", military: "4-year contract \xB7 barracks and meals", work: "Start earning now", both: "Community college + part-time job \xB7 2 yrs", study: "State university \xB7 4 yrs" };
   const pathCard = (x) => {
-    const qq = previewStart(x.id), sc2 = SCHOOL[x.id], lvl = sc2 ? sc2.edu : 0;
+    const on = fam === x.id, vid = on ? setup.path : x.id, vv = (PATH_VARIANTS[x.id] || []).find((v) => v.id === vid), qq = previewStart(vid), sc2 = SCHOOL[x.id], lvl = sc2 ? sc2.edu : 0;
     const aid = payday(qq).aid, fee = sc2 ? Math.round(sc2.years * 12 * (aid.tuitionLoan + aid.livingLoan)) : 0;
-    const top = JOBS.filter((j) => j.edu <= lvl && j.career <= 2).sort((a, b) => b.salary - a.salary)[0], full = qq.job.part ? qq.job.salary * 2 : qq.job.salary, best = full > top.salary ? { title: qq.job.title.replace(/ \(.*$|（.*$/, ""), salary: full } : top;
+    const top = JOBS.filter((j) => j.edu <= lvl && j.career <= 2).sort((a, b) => b.salary - a.salary)[0], full = qq.job.part ? qq.job.salary * 2 : qq.job.salary, best = vv?.best || (full > top.salary ? { title: qq.job.title.replace(/ \(.*$|（.*$/, ""), salary: full } : top);
     let ri = 0;
     const row = (lbl, v, max, cls, sub) => `<span class="pm-row"><em title="${lbl}">${icon[["coin", "receipt", "up"][ri++ % 3]]}</em>${meter(v, max, cls)}<b>${sub}</b></span>`;
-    return `<button class="path-opt ${setup.path === x.id ? "on" : ""}" data-go="path" data-id="${x.id}" aria-pressed="${setup.path === x.id}" title="${h(x.text)}">${icon[x.icon]}<b>${h(x.title)}</b><span>${h(TAG[x.id] || "")}</span><span class="path-share">${h(x.share || "")}</span>
+    return `<button class="path-opt ${on ? "on" : ""}" data-go="path" data-id="${x.id}" aria-pressed="${on}" title="${h(x.text)}">${icon[x.icon]}<b>${h(x.title)}</b><span>${h(TAG[vid] || "")}</span><span class="path-share">${h(x.share || "")}</span>
       ${row("Pay now", qq.job.salary, 45e3, "ok", money2(qq.job.salary) + "/yr")}${row("Est. student loans", fee, 5e4, "tax", fee ? money2(fee) : "$0")}${row("Best job later", best.salary, 1e5, "held", money2(best.salary) + "/yr")}
       <small>${h(best.title)}</small></button>`;
   };
   setupFrame("path", `<section class="goal-stage">
-    ${need ? `<header class="wiz-title"><h1>How do you want to start?</h1></header><div class="path-legend"><span>${icon.coin}${h(T2.legendPay)}</span><span>${icon.receipt}${h(T2.legendLoan)}</span><span>${icon.up}${h(T2.legendBest)}</span></div><div class="path-pick">${PATHS.map(pathCard).join("")}</div><details class="more path-note"><summary>${h(T2.pathNoteS)}</summary>${h(T2.pathNote)}</details>` : `<header class="wiz-title"><h1>${r.age} and already working</h1><p>${h(backstoryFor(setup.seed, r).title)}. Every year you can change jobs, go back to school, start a business or move.</p></header>`}
+    ${need ? `<header class="wiz-title"><h1>How do you want to start?</h1></header><div class="path-legend"><span>${icon.coin}${h(T2.legendPay)}</span><span>${icon.receipt}${h(T2.legendLoan)}</span><span>${icon.up}${h(T2.legendBest)}</span></div><div class="path-pick">${PATHS.map(pathCard).join("")}</div>${vars ? `<div class="path-var">${vars.map((v) => `<button class="pv-opt ${setup.path === v.id ? "on" : ""}" data-go="path" data-id="${v.id}" aria-pressed="${setup.path === v.id}"><b>${h(v.title)}</b><small>${h(v.share)}</small></button>`).join("")}<p>${h(vars.find((v) => v.id === setup.path)?.text || "")}</p></div>` : ""}<details class="more path-note"><summary>${h(T2.pathNoteS)}</summary>${h(T2.pathNote)}</details>` : `<header class="wiz-title"><h1>${r.age} and already working</h1><p>${h(backstoryFor(setup.seed, r).title)}. Every year you can change jobs, go back to school, start a business or move.</p></header>`}
     ${winHtml(0)}
     <div class="start-sum">${avatar(setup.look, { cls: "mid", label: false })}<label class="name-field dark"><span>Name</span><input id="player-name" maxlength="20" value="${h(setup.name)}" placeholder="Optional" autocomplete="off"></label>
       </div>

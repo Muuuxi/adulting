@@ -1487,6 +1487,11 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .mo-chip { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: .82rem; color: var(--ink-2); } .mo-chip .ico { width: 15px; height: 15px; }
 .hud .icon-btn.hud-ico { color: var(--ink); } .hud .icon-btn.hud-ico svg, .hud .icon-btn.hud-ico .ico { display: block; color: var(--ink); stroke: currentColor; }
 .cover.warn { background: #ffe1dc; }
+/* ---- Round 32: variants under the start cards ---- */
+.path-var { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 6px; }
+.pv-opt { border: 2px solid var(--ink); border-radius: 12px; background: #fff; padding: 3px 10px; cursor: pointer; font: inherit; display: inline-flex; gap: 6px; align-items: baseline; }
+.pv-opt.on { background: var(--sun-2); box-shadow: 0 0 0 3px var(--sun); } .pv-opt small { font-weight: 700; color: #1c6b45; font-size: .72rem; }
+.path-var p { margin: 0; font-size: .8rem; font-weight: 600; color: var(--ink-2); flex: 1 1 260px; }
 </style>
 </head>
 <body>
@@ -1637,6 +1642,17 @@ var PATHS = [
   { id: "military", share: "100 \u4E2A\u91CC\u6700\u591A 4 \u4E2A", title: "\u5165\u4F0D", text: "4 \u5E74\u5408\u540C\uFF0C\u4E0D\u80FD\u63D0\u524D\u9000\u51FA\u3002\u4F4F\u8425\u623F\uFF0C\u5305\u4F19\u98DF\u3002\u5DE5\u8D44\u4ECE\u7EA6 $29,000 \u6DA8\u5230\u7EA6 $38,000\u3002\u670D\u5F79\u53EF\u80FD\u6709\u5371\u9669\uFF0C\u4E5F\u53EF\u80FD\u957F\u671F\u4E0D\u5728\u5BB6\u3002\u9000\u5F79\u540E GI Bill \u53EF\u4EE5\u4ED8\u5B66\u8D39\u3002", icon: "shield" },
   { id: "home", share: "100 \u4E2A\u91CC\u7EA6 17 \u4E2A", title: "\u5148\u4F4F\u5BB6\u91CC", text: "\u6682\u65F6\u4E0D\u4E0A\u5B66\u4E5F\u4E0D\u4E0A\u73ED\u3002\u4F4F\u5728\u5BB6\u91CC\uFF0C\u6BCF\u6708\u7ED9\u5BB6\u91CC\u7EA6 $100\uFF0C\u7B2C\u4E00\u5E74\u5BB6\u91CC\u6BCF\u6708\u8865\u8D34 $300\u3002\u53EF\u4EE5\u5728\u201C\u5927\u51B3\u5B9A\u201D\u91CC\u627E\u5DE5\u4F5C\uFF1B\u4E00\u6574\u5E74\u90FD\u6CA1\u6536\u5165\u7684\u8BDD\uFF0C\u4F1A\u5148\u63A5\u4E00\u4EFD\u80FD\u627E\u5230\u7684\u5DE5\u4F5C\u300228 \u5C81\u642C\u51FA\u53BB\u81EA\u5DF1\u4F4F\u3002", icon: "house" }
 ];
+var APPRENTICE = { pay: 39500, finish: 0.42, after: 62e3, left: 45e3 };
+var PATH_VARIANTS = {
+  work: [
+    { id: "work", title: "\u666E\u901A\u5DE5\u4F5C", share: "100 \u4E2A\u91CC\u7EA6 17 \u4E2A", text: "\u7B2C\u4E00\u5929\u8D77\u5C31\u662F\u5168\u804C\u5DE5\u4F5C\u3002" },
+    { id: "appr", title: "\u5B66\u5F92", share: "100 \u4E2A\u91CC\u7EA6 2 \u4E2A\uFF08\u7C97\u7565\u4F30\u8BA1\uFF09", text: "\u8FB9\u5E72\u8FB9\u5B66\u4E00\u95E8\u624B\u827A\uFF1A\u5E74\u85AA\u7EA6 $39,500\uFF0C\u4E3A\u671F 2 \u5E74\uFF0C\u4E0D\u7528\u4EA4\u5B66\u8D39\u3002\u5927\u7EA6 10 \u4E2A\u5B66\u5F92\u91CC 4 \u4E2A\u80FD\u5B8C\u6210\uFF1B\u5B8C\u6210\u540E\u662F\u6280\u672F\u5DE5\u79CD\uFF08\u7EA6 $62,000\uFF09\u3002\u81EA\u63A7\u529B\u8D8A\u9AD8\uFF0C\u5B8C\u6210\u7684\u673A\u4F1A\u8D8A\u5927\u3002", best: { title: "\u6301\u8BC1\u7535\u5DE5", salary: 62e3 } }
+  ],
+  home: [
+    { id: "home", title: "\u5728\u627E\u5DE5\u4F5C", share: "100 \u4E2A\u91CC\u7EA6 5 \u4E2A", text: "\u4F4F\u5728\u5BB6\u91CC\uFF0C\u4E00\u8FB9\u6295\u7B80\u5386\uFF1A\u4ECA\u5E74\u9762\u8BD5 +1\u3002" },
+    { id: "idle", title: "\u5148\u6B47\u4E00\u9635", share: "100 \u4E2A\u91CC\u7EA6 12 \u4E2A", text: "\u4F4F\u5728\u5BB6\u91CC\uFF0C\u6682\u65F6\u4E0D\u627E\u5DE5\u4F5C\u3002\u79BB\u5F00\u592A\u4E45\uFF0C\u5934\u51E0\u6B21\u9762\u8BD5\u4F1A\u66F4\u96BE\uFF1A\u4ECA\u5E74\u9762\u8BD5 \u22121\u3002" }
+  ]
+};
 var SCHOOL = {
   both: { years: 2, tuition: 4e3, pellShare: 0.5, edu: 1, career: 1 },
   study: { years: 4, tuition: 11e3, pellShare: 1, edu: 2, career: 1 },
@@ -1680,6 +1696,8 @@ var STATUSES = {
   backache: { label: "\u95EA\u4E86\u8170", stat: "career", delta: -1, years: 1, tone: "bad", why: "\u8170\u4F24\u8FD8\u6CA1\u597D\uFF0C\u5E72\u6D3B\u5403\u529B\u3002" },
   gambler: { label: "\u8D4C\u763E", stat: "discipline", delta: -1, years: 2, tone: "bad", why: "\u603B\u60F3\u7740\u518D\u8D4C\u4E00\u628A\u3002" },
   stressed: { label: "\u538B\u529B\u5F88\u5927", stat: "discipline", delta: -1, years: 1, tone: "bad", why: "\u538B\u529B\u5927\u7684\u65F6\u5019\u66F4\u5BB9\u6613\u51B2\u52A8\u6D88\u8D39\u3002" },
+  searching: { label: "\u5728\u627E\u5DE5\u4F5C", stat: "career", delta: 1, years: 1, tone: "good", why: "\u5728\u6295\u7B80\u5386\u3001\u7EC3\u9762\u8BD5\u3002" },
+  gap: { label: "\u8131\u8282", stat: "career", delta: -1, years: 1, tone: "bad", why: "\u79BB\u5F00\u5DE5\u4F5C\u548C\u5B66\u6821\u4E00\u9635\u5B50\uFF0C\u9762\u8BD5\u66F4\u96BE\u3002" },
   couch: { label: "\u501F\u4F4F\u670B\u53CB\u5BB6", stat: "career", delta: -1, years: 99, tone: "bad", why: "\u6CA1\u6709\u81EA\u5DF1\u7684\u4F4F\u5904\uFF0C\u7761\u4E0D\u597D\u3002\u642C\u8FDB\u65B0\u4F4F\u5904\u540E\u6D88\u5931\u3002" }
 };
 var MOVE_CHOICES = (extra) => [
@@ -2148,7 +2166,7 @@ var removeStatus = (s4, id) => {
   s4.status = s4.status.filter((x) => x.id !== id);
 };
 function startEssentials(gross, path, col) {
-  if (path === "home") return { housing: 100, food: 100, transport: 60, insurance: 0, other: Math.round(40 * col.other) };
+  if (path === "home" || path === "idle") return { housing: 100, food: 100, transport: 60, insurance: 0, other: Math.round(40 * col.other) };
   if (path === "military") return { housing: 0, food: 200, transport: 150, insurance: 40, other: Math.round(200 * col.other) };
   if (path === "study") return { housing: Math.round(650 * col.housing), food: 300, transport: 60, insurance: 100, other: Math.round(120 * col.other) };
   const housing = Math.round(Math.min(1100, Math.max(550, gross / 12 * 0.3)) / 10) * 10;
@@ -2201,7 +2219,7 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
     flags: { ...fx.flags || {} },
     credit: reels.age === 18 ? 0 : 660,
     essentials: null,
-    fun: (path === "military" ? 350 : path === "study" ? 80 : path === "home" ? 60 : reels.salary >= 4e4 ? 200 : 120) + (fx.fun || 0),
+    fun: (path === "military" ? 350 : path === "study" ? 80 : path === "home" || path === "idle" ? 60 : reels.salary >= 4e4 ? 200 : 120) + (fx.fun || 0),
     accounts: { checking: 0, emergency: 0, goal: 0, k401: 0, roth: 0, brokerage: 0 },
     debts: [],
     plan: { k401Pct: 0, emergency: 0, goal: 0, roth: 0, brokerage: 0, extra: {}, lockLifestyle: false, livingLoan: null },
@@ -2235,7 +2253,11 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
     s4.school = { kind: "study", yearsLeft: bs.id === "two-years-college" ? 2 : SCHOOL.study.years, tuition: SCHOOL.study.tuition };
     s4.job = { employed: true, id: "campus", title: "\u6821\u5185\u517C\u804C", salary: ASSUME.campusJob, part: true, has401k: false, match: null, unemployedLeft: 0 };
   }
-  if (path === "home") {
+  if (path === "appr") {
+    s4.apprentice = { yearsLeft: 2 };
+    s4.job = { employed: true, id: "apprentice", title: "\u5B66\u5F92\u5DE5", salary: APPRENTICE.pay, part: false, has401k: false, match: null, unemployedLeft: 0 };
+  }
+  if (path === "home" || path === "idle") {
     s4.atHome = true;
     s4.support = { monthly: Math.max(300, s4.support?.monthly || 0), untilAge: Math.max(s4.age + 1, s4.support?.untilAge || 0), label: "\u627E\u5DE5\u4F5C\u671F\u95F4\u5BB6\u91CC\u8865\u8D34" };
   }
@@ -2261,7 +2283,11 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
   s4.debtAtStart = r22(consumerDebtOf(s4) + sum(s4.debts.filter((d) => d.kind === "auto").map((d) => d.balance)));
   s4.records.push({ age: s4.age, kind: "start", text: `${region.name} \xB7 ${bs.title}` + (s4.school ? s4.school.kind === "study" ? " \xB7 \u5168\u804C\u8BFB\u5927\u5B66" : " \xB7 \u8FB9\u8BFB\u793E\u533A\u5927\u5B66\u8FB9\u6253\u5DE5" : ` \xB7 ${s4.job.title}`), big: true });
   if (path === "cert" || path === "military") s4.records.at(-1).text = `${region.name} \xB7 ${bs.title} \xB7 ${path === "cert" ? "\u8BFB\u804C\u6821\uFF0C\u540C\u65F6\u6253\u96F6\u5DE5" : "\u5165\u4F0D"}`;
-  if (path === "home") s4.records.at(-1).text = `${region.name} \xB7 ${bs.title} \xB7 \u4F4F\u5BB6\u91CC\uFF0C\u5728\u627E\u5DE5\u4F5C`;
+  if (path === "home" || path === "idle") {
+    s4.records.at(-1).text = path === "home" ? `${region.name} \xB7 ${bs.title} \xB7 \u4F4F\u5BB6\u91CC\uFF0C\u5728\u627E\u5DE5\u4F5C` : `${region.name} \xB7 ${bs.title} \xB7 \u4F4F\u5BB6\u91CC\uFF0C\u5148\u6B47\u4E00\u9635`;
+    addStatus(s4, path === "home" ? "searching" : "gap", false);
+  }
+  if (path === "appr") s4.records.at(-1).text = `${region.name} \xB7 ${bs.title} \xB7 \u5F53\u5B66\u5F92\u5B66\u624B\u827A`;
   s4.learn = freshLearn();
   pickLesson(s4);
   return s4;
@@ -2750,7 +2776,11 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0, bizPla
       n.school = null;
       if (n.support?.gi) n.support = null;
       if (n.job.id === "campus") n.pending.push({ month: 2, kind: "hire", job: JOBS[0].id, salary: JOBS[0].salary, part: false, label: "\u5F00\u59CB\u5168\u804C\u5DE5\u4F5C" });
-      else if (n.job.employed && n.job.part) setJob(n, JOBS.find((x) => x.id === n.job.id), {});
+      else if (n.job.employed && n.job.part) {
+        const jj = JOBS.find((x) => x.id === n.job.id);
+        if (jj) setJob(n, jj, {});
+        else n.job = { ...n.job, part: false, salary: n.job.salary * 2, title: n.job.title.replace(/ \(.*$|（.*$/, "") };
+      }
       for (const x of n.debts) if (x.kind === "student" && x.deferUntilAge === 99) {
         x.deferUntilAge = n.age + 1;
         x.payment = r22(amortized(x.balance, x.apr, 120));
@@ -3558,6 +3588,21 @@ function nextYear(s4) {
     n.records.push({ age: n.age, kind: "note", text: `\u4E00\u6574\u5E74\u6CA1\u6709\u6536\u5165\uFF0C\u53EA\u597D\u5148\u53BB\u505A${n.job.title}\uFF08\u5E74\u85AA ${money(n.job.salary)}\uFF09\u3002` });
   }
   if (n.flags.bizFailedAt != null && n.flags.bizFailedAt <= n.age) n.flags.bizFailedAt = null;
+  if (n.apprentice) {
+    if (n.job.id !== "apprentice" || !n.job.employed || n.school || n.business) n.apprentice = null;
+    else if (--n.apprentice.yearsLeft <= 0) {
+      const done = rand(n) < Math.min(0.75, APPRENTICE.finish + 0.08 * modFor(n, "discipline"));
+      n.apprentice = null;
+      if (done) {
+        n.stats.career = Math.min(3, n.stats.career + 1);
+        n.job = { ...n.job, id: "journeyman", title: "\u6301\u8BC1\u7535\u5DE5", salary: APPRENTICE.after, has401k: true, match: { rate: 0.5, upTo: 0.06 } };
+        n.records.push({ age: n.age + 1, kind: "big", text: `\u5B66\u5F92\u671F\u6EE1\uFF0C\u62FF\u5230\u8BC1\u4E66\uFF1A\u73B0\u5728\u662F${n.job.title}\uFF0C\u5E74\u85AA ${money(n.job.salary)}\u3002\uFF08\u5927\u7EA6 10 \u4E2A\u5B66\u5F92\u91CC 4 \u4E2A\u80FD\u5B8C\u6210\u3002\uFF09`, big: true });
+      } else {
+        n.job = { ...n.job, id: "trade-helper", title: "\u6280\u5DE5\u5E2E\u624B", salary: Math.max(n.job.salary, APPRENTICE.left) };
+        n.records.push({ age: n.age + 1, kind: "note", text: `\u6CA1\u80FD\u5B8C\u6210\u5B66\u5F92\uFF0C\u548C\u5927\u7EA6 10 \u4E2A\u91CC 6 \u4E2A\u4E00\u6837\uFF1A\u73B0\u5728\u505A${n.job.title}\uFF0C\u5E74\u85AA ${money(n.job.salary)}\u3002` });
+      }
+    }
+  }
   if (n.atHome && n.age + 1 >= 28) {
     const rent = Math.round(Math.round(Math.min(1100, Math.max(550, (n.job.salary || 27e3) / 12 * 0.3)) / 10) * 10 * STATES[n.region].costOfLiving.housing);
     n.atHome = false;
@@ -5880,19 +5925,20 @@ function winHtml(reached = 0) {
 }
 function pathScreen() {
   const r = reelsObj(), need = needsPath(r), p = previewStart(), pay = payday(p);
-  const TAG = { home: "\u4F4F\u5BB6\u91CC \xB7 \u6682\u65F6\u6CA1\u5DE5\u8D44", cert: "\u804C\u6821 + \u6253\u96F6\u5DE5 \xB7 1 \u5E74", military: "4 \u5E74\u5408\u540C \xB7 \u5305\u5403\u4F4F", work: "\u9A6C\u4E0A\u5F00\u59CB\u8D5A\u94B1", both: "\u793E\u533A\u5927\u5B66 + \u517C\u804C \xB7 2 \u5E74", study: "\u5DDE\u7ACB\u5927\u5B66 \xB7 4 \u5E74" };
+  const famOf = (id) => Object.keys(PATH_VARIANTS).find((k2) => PATH_VARIANTS[k2].some((v) => v.id === id)) || id, fam = famOf(setup.path), vars = PATH_VARIANTS[fam];
+  const TAG = { appr: "\u8FB9\u5E72\u8FB9\u5B66 \xB7 2 \u5E74", idle: "\u4F4F\u5BB6\u91CC \xB7 \u5148\u6B47\u4E00\u9635", home: "\u4F4F\u5BB6\u91CC \xB7 \u6682\u65F6\u6CA1\u5DE5\u8D44", cert: "\u804C\u6821 + \u6253\u96F6\u5DE5 \xB7 1 \u5E74", military: "4 \u5E74\u5408\u540C \xB7 \u5305\u5403\u4F4F", work: "\u9A6C\u4E0A\u5F00\u59CB\u8D5A\u94B1", both: "\u793E\u533A\u5927\u5B66 + \u517C\u804C \xB7 2 \u5E74", study: "\u5DDE\u7ACB\u5927\u5B66 \xB7 4 \u5E74" };
   const pathCard = (x) => {
-    const qq = previewStart(x.id), sc2 = SCHOOL[x.id], lvl = sc2 ? sc2.edu : 0;
+    const on = fam === x.id, vid = on ? setup.path : x.id, vv = (PATH_VARIANTS[x.id] || []).find((v) => v.id === vid), qq = previewStart(vid), sc2 = SCHOOL[x.id], lvl = sc2 ? sc2.edu : 0;
     const aid = payday(qq).aid, fee = sc2 ? Math.round(sc2.years * 12 * (aid.tuitionLoan + aid.livingLoan)) : 0;
-    const top = JOBS.filter((j) => j.edu <= lvl && j.career <= 2).sort((a, b) => b.salary - a.salary)[0], full = qq.job.part ? qq.job.salary * 2 : qq.job.salary, best = full > top.salary ? { title: qq.job.title.replace(/ \(.*$|（.*$/, ""), salary: full } : top;
+    const top = JOBS.filter((j) => j.edu <= lvl && j.career <= 2).sort((a, b) => b.salary - a.salary)[0], full = qq.job.part ? qq.job.salary * 2 : qq.job.salary, best = vv?.best || (full > top.salary ? { title: qq.job.title.replace(/ \(.*$|（.*$/, ""), salary: full } : top);
     let ri = 0;
     const row = (lbl, v, max, cls, sub) => `<span class="pm-row"><em title="${lbl}">${icon[["coin", "receipt", "up"][ri++ % 3]]}</em>${meter(v, max, cls)}<b>${sub}</b></span>`;
-    return `<button class="path-opt ${setup.path === x.id ? "on" : ""}" data-go="path" data-id="${x.id}" aria-pressed="${setup.path === x.id}" title="${h(x.text)}">${icon[x.icon]}<b>${h(x.title)}</b><span>${h(TAG[x.id] || "")}</span><span class="path-share">${h(x.share || "")}</span>
+    return `<button class="path-opt ${on ? "on" : ""}" data-go="path" data-id="${x.id}" aria-pressed="${on}" title="${h(x.text)}">${icon[x.icon]}<b>${h(x.title)}</b><span>${h(TAG[vid] || "")}</span><span class="path-share">${h(x.share || "")}</span>
       ${row("\u73B0\u5728\u6536\u5165", qq.job.salary, 45e3, "ok", money2(qq.job.salary) + "/\u5E74")}${row("\u9884\u8BA1\u5B66\u751F\u8D37\u6B3E", fee, 5e4, "tax", fee ? money2(fee) : "$0")}${row("\u4EE5\u540E\u6700\u597D\u7684\u5DE5\u4F5C", best.salary, 1e5, "held", money2(best.salary) + "/\u5E74")}
       <small>${h(best.title)}</small></button>`;
   };
   setupFrame("path", `<section class="goal-stage">
-    ${need ? `<header class="wiz-title"><h1>\u4F60\u6253\u7B97\u600E\u4E48\u5F00\u59CB\uFF1F</h1></header><div class="path-legend"><span>${icon.coin}${h(T2.legendPay)}</span><span>${icon.receipt}${h(T2.legendLoan)}</span><span>${icon.up}${h(T2.legendBest)}</span></div><div class="path-pick">${PATHS.map(pathCard).join("")}</div><details class="more path-note"><summary>${h(T2.pathNoteS)}</summary>${h(T2.pathNote)}</details>` : `<header class="wiz-title"><h1>${r.age} \u5C81\uFF0C\u4F60\u5DF2\u7ECF\u5728\u5DE5\u4F5C\u4E86</h1><p>${h(backstoryFor(setup.seed, r).title)}\u3002\u4EE5\u540E\u6BCF\u5E74\u90FD\u53EF\u4EE5\u6362\u5DE5\u4F5C\u3001\u56DE\u5B66\u6821\u3001\u521B\u4E1A\u6216\u642C\u5BB6\u3002</p></header>`}
+    ${need ? `<header class="wiz-title"><h1>\u4F60\u6253\u7B97\u600E\u4E48\u5F00\u59CB\uFF1F</h1></header><div class="path-legend"><span>${icon.coin}${h(T2.legendPay)}</span><span>${icon.receipt}${h(T2.legendLoan)}</span><span>${icon.up}${h(T2.legendBest)}</span></div><div class="path-pick">${PATHS.map(pathCard).join("")}</div>${vars ? `<div class="path-var">${vars.map((v) => `<button class="pv-opt ${setup.path === v.id ? "on" : ""}" data-go="path" data-id="${v.id}" aria-pressed="${setup.path === v.id}"><b>${h(v.title)}</b><small>${h(v.share)}</small></button>`).join("")}<p>${h(vars.find((v) => v.id === setup.path)?.text || "")}</p></div>` : ""}<details class="more path-note"><summary>${h(T2.pathNoteS)}</summary>${h(T2.pathNote)}</details>` : `<header class="wiz-title"><h1>${r.age} \u5C81\uFF0C\u4F60\u5DF2\u7ECF\u5728\u5DE5\u4F5C\u4E86</h1><p>${h(backstoryFor(setup.seed, r).title)}\u3002\u4EE5\u540E\u6BCF\u5E74\u90FD\u53EF\u4EE5\u6362\u5DE5\u4F5C\u3001\u56DE\u5B66\u6821\u3001\u521B\u4E1A\u6216\u642C\u5BB6\u3002</p></header>`}
     ${winHtml(0)}
     <div class="start-sum">${avatar(setup.look, { cls: "mid", label: false })}<label class="name-field dark"><span>\u540D\u5B57</span><input id="player-name" maxlength="20" value="${h(setup.name)}" placeholder="\u53EF\u4EE5\u7559\u7A7A" autocomplete="off"></label>
       </div>

@@ -1477,6 +1477,15 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .catbars.finbars li.tax i { background: #e46b6b; } .catbars.finbars li.ok i { background: var(--grass); } .catbars.finbars span small { display: block; font-size: .72rem; color: var(--muted); font-weight: 700; }
 .catbars.finbars span small { color: rgba(255,255,255,.8); }
 .dstrip span, .dstrip span small, .dice-box .dstrip span small { color: #fff !important; opacity: 1; }
+/* ---- Round 29: lighter top bar, amount chips on cards ---- */
+.hud-stat { display: flex; align-items: center; gap: 6px; } .hud-stat > .ico { width: 20px; height: 20px; color: #bcd0f5; flex: none; }
+.hud .icon-btn.hud-ico { width: 36px; height: 36px; border-width: 2px; } .hud .icon-btn.hud-ico .ico { width: 18px; height: 18px; }
+.hud .lifebar { max-width: 220px; } .hud .quest b { font-size: .86rem; }
+.card-chips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
+.amt-chip { display: inline-flex; align-items: center; gap: 5px; font-weight: 900; font-size: 1.3rem; padding: 2px 12px; border: 2px solid var(--ink); border-radius: 999px; background: #ffe1dc; }
+.amt-chip.t-opportunity { background: var(--grass-2); } .amt-chip .ico { width: 20px; height: 20px; }
+.mo-chip { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: .82rem; color: var(--ink-2); } .mo-chip .ico { width: 15px; height: 15px; }
+.hud .icon-btn.hud-ico { color: var(--ink); } .hud .icon-btn.hud-ico svg, .hud .icon-btn.hud-ico .ico { display: block; color: var(--ink); stroke: currentColor; }
 </style>
 </head>
 <body>
@@ -1733,7 +1742,7 @@ var DECISIONS = [
     icon: "star",
     text: "Run a business full-time. In the US about 1 in 5 new businesses close in year one and about half by year five. Starting from a side hustle that already earns gives better odds.",
     eligible: (s4) => !s4.service && !s4.business && !s4.school && s4.age >= 18,
-    choices: [{ id: "own", label: "Go full-time with your side hustle (startup cost $1,000, needs $300+/mo side income)", cost: 1e3, base: 2e3, needSide: 300 }, { id: "truck", label: "Food truck (startup cost $8,000)", cost: 8e3, base: 3e3 }, { id: "shop", label: "Online shop (startup cost $3,000)", cost: 3e3, base: 1800 }, { id: "studio", label: "Design studio ($5,000, needs career skill \u2265 1)", cost: 5e3, base: 3600, needCareer: 1 }],
+    choices: [{ id: "own", label: "Go full-time with your side hustle (startup cost $1,000, needs $300+/mo side income)", cost: 1e3, base: 1900, needSide: 300 }, { id: "truck", label: "Food truck (startup cost $8,000)", cost: 8e3, base: 2800 }, { id: "shop", label: "Online shop (startup cost $3,000)", cost: 3e3, base: 1700 }, { id: "studio", label: "Design studio ($5,000, needs career skill \u2265 1)", cost: 5e3, base: 3400, needCareer: 1 }],
     throw: { stat: "career", label: "Launch", game: "catch" },
     outcomes: { fail: { bizMult: -0.3, note: "Rough launch: losing money every month." }, ok: { bizMult: 1, note: "The business is on track." }, great: { bizMult: 1.8, note: "Business is booming!" } }
   },
@@ -1773,7 +1782,7 @@ var PAY_CAP = 1.3;
 var JUMP_STEP = 15e3;
 var JUMP_MAX = 3;
 var TEXT = { capNote: " (top of this job\u2019s pay range)", capBlock: "You\u2019re at the top of this job\u2019s pay range. To earn more, change jobs or get more education.", jump: "Big jump", upTo: "up to", nat1: "A roll of 1 always fails.", difficulty: "Difficulty", diffHint: "Changing the difficulty respins the reels." };
-var CARD_WEIGHTS = [{ until: 24, w: { life: 30, opportunity: 30, impulse: 35, quiet: 5 } }, { until: 35, w: { life: 35, opportunity: 30, impulse: 30, quiet: 5 } }, { until: 49, w: { life: 40, opportunity: 30, impulse: 25, quiet: 5 } }];
+var CARD_WEIGHTS = [{ until: 24, w: { life: 40, opportunity: 25, impulse: 30, quiet: 5 } }, { until: 35, w: { life: 45, opportunity: 25, impulse: 25, quiet: 5 } }, { until: 49, w: { life: 50, opportunity: 25, impulse: 20, quiet: 5 } }];
 var pays = (cost, extra = []) => [{ id: "emergency", label: "Pay from emergency fund", pay: "emergency", cost }, { id: "card", label: "Put it on the credit card", pay: "card", cost }, { id: "checking", label: "Pay from checking", pay: "checking", cost }, ...extra];
 var CARDS = [
   /* ---- life events ---- */
@@ -5889,15 +5898,15 @@ function hud() {
   const m = metrics(s2), av = payday(s2.phase === "plan" ? { ...s2, plan: draft() } : s2).available, H0 = s2.history, nwUp = H0.length > 1 ? H0.at(-1).netWorth >= H0.at(-2).netWorth : null, st = stage(s2), nx = STAGES[st.id + 1], span = FINAL_AGE - s2.startAge, age = s2.phase === "finish" ? 50 : s2.age;
   return `<header class="hud">
     ${logo("mini")}
-    <div class="lifebar" title="From age ${s2.startAge} to 50"><div class="lb-top"><b>Age ${age}</b><small>Year ${Math.min(span, age - s2.startAge + 1)} / ${span}</small></div>
-      <div class="lb-track">${Array.from({ length: span }, (_, i) => `<i class="${s2.startAge + i < age ? "done" : s2.startAge + i === age ? "now" : ""}"></i>`).join("")}</div><div class="lb-ends"><small>${s2.startAge}</small><small>50</small></div></div>
-    <div class="hud-stat ask"><small>${T2.enough} ${q("available")}</small><b class="hud-verdict ${av < -0.5 ? "bad" : "ok"}"><i></i>${fmt(av < -0.5 ? T2.shortOf : T2.spare, { m: money2(Math.abs(av)) })}</b></div>
-    <div class="hud-stat"><small>${T2.ifTrouble} ${q("emergency")}</small><b>${fmt(T2.canLast, { n: m.runway.toFixed(1) })}</b></div>
-    <div class="hud-stat"><small>${T2.wealth} ${q("netWorth")}</small><b class="${m.netWorth < 0 ? "neg" : ""}">${money2(m.netWorth)}</b>${nwUp == null ? "" : `<span class="hud-trend ${nwUp ? "up" : "down"}">${nwUp ? icon.up : icon.down}</span>`}</div>
-    <button class="quest" data-go="nav" data-id="goals" title="${h(nx ? nx.enter : "")}">${icon.trophy}<div><b>Stage ${st.id}/6 \xB7 ${st.name}</b>${bar(st.id / 6)}<small>${nx ? "Next: " + h(nx.name) : "Top stage!"}</small></div></button>
+    <div class="lifebar" title="From age ${s2.startAge} to 50"><div class="lb-top"><b>Age ${age}</b></div>
+      <div class="lb-track">${Array.from({ length: span }, (_, i) => `<i class="${s2.startAge + i < age ? "done" : s2.startAge + i === age ? "now" : ""}"></i>`).join("")}</div></div>
+    <div class="hud-stat ask" title="${h(T2.enough)}">${icon.coin}<b class="hud-verdict ${av < -0.5 ? "bad" : "ok"}"><i></i>${fmt(av < -0.5 ? T2.shortOf : T2.spare, { m: money2(Math.abs(av)) })}</b></div>
+    <div class="hud-stat" title="${h(T2.ifTrouble)}">${icon.shield}<b>${fmt(T2.canLast, { n: m.runway.toFixed(1) })}</b></div>
+    <div class="hud-stat" title="${h(T2.wealth)}">${icon.bank}<b class="${m.netWorth < 0 ? "neg" : ""}">${money2(m.netWorth)}</b>${nwUp == null ? "" : `<span class="hud-trend ${nwUp ? "up" : "down"}">${nwUp ? icon.up : icon.down}</span>`}</div>
+    <button class="quest" data-go="nav" data-id="goals" title="${h(nx ? nx.enter : "")}">${icon.trophy}<div><b>Stage ${st.id}/6 \xB7 ${st.name}</b>${bar(st.id / 6)}</div></button>
     <span class="snd-btns">${sndBtns()}</span>
-    ${btn("tour", "Guide", { cls: "btn ghost small", ico: "help" })}
-    <div class="menu-wrap">${btn("menu", "Save", { cls: "btn ghost small", ico: "save", attrs: `aria-expanded="${ui.menu}"` })}
+    ${btn("tour", "Guide", { cls: "icon-btn hud-ico", ico: "help", attrs: 'title="Guide"' })}
+    <div class="menu-wrap">${btn("menu", "Save", { cls: "icon-btn hud-ico", ico: "save", attrs: `title="Save" aria-expanded="${ui.menu}"` })}
       ${ui.menu ? `<div class="menu" role="menu">${btn("export", globalThis.__ADULTING_WEB__ ? "Copy save" : "Export save", { cls: "menu-item" })}${btn("import", "Import save", { cls: "menu-item" })}${btn("new", ui.confirmNew ? "Click again to confirm abandoning this life" : "Start a new life", { cls: "menu-item danger" })}<p>Saved automatically in this browser.</p></div>` : ""}</div>
   </header>`;
 }
@@ -6035,7 +6044,10 @@ function cardPage() {
   }
   const tp = TYPE[c.type], judged = c.roll == null || c.judged;
   const opts = judged ? cardOptions(s2) : [];
-  frame("card", `<section class="card-stage"><div class="ty-card t-${c.type} flip-in"><header>${icon[tp.ico]}<span>${tp.en}</span></header>${cardArt(c.id, c.type)}<h2>${h(c.title)}</h2><p>${h(c.text)}</p>${c.month ? `<small>Happens in month ${c.month}</small>` : ""}</div>
+  frame("card", `<section class="card-stage"><div class="ty-card t-${c.type} flip-in"><header>${icon[tp.ico]}<span>${tp.en}</span></header>${cardArt(c.id, c.type)}<h2>${h(c.title)}</h2><p>${h(c.text)}</p><div class="card-chips">${(() => {
+    const a = (c.text.match(/\$[\d,]+/) || [])[0];
+    return a ? `<span class="amt-chip t-${c.type}">${icon.coin}${c.type === "opportunity" ? "+" : "\u2212"}${a}</span>` : "";
+  })()}${c.month ? `<span class="mo-chip">${icon.clock}Month ${c.month}</span>` : ""}</div></div>
     <div class="card-side">
       ${c.roll != null ? judged ? `<div class="panel">${diceBox(c.roll, c.mod, c.bonus, c.throwLabel, c.stat)}</div>` : `<div class="panel judge"><h3>${icon.dice}Throw: ${h(c.throwLabel)} ${q("dice")}</h3><p>First play a 12-second mini-game for a bonus (up to +2), then roll. Your current ${STAT[c.stat]}: ${c.mod}.</p>
           ${diceStrip(null)}<div class="row">${btn("card-game", c.game === "dodge" ? "Play \u201CResist the temptation\u201D first" : "Play \u201CSeize the chance\u201D first", { cls: "btn blue", ico: "star", attrs: reduced ? "disabled" : "data-autofocus" })}${btn("card-roll", "Just roll", { cls: "btn ghost", ico: "dice" })}</div></div>` : ""}

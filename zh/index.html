@@ -1477,6 +1477,15 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .catbars.finbars li.tax i { background: #e46b6b; } .catbars.finbars li.ok i { background: var(--grass); } .catbars.finbars span small { display: block; font-size: .72rem; color: var(--muted); font-weight: 700; }
 .catbars.finbars span small { color: rgba(255,255,255,.8); }
 .dstrip span, .dstrip span small, .dice-box .dstrip span small { color: #fff !important; opacity: 1; }
+/* ---- Round 29: lighter top bar, amount chips on cards ---- */
+.hud-stat { display: flex; align-items: center; gap: 6px; } .hud-stat > .ico { width: 20px; height: 20px; color: #bcd0f5; flex: none; }
+.hud .icon-btn.hud-ico { width: 36px; height: 36px; border-width: 2px; } .hud .icon-btn.hud-ico .ico { width: 18px; height: 18px; }
+.hud .lifebar { max-width: 220px; } .hud .quest b { font-size: .86rem; }
+.card-chips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
+.amt-chip { display: inline-flex; align-items: center; gap: 5px; font-weight: 900; font-size: 1.3rem; padding: 2px 12px; border: 2px solid var(--ink); border-radius: 999px; background: #ffe1dc; }
+.amt-chip.t-opportunity { background: var(--grass-2); } .amt-chip .ico { width: 20px; height: 20px; }
+.mo-chip { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: .82rem; color: var(--ink-2); } .mo-chip .ico { width: 15px; height: 15px; }
+.hud .icon-btn.hud-ico { color: var(--ink); } .hud .icon-btn.hud-ico svg, .hud .icon-btn.hud-ico .ico { display: block; color: var(--ink); stroke: currentColor; }
 </style>
 </head>
 <body>
@@ -1733,7 +1742,7 @@ var DECISIONS = [
     icon: "star",
     text: "\u5168\u804C\u7ECF\u8425\u4E00\u95E8\u751F\u610F\u3002\u5728\u7F8E\u56FD\uFF0C\u5927\u7EA6\u4E94\u5206\u4E4B\u4E00\u7684\u65B0\u4F01\u4E1A\u7B2C\u4E00\u5E74\u5C31\u5173\u95E8\uFF0C\u4E94\u5E74\u5185\u7EA6\u4E00\u534A\u5173\u95E8\u3002\u4ECE\u5DF2\u7ECF\u8D5A\u94B1\u7684\u526F\u4E1A\u8F6C\u8FC7\u6765\uFF0C\u80DC\u7B97\u66F4\u5927\u3002",
     eligible: (s4) => !s4.service && !s4.business && !s4.school && s4.age >= 18,
-    choices: [{ id: "own", label: "\u628A\u526F\u4E1A\u8F6C\u6210\u5168\u804C\uFF08\u542F\u52A8 $1,000\uFF0C\u526F\u4E1A\u6708\u5165\u8981\u5230 $300\uFF09", cost: 1e3, base: 2e3, needSide: 300 }, { id: "truck", label: "\u5F00\u4E00\u8F86\u9910\u8F66\uFF08\u542F\u52A8\u8D44\u91D1 $8,000\uFF09", cost: 8e3, base: 3e3 }, { id: "shop", label: "\u5F00\u7F51\u5E97\uFF08\u542F\u52A8\u8D44\u91D1 $3,000\uFF09", cost: 3e3, base: 1800 }, { id: "studio", label: "\u5F00\u8BBE\u8BA1\u5DE5\u4F5C\u5BA4\uFF08$5,000\uFF0C\u8981\u804C\u4E1A\u80FD\u529B \u2265 1\uFF09", cost: 5e3, base: 3600, needCareer: 1 }],
+    choices: [{ id: "own", label: "\u628A\u526F\u4E1A\u8F6C\u6210\u5168\u804C\uFF08\u542F\u52A8 $1,000\uFF0C\u526F\u4E1A\u6708\u5165\u8981\u5230 $300\uFF09", cost: 1e3, base: 1900, needSide: 300 }, { id: "truck", label: "\u5F00\u4E00\u8F86\u9910\u8F66\uFF08\u542F\u52A8\u8D44\u91D1 $8,000\uFF09", cost: 8e3, base: 2800 }, { id: "shop", label: "\u5F00\u7F51\u5E97\uFF08\u542F\u52A8\u8D44\u91D1 $3,000\uFF09", cost: 3e3, base: 1700 }, { id: "studio", label: "\u5F00\u8BBE\u8BA1\u5DE5\u4F5C\u5BA4\uFF08$5,000\uFF0C\u8981\u804C\u4E1A\u80FD\u529B \u2265 1\uFF09", cost: 5e3, base: 3400, needCareer: 1 }],
     throw: { stat: "career", label: "\u5F00\u4E1A", game: "catch" },
     outcomes: { fail: { bizMult: -0.3, note: "\u5F00\u4E1A\u4E0D\u987A\uFF0C\u6BCF\u6708\u5728\u4E8F\u94B1\u3002" }, ok: { bizMult: 1, note: "\u751F\u610F\u4E0A\u4E86\u8F68\u9053\u3002" }, great: { bizMult: 1.8, note: "\u751F\u610F\u706B\u7206\uFF01" } }
   },
@@ -1773,7 +1782,7 @@ var PAY_CAP = 1.3;
 var JUMP_STEP = 15e3;
 var JUMP_MAX = 3;
 var TEXT = { capNote: "\uFF08\u5DF2\u5230\u8FD9\u4E2A\u804C\u4F4D\u7684\u5DE5\u8D44\u4E0A\u9650\uFF09", capBlock: "\u4F60\u5DF2\u7ECF\u5230\u4E86\u8FD9\u4E2A\u804C\u4F4D\u7684\u5DE5\u8D44\u4E0A\u9650\u3002\u60F3\u518D\u6DA8\uFF0C\u5C31\u6362\u4E00\u4E2A\u804C\u4F4D\u6216\u8005\u53BB\u8BFB\u4E66\u3002", jump: "\u8DE8\u7EA7\u8DF3\u69FD", upTo: "\u6700\u9AD8", nat1: "\u63B7\u51FA 1 \u4E00\u5F8B\u5931\u8D25", difficulty: "\u96BE\u5EA6", diffHint: "\u6362\u96BE\u5EA6\u4F1A\u91CD\u65B0\u8F6C\u3002" };
-var CARD_WEIGHTS = [{ until: 24, w: { life: 30, opportunity: 30, impulse: 35, quiet: 5 } }, { until: 35, w: { life: 35, opportunity: 30, impulse: 30, quiet: 5 } }, { until: 49, w: { life: 40, opportunity: 30, impulse: 25, quiet: 5 } }];
+var CARD_WEIGHTS = [{ until: 24, w: { life: 40, opportunity: 25, impulse: 30, quiet: 5 } }, { until: 35, w: { life: 45, opportunity: 25, impulse: 25, quiet: 5 } }, { until: 49, w: { life: 50, opportunity: 25, impulse: 20, quiet: 5 } }];
 var pays = (cost, extra = []) => [{ id: "emergency", label: "\u7528\u5E94\u6025\u91D1\u4ED8", pay: "emergency", cost }, { id: "card", label: "\u5237\u4FE1\u7528\u5361", pay: "card", cost }, { id: "checking", label: "\u7528\u65E5\u5E38\u8D26\u6237\u4ED8", pay: "checking", cost }, ...extra];
 var CARDS = [
   /* ---- life events ---- */
@@ -5889,15 +5898,15 @@ function hud() {
   const m = metrics(s2), av = payday(s2.phase === "plan" ? { ...s2, plan: draft() } : s2).available, H0 = s2.history, nwUp = H0.length > 1 ? H0.at(-1).netWorth >= H0.at(-2).netWorth : null, st = stage(s2), nx = STAGES[st.id + 1], span = FINAL_AGE - s2.startAge, age = s2.phase === "finish" ? 50 : s2.age;
   return `<header class="hud">
     ${logo("mini")}
-    <div class="lifebar" title="\u4ECE ${s2.startAge} \u5C81\u5230 50 \u5C81"><div class="lb-top"><b>${age} \u5C81</b><small>\u7B2C ${Math.min(span, age - s2.startAge + 1)} / ${span} \u5E74</small></div>
-      <div class="lb-track">${Array.from({ length: span }, (_, i) => `<i class="${s2.startAge + i < age ? "done" : s2.startAge + i === age ? "now" : ""}"></i>`).join("")}</div><div class="lb-ends"><small>${s2.startAge}</small><small>50</small></div></div>
-    <div class="hud-stat ask"><small>${T2.enough} ${q("available")}</small><b class="hud-verdict ${av < -0.5 ? "bad" : "ok"}"><i></i>${fmt(av < -0.5 ? T2.shortOf : T2.spare, { m: money2(Math.abs(av)) })}</b></div>
-    <div class="hud-stat"><small>${T2.ifTrouble} ${q("emergency")}</small><b>${fmt(T2.canLast, { n: m.runway.toFixed(1) })}</b></div>
-    <div class="hud-stat"><small>${T2.wealth} ${q("netWorth")}</small><b class="${m.netWorth < 0 ? "neg" : ""}">${money2(m.netWorth)}</b>${nwUp == null ? "" : `<span class="hud-trend ${nwUp ? "up" : "down"}">${nwUp ? icon.up : icon.down}</span>`}</div>
-    <button class="quest" data-go="nav" data-id="goals" title="${h(nx ? nx.enter : "")}">${icon.trophy}<div><b>\u7B2C ${st.id}/6 \u7EA7 \xB7 ${st.name}</b>${bar(st.id / 6)}<small>${nx ? "\u4E0B\u4E00\u7EA7\uFF1A " + h(nx.name) : "\u5DF2\u5230\u9876\uFF01"}</small></div></button>
+    <div class="lifebar" title="\u4ECE ${s2.startAge} \u5C81\u5230 50 \u5C81"><div class="lb-top"><b>${age} \u5C81</b></div>
+      <div class="lb-track">${Array.from({ length: span }, (_, i) => `<i class="${s2.startAge + i < age ? "done" : s2.startAge + i === age ? "now" : ""}"></i>`).join("")}</div></div>
+    <div class="hud-stat ask" title="${h(T2.enough)}">${icon.coin}<b class="hud-verdict ${av < -0.5 ? "bad" : "ok"}"><i></i>${fmt(av < -0.5 ? T2.shortOf : T2.spare, { m: money2(Math.abs(av)) })}</b></div>
+    <div class="hud-stat" title="${h(T2.ifTrouble)}">${icon.shield}<b>${fmt(T2.canLast, { n: m.runway.toFixed(1) })}</b></div>
+    <div class="hud-stat" title="${h(T2.wealth)}">${icon.bank}<b class="${m.netWorth < 0 ? "neg" : ""}">${money2(m.netWorth)}</b>${nwUp == null ? "" : `<span class="hud-trend ${nwUp ? "up" : "down"}">${nwUp ? icon.up : icon.down}</span>`}</div>
+    <button class="quest" data-go="nav" data-id="goals" title="${h(nx ? nx.enter : "")}">${icon.trophy}<div><b>\u7B2C ${st.id}/6 \u7EA7 \xB7 ${st.name}</b>${bar(st.id / 6)}</div></button>
     <span class="snd-btns">${sndBtns()}</span>
-    ${btn("tour", "\u8BB2\u89E3", { cls: "btn ghost small", ico: "help" })}
-    <div class="menu-wrap">${btn("menu", "\u5B58\u6863", { cls: "btn ghost small", ico: "save", attrs: `aria-expanded="${ui.menu}"` })}
+    ${btn("tour", "\u8BB2\u89E3", { cls: "icon-btn hud-ico", ico: "help", attrs: 'title="\u8BB2\u89E3"' })}
+    <div class="menu-wrap">${btn("menu", "\u5B58\u6863", { cls: "icon-btn hud-ico", ico: "save", attrs: `title="\u5B58\u6863" aria-expanded="${ui.menu}"` })}
       ${ui.menu ? `<div class="menu" role="menu">${btn("export", globalThis.__ADULTING_WEB__ ? "\u590D\u5236\u5B58\u6863" : "\u5BFC\u51FA\u5B58\u6863", { cls: "menu-item" })}${btn("import", "\u5BFC\u5165\u5B58\u6863", { cls: "menu-item" })}${btn("new", ui.confirmNew ? "\u518D\u70B9\u4E00\u6B21\uFF1A\u786E\u8BA4\u653E\u5F03\u8FD9\u6BB5\u4EBA\u751F" : "\u91CD\u65B0\u5F00\u59CB\u4E00\u6BB5\u4EBA\u751F", { cls: "menu-item danger" })}<p>\u81EA\u52A8\u4FDD\u5B58\u5728\u8FD9\u4E2A\u6D4F\u89C8\u5668\u91CC\u3002</p></div>` : ""}</div>
   </header>`;
 }
@@ -6035,7 +6044,10 @@ function cardPage() {
   }
   const tp = TYPE[c.type], judged = c.roll == null || c.judged;
   const opts = judged ? cardOptions(s2) : [];
-  frame("card", `<section class="card-stage"><div class="ty-card t-${c.type} flip-in"><header>${icon[tp.ico]}<span>${tp.name}</span></header>${cardArt(c.id, c.type)}<h2>${h(c.title)}</h2><p>${h(c.text)}</p>${c.month ? `<small>${c.month} \u6708\u53D1\u751F</small>` : ""}</div>
+  frame("card", `<section class="card-stage"><div class="ty-card t-${c.type} flip-in"><header>${icon[tp.ico]}<span>${tp.name}</span></header>${cardArt(c.id, c.type)}<h2>${h(c.title)}</h2><p>${h(c.text)}</p><div class="card-chips">${(() => {
+    const a = (c.text.match(/\$[\d,]+/) || [])[0];
+    return a ? `<span class="amt-chip t-${c.type}">${icon.coin}${c.type === "opportunity" ? "+" : "\u2212"}${a}</span>` : "";
+  })()}${c.month ? `<span class="mo-chip">${icon.clock}${c.month} \u6708</span>` : ""}</div></div>
     <div class="card-side">
       ${c.roll != null ? judged ? `<div class="panel">${diceBox(c.roll, c.mod, c.bonus, c.throwLabel, c.stat)}</div>` : `<div class="panel judge"><h3>${icon.dice}\u5224\u5B9A\uFF1A${h(c.throwLabel)} ${q("dice")}</h3><p>\u5148\u73A9 12 \u79D2\u5C0F\u6E38\u620F\u62FF\u52A0\u503C\uFF08\u6700\u591A +2\uFF09\uFF0C\u518D\u63B7\u9AB0\u5B50\u3002\u4F60\u73B0\u5728\u7684${STAT[c.stat]}\uFF1A${c.mod}\u3002</p>
           ${diceStrip(null)}<div class="row">${btn("card-game", c.game === "dodge" ? "\u5148\u73A9\u201C\u5FCD\u4F4F\u8BF1\u60D1\u201D" : "\u5148\u73A9\u201C\u6293\u4F4F\u673A\u4F1A\u201D", { cls: "btn blue", ico: "star", attrs: reduced ? "disabled" : "data-autofocus" })}${btn("card-roll", "\u76F4\u63A5\u63B7\u9AB0\u5B50", { cls: "btn ghost", ico: "dice" })}</div></div>` : ""}

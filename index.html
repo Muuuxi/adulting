@@ -1446,6 +1446,18 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 @media (max-width: 720px) { .cg-arena canvas { height: 300px; } }
 /* Round 25: a tour step that waits for the player */
 .tb-wait { color: #b05a00; font-weight: 800; font-size: .85rem; }
+
+/* ---- Round 26: student-loan choice, dice strip, folding ID card ---- */
+.living-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 6px 8px; border-radius: 12px; }
+.living-pick.need { background: #fff4d6; outline: 2px dashed #e0a800; }
+.living-pick .lp-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.dstrip { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 2px solid var(--ink); border-radius: 10px; margin: 8px 0 4px; font-weight: 900; font-size: .8rem; text-align: center; }
+.dstrip span { padding: 3px 2px; color: #fff; display: flex; flex-direction: column; line-height: 1.15; } .dstrip span small { font-weight: 700; font-size: .66rem; }
+.dstrip .ds-f { background: #d64545; border-radius: 8px 0 0 8px; } .dstrip .ds-o { background: #3d7be0; } .dstrip .ds-g { background: #23955a; border-radius: 0 8px 8px 0; }
+.dstrip i { position: absolute; top: -7px; bottom: -7px; width: 5px; margin-left: -2.5px; background: var(--ink); border-radius: 3px; box-shadow: 0 0 0 2px #fff; }
+.idcard > summary { list-style: none; cursor: default; } .idcard > summary::-webkit-details-marker { display: none; }
+@media (max-width: 1000px) { .idcard > summary { cursor: pointer; } .idcard > summary::after { content: '▾'; margin-left: auto; font-weight: 900; font-size: 1.1rem; } .idcard[open] > summary::after { content: '▴'; } }
+@media (min-width: 761px) { .path-pick { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; } .path-opt { padding: 7px 7px; } }
 </style>
 </head>
 <body>
@@ -1593,7 +1605,8 @@ var PATHS = [
   { id: "both", share: "About 18 of 100", title: "Study and work", text: "Two years of community college ($4,000/yr tuition) with a part-time job. You get half of a Pell Grant; student loans cover the rest.", icon: "cap" },
   { id: "study", share: "About 41 of 100", title: "Study full-time", text: "Four years at a state university ($11,000/yr tuition) with only a campus job. Pell Grants and student loans pay for tuition and living costs; afterwards you can apply for jobs that need a bachelor\u2019s degree.", icon: "cap" },
   { id: "cert", share: "No separate figure", title: "Trade certificate", text: "One year of trade school ($4,150 tuition) with a part-time job, then a skilled job. No degree, but career skill +1.", icon: "cap" },
-  { id: "military", share: "At most 4 of 100", title: "Enlist", text: "A 4-year contract you can\u2019t quit early. Barracks and meals are covered. Pay starts near $29,000 and reaches about $38,000. Service can mean danger and long periods away. Afterward, the GI Bill pays for school.", icon: "shield" }
+  { id: "military", share: "At most 4 of 100", title: "Enlist", text: "A 4-year contract you can\u2019t quit early. Barracks and meals are covered. Pay starts near $29,000 and reaches about $38,000. Service can mean danger and long periods away. Afterward, the GI Bill pays for school.", icon: "shield" },
+  { id: "home", share: "About 17 of 100", title: "Live at home for now", text: "Not in school or working yet. You live with family and chip in about $100 a month; family adds $300 a month for the first year. Look for work under \u201CBig decision\u201D. After a whole year with no income you take the first job you can get. At 28 you move out.", icon: "house" }
 ];
 var SCHOOL = {
   both: { years: 2, tuition: 4e3, pellShare: 0.5, edu: 1, career: 1 },
@@ -1604,7 +1617,7 @@ var SERVICE_PAY = [28900, 32400, 34900, 37700];
 var GI_HOUSING = 1500;
 var BIZ_FAIL = [0.2, 0.125, 0.1, 0.09, 0.08, 0.07, 0.07, 0.07, 0.07, 0.07, 0.04];
 var BIZ_BILLS = { truck: 6e3, studio: 3e3, shop: 1e3, own: 500 };
-var BIZ_SOLD_PROFIT = 2e3;
+var BIZ_SOLD_PROFIT = 4500;
 var BIZ_SALE_MONTHS = 12;
 var AID = { pellMax: 7395, loanCapYear: 12500, pellSavingsLimit: 1e4 };
 var EDU = ["High school", "Associate (community college)", "Bachelor\u2019s"];
@@ -1701,13 +1714,15 @@ var DECISIONS = [
     icon: "star",
     text: "Run a business full-time. In the US about 1 in 5 new businesses close in year one and about half by year five. Starting from a side hustle that already earns gives better odds.",
     eligible: (s4) => !s4.service && !s4.business && !s4.school && s4.age >= 18,
-    choices: [{ id: "own", label: "Go full-time with your side hustle (startup cost $1,000, needs $300+/mo side income)", cost: 1e3, base: 1400, needSide: 300 }, { id: "truck", label: "Food truck (startup cost $8,000)", cost: 8e3, base: 1600 }, { id: "shop", label: "Online shop (startup cost $3,000)", cost: 3e3, base: 900 }, { id: "studio", label: "Design studio ($5,000, needs career skill \u2265 1)", cost: 5e3, base: 2600, needCareer: 1 }],
+    choices: [{ id: "own", label: "Go full-time with your side hustle (startup cost $1,000, needs $300+/mo side income)", cost: 1e3, base: 2e3, needSide: 300 }, { id: "truck", label: "Food truck (startup cost $8,000)", cost: 8e3, base: 3e3 }, { id: "shop", label: "Online shop (startup cost $3,000)", cost: 3e3, base: 1800 }, { id: "studio", label: "Design studio ($5,000, needs career skill \u2265 1)", cost: 5e3, base: 3600, needCareer: 1 }],
     throw: { stat: "career", label: "Launch", game: "catch" },
     outcomes: { fail: { bizMult: -0.3, note: "Rough launch: losing money every month." }, ok: { bizMult: 1, note: "The business is on track." }, great: { bizMult: 1.8, note: "Business is booming!" } }
   },
   { id: "closebiz", title: "Close the business, get a job", icon: "briefcase", text: "Wind down the business. In about 2 months you land an entry-level job (up to $45,000/yr), and your pay can recover from there.", eligible: (s4) => !!s4.business },
-  { id: "cheaper", title: "Move somewhere cheaper", icon: "house", text: "Get a roommate: rent drops $200 a month.", eligible: (s4) => !s4.service && !s4.home && s4.essentials.housing >= 650, choices: MOVE_CHOICES({}) },
-  { id: "nicer", title: "Move somewhere nicer", icon: "house", text: "Rent goes up $400 a month. More space, closer to work.", eligible: (s4) => !s4.service && !s4.home, choices: MOVE_CHOICES({}) },
+  { id: "moveout", title: "Move out on your own", icon: "house", text: "Rent your own place: you pay full rent instead of chipping in at home, and food costs more. More freedom, less left over. Needs an income.", eligible: (s4) => !!s4.atHome && !s4.service && (s4.job.employed || !!s4.business), choices: MOVE_CHOICES({}) },
+  { id: "movehome", title: "Move back in with family", icon: "house", text: "Chip in about $100 a month instead of rent, and spend less on food. Less privacy, more left over.", eligible: (s4) => !s4.atHome && !s4.service && !s4.home && !s4.spouse && s4.age <= 26, choices: MOVE_CHOICES({}) },
+  { id: "cheaper", title: "Move somewhere cheaper", icon: "house", text: "Get a roommate: rent drops $200 a month.", eligible: (s4) => !s4.service && !s4.home && !s4.atHome && s4.essentials.housing >= 650, choices: MOVE_CHOICES({}) },
+  { id: "nicer", title: "Move somewhere nicer", icon: "house", text: "Rent goes up $400 a month. More space, closer to work.", eligible: (s4) => !s4.service && !s4.home && !s4.atHome, choices: MOVE_CHOICES({}) },
   {
     id: "buycar",
     title: "Buy a car",
@@ -1738,7 +1753,7 @@ var SEVERITY = { easy: 0.75, normal: 1, hard: 1.5 };
 var PAY_CAP = 1.3;
 var JUMP_STEP = 15e3;
 var JUMP_MAX = 3;
-var TEXT = { capNote: " (top of this job\u2019s pay range)", capBlock: "You\u2019re at the top of this job\u2019s pay range. To earn more, change jobs or get more education.", jump: "Big jump", upTo: "up to", nat1: "a roll of 1 always fails", difficulty: "Difficulty", diffHint: "Changing the difficulty respins the reels." };
+var TEXT = { capNote: " (top of this job\u2019s pay range)", capBlock: "You\u2019re at the top of this job\u2019s pay range. To earn more, change jobs or get more education.", jump: "Big jump", upTo: "up to", nat1: "A roll of 1 always fails.", difficulty: "Difficulty", diffHint: "Changing the difficulty respins the reels." };
 var CARD_WEIGHTS = [{ until: 24, w: { life: 30, opportunity: 30, impulse: 35, quiet: 5 } }, { until: 35, w: { life: 35, opportunity: 30, impulse: 30, quiet: 5 } }, { until: 49, w: { life: 40, opportunity: 30, impulse: 25, quiet: 5 } }];
 var pays = (cost, extra = []) => [{ id: "emergency", label: "Pay from emergency fund", pay: "emergency", cost }, { id: "card", label: "Put it on the credit card", pay: "card", cost }, { id: "checking", label: "Pay from checking", pay: "checking", cost }, ...extra];
 var CARDS = [
@@ -1779,7 +1794,7 @@ var CARDS = [
     outcomes: { fail: { salaryPct: -0.06, note: "Your pay was cut 6%." }, ok: { note: "You kept your pay." }, great: { note: "You kept your pay and were asked to train new hires.", status: "inspired" } },
     options: [{ id: "accept", label: "Face it", throwOutcome: true }]
   },
-  { id: "rent-up", type: "life", title: "Rent increase", text: "At renewal, your landlord raised the rent $150 a month.", month: 8, when: (s4) => !s4.service && !s4.home && !s4.status.some((x) => x.id === "couch"), options: [{ id: "accept", label: "Accept the increase", recurring: { essentials: { housing: 150 } } }, { id: "move", label: "Move out yourself ($300, may hurt your back)", pay: "checking", cost: 300, risk: "backache" }] },
+  { id: "rent-up", type: "life", title: "Rent increase", text: "At renewal, your landlord raised the rent $150 a month.", month: 8, when: (s4) => !s4.service && !s4.home && !s4.atHome && !s4.status.some((x) => x.id === "couch"), options: [{ id: "accept", label: "Accept the increase", recurring: { essentials: { housing: 150 } } }, { id: "move", label: "Move out yourself ($300, may hurt your back)", pay: "checking", cost: 300, risk: "backache" }] },
   { id: "family-help", type: "life", title: "Family needs help", text: "Someone in your family is sick and needs $1,500.", month: 9, options: pays(1500, [{ id: "decline", label: "I can\u2019t help this time", decline: true, status: "stressed" }]) },
   {
     id: "parent-care",
@@ -2104,6 +2119,7 @@ var removeStatus = (s4, id) => {
   s4.status = s4.status.filter((x) => x.id !== id);
 };
 function startEssentials(gross, path, col) {
+  if (path === "home") return { housing: 100, food: 100, transport: 60, insurance: 0, other: Math.round(40 * col.other) };
   if (path === "military") return { housing: 0, food: 200, transport: 150, insurance: 40, other: Math.round(200 * col.other) };
   if (path === "study") return { housing: Math.round(650 * col.housing), food: 300, transport: 60, insurance: 100, other: Math.round(120 * col.other) };
   const housing = Math.round(Math.min(1100, Math.max(550, gross / 12 * 0.3)) / 10) * 10;
@@ -2156,10 +2172,10 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
     flags: { ...fx.flags || {} },
     credit: reels.age === 18 ? 0 : 660,
     essentials: null,
-    fun: (path === "military" ? 350 : path === "study" ? 80 : reels.salary >= 4e4 ? 200 : 120) + (fx.fun || 0),
+    fun: (path === "military" ? 350 : path === "study" ? 80 : path === "home" ? 60 : reels.salary >= 4e4 ? 200 : 120) + (fx.fun || 0),
     accounts: { checking: 0, emergency: 0, goal: 0, k401: 0, roth: 0, brokerage: 0 },
     debts: [],
-    plan: { k401Pct: 0, emergency: 0, goal: 0, roth: 0, brokerage: 0, extra: {}, lockLifestyle: false, livingLoan: true },
+    plan: { k401Pct: 0, emergency: 0, goal: 0, roth: 0, brokerage: 0, extra: {}, lockLifestyle: false, livingLoan: null },
     history: [],
     records: [],
     ledger: [],
@@ -2190,6 +2206,10 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
     s4.school = { kind: "study", yearsLeft: bs.id === "two-years-college" ? 2 : SCHOOL.study.years, tuition: SCHOOL.study.tuition };
     s4.job = { employed: true, id: "campus", title: "Campus job", salary: ASSUME.campusJob, part: true, has401k: false, match: null, unemployedLeft: 0 };
   }
+  if (path === "home") {
+    s4.atHome = true;
+    s4.support = { monthly: Math.max(300, s4.support?.monthly || 0), untilAge: Math.max(s4.age + 1, s4.support?.untilAge || 0), label: "Family helps while you look" };
+  }
   s4.essentials = startEssentials(s4.job.salary || 27e3, path, col);
   for (const [k2, v] of Object.entries(fx.essentials || {})) s4.essentials[k2] += v;
   if (fx.spouse) s4.spouse = { salary: fx.spouse.salary }, s4.partner = true;
@@ -2212,6 +2232,7 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
   s4.debtAtStart = r22(consumerDebtOf(s4) + sum(s4.debts.filter((d) => d.kind === "auto").map((d) => d.balance)));
   s4.records.push({ age: s4.age, kind: "start", text: `${region.name} \xB7 ${bs.title}` + (s4.school ? s4.school.kind === "study" ? " \xB7 full-time university" : " \xB7 community college while working" : ` \xB7 ${s4.job.title}`), big: true });
   if (path === "cert" || path === "military") s4.records.at(-1).text = `${region.name} \xB7 ${bs.title} \xB7 ${path === "cert" ? "trade school with a part-time job" : "enlisted in the military"}`;
+  if (path === "home") s4.records.at(-1).text = `${region.name} \xB7 ${bs.title} \xB7 living with family, looking for work`;
   s4.learn = freshLearn();
   pickLesson(s4);
   return s4;
@@ -2263,7 +2284,7 @@ function payday(s4, plan = s4.plan) {
   const ess = essentialsMonthly(s4), mins = sum(minimums(s4).map((x) => x.due));
   const before = net + support + side + biz + grantCash - ess - s4.fun - mins;
   const livingRoom = s4.school ? Math.max(0, AID.loanCapYear / 12 - tuitionLoan) : 0;
-  const livingLoan = s4.school && plan.livingLoan !== false ? Math.min(livingRoom, Math.max(0, -before)) : 0;
+  const livingLoan = s4.school && plan.livingLoan === true ? Math.min(livingRoom, Math.max(0, -before)) : 0;
   const available = before + livingLoan;
   const planned2 = plan.emergency + plan.goal + plan.roth + plan.brokerage + sum(Object.values(plan.extra || {}));
   const R2 = (x) => r22(x);
@@ -2338,7 +2359,7 @@ function profile(s4) {
     job: s4.business ? `${s4.business.label} owner` : s4.school ? s4.job.employed ? s4.job.title : "Student" : s4.job.employed ? s4.job.title : "Unemployed",
     salary: s4.business ? s4.business.profit * 12 : s4.job.employed ? s4.job.salary : 0,
     love: s4.spouse ? "Married" : s4.partner ? "Dating" : "Single",
-    home: s4.service ? "Barracks" : s4.home ? "Own home" : s4.status.some((x) => x.id === "couch") ? "Couch-surfing" : "Renting",
+    home: s4.service ? "Barracks" : s4.home ? "Own home" : s4.status.some((x) => x.id === "couch") ? "Couch-surfing" : s4.atHome ? "With family" : "Renting",
     career: modFor(s4, "career"),
     careerBase: s4.stats.career,
     discipline: modFor(s4, "discipline"),
@@ -2352,7 +2373,7 @@ function setPlan(s4, plan) {
   const p = {
     repeated: !!plan.repeated,
     lockLifestyle: !!plan.lockLifestyle,
-    livingLoan: plan.livingLoan !== false,
+    livingLoan: plan.livingLoan == null ? null : !!plan.livingLoan,
     k401Pct: clamp(+plan.k401Pct || 0, 0, 0.5),
     emergency: nn(plan.emergency),
     goal: nn(plan.goal),
@@ -2743,6 +2764,22 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0, bizPla
       n.flags.bizFailedAt = null;
       const back = jobsFor(n).filter((j) => !j.blocked && j.salary <= 45e3).sort((a, b) => b.salary - a.salary)[0] || JOBS[0];
       n.pending.push({ month: 2, kind: "hire", job: back.id, salary: back.salary, part: false, label: back.title });
+      break;
+    }
+    case "moveout": {
+      const rent = Math.round(Math.round(Math.min(1100, Math.max(550, (n.job.salary || 27e3) / 12 * 0.3)) / 10) * 10 * col.housing);
+      n.atHome = false;
+      n.pending.push({ month: 2, kind: "housingSet", key: "housing", delta: rent, label: "Move out" }, { month: 2, kind: "essentials", key: "food", delta: 250, label: "Move out" });
+      applyFx(n, { risk: ch.risk }, 1);
+      break;
+    }
+    case "movehome": {
+      n.atHome = true;
+      const food = Math.min(250, Math.max(0, n.essentials.food - 150));
+      n.pending.push({ month: 2, kind: "housingSet", key: "housing", delta: 100, label: "Move back home" });
+      if (food) n.pending.push({ month: 2, kind: "essentials", key: "food", delta: -food, label: "Move back home" });
+      removeStatus(n, "couch");
+      applyFx(n, { risk: ch.risk }, 1);
       break;
     }
     case "cheaper":
@@ -3489,6 +3526,13 @@ function nextYear(s4) {
     n.records.push({ age: n.age, kind: "note", text: `A whole year with no income, so you took a job as ${n.job.title} (salary ${money(n.job.salary)}).` });
   }
   if (n.flags.bizFailedAt != null && n.flags.bizFailedAt <= n.age) n.flags.bizFailedAt = null;
+  if (n.atHome && n.age + 1 >= 28) {
+    const rent = Math.round(Math.round(Math.min(1100, Math.max(550, (n.job.salary || 27e3) / 12 * 0.3)) / 10) * 10 * STATES[n.region].costOfLiving.housing);
+    n.atHome = false;
+    n.essentials.housing = rent;
+    n.essentials.food += 250;
+    n.records.push({ age: n.age + 1, kind: "note", text: `At 28 you moved out of your family\u2019s home: rent ${money(rent)} a month.` });
+  }
   if (n.service) {
     n.service.yearsLeft--;
     if (n.service.yearsLeft <= 0) leaveService(n);
@@ -4295,26 +4339,39 @@ var TUTS = [
     [".phase-steps", "Each year has 5 steps", "Every year runs in order: Payday \u2192 Big decision \u2192 Life card \u2192 Live the year \u2192 Year-end review. You\u2019re on step 1: Payday.", "map", "gold"],
     [".pd-flow", "This month\u2019s money", (v) => `Pay before tax is ${v.gross}. After tax, essentials, fun money and minimum payments, ${v.avail} a month is yours to split.`, "coin", "green"],
     [".alloc", "Now you split it", (v) => v.availN > 0 ? `Use + and \u2212 to put that ${v.avail} into the accounts below. Try one now. Anything you don\u2019t assign stays in checking.` : "Nothing is left to split this month. See which line above is biggest; when there\u2019s extra later, split it here.", "star", "gold", { wait: (d, v) => v.availN <= 0 || planned(d), hint: "Tap a + button to continue." }],
-    ['[data-go="living"]', "Student loans for living costs", "Checked: when living costs run short, you borrow a student loan (paid back later, with interest). Unchecked: savings cover it first, then the credit card. It starts checked; it\u2019s your call.", "cap", "blue", { need: (s4) => !!s4.school }],
+    [".living-pick", "If living costs run short", "Borrow a student loan (repaid after school, with interest), or use savings first and then the credit card. Each has a cost. Pick one to go on.", "cap", "blue", { need: (s4) => !!s4.school, wait: (d) => d.livingLoan != null, hint: "Pick one of the two buttons." }],
     [".ty-stepper.pct", "401(k) retirement", "A percent of your pay goes in before tax. It\u2019s usually locked until 59\xBD. If your job has a match, your employer adds some too.", "bank", "blue", { need: (s4) => s4.job.has401k && s4.job.employed }],
-    ['[data-go="plan-confirm"]', "Confirm", "Your split then runs all 12 months. Next year you can keep it or change it.", "check", "green"]
+    ['[data-go="plan-confirm"]', "Confirm", "Your split runs all 12 months. Next is step 2: one big decision.", "check", "green"]
   ] },
   { id: "debt", page: "payday", name: "Debt", need: (s4) => s4.debts.some((d) => d.balance > 5e-3 && !d.closed && d.kind !== "arrears"), steps: [
     [".alloc-debt", "Debt costs money", "Each debt row charges interest. A flame means high interest: it grows fastest.", "flame", "red"],
     [".ladder-steps", "One common order", "A common order people use for extra money. It\u2019s one approach, not the only right one.", "flag", "gold"]
   ] },
   { id: "decision", page: "decision", name: "Big decision", steps: [
-    [".dec-grid", "One big choice a year", "Pick one card. A die badge means you roll for it.", "dice", "blue"],
-    [".phase-steps", "Five steps a year", "Payday, decision, life card, live the year, review.", "map", "gold"]
+    [".phase-steps", "Step 2 of 5: one big decision", "One choice a year: a job, school, moving, dating, a business, or keeping things as they are.", "map", "gold"],
+    [".dec-grid", "Read the tags", "A coin tag is what it costs this year. A die tag means you roll for it; the number is what you add to the die.", "dice", "blue"],
+    [".dec-grid", "No single right answer", "Each choice trades something: money now, money later, time or risk. Tap a card to read more and choose.", "star", "green"]
   ] },
-  { id: "card", page: "card", name: "Life cards", steps: [
-    [".deck-zone", "A surprise each year", "The bars show the odds of each kind of card.", "star", "gold"],
+  { id: "card", page: "card", name: "Life cards", need: (s4) => !s4.card, steps: [
+    [".phase-steps", "Step 3 of 5: a life card", "Something happens every year, good or bad. You don\u2019t pick the card, only how you respond.", "map", "gold"],
+    [".odds", "The odds", "Each bar is the chance of that kind of card this year.", "star", "gold"],
     ['[data-go="draw"]', "Draw", "Press Draw to flip this year\u2019s card.", "arrow", "green"]
   ] },
+  { id: "cardopts", page: "card", name: "Responding to a card", need: (s4) => !!s4.card && (s4.card.roll == null || !!s4.card.judged), steps: [
+    [".opts", "How do you respond?", "Each option shows what it costs and what it changes. Cheaper now can cost more later.", "star", "gold"]
+  ] },
+  { id: "live", page: "live", name: "Live the year", need: (s4) => s4.phase === "live", steps: [
+    [".phase-steps", "Step 4 of 5: live the year", "The game runs 12 months on your plan, with this year\u2019s decision and card.", "map", "gold"],
+    [".recap", "This year\u2019s changes", "Your decision and card for this year are listed here.", "plan", "blue"],
+    ['[data-go="live"]', "Start", "Press \u201CStart the year\u201D to watch the 12 months one by one.", "arrow", "green"]
+  ] },
   { id: "review", page: "review", name: "Year-end review", steps: [
-    [".ty-months", "12 months at a glance", "Each bar is everything you had saved that month. Red means trouble.", "plan", "blue"],
-    [".rv-where", "In versus out", "Top bar came in, bottom bar went out.", "chart", "green"],
-    [".rv-change", "Better or worse?", "Green arrows mean things improved.", "trophy", "gold"]
+    [".phase-steps", "Step 5 of 5: year-end review", (v) => `How did the year go? After this, age ${v.age + 1} starts again at payday.`, "map", "gold"],
+    [".ty-months", "12 months at a glance", "Each box is everything you had saved at month-end, not your income. Red marks a month with trouble, such as a missed bill.", "plan", "blue"],
+    [".rv-tax", "Taxes settle up", "Tax taken from each paycheck is checked against the whole year: you get a refund or owe the rest.", "receipt", "green"],
+    [".rv-where", "In versus out", "Top bar: money that came in. Bottom bar: money that went out.", "chart", "green"],
+    [".rv-change", "Better or worse?", "Green arrows mean things improved this year.", "trophy", "gold"],
+    ['[data-go="next-year"]', "Next year", "Every year has the same 5 steps. Guides for new parts appear when you reach them.", "arrow", "green"]
   ] },
   { id: "accounts", page: "accounts", name: "Accounts", steps: [
     [".sheet", "Own versus owe", "What you own minus what you owe is your wealth.", "bank", "blue"],
@@ -4387,7 +4444,7 @@ var T2 = {
   creep: "Don\u2019t raise fun money when I get a raise",
   useLoans: "Use student loans for living costs",
   unassigned: "Unassigned, stays in checking",
-  pathNote: "Rough estimate for new US high school grads, fall 2024 (BLS, military data). Certificates are counted with community college. About 17 of 100 start out neither working nor in school; that isn\u2019t a path here yet.",
+  pathNote: "Rough estimate for new US high school grads, fall 2024 (BLS, military data). Certificates are counted with community college. About 17 of 100 start out neither working nor in school: that\u2019s \u201CLive at home for now\u201D.",
   stillOpen: "New businesses still open",
   yearN: "Yr {n}",
   legendPay: "Pay now",
@@ -4439,7 +4496,7 @@ var T2 = {
   ageDone: "Age {age}: the year is done",
   marketNote: "market {r} this year, after inflation",
   boxMeans: "Each box: total saved at month-end (not income).",
-  redMeans: "Red: a cost that month.",
+  redMeans: "Red: a month with trouble, such as a missed bill.",
   cashIn: "Cash in checking: {m}",
   refundIn: "Refund, paid into checking",
   taxDue: "Tax due, taken from checking",
@@ -4483,6 +4540,11 @@ var T2 = {
   ledgerN: "Monthly ledger ({n} entries)",
   turn50: "Turn 50: life review",
   onToAge: "On to age {age}",
+  livingQ: "If living costs run short:",
+  livingYes: "Borrow a student loan",
+  livingNo: "Savings, then the card",
+  livingFirst: "Choose what happens if living costs run short.",
+  idMore: "Show or hide details",
   locked: "Locked",
   skipGuide: "Skip",
   next: "Next",
@@ -4748,6 +4810,7 @@ var SCENES = {
   stocktip: () => R(80, 26, 120, 84, "#fff", 6) + P("M92 96l28-24 22 10 46-42", "none", 'stroke="#2fae6b" stroke-width="5"') + C(236, 58, 26, "#fff7e0") + T(236, 70, "?", 34, "#e04848"),
   inherit: () => R(96, 40, 100, 64, "#fff7e0", 4) + P("M96 44l50 34 50-34", "none") + C(146, 80, 10, "#e04848") + coin(222, 46) + coin(242, 70) + coin(214, 88),
   garage: () => R(80, 64, 60, 44, "#d9a46b", 3) + R(150, 50, 70, 58, "#d9a46b", 3) + R(110, 40, 22, 26, "#7fd0fb", 4) + P("M226 40l30 0 6 14-6 14h-30z", "#ffc531") + T(242, 60, "$", 16),
+  sellconsole: () => P("M70 60c0-14 10-22 22-22h68c12 0 22 8 22 22l6 30c2 14-14 22-24 12l-12-12h-52l-12 12c-10 10-26 2-24-12z", "#4b5d8c") + P("M94 58v20M84 68h20", "none", 'stroke="#fff" stroke-width="5"') + C(158, 62, 6, "#e04848") + C(172, 74, 6, "#2fae6b") + P("M206 30h44l14 16-14 16h-44z", "#ffc531") + C(214, 46, 4, "#fff") + T(236, 53, "$", 20) + coin(252, 92, 14) + coin(228, 98, 12),
   console: () => P("M94 60c0-14 10-22 22-22h68c12 0 22 8 22 22l6 30c2 14-14 22-24 12l-12-12h-52l-12 12c-10 10-26 2-24-12z", "#4b5d8c") + P("M118 58v20M108 68h20", "none", 'stroke="#fff" stroke-width="5"') + C(182, 62, 6, "#e04848") + C(196, 74, 6, "#2fae6b"),
   cat: () => P("M110 108c0-30 16-46 40-46s40 16 40 46z", "#ff8a5c") + C(150, 52, 26, "#ff8a5c") + P("M128 36l-4-22 18 12M172 36l4-22-18 12", "#ff8a5c") + C(141, 50, 3, K) + C(159, 50, 3, K) + P("M146 60l4 3 4-3") + heart(214, 30, 0.55),
   subs: () => [[86, "#e04848"], [136, "#2fae6b"], [186, "#7a6ff0"]].map(([x, f]) => R(x, 36, 42, 42, f, 10)).join("") + P("M100 46l16 11-16 11z", "#fff") + T(157, 66, "\u266A", 26, "#fff") + P("M196 58h22M207 47v22", "none", 'stroke="#fff" stroke-width="5"') + R(110, 88, 80, 16, "#fff7e0", 6),
@@ -4800,7 +4863,7 @@ var CARD_SCENE = {
   "stock-tip": "stocktip",
   inherit: "inherit",
   garage: "garage",
-  "sell-console": "console",
+  "sell-console": "sellconsole",
   "biz-boom": "storeUp",
   mentor: "mentor",
   pet: "cat",
@@ -5761,7 +5824,7 @@ function winHtml(reached = 0) {
 }
 function pathScreen() {
   const r = reelsObj(), need = needsPath(r), p = previewStart(), pay = payday(p);
-  const TAG = { cert: "Trade school + part-time job \xB7 1 yr", military: "4-year contract \xB7 barracks and meals", work: "Start earning now", both: "Community college + part-time job \xB7 2 yrs", study: "State university \xB7 4 yrs" };
+  const TAG = { home: "With family \xB7 no paycheck yet", cert: "Trade school + part-time job \xB7 1 yr", military: "4-year contract \xB7 barracks and meals", work: "Start earning now", both: "Community college + part-time job \xB7 2 yrs", study: "State university \xB7 4 yrs" };
   const pathCard = (x) => {
     const qq = previewStart(x.id), sc2 = SCHOOL[x.id], lvl = sc2 ? sc2.edu : 0;
     const aid = payday(qq).aid, fee = sc2 ? Math.round(sc2.years * 12 * (aid.tuitionLoan + aid.livingLoan)) : 0;
@@ -5800,11 +5863,11 @@ function hud() {
 function idCard() {
   const p = profile(s2), pip = (v, base) => `<span class="pips">${[0, 1, 2, 3].map((i) => `<i class="${i < Math.min(3, Math.max(0, base)) ? "on" : ""}"></i>`).join("")}</span>${v !== base ? `<em class="${v > base ? "pos" : "neg"}">${v > base ? "+" : ""}${v - base}</em>` : ""}`;
   const credit = p.credit ? `${p.credit}<small> \xB7 ${p.credit >= 740 ? "excellent" : p.credit >= 670 ? "good" : p.credit >= 580 ? "fair" : "poor"}</small>` : "<small>no history yet</small>";
-  return `<section class="idcard"><div class="id-top">${avatar(look(), { cls: "mid", label: false })}<div><b>${h(s2.name || "You")}</b><small>Age ${s2.phase === "finish" ? 50 : s2.age} \xB7 ${STATES[s2.region].name}</small></div></div>
-    <dl><dt>Education</dt><dd>${h(p.edu)}${s2.school ? ` (in school, ${s2.school.yearsLeft} yrs left)` : ""}</dd><dt>Job</dt><dd>${h(p.job)}${p.salary ? `<small> ${money2(p.salary)}/yr</small>` : ""}</dd>
+  return `<details class="idcard" ${innerWidth > 1e3 || ui.idOpen ? "open" : ""}><summary class="id-top" data-go="idcard" title="${h(T2.idMore)}">${avatar(look(), { cls: "mid", label: false })}<div><b>${h(s2.name || "You")}</b><small>Age ${s2.phase === "finish" ? 50 : s2.age} \xB7 ${STATES[s2.region].name}</small></div></summary>
+    <dl><dt>Education</dt><dd>${s2.school ? `${{ study: "At university", both: "At community college", cert: "At trade school" }[s2.school.kind] || h(p.edu)}, ${s2.school.yearsLeft} yr${s2.school.yearsLeft > 1 ? "s" : ""} left` : h(p.edu)}</dd><dt>Job</dt><dd>${h(p.job)}${p.salary ? `<small> ${money2(p.salary)}/yr</small>` : ""}</dd>
       <dt>Relationship</dt><dd>${p.love}</dd><dt>Home</dt><dd>${p.home}${s2.car ? " \xB7 has a car" : ""}</dd>
       <dt>Career skill ${q("career")}</dt><dd>${pip(p.career, p.careerBase)}</dd><dt>Self-control ${q("discipline")}</dt><dd>${pip(p.discipline, p.disciplineBase)}</dd><dt>${TEXT.difficulty} ${q("difficulty")}</dt><dd>${h(DIFFICULTY[s2.difficulty || "normal"].name)}</dd><dt>Credit score ${q("credit")}</dt><dd>${credit}</dd></dl>
-    ${p.status.length ? `<div class="statuses">${p.status.map((x) => `<span class="st-chip ${x.tone}" title="${h(x.why)}">${h(x.label)} ${x.delta > 0 ? "+" : ""}${x.delta}</span>`).join("")}${q("status")}</div>` : ""}</section>`;
+    ${p.status.length ? `<div class="statuses">${p.status.map((x) => `<span class="st-chip ${x.tone}" title="${h(x.why)}">${h(x.label)} ${x.delta > 0 ? "+" : ""}${x.delta}</span>`).join("")}${q("status")}</div>` : ""}</details>`;
 }
 function frame(active, body2) {
   const items = [["overview", "Overview", "pin"], ["payday", "Payday", "coin"], ["accounts", "Accounts", "bank"], ["goals", "How to win", "trophy"], ["journal", "Journal", "book"]];
@@ -5837,6 +5900,7 @@ function paydayPage() {
   const editable = s2.phase === "plan", p = editable ? draft() : s2.plan, pay = payday({ ...s2, plan: p }), m = metrics(s2);
   const sv = (key, label, disabled) => p.byPct ? pstepper(key, p, label, disabled) : stepper(key, p[key], label, disabled);
   const pv = previewYear(s2, p), pm = metrics(pv.state), sm = pv.summary, a = pay.aid;
+  const needLiving = editable && !!s2.school && p.livingLoan == null && payday({ ...s2, plan: { ...p, livingLoan: true } }).aid.livingLoan > 0;
   const line = (label, v, key, cls = "") => `<div class="fl ${cls}"><span>${label} ${key ? q(key) : ""}</span><b>${v}</b></div>`;
   const gross = pay.gross + pay.spouseGross, taxes = pay.tax.federal + pay.tax.state + pay.tax.socialSecurity + pay.tax.medicare;
   const extras = (pay.support || 0) + (pay.side || 0) + Math.max(0, pay.biz || 0) + (a.grantCash || 0) + (a.livingLoan || 0);
@@ -5880,10 +5944,10 @@ function paydayPage() {
     </tbody></table>
     ${hidden.length ? `<p class="hint alloc-later">${icon.lock}<span title="${h(fmt(T2.laterAccts, { list: hidden.join(", ") }))}">+${hidden.length}</span></p>` : ""}
     <div class="toggles">${yr >= 2 || p.lockLifestyle ? `<label><input type="checkbox" data-go="creep" ${p.lockLifestyle ? "checked" : ""} ${editable ? "" : "disabled"}> ${T2.creep} ${q("creep")}</label>` : ""}
-      ${s2.school ? `<label><input type="checkbox" data-go="living" ${p.livingLoan !== false ? "checked" : ""} ${editable ? "" : "disabled"}> ${T2.useLoans} ${q("livingLoan")}</label>` : ""}</div>
+      ${s2.school ? `<div class="living-pick ${p.livingLoan != null ? "chosen" : needLiving ? "need" : ""}"><span>${T2.livingQ} ${q("livingLoan")}</span><span class="lp-btns">${[[1, T2.livingYes], [0, T2.livingNo]].map(([v, l]) => `<button class="btn small ${p.livingLoan === true === !!v && p.livingLoan != null ? "blue" : "ghost"}" data-go="living" data-id="${v}" aria-pressed="${p.livingLoan != null && p.livingLoan === true === !!v}" ${editable ? "" : "disabled"}>${l}</button>`).join("")}</span></div>` : ""}</div>
     ${editable ? `<div class="pd-foot">${pay.available < -0.5 ? '<div class="left-to"></div>' : `<div class="left-to"><small>${T2.unassigned}</small><b class="${pay.left < 0 ? "neg" : ""}">${money2(pay.left)}</b></div>`}
-      ${btn("plan-clear", T2.clear, { cls: "btn ghost small" })}${btn("plan-confirm", isRepeat() ? T2.repeatPlan : T2.confirm, { cls: "btn green", ico: "check" })}</div>
-      ${pay.available < -0.5 ? `<p class="risk">${icon.alert}<span>${T2.notEnough}</span></p>` : pay.left < -0.5 ? `<p class="risk">${icon.alert}<span>${fmt(T2.overAssigned, { m: money2(-pay.left) })}</span></p>` : ""}` : `<p class="hint">${T2.confirmed}</p>${goNext()}`}
+      ${btn("plan-clear", T2.clear, { cls: "btn ghost small" })}${btn("plan-confirm", isRepeat() ? T2.repeatPlan : T2.confirm, { cls: "btn green", ico: "check", attrs: needLiving ? "disabled" : "" })}</div>
+      ${needLiving ? `<p class="risk">${icon.alert}<span>${T2.livingFirst}</span></p>` : ""}${pay.available < -0.5 ? `<p class="risk">${icon.alert}<span>${T2.notEnough}</span></p>` : pay.left < -0.5 ? `<p class="risk">${icon.alert}<span>${fmt(T2.overAssigned, { m: money2(-pay.left) })}</span></p>` : ""}` : `<p class="hint">${T2.confirmed}</p>${goNext()}`}
     ${ui.autoNotes ? `<div class="autonotes">${icon.star}<div><p>${h(ui.autoNotes[0])}</p>${ui.autoNotes.length > 1 ? `<details class="more"><summary>${T2.lineByLine}</summary><ul>${ui.autoNotes.slice(1).map((n) => `<li>${h(n)}</li>`).join("")}</ul></details>` : ""}</div></div>` : ""}</section>`;
   const done = { starter: m.emergency >= 1e3, match: !match || p.k401Pct >= match.upTo - 1e-9 || !s2.job.employed, highdebt: !m.highDebt, ef: m.runway >= 3, roth: p.roth > 0 || !rothRoom2, more: p.brokerage > 0 };
   const next = LADDER.find((x) => !done[x.id]), ni = LADDER.indexOf(next);
@@ -5925,15 +5989,19 @@ function cardPage() {
   frame("card", `<section class="card-stage"><div class="ty-card t-${c.type} flip-in"><header>${icon[tp.ico]}<span>${tp.en}</span></header>${cardArt(c.id, c.type)}<h2>${h(c.title)}</h2><p>${h(c.text)}</p>${c.month ? `<small>Happens in month ${c.month}</small>` : ""}</div>
     <div class="card-side">
       ${c.roll != null ? judged ? `<div class="panel">${diceBox(c.roll, c.mod, c.bonus, c.throwLabel, c.stat)}</div>` : `<div class="panel judge"><h3>${icon.dice}Throw: ${h(c.throwLabel)} ${q("dice")}</h3><p>First play a 12-second mini-game for a bonus (up to +2), then roll. Your current ${STAT[c.stat]}: ${c.mod}.</p>
-          <div class="row">${btn("card-game", c.game === "dodge" ? "Play \u201CResist the temptation\u201D first" : "Play \u201CSeize the chance\u201D first", { cls: "btn blue", ico: "star", attrs: reduced ? "disabled" : "data-autofocus" })}${btn("card-roll", "Just roll", { cls: "btn ghost", ico: "dice" })}</div></div>` : ""}
+          ${diceStrip(null)}<div class="row">${btn("card-game", c.game === "dodge" ? "Play \u201CResist the temptation\u201D first" : "Play \u201CSeize the chance\u201D first", { cls: "btn blue", ico: "star", attrs: reduced ? "disabled" : "data-autofocus" })}${btn("card-roll", "Just roll", { cls: "btn ghost", ico: "dice" })}</div></div>` : ""}
       ${judged ? `<div class="panel"><h3>How do you respond?</h3><div class="opts">${opts.map((o) => `<button class="opt ${o.blocked ? "blocked" : ""}" data-go="card-opt" data-id="${o.id}" ${o.blocked ? "disabled" : ""}><b>${h(o.label)}</b>${o.cost ? `<small>${money2(o.cost)}</small>` : ""}${optionEffect(s2, o) ? `<small class="opt-effect">${h(optionEffect(s2, o))}</small>` : ""}${o.blocked ? `<small class="why">${h(o.blocked)}</small>` : ""}</button>`).join("")}</div></div>` : ""}
     </div></section>`);
+}
+function diceStrip(total) {
+  const seg = (cls, r, k2) => `<span class="${cls}">${r}<small>${h(TIER_NAME[k2])}</small></span>`;
+  return `<div class="dstrip">${seg("ds-f", "1\u20133", "fail")}${seg("ds-o", "4\u20136", "ok")}${seg("ds-g", "7+", "great")}${total != null ? `<i style="left:${(Math.max(0.5, Math.min(8.5, total - 0.5)) / 9 * 100).toFixed(1)}%"></i>` : ""}</div>`;
 }
 function diceBox(roll, mod, bonus, label, stat, pen = 0) {
   const total = roll + mod + (bonus || 0) - (pen || 0), tier = tierOf(total, roll);
   return `<div class="dice-box ${tier}"><div class="die ${reduced ? "" : "rolling"}" data-final="${roll}">${roll}</div><div class="calc"><b>${h(label)}</b>
     <div class="eq"><span>Die <b>${roll}</b></span>+<span>${STAT[stat]} <b>${mod}</b></span>+<span>Mini-game <b>${bonus || 0}</b></span>${pen ? `\u2212<span>${h(TEXT.jump)} <b>${pen}</b></span>` : ""}=<span class="tot">${total}</span></div>
-    <small>\u22643 fail \xB7 4\u20136 success \xB7 \u22657 great success \xB7 ${h(TEXT.nat1)}</small><span class="tier">${TIER_NAME[tier]}</span></div></div>`;
+    ${diceStrip(total)}<small>${h(TEXT.nat1)}</small><span class="tier">${TIER_NAME[tier]}</span></div></div>`;
 }
 var walkTimer = null;
 function stepWalk() {
@@ -6011,7 +6079,7 @@ function reviewPage() {
   }).join("")}</div>
     <div class="ty-rv-grid">
       <section class="panel rv-tax"><h3>${icon.receipt}${T2.taxReturn} ${q("refund")}</h3>
-        <div class="big-num ${sm.refund >= 0 ? "pos" : "neg"}"><small>${sm.refund >= 0 ? T2.refundIn : T2.taxDue}</small><b>${money2(Math.abs(sm.refund))}</b></div>
+        <div class="big-num ${sm.refund > -1 ? "pos" : "neg"}"><small>${sm.refund > -1 ? T2.refundIn : T2.taxDue}</small><b>${money2(Math.abs(sm.refund))}</b></div>
         ${t.fedTaxable < 1 && t.gross > 0 ? `<p class="mini">${icon.check}${T2.underDeduction}</p>` : ""}
         <details class="more"><summary>${T2.lineByLine}</summary>
         <div class="tax-pair"><span>${T2.owed}<b>${money2(t.total)}</b>${meter(t.total, Math.max(t.total, sm.withheld, 1), "tax")}</span><span>${T2.withheld}<b>${money2(sm.withheld)}</b>${meter(sm.withheld, Math.max(t.total, sm.withheld, 1), "held")}</span></div>
@@ -6296,7 +6364,7 @@ var tutOf = (id) => TUTS.find((t) => t.id === id);
 var tourSteps = (tut) => tut ? tut.steps.filter((st) => !st[5]?.need || st[5].need(s2)) : [];
 function tourVals() {
   const pay = payday(s2, ui.draft || s2.plan);
-  return { gross: money2(pay.gross + (pay.spouseGross || 0)), avail: money2(Math.max(0, pay.available)), availN: pay.available };
+  return { gross: money2(pay.gross + (pay.spouseGross || 0)), avail: money2(Math.max(0, pay.available)), availN: pay.available, age: s2.age };
 }
 function tourHtml() {
   const T3 = ui.tour;
@@ -6515,6 +6583,11 @@ document.addEventListener("click", (e) => {
       case "dismiss":
         notice = "";
         return update(false);
+      case "idcard":
+        e.preventDefault();
+        if (innerWidth > 1e3) return;
+        ui.idOpen = !ui.idOpen;
+        return update(false);
       case "tip":
         ui.tip = { key: id, rect: b.getBoundingClientRect() };
         return update(false);
@@ -6703,7 +6776,7 @@ document.addEventListener("click", (e) => {
         draft().lockLifestyle = b.checked;
         return update(false);
       case "living":
-        draft().livingLoan = b.checked;
+        draft().livingLoan = id === "1";
         return update(false);
       case "ask-self":
         ui.modal = null;

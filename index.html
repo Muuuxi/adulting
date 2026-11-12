@@ -2085,8 +2085,8 @@ var CARDS = [
 ];
 var STAGES = [
   { id: 0, name: "Starting Out", en: "Starting Out", enter: "Not yet at Survival" },
-  { id: 1, name: "Survival", en: "Survival", enter: "Positive cash flow for a year, emergency fund \u2265 $1,000" },
-  { id: 2, name: "Stability", en: "Stability", enter: "No high-interest debt (APR \u2265 8%), emergency fund \u2265 3 months of essentials" },
+  { id: 1, name: "Survival", en: "Survival", enter: "Positive cash flow for a year, at least $1,000 you can reach" },
+  { id: 2, name: "Stability", en: "Stability", enter: "No high-interest debt (APR \u2265 8%); cash, savings and investments you can reach \u2265 3 months of essentials" },
   { id: 3, name: "Momentum", en: "Momentum", enter: "Investing \u2265 15% of pre-tax income a year (including employer match), positive wealth" },
   { id: 4, name: "Security", en: "Security", enter: "Investments can pay (at 4%) \u2265 25% of essential costs" },
   { id: 5, name: "Optionality", en: "Optionality", enter: "Investments can pay \u2265 50% of a year\u2019s spending" },
@@ -2400,9 +2400,9 @@ function metrics(s4) {
   };
 }
 function stage(s4, year = s4.history.at(-1)) {
-  const m = metrics(s4), checks = [
-    () => (year ? year.netCashFlow > 0 : true) && m.emergency >= 1e3,
-    () => !m.highDebt && m.runway >= 3,
+  const m = metrics(s4), reach = s4.accounts.emergency + s4.accounts.checking + s4.accounts.goal + s4.accounts.brokerage, checks = [
+    () => (year ? year.netCashFlow > 0 : true) && reach >= 1e3,
+    () => !m.highDebt && (m.essentials > 0 ? reach / m.essentials : 0) >= 3,
     () => (year ? year.investRate >= 0.15 : false) && m.netWorth > 0,
     () => m.passive >= m.essentials * 12 * 0.25,
     () => m.passive >= m.annualSpend * 0.5,
@@ -2412,6 +2412,12 @@ function stage(s4, year = s4.history.at(-1)) {
   for (const c of checks) {
     if (c()) k2++;
     else break;
+  }
+  if (k2 === 2) {
+    for (let j = 5; j >= 3; j--) if (checks[j]()) {
+      k2 = j + 1;
+      break;
+    }
   }
   return STAGES[k2];
 }
@@ -2454,12 +2460,16 @@ function setPlan(s4, plan) {
   return { ...clone(s4), plan: p };
 }
 var PCT_KEYS = ["emergency", "goal", "roth", "brokerage"];
+var pctBase = (s4, p) => {
+  const y = payday(s4, p);
+  return Math.max(0, y.net + (y.side || 0) + Math.max(0, y.biz || 0));
+};
 function pctDollars(s4, p) {
-  const net = Math.max(0, payday(s4, p).net);
+  const net = pctBase(s4, p);
   return Object.fromEntries(PCT_KEYS.map((k2) => [k2, Math.round(net * (p.pcts?.[k2] || 0) / 5) * 5]));
 }
 function pctsFromDollars(s4, p) {
-  const net = payday(s4, p).net;
+  const net = pctBase(s4, p);
   return Object.fromEntries(PCT_KEYS.map((k2) => [k2, net > 0 ? Math.min(1, Math.floor((p[k2] || 0) / net * 100 + 1e-6) / 100) : 0]));
 }
 function rescalePlan(n) {

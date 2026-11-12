@@ -2085,8 +2085,8 @@ var CARDS = [
 ];
 var STAGES = [
   { id: 0, name: "\u8D77\u6B65", en: "Starting Out", enter: "\u8FD8\u6CA1\u6709\u8FBE\u5230\u201C\u6C42\u751F\u201D\u7684\u6761\u4EF6" },
-  { id: 1, name: "\u6C42\u751F", en: "Survival", enter: "\u4E00\u5E74\u73B0\u91D1\u6D41\u4E3A\u6B63\uFF0C\u5E94\u6025\u91D1 \u2265 $1,000" },
-  { id: 2, name: "\u7A33\u5B9A", en: "Stability", enter: "\u6CA1\u6709\u9AD8\u606F\u503A\uFF08\u5E74\u5229\u7387 \u2265 8%\uFF09\uFF0C\u5E94\u6025\u91D1 \u2265 3 \u4E2A\u6708\u5FC5\u8981\u5F00\u9500" },
+  { id: 1, name: "\u6C42\u751F", en: "Survival", enter: "\u4E00\u5E74\u73B0\u91D1\u6D41\u4E3A\u6B63\uFF0C\u968F\u65F6\u80FD\u7528\u7684\u94B1 \u2265 $1,000" },
+  { id: 2, name: "\u7A33\u5B9A", en: "Stability", enter: "\u6CA1\u6709\u9AD8\u606F\u503A\uFF08\u5E74\u5229\u7387 \u2265 8%\uFF09\uFF1B\u968F\u65F6\u80FD\u7528\u7684\u94B1\uFF08\u73B0\u91D1\u3001\u5B58\u6B3E\u3001\u666E\u901A\u6295\u8D44\uFF09\u2265 3 \u4E2A\u6708\u5FC5\u8981\u5F00\u9500" },
   { id: 3, name: "\u52A0\u901F", en: "Momentum", enter: "\u6BCF\u5E74\u6295\u8D44 \u2265 \u7A0E\u524D\u6536\u5165 15%\uFF08\u542B\u516C\u53F8\u914D\u6BD4\uFF09\uFF0C\u5BB6\u5E95\u4E3A\u6B63" },
   { id: 4, name: "\u5B89\u5FC3", en: "Security", enter: "\u6295\u8D44\u6BCF\u5E74\u53EF\u652F\u6301\u7684\u94B1\uFF084%\uFF09\u2265 \u5FC5\u8981\u5F00\u9500\u7684 25%" },
   { id: 5, name: "\u81EA\u7531\u9009\u62E9", en: "Optionality", enter: "\u6295\u8D44\u6BCF\u5E74\u53EF\u652F\u6301\u7684\u94B1 \u2265 \u4E00\u5E74\u5F00\u9500\u7684 50%" },
@@ -2400,9 +2400,9 @@ function metrics(s4) {
   };
 }
 function stage(s4, year = s4.history.at(-1)) {
-  const m = metrics(s4), checks = [
-    () => (year ? year.netCashFlow > 0 : true) && m.emergency >= 1e3,
-    () => !m.highDebt && m.runway >= 3,
+  const m = metrics(s4), reach = s4.accounts.emergency + s4.accounts.checking + s4.accounts.goal + s4.accounts.brokerage, checks = [
+    () => (year ? year.netCashFlow > 0 : true) && reach >= 1e3,
+    () => !m.highDebt && (m.essentials > 0 ? reach / m.essentials : 0) >= 3,
     () => (year ? year.investRate >= 0.15 : false) && m.netWorth > 0,
     () => m.passive >= m.essentials * 12 * 0.25,
     () => m.passive >= m.annualSpend * 0.5,
@@ -2412,6 +2412,12 @@ function stage(s4, year = s4.history.at(-1)) {
   for (const c of checks) {
     if (c()) k2++;
     else break;
+  }
+  if (k2 === 2) {
+    for (let j = 5; j >= 3; j--) if (checks[j]()) {
+      k2 = j + 1;
+      break;
+    }
   }
   return STAGES[k2];
 }
@@ -2454,12 +2460,16 @@ function setPlan(s4, plan) {
   return { ...clone(s4), plan: p };
 }
 var PCT_KEYS = ["emergency", "goal", "roth", "brokerage"];
+var pctBase = (s4, p) => {
+  const y = payday(s4, p);
+  return Math.max(0, y.net + (y.side || 0) + Math.max(0, y.biz || 0));
+};
 function pctDollars(s4, p) {
-  const net = Math.max(0, payday(s4, p).net);
+  const net = pctBase(s4, p);
   return Object.fromEntries(PCT_KEYS.map((k2) => [k2, Math.round(net * (p.pcts?.[k2] || 0) / 5) * 5]));
 }
 function pctsFromDollars(s4, p) {
-  const net = payday(s4, p).net;
+  const net = pctBase(s4, p);
   return Object.fromEntries(PCT_KEYS.map((k2) => [k2, net > 0 ? Math.min(1, Math.floor((p[k2] || 0) / net * 100 + 1e-6) / 100) : 0]));
 }
 function rescalePlan(n) {

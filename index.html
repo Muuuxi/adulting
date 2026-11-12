@@ -1467,6 +1467,16 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .x100 .x-foot { margin: 4px 0 0; font-size: .72rem; color: var(--ink-2); }
 .x100 .x100-row .meter { grid-row: 2; } .x100 .x100-row b { grid-column: 3; grid-row: 2; }
 .x100 .x100-row .meter { width: 100%; height: 10px; align-self: center; } .x100 .x100-row b { align-self: center; line-height: 1; }
+/* ---- Round 28: less at once ---- */
+.idcard > summary { cursor: pointer; } .idcard > summary::after { content: '▾'; margin-left: auto; font-weight: 900; font-size: 1.1rem; } .idcard[open] > summary::after { content: '▴'; }
+.x100 > summary { cursor: pointer; font-weight: 800; color: var(--ink-2); font-size: .78rem; list-style: none; } .x100 > summary::-webkit-details-marker { display: none; }
+.x100 > summary::before { content: '▸ '; } .x100[open] > summary::before { content: '▾ '; }
+.dec-card .why.lock-only { display: inline-flex; width: auto; } .dec-card .why.lock-only .ico { width: 16px; height: 16px; }
+.opt-cost { display: inline-flex; align-items: center; gap: 3px; font-weight: 900; } .opt-cost .ico { width: 15px; height: 15px; }
+.biz-pic { margin: 4px 0 6px; }
+.catbars.finbars li.tax i { background: #e46b6b; } .catbars.finbars li.ok i { background: var(--grass); } .catbars.finbars span small { display: block; font-size: .72rem; color: var(--muted); font-weight: 700; }
+.catbars.finbars span small { color: rgba(255,255,255,.8); }
+.dstrip span, .dstrip span small, .dice-box .dstrip span small { color: #fff !important; opacity: 1; }
 </style>
 </head>
 <body>
@@ -4345,50 +4355,50 @@ var GLOSSARY = {
 var planned = (d) => (d.emergency || 0) + (d.goal || 0) + (d.roth || 0) + (d.brokerage || 0) + Object.values(d.extra || {}).reduce((a, b) => a + b, 0) + (d.k401Pct || 0) > 0;
 var TUTS = [
   { id: "payday", page: "payday", name: "Payday", steps: [
-    [".phase-steps", "Each year has 5 steps", "Every year runs in order: Payday \u2192 Big decision \u2192 Life card \u2192 Live the year \u2192 Year-end review. You\u2019re on step 1: Payday.", "map", "gold"],
-    [".pd-flow", "This month\u2019s money", (v) => `Pay before tax is ${v.gross}. After tax, essentials, fun money and minimum payments, ${v.avail} a month is yours to split.`, "coin", "green"],
-    [".alloc", "Now you split it", (v) => v.availN > 0 ? `Use + and \u2212 to put that ${v.avail} into the accounts below. Try one now. Anything you don\u2019t assign stays in checking.` : "Nothing is left to split this month. See which line above is biggest; when there\u2019s extra later, split it here.", "star", "gold", { wait: (d, v) => v.availN <= 0 || planned(d), hint: "Tap a + button to continue." }],
-    [".living-pick", "If living costs run short", "Borrow a student loan (repaid after school, with interest), or use savings first and then the credit card. Each has a cost. Pick one to go on.", "cap", "blue", { need: (s4) => !!s4.school, wait: (d) => d.livingLoan != null, hint: "Pick one of the two buttons." }],
-    [".ty-stepper.pct", "401(k) retirement", "A percent of your pay goes in before tax. It\u2019s usually locked until 59\xBD. If your job has a match, your employer adds some too.", "bank", "blue", { need: (s4) => s4.job.has401k && s4.job.employed }],
-    ['[data-go="plan-confirm"]', "Confirm", "Your split runs all 12 months. Next is step 2: one big decision.", "check", "green"]
+    [".phase-steps", "Each year has 5 steps", "Payday \u2192 Big decision \u2192 Life card \u2192 Live the year \u2192 Review. This is step 1.", "map", "gold"],
+    [".pd-flow", "This month\u2019s money", (v) => `${v.gross} before tax \xB7 ${v.avail} left to split.`, "coin", "green"],
+    [".alloc", "Now you split it", (v) => v.availN > 0 ? `Tap + to put some of ${v.avail} somewhere.` : "Nothing left this month. Look at the biggest line above.", "star", "gold", { wait: (d, v) => v.availN <= 0 || planned(d), hint: "Tap a + to go on." }],
+    [".living-pick", "If living costs run short", "Student loan, or savings then the card. Pick one.", "cap", "blue", { need: (s4) => !!s4.school, wait: (d) => d.livingLoan != null, hint: "Pick one." }],
+    [".ty-stepper.pct", "401(k) retirement", "Goes in before tax, locked until 59\xBD. A match adds more.", "bank", "blue", { need: (s4) => s4.job.has401k && s4.job.employed }],
+    ['[data-go="plan-confirm"]', "Confirm", "Runs for 12 months. Next: step 2.", "check", "green"]
   ] },
   { id: "debt", page: "payday", name: "Debt", need: (s4) => s4.debts.some((d) => d.balance > 5e-3 && !d.closed && d.kind !== "arrears"), steps: [
-    [".alloc-debt", "Debt costs money", "Each debt row charges interest. A flame means high interest: it grows fastest.", "flame", "red"],
-    [".ladder-steps", "What $100 a month does", "Each bar is what an extra $100 a month would do in a year, with your numbers. Check the tag: each one has a catch.", "flag", "gold"]
+    [".alloc-debt", "Debt costs money", "A flame means high interest.", "flame", "red"],
+    [".ladder-steps", "What $100 a month does", "Each bar: a year of an extra $100 a month. The tag is the catch.", "flag", "gold"]
   ] },
   { id: "decision", page: "decision", name: "Big decision", steps: [
-    [".phase-steps", "Step 2 of 5: one big decision", "One choice a year: a job, school, moving, dating, a business, or keeping things as they are.", "map", "gold"],
-    [".dec-grid", "Read the tags", "A coin tag is what it costs this year. A die tag means you roll for it; the number is what you add to the die.", "dice", "blue"],
-    [".dec-grid", "No single right answer", "Each choice trades something: money now, money later, time or risk. Tap a card to read more and choose.", "star", "green"]
+    [".phase-steps", "Step 2 of 5", "One big choice a year.", "map", "gold"],
+    [".dec-grid", "Read the tags", "Coin = cost. Die = you roll, plus the number shown.", "dice", "blue"],
+    [".dec-grid", "No single right answer", "Each choice trades money, time or risk.", "star", "green"]
   ] },
   { id: "card", page: "card", name: "Life cards", need: (s4) => !s4.card, steps: [
-    [".phase-steps", "Step 3 of 5: a life card", "Something happens every year, good or bad. You don\u2019t pick the card, only how you respond.", "map", "gold"],
-    [".odds", "The odds", "Each bar is the chance of that kind of card this year.", "star", "gold"],
-    ['[data-go="draw"]', "Draw", "Press Draw to flip this year\u2019s card.", "arrow", "green"]
+    [".phase-steps", "Step 3 of 5", "You can\u2019t pick the card, only how you respond.", "map", "gold"],
+    [".odds", "The odds", "Chance of each kind this year.", "star", "gold"],
+    ['[data-go="draw"]', "Draw", "Press Draw.", "arrow", "green"]
   ] },
   { id: "cardopts", page: "card", name: "Responding to a card", need: (s4) => !!s4.card && (s4.card.roll == null || !!s4.card.judged), steps: [
-    [".opts", "How do you respond?", "Each option shows what it costs and what it changes. Cheaper now can cost more later.", "star", "gold"]
+    [".opts", "How do you respond?", "Each option shows its cost and effect.", "star", "gold"]
   ] },
   { id: "live", page: "live", name: "Live the year", need: (s4) => s4.phase === "live", steps: [
-    [".phase-steps", "Step 4 of 5: live the year", "The game runs 12 months on your plan, with this year\u2019s decision and card.", "map", "gold"],
-    [".recap", "This year\u2019s changes", "Your decision and card for this year are listed here.", "plan", "blue"],
-    ['[data-go="live"]', "Start", "Press \u201CStart the year\u201D to watch the 12 months one by one.", "arrow", "green"]
+    [".phase-steps", "Step 4 of 5", "12 months on your plan.", "map", "gold"],
+    [".recap", "This year", "Your decision and card.", "plan", "blue"],
+    ['[data-go="live"]', "Start", "Press \u201CStart the year\u201D.", "arrow", "green"]
   ] },
   { id: "review", page: "review", name: "Year-end review", steps: [
-    [".phase-steps", "Step 5 of 5: year-end review", (v) => `How did the year go? After this, age ${v.age + 1} starts again at payday.`, "map", "gold"],
-    [".ty-months", "12 months at a glance", "Each box is everything you had saved at month-end, not your income. Red marks a month with trouble, such as a missed bill.", "plan", "blue"],
-    [".rv-tax", "Taxes settle up", "Tax taken from each paycheck is checked against the whole year: you get a refund or owe the rest.", "receipt", "green"],
-    [".rv-where", "In versus out", "Top bar: money that came in. Bottom bar: money that went out.", "chart", "green"],
-    [".rv-change", "Better or worse?", "Green arrows mean things improved this year.", "trophy", "gold"],
-    ['[data-go="next-year"]', "Next year", "Every year has the same 5 steps. Guides for new parts appear when you reach them.", "arrow", "green"]
+    [".phase-steps", "Step 5 of 5", (v) => `Then age ${v.age + 1} starts at payday.`, "map", "gold"],
+    [".ty-months", "Each month", "Savings at month-end. Red = trouble.", "plan", "blue"],
+    [".rv-tax", "Taxes settle up", "A refund, or tax still owed.", "receipt", "green"],
+    [".rv-where", "In versus out", "Top bar in, bottom bar out.", "chart", "green"],
+    [".rv-change", "Better or worse?", "Green arrows = better.", "trophy", "gold"],
+    ['[data-go="next-year"]', "Next year", "Same 5 steps every year.", "arrow", "green"]
   ] },
   { id: "accounts", page: "accounts", name: "Accounts", steps: [
-    [".sheet", "Own versus owe", "What you own minus what you owe is your wealth.", "bank", "blue"],
-    [".acct-actions", "Move money", "On payday you can move money or pay off a debt early.", "arrow", "green"]
+    [".sheet", "Own versus owe", "Own \u2212 owe = your wealth.", "bank", "blue"],
+    [".acct-actions", "Move money", "Only on payday.", "arrow", "green"]
   ] },
   { id: "goals", page: "goals", name: "How to win", steps: [
-    [".win-panel", "How to win", "Stay afloat, climb the stages, reach 50.", "trophy", "gold"],
-    [".stage-path", "Life stages", "Build safety first, then wealth, to climb the stages.", "map", "purple"]
+    [".win-panel", "How to win", "Stay afloat, climb, reach 50.", "trophy", "gold"],
+    [".stage-path", "Life stages", "Safety first, then wealth.", "map", "purple"]
   ] }
 ];
 var T2 = {
@@ -4564,6 +4574,18 @@ var T2 = {
   tagReady: "ready any time",
   tagRisky: "can fall",
   x100Foot: "A bigger number isn\u2019t automatically better: each choice has its catch. You decide.",
+  bizMonths: "Money lasts",
+  bizNeed: "Needed per month",
+  bizStart: "This kind of business, year 1",
+  bizBill: "Bills if it closes",
+  bizCash: "Your cash",
+  finTax: "Tax",
+  finInt: "Interest",
+  finMatch: "Employer match",
+  finGrowth: "Market gains",
+  finMost: "Biggest month",
+  finLeast: "Thriftiest month",
+  finAge: "Age {a}, month {m}",
   locked: "Locked",
   skipGuide: "Skip",
   next: "Next",
@@ -5882,7 +5904,7 @@ function hud() {
 function idCard() {
   const p = profile(s2), pip = (v, base) => `<span class="pips">${[0, 1, 2, 3].map((i) => `<i class="${i < Math.min(3, Math.max(0, base)) ? "on" : ""}"></i>`).join("")}</span>${v !== base ? `<em class="${v > base ? "pos" : "neg"}">${v > base ? "+" : ""}${v - base}</em>` : ""}`;
   const credit = p.credit ? `${p.credit}<small> \xB7 ${p.credit >= 740 ? "excellent" : p.credit >= 670 ? "good" : p.credit >= 580 ? "fair" : "poor"}</small>` : "<small>no history yet</small>";
-  return `<details class="idcard" ${innerWidth > 1e3 || ui.idOpen ? "open" : ""}><summary class="id-top" data-go="idcard" title="${h(T2.idMore)}">${avatar(look(), { cls: "mid", label: false })}<div><b>${h(s2.name || "You")}</b><small>Age ${s2.phase === "finish" ? 50 : s2.age} \xB7 ${STATES[s2.region].name}</small></div></summary>
+  return `<details class="idcard" ${ui.idOpen ? "open" : ""}><summary class="id-top" data-go="idcard" title="${h(T2.idMore)}">${avatar(look(), { cls: "mid", label: false })}<div><b>${h(s2.name || "You")}</b><small>Age ${s2.phase === "finish" ? 50 : s2.age} \xB7 ${STATES[s2.region].name}</small></div></summary>
     <dl><dt>Education</dt><dd>${s2.school ? `${{ study: "At university", both: "At community college", cert: "At trade school" }[s2.school.kind] || h(p.edu)}, ${s2.school.yearsLeft} yr${s2.school.yearsLeft > 1 ? "s" : ""} left` : h(p.edu)}</dd><dt>Job</dt><dd>${h(p.job)}${p.salary ? `<small> ${money2(p.salary)}/yr</small>` : ""}</dd>
       <dt>Relationship</dt><dd>${p.love}</dd><dt>Home</dt><dd>${p.home}${s2.car ? " \xB7 has a car" : ""}</dd>
       <dt>Career skill ${q("career")}</dt><dd>${pip(p.career, p.careerBase)}</dd><dt>Self-control ${q("discipline")}</dt><dd>${pip(p.discipline, p.disciplineBase)}</dd><dt>${TEXT.difficulty} ${q("difficulty")}</dt><dd>${h(DIFFICULTY[s2.difficulty || "normal"].name)}</dd><dt>Credit score ${q("credit")}</dt><dd>${credit}</dd></dl>
@@ -5980,7 +6002,7 @@ function paydayPage() {
     { ico: "chart", label: T2.x100Invest, v: YR * ASSUME.stockReturnMean * half, tag: T2.tagRisky, cls: "tax" }
   ].filter(Boolean);
   const xmax = Math.max(...xo.map((x) => x.v), 1);
-  const x100 = `<div class="ladder-steps x100"><small>${T2.x100Head}</small>${xo.map((x) => `<div class="x100-row">${icon[x.ico]}<span class="x-lab">${h(x.label)} <em class="x-tag ${x.cls}">${h(x.tag)}</em></span>${meter(x.v, xmax, x.cls)}<b>+${money2(x.v)}</b></div>`).join("")}<p class="x-foot">${T2.x100Foot}</p></div>`;
+  const x100 = `<details class="ladder-steps x100" ${ui.x100 || ui.tour?.id === "debt" ? "open" : ""}><summary data-go="x100">${T2.x100Head}</summary>${xo.map((x) => `<div class="x100-row">${icon[x.ico]}<span class="x-lab">${h(x.label)} <em class="x-tag ${x.cls}">${h(x.tag)}</em></span>${meter(x.v, xmax, x.cls)}<b>+${money2(x.v)}</b></div>`).join("")}<p class="x-foot">${T2.x100Foot}</p></details>`;
   const impact = `<section class="panel impact"><h3>${T2.yearOnPlan}</h3>
     ${baRow("piggy", T2.emergency, s2.accounts.emergency, pv.state.accounts.emergency, "up")}${baRow("sprout", T2.retirement, m.retirement, pm.retirement, "up")}${baRow("receipt", T2.consumerDebt, m.consumerDebt, pm.consumerDebt, "down")}
     <div class="kv"><span>${icon.flame}${T2.interestYear}</span><b class="neg">${money2(sm.interest)}</b></div>
@@ -5998,10 +6020,9 @@ function decisionPage() {
   const tones = ["blue", "gold", "green", "red", "purple"];
   frame("decision", `<section><header class="page-head"><h1>${T2.bigDecision}</h1><p>${icon.dice}${T2.oneAYear} ${q("dice")}</p></header>
     <div class="dec-grid">${decisions(s2).map((d, i) => `<button class="dec-card ${d.blocked ? "blocked" : ""}" data-go="pick-decision" data-id="${d.id}" title="${h(d.text)}">
-      <span class="dc-top"><span class="dc-art t-${tones[i % tones.length]}">${icon[d.icon] || icon.star}</span><b>${h(d.title)}</b></span><span class="dc-tags">${costTag(d)}${throwTag(d.throw)}</span>${d.blocked ? `<small class="why" title="${h(d.blocked)}">${icon.lock}${h(firstClause(d.blocked))}</small>` : ""}</button>`).join("")}</div></section>`);
+      <span class="dc-top"><span class="dc-art t-${tones[i % tones.length]}">${icon[d.icon] || icon.star}</span><b>${h(d.title)}</b></span><span class="dc-tags">${costTag(d)}${throwTag(d.throw)}</span>${d.blocked ? `<small class="why lock-only" title="${h(d.blocked)}">${icon.lock}</small>` : ""}</button>`).join("")}</div></section>`);
 }
 var firstSentence = (t) => String(t || "").split(/(?<=[.!?])\s+|(?<=[。！？])/)[0];
-var firstClause = (t) => String(t || "").split(/[，；;:]|,(?!\d)/)[0];
 function cardPage() {
   if (s2.phase !== "card") return frame("card", `<section class="panel">${s2.card ? `<h2>This year\u2019s card: ${h(s2.card.title)}</h2><p>${h(s2.card.choiceLabel || "")}</p>` : "<p>It\u2019s not time to draw a card yet.</p>"}${goNext()}</section>`);
   const c = s2.card;
@@ -6018,7 +6039,7 @@ function cardPage() {
     <div class="card-side">
       ${c.roll != null ? judged ? `<div class="panel">${diceBox(c.roll, c.mod, c.bonus, c.throwLabel, c.stat)}</div>` : `<div class="panel judge"><h3>${icon.dice}Throw: ${h(c.throwLabel)} ${q("dice")}</h3><p>First play a 12-second mini-game for a bonus (up to +2), then roll. Your current ${STAT[c.stat]}: ${c.mod}.</p>
           ${diceStrip(null)}<div class="row">${btn("card-game", c.game === "dodge" ? "Play \u201CResist the temptation\u201D first" : "Play \u201CSeize the chance\u201D first", { cls: "btn blue", ico: "star", attrs: reduced ? "disabled" : "data-autofocus" })}${btn("card-roll", "Just roll", { cls: "btn ghost", ico: "dice" })}</div></div>` : ""}
-      ${judged ? `<div class="panel"><h3>How do you respond?</h3><div class="opts">${opts.map((o) => `<button class="opt ${o.blocked ? "blocked" : ""}" data-go="card-opt" data-id="${o.id}" ${o.blocked ? "disabled" : ""}><b>${h(o.label)}</b>${o.cost ? `<small>${money2(o.cost)}</small>` : ""}${optionEffect(s2, o) ? `<small class="opt-effect">${h(optionEffect(s2, o))}</small>` : ""}${o.blocked ? `<small class="why">${h(o.blocked)}</small>` : ""}</button>`).join("")}</div></div>` : ""}
+      ${judged ? `<div class="panel"><h3>How do you respond?</h3><div class="opts">${opts.map((o) => `<button class="opt ${o.blocked ? "blocked" : ""}" data-go="card-opt" data-id="${o.id}" ${o.blocked ? "disabled" : ""}><b>${h(o.label)}</b>${o.cost ? `<small class="opt-cost">${icon.coin}${money2(o.cost)}</small>` : ""}${optionEffect(s2, o) ? `<small class="opt-effect">${h(optionEffect(s2, o))}</small>` : ""}${o.blocked ? `<small class="why">${h(o.blocked)}</small>` : ""}</button>`).join("")}</div></div>` : ""}
     </div></section>`);
 }
 function diceStrip(total) {
@@ -6100,9 +6121,9 @@ function reviewPage() {
   const legend = (segs) => `<ul class="io-legend">${segs.filter((x) => x.v > 0.5).map((x) => `<li class="k-${x.cls}"><i></i>${x.label}<b>${money2(x.v)}</b></li>`).join("")}</ul>`;
   const baRow = (label, a0, b0, better, show) => `<div class="ba-row"><span class="ba-lab">${label}</span>${beforeAfter(a0, b0, better)}<b>${show}</b></div>`;
   frame("review", `<section class="ty-review"><header class="page-head"><h1>${fmt(past ? T2.ageLookBack : T2.ageDone, { age })}</h1>${y.news ? `<p class="news">${icon.chart}${h(y.news)} (${fmt(T2.marketNote, { r: pct(sm.returnRate, 1) })})</p>` : ""}${pastPicker(past)}</header>
-    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans}</p>${past ? "" : yearNotes(s2).map((x) => `<p class="yr-note">${icon.piggy}<span>${h(x)}</span></p>`).join("")}${!past && realNote(s2) ? `<p class="yr-note yr-real">${icon.pin}<span><b>${T2.realLife}</b> ${h(realNote(s2).text)}</span></p>` : ""}
+    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans}</p>${past ? "" : yearNotes(s2).map((x) => `<p class="yr-note">${icon.piggy}<span>${h(x)}</span></p>`).join("")}
     <div class="ty-months ${anim ? "anim" : ""}">${y.months.map((mo, i) => {
-    const e = ev(mo.month), b2 = e.find((l) => bad.includes(l.type)) || e[0];
+    const e = ev(mo.month), b2 = e.find((l) => bad.includes(l.type));
     return `<div class="ty-mo ${e.some((l) => bad.includes(l.type)) ? "hasbad" : ""}" style="--i:${i}" title="${h(fmt(T2.cashIn, { m: money2(mo.checking) }))}"><small>${h(fmt(LT2.month, { m: mo.month }))}</small><span class="mo-bar"><i style="height:${Math.max(4, moTotal(mo) / moMax * 100)}%"></i></span><b>${money2(moTotal(mo))}</b>${b2 ? `<em class="${bad.includes(b2.type) ? "bad" : ""}" title="${h(b2.label)}">${h(b2.label.replace(/[:：].*$/, ""))}</em>` : ""}</div>`;
   }).join("")}</div>
     <div class="ty-rv-grid">
@@ -6134,6 +6155,7 @@ function reviewPage() {
         ${baRow(T2.consumerDebt, before.consumerDebt, after.consumerDebt, "down", money2(after.consumerDebt))}
         ${baRow(T2.retirement, before.retirement, after.retirement, "up", money2(after.retirement))}
         <div class="stage-change st-${stNow.id}">${stNow.id > stBefore.id ? T2.levelUp : stNow.id < stBefore.id ? T2.movedBack : T2.lifeStage} <b>${stNow.id}. ${stNow.name}</b><small title="${stNow.id < 6 ? h(STAGES[stNow.id + 1].enter) : ""}">${stNow.id < 6 ? T2.nextStage + h(STAGES[stNow.id + 1].name) : T2.topStage}</small></div></section></div>
+    ${!past && realNote(s2) ? `<p class="yr-note yr-real">${icon.pin}<span><b>${T2.realLife}</b> ${h(realNote(s2).text)}</span></p>` : ""}
     <div class="center row">${past ? btn("past-year", s2.phase === "review" ? fmt(T2.backThisYear, { age: s2.age }) : T2.backJournal, { cls: "btn green big", ico: "back", attrs: "data-autofocus" }) : `${btn("ledger", fmt(T2.ledgerN, { n: y.lines.length }), { cls: "btn ghost small", ico: "book" })}${btn("next-year", s2.age + 1 >= FINAL_AGE ? T2.turn50 : fmt(T2.onToAge, { age: s2.age + 1 }), { cls: "btn green big", ico: "arrow", attrs: "data-autofocus" })}`}</div></section>`);
 }
 var CAT_NAME = { housing: "Housing", food: "Food", transport: "Transportation", insurance: "Insurance & health", other: "Utilities, phone etc.", fun: "Fun", interest: "Interest", tax: "Tax", oneoff: "One-off costs", education: "Tuition" };
@@ -6143,8 +6165,11 @@ function finishPage() {
   const cats = Object.entries(w.cats).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]), catMax = cats[0]?.[1] || 1;
   const slides = [
     `<div class="sl s-cover"><small>Ages ${s2.startAge}\u201350 \xB7 ${STATES[s2.region].name} \xB7 ${h(DIFFICULTY[s2.difficulty || "normal"].name)}</small><h1>${s2.name ? h(s2.name) + "\u2019s" : "Your"} ${50 - s2.startAge} years</h1><p>Starting from \u201C${h(BACKSTORIES.find((b) => b.id === s2.backstory)?.title)}\u201D.</p>${avatar(look(), { cls: "big-av", label: false })}</div>`,
-    `<div class="sl"><small>Over these years you</small><h2>earned ${money2(w.income)}</h2><p>paid <b>${money2(w.tax)}</b> in tax and <b>${money2(w.interest)}</b> in interest.</p><p>Your employer\u2019s match gave you <b class="pos">${money2(w.match)}</b>, and market moves added up to <b class="${w.growth < 0 ? "neg" : "pos"}">${money2(w.growth)}</b>.</p></div>`,
-    `<div class="sl"><small>Your biggest spending month</small><h2>Age ${w.maxMonth.age}, month ${w.maxMonth.month}: ${money2(w.maxMonth.spend)}</h2><small>Your thriftiest month</small><h3>Age ${w.minMonth.age}, month ${w.minMonth.month}: ${money2(w.minMonth.spend)}</h3></div>`,
+    `<div class="sl"><small>Over these years you earned</small><h2>${money2(w.income)}</h2>${(() => {
+      const r = [[T2.finTax, w.tax, "tax"], [T2.finInt, w.interest, "tax"], [T2.finMatch, w.match, "ok"], [T2.finGrowth, w.growth, w.growth < 0 ? "tax" : "ok"]], mx = Math.max(1, ...r.map((x) => Math.abs(x[1])));
+      return `<ul class="catbars finbars">${r.map(([l, v, c]) => `<li class="${c}"><span>${h(l)}</span><i style="width:${Math.abs(v) / mx * 100}%"></i><b>${v < 0 ? "\u2212" : ""}${money2(Math.abs(v))}</b></li>`).join("")}</ul>`;
+    })()}</div>`,
+    `<div class="sl"><ul class="catbars finbars">${[[T2.finMost, w.maxMonth, "tax"], [T2.finLeast, w.minMonth, "ok"]].map(([l, x, c]) => `<li class="${c}"><span>${h(l)}<small>${h(fmt(T2.finAge, { a: x.age, m: x.month }))}</small></span><i style="width:${Math.max(2, x.spend / Math.max(1, w.maxMonth.spend) * 100)}%"></i><b>${money2(x.spend)}</b></li>`).join("")}</ul></div>`,
     `<div class="sl"><small>Where the money went</small><h2>#1: ${CAT_NAME[w.topCat[0]]}</h2><ul class="catbars">${cats.slice(0, 6).map(([k2, v]) => `<li><span>${CAT_NAME[k2]}</span><i style="width:${v / catMax * 100}%"></i><b>${money2(v)}</b></li>`).join("")}</ul></div>`,
     `<div class="sl"><small>Your most memorable year</small><h2>Age ${w.swingYear.age}</h2><p>Your wealth this year ${w.swingYear.delta >= 0 ? "gained" : "lost"} <b>${money2(Math.abs(w.swingYear.delta))}</b>.</p>${w.memorable ? `<p class="quote">\u201C${h(w.memorable.text)}\u201D</p>` : ""}${w.crashes.length ? `<p>You lived through ${w.crashes.length} stock market crashes (at age ${w.crashes.join(", ")}).</p>` : ""}</div>`,
     `<div class="sl"><small>Your wealth over time</small>${sparkline(w.worth)}<p>At 50: <b>${money2(m.netWorth)}</b>, investable assets <b>${money2(m.invested)}</b>.</p></div>`,
@@ -6206,6 +6231,16 @@ function journalPage() {
     ${s2.history.length ? `<section class="panel"><h3 class="alloc-h"><span>By year</span>${pastPicker()}</h3><table class="debts"><thead><tr><th>Age</th><th>earned</th><th>Tax</th><th>Your wealth</th><th>Stage</th><th>Market</th><th>That year</th></tr></thead><tbody>${s2.history.map((x) => `<tr><td>${x.age}</td><td>${money2(x.income)}</td><td>${money2(x.tax)}</td><td>${money2(x.netWorth)}</td><td>${STAGES[x.stage].name}</td><td>${pct(x.returnRate, 1)}</td><td>${h([x.decisionTitle, x.cardTitle].filter(Boolean).join(" \xB7 "))}</td></tr>`).join("")}</tbody></table></section>` : ""}
     ${goNext()}</section>`);
 }
+function bizPic(b, i, ch) {
+  const row = (ico, label, v, max, cls, val) => `<div class="lp-row">${icon[ico]}<span>${h(label)}</span>${meter(v, max, cls)}<b>${val}</b></div>`;
+  if (i === 0) return `<div class="lesson-pic biz-pic">${row("piggy", T2.bizMonths, Math.min(b.months, 12), 12, b.months >= 6 ? "ok" : "tax", fmt(T2.monthsN, { n: b.months.toFixed(1) }) + " / 12")}</div>`;
+  if (i === 1) {
+    const base = ch?.base || 0, mx2 = Math.max(b.need, base, 1);
+    return `<div class="lesson-pic biz-pic">${row("flag", T2.bizNeed, b.need, mx2, "held", money2(b.need))}${row("chart", T2.bizStart, base, mx2, base >= b.need ? "ok" : "tax", "\u2248" + money2(base))}</div>`;
+  }
+  const cash = b.months * Math.max(1, b.need), mx = Math.max(b.bill, 1);
+  return `<div class="lesson-pic biz-pic">${row("receipt", T2.bizBill, b.bill, mx, "tax", money2(b.bill))}</div>`;
+}
 function survivalBars() {
   let alive = 100;
   const bars = [0, 1, 2, 3, 4].map((k2) => {
@@ -6232,7 +6267,7 @@ function modalHtml() {
       <span class="jc-tags">${j.blocked ? `<em class="why" title="${h(j.blocked)}">${icon.lock}${T2.locked}</em>` : `${j.edu ? `<em title="${h(EDU[j.edu])}">${icon.cap}${h(EDU[j.edu].split(/[ （(]/)[0])}</em>` : ""}${j.career ? `<em>${icon.star}${j.career}</em>` : ""}${j.needCar ? `<em>${icon.car}</em>` : ""}${j.jump ? `<em class="warn">${h(TEXT.jump)} \u2212${j.jump}</em>` : ""}`}<em class="ben ${PLANS[j.plan]?.has401k ? "" : "no"}" title="${h(j.benefit)}">${icon.bank}${PLANS[j.plan]?.match ? "+" + Math.round(PLANS[j.plan].match.rate * PLANS[j.plan].match.upTo * 100) + "%" : PLANS[j.plan]?.has401k ? "" : "\u2715"}</em></span></label>`).join("")}</div>` : "";
     const out = d.throw ? `${dieStrip({ fail: d.outcomes.fail?.note || "", ok: d.outcomes.ok?.note || "", great: d.outcomes.great?.note || "" })}` : "";
     const biz = d.id === "startup" && F.choice ? startupCheck(s2, F.choice) : null, bizAns = biz && F.bizChoice === F.choice ? F.bizA || [] : [], bizQ = biz ? biz.questions[bizAns.length] : null;
-    const bizBlock = biz ? `<div class="biz-think"><small>${bizAns.length + (bizQ ? 1 : 0)} / 3</small>${bizQ ? `<p>${h(bizQ.text)}</p><div class="biz-opts">${bizQ.opts.map((o) => `<button class="btn ghost small" data-go="biz-q" data-id="${o.id}">${h(o.label)}</button>`).join("")}</div>` : `<p>${icon.check}${h(biz.questions[2].opts.find((o) => o.id === bizAns[2])?.label || "")}</p>`}</div>` : "";
+    const bizBlock = biz ? `<div class="biz-think"><small>${bizAns.length + (bizQ ? 1 : 0)} / 3</small>${bizQ ? `${bizPic(biz, bizAns.length, d.choices.find((c) => c.id === F.choice))}<p>${h(bizQ.text)}</p><div class="biz-opts">${bizQ.opts.map((o) => `<button class="btn ghost small" data-go="biz-q" data-id="${o.id}">${h(o.label)}</button>`).join("")}</div>` : `<p>${icon.check}${h(biz.questions[2].opts.find((o) => o.id === bizAns[2])?.label || "")}</p>`}</div>` : "";
     const ready = (!d.choices || F.choice) && (!jobs || F.jobId) && (d.id !== "startup" || bizAns.length === 3);
     return wrap(`<header class="m-head"><span class="ribbon-tag">This year\u2019s big decision</span><h2>${h(d.title)}</h2><p>${h(firstSentence(d.text))}</p>${btn("close", "Close", { cls: "icon-btn", ico: "close" })}</header>
       ${d.id === "startup" ? survivalBars() : firstSentence(d.text) !== d.text ? `<details class="more"><summary>${h(LG.more)}</summary><p>${h(d.text)}</p></details>` : ""}${choice}${bizBlock}${board}${d.throw ? `<div class="judge-info">${icon.dice}<div><b>Needs a throw: die + ${STAT[d.throw.stat]} ${modFor(s2, d.throw.stat)}${jobs && F.jobId && jobs.find((j) => j.id === F.jobId)?.jump ? ` \u2212 ${h(TEXT.jump)} ${jobs.find((j) => j.id === F.jobId).jump}` : ""} + mini-game bonus</b> ${q("dice")}${out}</div></div>` : ""}
@@ -6611,9 +6646,12 @@ document.addEventListener("click", (e) => {
       case "dismiss":
         notice = "";
         return update(false);
+      case "x100":
+        e.preventDefault();
+        ui.x100 = !ui.x100;
+        return update(false);
       case "idcard":
         e.preventDefault();
-        if (innerWidth > 1e3) return;
         ui.idOpen = !ui.idOpen;
         return update(false);
       case "tip":

@@ -1458,6 +1458,15 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .idcard > summary { list-style: none; cursor: default; } .idcard > summary::-webkit-details-marker { display: none; }
 @media (max-width: 1000px) { .idcard > summary { cursor: pointer; } .idcard > summary::after { content: '▾'; margin-left: auto; font-weight: 900; font-size: 1.1rem; } .idcard[open] > summary::after { content: '▴'; } }
 @media (min-width: 761px) { .path-pick { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; } .path-opt { padding: 7px 7px; } }
+/* ---- Round 27: what $100 a month does ---- */
+.x100 .x100-row { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 2px 6px; margin: 6px 0; font-size: .8rem; }
+.x100 .x100-row .x-lab { grid-column: 2 / -1; line-height: 1.25; } .x100 .x100-row .meter { grid-column: 2; } .x100 .x100-row > .ico { grid-row: 1 / 3; align-self: start; margin-top: 2px; }
+.x100 .x100-row .ico { width: 17px; height: 17px; } .x100 .x100-row b { font-size: .82rem; text-align: right; min-width: 3.6em; }
+.x100 .x-tag { font-style: normal; font-weight: 800; font-size: .66rem; padding: 0 5px; border-radius: 6px; background: var(--quiet-2); white-space: nowrap; }
+.x100 .x-tag.ok { background: var(--grass-2); } .x100 .x-tag.held { background: var(--sun-2); } .x100 .x-tag.tax { background: #ffd9d9; }
+.x100 .x-foot { margin: 4px 0 0; font-size: .72rem; color: var(--ink-2); }
+.x100 .x100-row .meter { grid-row: 2; } .x100 .x100-row b { grid-column: 3; grid-row: 2; }
+.x100 .x100-row .meter { width: 100%; height: 10px; align-self: center; } .x100 .x100-row b { align-self: center; line-height: 1; }
 </style>
 </head>
 <body>
@@ -4345,7 +4354,7 @@ var TUTS = [
   ] },
   { id: "debt", page: "payday", name: "\u503A\u52A1", need: (s4) => s4.debts.some((d) => d.balance > 5e-3 && !d.closed && d.kind !== "arrears"), steps: [
     [".alloc-debt", "\u6B20\u94B1\u8981\u4ED8\u5229\u606F", "\u6BCF\u4E00\u7B14\u503A\u90FD\u5728\u6536\u5229\u606F\u3002\u5E26\u706B\u7130\u7684\u662F\u9AD8\u606F\u503A\uFF0C\u5229\u606F\u6DA8\u5F97\u6700\u5FEB\u3002", "flame", "red"],
-    [".ladder-steps", "\u4E00\u79CD\u5E38\u89C1\u505A\u6CD5", "\u591A\u51FA\u6765\u7684\u94B1\u7684\u4E00\u79CD\u5E38\u89C1\u5206\u6CD5\uFF0C\u53EA\u662F\u4E00\u79CD\u601D\u8DEF\uFF0C\u4E0D\u662F\u552F\u4E00\u6B63\u786E\u7B54\u6848\u3002", "flag", "gold"]
+    [".ladder-steps", "$100 \u80FD\u6362\u6765\u4EC0\u4E48", "\u6BCF\u6839\u6761\u662F\u6BCF\u6708\u591A\u653E $100\u3001\u4E00\u5E74\u540E\u6362\u6765\u7684\u4E1C\u897F\uFF0C\u7528\u7684\u662F\u4F60\u81EA\u5DF1\u7684\u6570\u5B57\u3002\u770B\u6807\u7B7E\uFF1A\u6BCF\u79CD\u90FD\u6709\u4EE3\u4EF7\u3002", "flag", "gold"]
   ] },
   { id: "decision", page: "decision", name: "\u5927\u51B3\u5B9A", steps: [
     [".phase-steps", "\u7B2C 2 \u6B65\uFF1A\u5927\u51B3\u5B9A", "\u6BCF\u5E74\u505A\u4E00\u4E2A\u9009\u62E9\uFF1A\u6362\u5DE5\u4F5C\u3001\u8BFB\u4E66\u3001\u642C\u5BB6\u3001\u604B\u7231\u3001\u521B\u4E1A\uFF0C\u6216\u8005\u7EF4\u6301\u73B0\u72B6\u3002", "map", "gold"],
@@ -4545,6 +4554,16 @@ var T2 = {
   livingNo: "\u5148\u7528\u5B58\u6B3E\uFF0C\u518D\u5237\u5361",
   livingFirst: "\u5148\u9009\u597D\u751F\u6D3B\u8D39\u4E0D\u591F\u65F6\u600E\u4E48\u529E\u3002",
   idMore: "\u5C55\u5F00\u6216\u6536\u8D77",
+  x100Head: "\u6BCF\u6708\u591A\u653E $100\uFF0C\u4E00\u5E74\u540E\uFF1A",
+  x100Debt: "\u591A\u8FD8{d}\uFF08{r}\uFF09\uFF1A\u5C11\u4ED8\u7684\u5229\u606F",
+  x100Match: "401(k) \u5B58\u5230\u914D\u6BD4\u4E0A\u9650\uFF1A\u516C\u53F8\u52A0\u7ED9\u4F60",
+  x100Cash: "\u5E94\u6025\u91D1\uFF1A\u591A\u6491 {n} \u4E2A\u6708\u5FC5\u8981\u5F00\u9500",
+  x100Invest: "\u6295\u8D44\uFF08\u5E73\u5747\u6BCF\u5E74 5%\uFF09",
+  tagSure: "\u7A33\u5B9A",
+  tagLocked: "\u9501\u5230 59\xBD \u5C81",
+  tagReady: "\u968F\u65F6\u80FD\u7528",
+  tagRisky: "\u53EF\u80FD\u4E8F",
+  x100Foot: "\u6570\u5B57\u5927\u4E0D\u7B49\u4E8E\u66F4\u597D\uFF1A\u6BCF\u4E2A\u9009\u62E9\u90FD\u6709\u4EE3\u4EF7\uFF0C\u7531\u4F60\u51B3\u5B9A\u3002",
   locked: "\u672A\u89E3\u9501",
   skipGuide: "\u8DF3\u8FC7",
   next: "\u4E0B\u4E00\u6B65",
@@ -5953,13 +5972,22 @@ function paydayPage() {
   const next = LADDER.find((x) => !done[x.id]), ni = LADDER.indexOf(next);
   const LICO = { starter: "shield", match: "hands", highdebt: "flame", ef: "piggy", roth: "sprout", more: "chart" };
   const baRow = (ico, label, a0, b0, better) => `<div class="ba-row"><span class="ba-lab">${icon[ico]}${label}</span>${beforeAfter(a0, b0, better)}<b>${money2(b0)}</b></div>`;
+  const YR = 1200, half = 0.55, hot = s2.debts.filter((d) => d.balance > 0.5 && !d.closed && d.apr > 0 && d.kind !== "arrears").sort((a2, b) => b.apr - a2.apr)[0];
+  const xo = [
+    hot && { ico: "flame", label: fmt(T2.x100Debt, { d: hot.label, r: pct(hot.apr, 1).replace(/\.0%$/, "%") }), v: Math.min(YR, hot.balance) * hot.apr * half, tag: T2.tagSure, cls: "ok" },
+    match && s2.job.employed && (p.k401Pct || 0) < match.upTo - 1e-9 && { ico: "hands", label: T2.x100Match, v: YR * match.rate, tag: T2.tagLocked, cls: "held" },
+    { ico: "piggy", label: fmt(T2.x100Cash, { n: (YR / Math.max(1, m.essentials)).toFixed(1) }), v: YR * ASSUME.hysa * half, tag: T2.tagReady, cls: "ok" },
+    { ico: "chart", label: T2.x100Invest, v: YR * ASSUME.stockReturnMean * half, tag: T2.tagRisky, cls: "tax" }
+  ].filter(Boolean);
+  const xmax = Math.max(...xo.map((x) => x.v), 1);
+  const x100 = `<div class="ladder-steps x100"><small>${T2.x100Head}</small>${xo.map((x) => `<div class="x100-row">${icon[x.ico]}<span class="x-lab">${h(x.label)} <em class="x-tag ${x.cls}">${h(x.tag)}</em></span>${meter(x.v, xmax, x.cls)}<b>+${money2(x.v)}</b></div>`).join("")}<p class="x-foot">${T2.x100Foot}</p></div>`;
   const impact = `<section class="panel impact"><h3>${T2.yearOnPlan}</h3>
     ${baRow("piggy", T2.emergency, s2.accounts.emergency, pv.state.accounts.emergency, "up")}${baRow("sprout", T2.retirement, m.retirement, pm.retirement, "up")}${baRow("receipt", T2.consumerDebt, m.consumerDebt, pm.consumerDebt, "down")}
     <div class="kv"><span>${icon.flame}${T2.interestYear}</span><b class="neg">${money2(sm.interest)}</b></div>
     ${sm.match ? `<div class="kv"><span>${icon.hands}${T2.freeMatch}</span><b class="pos">+${money2(sm.match)}</b></div>` : ""}
     <div class="kv"><span>${icon.receipt}${T2.taxReturn}</span><b>${sm.refund >= 0 ? fmt(T2.refundOf, { m: money2(sm.refund) }) : fmt(T2.oweOf, { m: money2(-sm.refund) })}</b></div>
     ${sm.missed ? `<p class="risk">${icon.alert}<span>${fmt(T2.willMiss, { n: sm.missed })}</span></p>` : sm.shortfallDraw > 1 ? `<p class="risk">${icon.alert}<span>${fmt(T2.willPull, { m: money2(sm.shortfallDraw) })}</span></p>` : ""}
-    <div class="ladder-steps"><small>${T2.nextStepFor}</small><ol>${LADDER.map((x, i) => `<li class="${i < ni || ni < 0 ? "done" : i === ni ? "now" : ""}" title="${i + 1}. ${h(x.title)}">${icon[LICO[x.id]] || icon.star}</li>`).join("")}</ol><p class="ls-now">${next ? `<b>${ni + 1}.</b> ${h(next.title)}` : h(T2.allSteps)}</p></div></section>`;
+    ${x100}</section>`;
   frame("payday", `<section class="payday"><div class="pd-grid">${flow}${alloc}${impact}</div></section>`);
 }
 var throwTag = (t) => t ? `<span class="throw-badge" title="${h(STAT[t.stat])}">${icon.dice}${icon[t.stat === "career" ? "briefcase" : "shield"]}+${modFor(s2, t.stat)}</span>` : "";

@@ -1458,6 +1458,15 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .idcard > summary { list-style: none; cursor: default; } .idcard > summary::-webkit-details-marker { display: none; }
 @media (max-width: 1000px) { .idcard > summary { cursor: pointer; } .idcard > summary::after { content: '▾'; margin-left: auto; font-weight: 900; font-size: 1.1rem; } .idcard[open] > summary::after { content: '▴'; } }
 @media (min-width: 761px) { .path-pick { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; } .path-opt { padding: 7px 7px; } }
+/* ---- Round 27: what $100 a month does ---- */
+.x100 .x100-row { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 2px 6px; margin: 6px 0; font-size: .8rem; }
+.x100 .x100-row .x-lab { grid-column: 2 / -1; line-height: 1.25; } .x100 .x100-row .meter { grid-column: 2; } .x100 .x100-row > .ico { grid-row: 1 / 3; align-self: start; margin-top: 2px; }
+.x100 .x100-row .ico { width: 17px; height: 17px; } .x100 .x100-row b { font-size: .82rem; text-align: right; min-width: 3.6em; }
+.x100 .x-tag { font-style: normal; font-weight: 800; font-size: .66rem; padding: 0 5px; border-radius: 6px; background: var(--quiet-2); white-space: nowrap; }
+.x100 .x-tag.ok { background: var(--grass-2); } .x100 .x-tag.held { background: var(--sun-2); } .x100 .x-tag.tax { background: #ffd9d9; }
+.x100 .x-foot { margin: 4px 0 0; font-size: .72rem; color: var(--ink-2); }
+.x100 .x100-row .meter { grid-row: 2; } .x100 .x100-row b { grid-column: 3; grid-row: 2; }
+.x100 .x100-row .meter { width: 100%; height: 10px; align-self: center; } .x100 .x100-row b { align-self: center; line-height: 1; }
 </style>
 </head>
 <body>
@@ -4345,7 +4354,7 @@ var TUTS = [
   ] },
   { id: "debt", page: "payday", name: "Debt", need: (s4) => s4.debts.some((d) => d.balance > 5e-3 && !d.closed && d.kind !== "arrears"), steps: [
     [".alloc-debt", "Debt costs money", "Each debt row charges interest. A flame means high interest: it grows fastest.", "flame", "red"],
-    [".ladder-steps", "One common order", "A common order people use for extra money. It\u2019s one approach, not the only right one.", "flag", "gold"]
+    [".ladder-steps", "What $100 a month does", "Each bar is what an extra $100 a month would do in a year, with your numbers. Check the tag: each one has a catch.", "flag", "gold"]
   ] },
   { id: "decision", page: "decision", name: "Big decision", steps: [
     [".phase-steps", "Step 2 of 5: one big decision", "One choice a year: a job, school, moving, dating, a business, or keeping things as they are.", "map", "gold"],
@@ -4545,6 +4554,16 @@ var T2 = {
   livingNo: "Savings, then the card",
   livingFirst: "Choose what happens if living costs run short.",
   idMore: "Show or hide details",
+  x100Head: "An extra $100 a month for a year:",
+  x100Debt: "Extra on {d} ({r}): interest you skip",
+  x100Match: "401(k) up to the match: your employer adds",
+  x100Cash: "Emergency fund: +{n} months of essentials",
+  x100Invest: "Invest (5% a year on average)",
+  tagSure: "sure",
+  tagLocked: "locked until 59\xBD",
+  tagReady: "ready any time",
+  tagRisky: "can fall",
+  x100Foot: "A bigger number isn\u2019t automatically better: each choice has its catch. You decide.",
   locked: "Locked",
   skipGuide: "Skip",
   next: "Next",
@@ -5953,13 +5972,22 @@ function paydayPage() {
   const next = LADDER.find((x) => !done[x.id]), ni = LADDER.indexOf(next);
   const LICO = { starter: "shield", match: "hands", highdebt: "flame", ef: "piggy", roth: "sprout", more: "chart" };
   const baRow = (ico, label, a0, b0, better) => `<div class="ba-row"><span class="ba-lab">${icon[ico]}${label}</span>${beforeAfter(a0, b0, better)}<b>${money2(b0)}</b></div>`;
+  const YR = 1200, half = 0.55, hot = s2.debts.filter((d) => d.balance > 0.5 && !d.closed && d.apr > 0 && d.kind !== "arrears").sort((a2, b) => b.apr - a2.apr)[0];
+  const xo = [
+    hot && { ico: "flame", label: fmt(T2.x100Debt, { d: hot.label, r: pct(hot.apr, 1).replace(/\.0%$/, "%") }), v: Math.min(YR, hot.balance) * hot.apr * half, tag: T2.tagSure, cls: "ok" },
+    match && s2.job.employed && (p.k401Pct || 0) < match.upTo - 1e-9 && { ico: "hands", label: T2.x100Match, v: YR * match.rate, tag: T2.tagLocked, cls: "held" },
+    { ico: "piggy", label: fmt(T2.x100Cash, { n: (YR / Math.max(1, m.essentials)).toFixed(1) }), v: YR * ASSUME.hysa * half, tag: T2.tagReady, cls: "ok" },
+    { ico: "chart", label: T2.x100Invest, v: YR * ASSUME.stockReturnMean * half, tag: T2.tagRisky, cls: "tax" }
+  ].filter(Boolean);
+  const xmax = Math.max(...xo.map((x) => x.v), 1);
+  const x100 = `<div class="ladder-steps x100"><small>${T2.x100Head}</small>${xo.map((x) => `<div class="x100-row">${icon[x.ico]}<span class="x-lab">${h(x.label)} <em class="x-tag ${x.cls}">${h(x.tag)}</em></span>${meter(x.v, xmax, x.cls)}<b>+${money2(x.v)}</b></div>`).join("")}<p class="x-foot">${T2.x100Foot}</p></div>`;
   const impact = `<section class="panel impact"><h3>${T2.yearOnPlan}</h3>
     ${baRow("piggy", T2.emergency, s2.accounts.emergency, pv.state.accounts.emergency, "up")}${baRow("sprout", T2.retirement, m.retirement, pm.retirement, "up")}${baRow("receipt", T2.consumerDebt, m.consumerDebt, pm.consumerDebt, "down")}
     <div class="kv"><span>${icon.flame}${T2.interestYear}</span><b class="neg">${money2(sm.interest)}</b></div>
     ${sm.match ? `<div class="kv"><span>${icon.hands}${T2.freeMatch}</span><b class="pos">+${money2(sm.match)}</b></div>` : ""}
     <div class="kv"><span>${icon.receipt}${T2.taxReturn}</span><b>${sm.refund >= 0 ? fmt(T2.refundOf, { m: money2(sm.refund) }) : fmt(T2.oweOf, { m: money2(-sm.refund) })}</b></div>
     ${sm.missed ? `<p class="risk">${icon.alert}<span>${fmt(T2.willMiss, { n: sm.missed })}</span></p>` : sm.shortfallDraw > 1 ? `<p class="risk">${icon.alert}<span>${fmt(T2.willPull, { m: money2(sm.shortfallDraw) })}</span></p>` : ""}
-    <div class="ladder-steps"><small>${T2.nextStepFor}</small><ol>${LADDER.map((x, i) => `<li class="${i < ni || ni < 0 ? "done" : i === ni ? "now" : ""}" title="${i + 1}. ${h(x.title)}">${icon[LICO[x.id]] || icon.star}</li>`).join("")}</ol><p class="ls-now">${next ? `<b>${ni + 1}.</b> ${h(next.title)}` : h(T2.allSteps)}</p></div></section>`;
+    ${x100}</section>`;
   frame("payday", `<section class="payday"><div class="pd-grid">${flow}${alloc}${impact}</div></section>`);
 }
 var throwTag = (t) => t ? `<span class="throw-badge" title="${h(STAT[t.stat])}">${icon.dice}${icon[t.stat === "career" ? "briefcase" : "shield"]}+${modFor(s2, t.stat)}</span>` : "";

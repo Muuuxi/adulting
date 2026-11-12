@@ -3671,11 +3671,11 @@ function startupCheck(s4, choiceId) {
   const ch = DECISIONS.find((d) => d.id === "startup").choices.find((c) => c.id === choiceId);
   if (!ch) return null;
   const out = monthlyOut(s4), months = monthsLeft(Math.max(0, liquid(s4) - (ch.cost || 0)), out), pay = s4.job.employed ? s4.job.salary : 0, match = s4.job.match && pay ? pay * s4.job.match.rate * s4.job.match.upTo : 0, give = pay + match + (ch.id === "own" ? (s4.side || 0) * 12 : 0);
-  const need = Math.ceil((give > 0 ? give / 12 : out) / 10) * 10, bill = BIZ_BILLS[ch.id] || 500, pick = (o) => o.map(([id, label]) => ({ id, label }));
+  const need = Math.ceil((give > 0 ? give / 12 : out) / 10) * 10, bill = BIZ_BILLS[ch.id] || 500, pick2 = (o) => o.map(([id, label]) => ({ id, label }));
   return { months, need, give, bill, questions: [
-    { text: fill20(R20.q1, { n: months.toFixed(1) }), opts: pick(R20.q1o) },
-    { text: fill20(give > 0 ? R20.q2 : R20.q2b, { give: money(give), need: money(need) }), opts: pick(R20.q2o) },
-    { text: fill20(R20.q3, { bill: money(bill) }), opts: pick(R20.q3o) }
+    { text: fill20(R20.q1, { n: months.toFixed(1) }), opts: pick2(R20.q1o) },
+    { text: fill20(give > 0 ? R20.q2 : R20.q2b, { give: money(give), need: money(need) }), opts: pick2(R20.q2o) },
+    { text: fill20(R20.q3, { bill: money(bill) }), opts: pick2(R20.q3o) }
   ] };
 }
 function noteClose(n, b, sold) {
@@ -3778,8 +3778,8 @@ function graduate(n) {
   n.records.push({ age: n.age, kind: "big", text: `\u6BD5\u4E1A\u4E86\uFF1A\u62FF\u5230${EDU[n.edu]}\u5B66\u4F4D\u3002\u53EF\u4EE5\u5728\u804C\u4F4D\u677F\u7533\u8BF7\u8981\u6C42\u5B66\u4F4D\u7684\u5DE5\u4F5C\u3002`, big: true });
   n.school = null;
   const j = jobFromSalary(k2 === "study" ? 6e4 : 42e3, n.edu, n.stats.career), cur = n.job.part && n.job.id !== "campus" ? JOBS.find((x) => x.id === n.job.id) : null;
-  const pick = cur && cur.salary >= j.salary ? cur : j;
-  setJob(n, pick, { salary: pick.salary });
+  const pick2 = cur && cur.salary >= j.salary ? cur : j;
+  setJob(n, pick2, { salary: pick2.salary });
   n.records.push({ age: n.age, kind: "note", text: `\u6BD5\u4E1A\u540E\u5F00\u59CB\u505A${n.job.title}\uFF1A\u5E74\u85AA ${money(n.job.salary)}` });
 }
 function ending(s4) {
@@ -4139,227 +4139,809 @@ var SCENERY = [
   { age: 47.6, svg: sc(70, 60, `<path d="M4 58h62" ${s3}/><rect x="10" y="38" width="50" height="8" rx="3" fill="#a5653a" ${s3}/><path d="M16 46v12M54 46v12M12 38V26h46v12" fill="none" ${s3}/>`) }
 ];
 
-// ui/arcade.js
+// ui/minigames.js
 var INK2 = "#1d2b4f";
-function setupCanvas(canvas) {
-  const dpr = Math.min(2, window.devicePixelRatio || 1), w = canvas.clientWidth, h2 = canvas.clientHeight;
-  canvas.width = w * dpr;
-  canvas.height = h2 * dpr;
-  const ctx2 = canvas.getContext("2d");
-  ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
-  return { ctx: ctx2, w, h: h2 };
+var THEMES = {
+  love: { good: ["\u2764\uFE0F", "\u{1F48C}", "\u{1F339}"], bad: ["\u{1F494}", "\u26A1"], bg: "#ffc7dd", fx: "\u{1F497}" },
+  work: { good: ["\u2B50", "\u{1F4C8}", "\u{1F4BC}"], bad: ["\u{1F4C9}", "\u23F0"], bg: "#bfe3ff", fx: "\u2728" },
+  biz: { good: ["\u{1F4B0}", "\u{1F91D}", "\u{1F4E6}"], bad: ["\u{1F4C9}", "\u{1F9FE}"], bg: "#c8f2d4", fx: "\u{1FA99}" },
+  school: { good: ["\u{1F4DA}", "\u{1F393}", "\u270F\uFE0F"], bad: ["\u{1F634}", "\u{1F4F1}"], bg: "#e6dcff", fx: "\u2728" },
+  tempt: { good: ["\u{1F4AA}", "\u{1F6E1}\uFE0F", "\u{1F3AF}"], bad: ["\u{1F6CD}\uFE0F", "\u{1F3B0}", "\u{1F354}", "\u{1F3AE}"], bg: "#ffd8e4", fx: "\u{1F4AA}" }
+};
+var GAME_IDS = ["catch", "runner", "snake", "shooter", "match3", "farm", "clicker", "memory", "runner2", "shooter2"];
+var NEEDS = { runner2: "runner", shooter2: "shooter" };
+function pickGame(played = [], seed = 0) {
+  let p = played.filter((x) => GAME_IDS.includes(x));
+  if (p.length >= GAME_IDS.length) p = [];
+  const c = GAME_IDS.filter((g) => !p.includes(g) && (!NEEDS[g] || p.includes(NEEDS[g])));
+  return c[((seed >>> 0) + p.length * 7) % c.length];
 }
+var bonusOf = (score) => score >= 0.7 ? 2 : score >= 0.4 ? 1 : 0;
+var clamp2 = (x, a, b) => Math.max(a, Math.min(b, x));
+var rnd = (a, b) => a + Math.random() * (b - a);
+var pick = (a) => a[Math.floor(Math.random() * a.length)];
 function input(canvas) {
-  const st = { left: false, right: false, x: null };
-  const key = (e, on) => {
-    if (["ArrowLeft", "a", "A"].includes(e.key)) {
-      st.left = on;
-      e.preventDefault();
-    }
-    if (["ArrowRight", "d", "D"].includes(e.key)) {
-      st.right = on;
-      e.preventDefault();
-    }
+  const st = { left: false, right: false, up: false, down: false, act: false, hold: false, x: null, y: null, q: [] };
+  const MAP = { ArrowLeft: "left", a: "left", A: "left", ArrowRight: "right", d: "right", D: "right", ArrowUp: "up", w: "up", W: "up", ArrowDown: "down", s: "down", S: "down", " ": "act", Enter: "act" };
+  const pos = (e) => {
+    const r = canvas.getBoundingClientRect(), p = e.touches?.[0] || e;
+    st.x = p.clientX - r.left;
+    st.y = p.clientY - r.top;
   };
-  const kd = (e) => key(e, true), ku = (e) => key(e, false), pm = (e) => {
-    const r = canvas.getBoundingClientRect();
-    st.x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+  const kd = (e) => {
+    const k2 = MAP[e.key];
+    if (k2) {
+      if (!e.repeat) st.q.push({ k: k2 });
+      st[k2] = true;
+      if (k2 === "act") st.hold = true;
+      e.preventDefault();
+    } else if (/^[1-9]$/.test(e.key)) st.q.push({ k: "num", n: +e.key });
   };
+  const ku = (e) => {
+    const k2 = MAP[e.key];
+    if (!k2) return;
+    st[k2] = false;
+    if (k2 === "act") {
+      st.hold = false;
+      st.q.push({ k: "release" });
+    }
+    e.preventDefault();
+  };
+  const pd = (e) => {
+    pos(e);
+    st.hold = true;
+    st.q.push({ k: "tap", x: st.x, y: st.y });
+  }, pu = () => {
+    st.hold = false;
+    st.q.push({ k: "release", x: st.x, y: st.y });
+  }, pm = (e) => pos(e);
   window.addEventListener("keydown", kd);
   window.addEventListener("keyup", ku);
+  canvas.addEventListener("pointerdown", pd);
+  canvas.addEventListener("pointerup", pu);
+  canvas.addEventListener("pointercancel", pu);
   canvas.addEventListener("pointermove", pm);
-  canvas.addEventListener("pointerdown", pm);
-  canvas.addEventListener("touchmove", pm, { passive: true });
   canvas.tabIndex = 0;
   canvas.focus({ preventScroll: true });
   return { st, off() {
     window.removeEventListener("keydown", kd);
     window.removeEventListener("keyup", ku);
+    canvas.removeEventListener("pointerdown", pd);
+    canvas.removeEventListener("pointerup", pu);
+    canvas.removeEventListener("pointercancel", pu);
     canvas.removeEventListener("pointermove", pm);
-    canvas.removeEventListener("pointerdown", pm);
-    canvas.removeEventListener("touchmove", pm);
   } };
 }
-function rr(ctx2, x, y, w, h2, r) {
-  ctx2.beginPath();
-  ctx2.roundRect ? ctx2.roundRect(x, y, w, h2, r) : ctx2.rect(x, y, w, h2);
-}
-var bonusFrom = (kind, r) => kind === "catch" ? r.ratio >= 0.7 ? 2 : r.ratio >= 0.4 ? 1 : 0 : r.hits <= 1 ? 2 : r.hits <= 3 ? 1 : 0;
-var THEMES = {
-  love: { good: ["\u2764\uFE0F", "\u{1F48C}", "\u{1F339}"], bad: ["\u{1F494}", "\u26A1"], bg: "#ffc7dd", fx: "\u{1F497}" },
-  work: { good: ["\u2B50", "\u{1F4C8}", "\u{1F4BC}"], bad: ["\u{1F4C9}", "\u23F0"], bg: "#bfe3ff", fx: "\u2B50" },
-  biz: { good: ["\u{1F4B0}", "\u{1F91D}", "\u{1F4E6}"], bad: ["\u{1F4C9}", "\u{1F9FE}"], bg: "#c8f2d4", fx: "\u{1F4B0}" },
-  school: { good: ["\u{1F4DA}", "\u{1F393}", "\u270F\uFE0F"], bad: ["\u{1F634}", "\u{1F4F1}"], bg: "#e6dcff", fx: "\u2728" },
-  tempt: { bg: "#ffd8e4", fx: "\u{1F4AA}" }
+var MAKE = {
+  // 1. catch: move left/right, catch the good things, let the bad ones fall
+  catch(A) {
+    const { w, h: h2, io, TH } = A;
+    let px = w / 2, spawn = 0, seq = 0, good = 0, got = 0, bad = 0;
+    const items = [];
+    return {
+      update(dt, t) {
+        const s4 = io.st;
+        if (s4.left) px -= 420 * dt;
+        if (s4.right) px += 420 * dt;
+        if (s4.x != null && !s4.left && !s4.right) px += (s4.x - px) * Math.min(1, dt * 14);
+        px = clamp2(px, 40, w - 40);
+        spawn -= dt;
+        if (spawn <= 0 && t < A.seconds - 1) {
+          seq++;
+          const g = seq % 3 !== 0;
+          items.push({ x: rnd(30, w - 30), y: -20, vy: 150 + seq % 5 * 22 + t * 6, g, ch: pick(g ? TH.good : TH.bad) });
+          if (g) good++;
+          spawn = 0.5;
+        }
+        for (const it of items) {
+          if (it.gone) continue;
+          it.y += it.vy * dt;
+          if (it.y > h2 - 56 && it.y < h2 - 22 && Math.abs(it.x - px) < 46) {
+            it.gone = true;
+            if (it.g) {
+              got++;
+              A.good(it.x, h2 - 70);
+            } else {
+              bad++;
+              A.bad(it.x, h2 - 70);
+            }
+          }
+          if (it.y > h2 + 20) it.gone = true;
+        }
+      },
+      draw() {
+        const c = A.ctx;
+        for (const it of items) if (!it.gone) A.emoji(it.ch, it.x, it.y);
+        c.save();
+        c.translate(px, h2 - 40);
+        c.fillStyle = "#e8bf8a";
+        c.strokeStyle = INK2;
+        c.lineWidth = 3;
+        c.beginPath();
+        c.moveTo(-42, -8);
+        c.lineTo(42, -8);
+        c.lineTo(32, 16);
+        c.lineTo(-32, 16);
+        c.closePath();
+        c.fill();
+        c.stroke();
+        c.restore();
+      },
+      score: () => good ? Math.max(0, got - bad) / good : 0,
+      hud: () => `\u2714 ${got}  \u2716 ${bad}`
+    };
+  },
+  // 2 and 9. runner: jump over what comes at you. The advanced version has a double jump, tall obstacles and things to grab in the air.
+  runner: (A) => runner(A, false),
+  runner2: (A) => runner(A, true),
+  // 3. snake: steer, eat the good things, avoid the bad ones. Edges wrap around.
+  snake(A) {
+    const { w, h: h2, io, TH } = A, COLS = 16, ROWS = 9, cell = Math.floor(Math.min(w / COLS, (h2 - 44) / ROWS)), ox = (w - cell * COLS) / 2, oy = 40 + (h2 - 44 - cell * ROWS) / 2;
+    let body2 = [{ x: 5, y: 4 }, { x: 4, y: 4 }, { x: 3, y: 4 }], dir = { x: 1, y: 0 }, want = dir, tick = 0, got = 0, hits = 0, food = null;
+    const bads = [];
+    const free = () => {
+      for (let i = 0; i < 60; i++) {
+        const p = { x: Math.floor(rnd(0, COLS)), y: Math.floor(rnd(0, ROWS)) };
+        if (!body2.some((b) => b.x === p.x && b.y === p.y) && !bads.some((b) => b.x === p.x && b.y === p.y) && !(food && food.x === p.x && food.y === p.y) && Math.abs(p.x - body2[0].x) + Math.abs(p.y - body2[0].y) > 2) return p;
+      }
+      return { x: 0, y: 0 };
+    };
+    food = { ...free(), ch: pick(TH.good) };
+    for (let i = 0; i < 3; i++) bads.push({ ...free(), ch: pick(TH.bad) });
+    const D = { left: { x: -1, y: 0 }, right: { x: 1, y: 0 }, up: { x: 0, y: -1 }, down: { x: 0, y: 1 } };
+    return {
+      update(dt) {
+        for (const e of io.st.q) {
+          let d = D[e.k];
+          if (e.k === "tap") {
+            const hx = ox + (body2[0].x + 0.5) * cell, hy = oy + (body2[0].y + 0.5) * cell, dx = e.x - hx, dy = e.y - hy;
+            d = Math.abs(dx) > Math.abs(dy) ? dx > 0 ? D.right : D.left : dy > 0 ? D.down : D.up;
+          }
+          if (d && !(d.x === -dir.x && d.y === -dir.y)) want = d;
+        }
+        tick += dt;
+        if (tick < 0.15) return;
+        tick = 0;
+        dir = want;
+        const head = { x: (body2[0].x + dir.x + COLS) % COLS, y: (body2[0].y + dir.y + ROWS) % ROWS };
+        body2.unshift(head);
+        const px = ox + (head.x + 0.5) * cell, py = oy + (head.y + 0.5) * cell, bi = bads.findIndex((b) => b.x === head.x && b.y === head.y);
+        if (head.x === food.x && head.y === food.y) {
+          got++;
+          A.good(px, py);
+          food = { ...free(), ch: pick(TH.good) };
+        } else {
+          body2.pop();
+          if (bi >= 0) {
+            hits++;
+            A.bad(px, py);
+            bads[bi] = { ...free(), ch: pick(TH.bad) };
+            body2 = body2.slice(0, 3);
+          }
+        }
+      },
+      draw() {
+        const c = A.ctx;
+        c.fillStyle = "rgba(255,255,255,.45)";
+        c.strokeStyle = INK2;
+        c.lineWidth = 2;
+        c.beginPath();
+        c.rect(ox, oy, cell * COLS, cell * ROWS);
+        c.fill();
+        c.stroke();
+        body2.forEach((b, i) => {
+          c.fillStyle = i ? "#3d7be0" : "#1d4fa8";
+          c.beginPath();
+          c.roundRect(ox + b.x * cell + 2, oy + b.y * cell + 2, cell - 4, cell - 4, 5);
+          c.fill();
+        });
+        A.emoji(food.ch, ox + (food.x + 0.5) * cell, oy + (food.y + 0.5) * cell, cell * 0.8);
+        for (const b of bads) A.emoji(b.ch, ox + (b.x + 0.5) * cell, oy + (b.y + 0.5) * cell, cell * 0.8);
+      },
+      score: () => clamp2((got - hits) / 6, 0, 1),
+      hud: () => `\u2714 ${got}  \u2716 ${hits}`
+    };
+  },
+  // 4 and 10. shooter: move left/right and shoot what falls. The advanced version has no auto-fire: tap to shoot, hold then release for a big shot.
+  shooter: (A) => shooter(A, false),
+  shooter2: (A) => shooter(A, true),
+  // 5. match-3: swap two neighbours to line up three or more of the same
+  match3(A) {
+    const { w, h: h2, io, TH } = A, COLS = 6, ROWS = 5, K2 = [.../* @__PURE__ */ new Set([...TH.good, TH.fx, "\u{1F537}", "\u{1F7E1}"])].slice(0, 5), cell = Math.floor(Math.min((w - 20) / COLS, (h2 - 62) / ROWS)), ox = (w - cell * COLS) / 2, oy = 44 + (h2 - 54 - cell * ROWS) / 2;
+    const g = [];
+    let sel = null, cur = { x: 2, y: 2 }, cleared = 0, fails = 0;
+    const lineAt = (x, y) => {
+      const v = g[y][x];
+      if (v == null) return false;
+      let a = 1;
+      for (let i = x - 1; i >= 0 && g[y][i] === v; i--) a++;
+      for (let i = x + 1; i < COLS && g[y][i] === v; i++) a++;
+      let b = 1;
+      for (let i = y - 1; i >= 0 && g[i][x] === v; i--) b++;
+      for (let i = y + 1; i < ROWS && g[i][x] === v; i++) b++;
+      return a >= 3 || b >= 3;
+    };
+    for (let y = 0; y < ROWS; y++) g.push(Array(COLS).fill(null));
+    for (let y = 0; y < ROWS; y++) {
+      for (let x = 0; x < COLS; x++) {
+        let v, n = 0;
+        do {
+          v = Math.floor(rnd(0, K2.length));
+          g[y][x] = v;
+        } while (lineAt(x, y) && ++n < 20);
+      }
+    }
+    const resolve = () => {
+      let total = 0;
+      for (let pass = 0; pass < 6; pass++) {
+        const hit = [];
+        for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (lineAt(x, y)) hit.push([x, y]);
+        if (!hit.length) break;
+        total += hit.length;
+        for (const [x, y] of hit) g[y][x] = null;
+        for (let x = 0; x < COLS; x++) {
+          const col = [];
+          for (let y = ROWS - 1; y >= 0; y--) if (g[y][x] != null) col.push(g[y][x]);
+          for (let y = ROWS - 1, i = 0; y >= 0; y--, i++) g[y][x] = i < col.length ? col[i] : Math.floor(rnd(0, K2.length));
+        }
+      }
+      return total;
+    };
+    const swap = (a, b) => {
+      if (b.x < 0 || b.y < 0 || b.x >= COLS || b.y >= ROWS) return;
+      const t = g[a.y][a.x];
+      g[a.y][a.x] = g[b.y][b.x];
+      g[b.y][b.x] = t;
+      const px = ox + (b.x + 0.5) * cell, py = oy + (b.y + 0.5) * cell;
+      if (lineAt(a.x, a.y) || lineAt(b.x, b.y)) {
+        const n = resolve();
+        cleared += n;
+        A.good(px, py, "+" + n);
+      } else {
+        g[b.y][b.x] = g[a.y][a.x];
+        g[a.y][a.x] = t;
+        fails++;
+        A.bad(px, py, "\u2716");
+      }
+      sel = null;
+      cur = b;
+    };
+    const DIR = { left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] };
+    return {
+      update() {
+        for (const e of io.st.q) {
+          if (e.k === "tap") {
+            const x = Math.floor((e.x - ox) / cell), y = Math.floor((e.y - oy) / cell);
+            if (x < 0 || y < 0 || x >= COLS || y >= ROWS) continue;
+            const p = { x, y };
+            if (sel && Math.abs(sel.x - x) + Math.abs(sel.y - y) === 1) swap(sel, p);
+            else {
+              sel = p;
+              cur = p;
+            }
+          } else if (DIR[e.k]) {
+            const n = { x: cur.x + DIR[e.k][0], y: cur.y + DIR[e.k][1] };
+            if (sel) swap(sel, n);
+            else cur = { x: clamp2(n.x, 0, COLS - 1), y: clamp2(n.y, 0, ROWS - 1) };
+          } else if (e.k === "act") sel = sel ? null : { ...cur };
+        }
+      },
+      draw() {
+        const c = A.ctx;
+        for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) {
+          const s4 = sel && sel.x === x && sel.y === y, k2 = cur.x === x && cur.y === y;
+          c.fillStyle = s4 ? "#ffe066" : "rgba(255,255,255,.7)";
+          c.strokeStyle = INK2;
+          c.lineWidth = s4 || k2 ? 4 : 2;
+          c.beginPath();
+          c.roundRect(ox + x * cell + 3, oy + y * cell + 3, cell - 6, cell - 6, 8);
+          c.fill();
+          c.stroke();
+          A.emoji(K2[g[y][x]], ox + (x + 0.5) * cell, oy + (y + 0.5) * cell, cell * 0.56);
+        }
+      },
+      score: () => clamp2((cleared - fails * 2) / 24, 0, 1),
+      hud: () => `\u2714 ${cleared}  \u2716 ${fails}`
+    };
+  },
+  // 6. farm: each plot ripens for a moment. Harvest it then: not too early, not too late.
+  farm(A) {
+    const { w, h: h2, io, TH } = A, N2 = 5, gap = w / N2, y0 = h2 * 0.56, plots = Array.from({ length: N2 }, (_, i) => ({ i, ph: "wait", t: rnd(0.2, 1.6), ch: pick(TH.good) }));
+    let got = 0, miss = 0, early = 0;
+    const tapPlot = (i) => {
+      const p = plots[i];
+      if (!p) return;
+      const x = gap * (i + 0.5);
+      if (p.ph === "ripe") {
+        got++;
+        A.good(x, y0 - 30);
+        p.ph = "wait";
+        p.t = rnd(0.3, 1.1);
+        p.ch = pick(TH.good);
+      } else if (p.ph === "grow") {
+        early++;
+        A.bad(x, y0 - 30, "\u2716");
+        p.t = 1.2;
+      }
+    };
+    return {
+      update(dt) {
+        for (const e of io.st.q) {
+          if (e.k === "tap") tapPlot(Math.floor(e.x / gap));
+          else if (e.k === "num") tapPlot(e.n - 1);
+        }
+        for (const p of plots) {
+          p.t -= dt;
+          if (p.t > 0) continue;
+          if (p.ph === "wait") {
+            p.ph = "grow";
+            p.t = rnd(0.9, 1.5);
+          } else if (p.ph === "grow") {
+            p.ph = "ripe";
+            p.t = 1.05;
+          } else if (p.ph === "ripe") {
+            p.ph = "wilt";
+            p.t = 0.5;
+            miss++;
+            A.miss();
+          } else {
+            p.ph = "wait";
+            p.t = rnd(0.3, 1.1);
+            p.ch = pick(TH.good);
+          }
+        }
+      },
+      draw() {
+        const c = A.ctx;
+        for (const p of plots) {
+          const x = gap * (p.i + 0.5), r = Math.min(gap * 0.42, 46);
+          c.fillStyle = p.ph === "ripe" ? "#ffe066" : "#c9a36b";
+          c.strokeStyle = INK2;
+          c.lineWidth = p.ph === "ripe" ? 5 : 3;
+          c.beginPath();
+          c.ellipse(x, y0 + 20, r, r * 0.5, 0, 0, Math.PI * 2);
+          c.fill();
+          c.stroke();
+          if (p.ph === "grow") A.emoji("\u{1F331}", x, y0 - 6, 26);
+          else if (p.ph === "ripe") A.emoji(p.ch, x, y0 - 16, 40);
+          else if (p.ph === "wilt") A.emoji("\u{1F940}", x, y0 - 6, 28);
+          c.fillStyle = INK2;
+          c.font = "900 14px system-ui";
+          c.textAlign = "center";
+          c.fillText(String(p.i + 1), x, y0 + 26);
+        }
+      },
+      score: () => clamp2((got - early * 0.5) / Math.max(4, got + miss), 0, 1),
+      hud: () => `\u2714 ${got}  \u2716 ${miss + early}`
+    };
+  },
+  // 7. clicker: tap as fast as you can, but stop while the bad sign is showing
+  clicker(A) {
+    const { w, h: h2, io, TH } = A, cx = w / 2, cy = h2 * 0.55, R2 = Math.min(w, h2) * 0.26;
+    let n = 0, slips = 0, badT = 0, nextBad = rnd(2, 3.2), pulse = 0, good = pick(TH.good), bad = pick(TH.bad);
+    return {
+      update(dt) {
+        pulse = Math.max(0, pulse - dt * 6);
+        if (badT > 0) badT -= dt;
+        else {
+          nextBad -= dt;
+          if (nextBad <= 0) {
+            badT = 0.75;
+            nextBad = rnd(2.2, 3.6);
+            bad = pick(TH.bad);
+          }
+        }
+        for (const e of io.st.q) if (e.k === "tap" || e.k === "act") {
+          if (badT > 0) {
+            slips++;
+            n = Math.max(0, n - 3);
+            A.bad(cx, cy - R2, "\u22123");
+          } else {
+            n++;
+            pulse = 1;
+            A.good(cx + rnd(-R2, R2), cy - R2 - 6, "+1", true);
+          }
+        }
+      },
+      draw() {
+        const c = A.ctx, r = R2 * (1 + pulse * 0.08);
+        c.fillStyle = badT > 0 ? "#ff9b9b" : "#ffe066";
+        c.strokeStyle = INK2;
+        c.lineWidth = 5;
+        c.beginPath();
+        c.arc(cx, cy, r, 0, Math.PI * 2);
+        c.fill();
+        c.stroke();
+        A.emoji(badT > 0 ? bad : good, cx, cy, R2 * 0.9);
+        c.fillStyle = INK2;
+        c.font = `900 ${Math.round(R2 * 0.34)}px system-ui`;
+        c.textAlign = "center";
+        c.fillText(String(n), cx, cy - R2 - 24);
+      },
+      score: () => clamp2(n / 55, 0, 1),
+      hud: () => `\u2714 ${n}  \u2716 ${slips}`
+    };
+  },
+  // 8. memory: turn two cards over; a matching pair stays open
+  memory(A) {
+    const { w, h: h2, io, TH } = A, COLS = 4, ROWS = 2, cw = Math.min((w - 30) / COLS, 130), ch = Math.min((h2 - 60) / ROWS, 130), ox = (w - cw * COLS) / 2, oy = 44 + (h2 - 50 - ch * ROWS) / 2, FACES = [.../* @__PURE__ */ new Set([...TH.good, TH.fx, "\u{1F537}", "\u{1F7E1}"])].slice(0, 4);
+    let cards = [], open = [], lock = 0, peek = 1, pairs = 0, misses = 0, cur = 0;
+    const deal = () => {
+      const v = [...FACES, ...FACES];
+      for (let i = v.length - 1; i > 0; i--) {
+        const j = Math.floor(rnd(0, i + 1));
+        [v[i], v[j]] = [v[j], v[i]];
+      }
+      cards = v.map((f) => ({ f, up: false, done: false }));
+      open = [];
+      peek = 1;
+    };
+    deal();
+    const flip = (i) => {
+      const k2 = cards[i];
+      if (!k2 || lock > 0 || peek > 0 || k2.up || k2.done) return;
+      k2.up = true;
+      open.push(i);
+      if (open.length === 2) {
+        const [a, b] = open;
+        const x = ox + (i % COLS + 0.5) * cw, y = oy + (Math.floor(i / COLS) + 0.5) * ch;
+        if (cards[a].f === cards[b].f) {
+          cards[a].done = cards[b].done = true;
+          pairs++;
+          A.good(x, y);
+          open = [];
+          if (cards.every((c) => c.done)) lock = 0.5;
+        } else {
+          misses++;
+          lock = 0.55;
+        }
+      }
+    };
+    return {
+      update(dt) {
+        if (peek > 0) peek -= dt;
+        if (lock > 0) {
+          lock -= dt;
+          if (lock <= 0) {
+            if (cards.every((c) => c.done)) deal();
+            else {
+              for (const i of open) cards[i].up = false;
+              open = [];
+            }
+          }
+        }
+        for (const e of io.st.q) {
+          if (e.k === "tap") {
+            const x = Math.floor((e.x - ox) / cw), y = Math.floor((e.y - oy) / ch);
+            if (x >= 0 && y >= 0 && x < COLS && y < ROWS) {
+              cur = y * COLS + x;
+              flip(cur);
+            }
+          } else if (e.k === "left") cur = (cur + 7) % 8;
+          else if (e.k === "right") cur = (cur + 1) % 8;
+          else if (e.k === "up" || e.k === "down") cur = (cur + 4) % 8;
+          else if (e.k === "act") flip(cur);
+          else if (e.k === "num" && e.n <= 8) {
+            cur = e.n - 1;
+            flip(cur);
+          }
+        }
+      },
+      draw() {
+        const c = A.ctx;
+        cards.forEach((k2, i) => {
+          const x = ox + i % COLS * cw, y = oy + Math.floor(i / COLS) * ch, show = k2.up || k2.done || peek > 0;
+          c.fillStyle = k2.done ? "#c8f2d4" : show ? "#fff" : "#3d7be0";
+          c.strokeStyle = INK2;
+          c.lineWidth = i === cur ? 5 : 3;
+          c.beginPath();
+          c.roundRect(x + 5, y + 5, cw - 10, ch - 10, 12);
+          c.fill();
+          c.stroke();
+          if (show) A.emoji(k2.f, x + cw / 2, y + ch / 2, Math.min(cw, ch) * 0.46);
+        });
+      },
+      score: () => clamp2(pairs / 5, 0, 1),
+      hud: () => `\u2714 ${pairs}  \u2716 ${misses}`
+    };
+  }
 };
-function playChallenge(canvas, kind, hooks, seconds = 12, theme = null) {
-  const TH = THEMES[theme] || null, fx = [];
-  let streak = 0, shake = 0, frost = 0;
-  const { ctx: ctx2, w, h: h2 } = setupCanvas(canvas), io = input(canvas);
-  let px = w / 2, t = 0, last = performance.now(), raf = 0, done = false, spawn = 0, seq = 0;
-  const items = [], pops = [];
-  let good = 0, caught = 0, hits = 0, bad = 0;
-  const GOOD = TH?.good || ["\u2605", "$"], BAD = TH?.bad || (kind === "catch" ? ["\u2715"] : null) || ["\u{1F4F1}", "\u{1F6CD}", "\u{1F3B0}", "\u{1F354}", "\u{1F3AE}"];
+function runner(A, dbl) {
+  const { w, h: h2, io, TH } = A, gy = h2 - 46, PX = Math.min(90, w * 0.2), G = 1900;
+  let y = gy, vy = 0, jumps = 0, spawn = 0.8, cleared = 0, hits = 0, coins = 0, coinsAll = 0, total = 0;
+  const obs = [], air = [];
+  return {
+    update(dt, t) {
+      for (const e of io.st.q) if (e.k === "tap" || e.k === "act" || e.k === "up") {
+        if (y >= gy - 0.5) {
+          vy = -640;
+          jumps = 1;
+        } else if (dbl && jumps < 2) {
+          vy = -580;
+          jumps = 2;
+        }
+      }
+      vy += G * dt;
+      y = Math.min(gy, y + vy * dt);
+      if (y >= gy) {
+        vy = 0;
+        jumps = 0;
+      }
+      const sp = 290 + t * 9;
+      spawn -= dt;
+      if (spawn <= 0 && t < A.seconds - 1.2) {
+        const tall = dbl && Math.random() < 0.4;
+        obs.push({ x: w + 30, wd: 30, ht: tall ? 128 : 40, ch: pick(TH.bad) });
+        total++;
+        if (dbl && Math.random() < 0.6) {
+          air.push({ x: w + 30 + rnd(130, 190), y: gy - rnd(120, 170), ch: pick(TH.good) });
+          coinsAll++;
+        }
+        spawn = rnd(1, 1.45);
+      }
+      for (const o of obs) {
+        if (o.done) continue;
+        o.x -= sp * dt;
+        if (!o.hit && o.x < PX + 15 && o.x + o.wd > PX - 15 && y > gy - o.ht + 6) {
+          o.hit = true;
+          hits++;
+          A.bad(PX, y - 50);
+        }
+        if (o.x + o.wd < PX - 20) {
+          o.done = true;
+          if (!o.hit) {
+            cleared++;
+            A.good(PX, y - 60, "+1", true);
+          }
+        }
+      }
+      for (const a of air) {
+        if (a.done) continue;
+        a.x -= sp * dt;
+        if (Math.abs(a.x - PX) < 26 && Math.abs(a.y - (y - 22)) < 34) {
+          a.done = true;
+          coins++;
+          A.good(a.x, a.y);
+        }
+        if (a.x < -30) a.done = true;
+      }
+    },
+    draw() {
+      const c = A.ctx;
+      c.strokeStyle = INK2;
+      c.lineWidth = 3;
+      c.beginPath();
+      c.moveTo(0, gy + 2);
+      c.lineTo(w, gy + 2);
+      c.stroke();
+      for (const o of obs) if (!o.done) {
+        c.fillStyle = o.hit ? "#f3b0b0" : "#e04848";
+        c.beginPath();
+        c.roundRect(o.x, gy - o.ht, o.wd, o.ht, 6);
+        c.fill();
+        c.stroke();
+        A.emoji(o.ch, o.x + o.wd / 2, gy - o.ht - 16, 24);
+      }
+      for (const a of air) if (!a.done) A.emoji(a.ch, a.x, a.y, 28);
+      c.fillStyle = "#2fae6b";
+      c.beginPath();
+      c.arc(PX, y - 20, 20, 0, Math.PI * 2);
+      c.fill();
+      c.stroke();
+      c.fillStyle = INK2;
+      c.beginPath();
+      c.arc(PX + 7, y - 24, 3, 0, Math.PI * 2);
+      c.fill();
+      if (dbl) {
+        c.fillStyle = jumps < 2 ? "#ffe066" : "#c5cad6";
+        c.beginPath();
+        c.arc(PX - 8, y - 52, 5, 0, Math.PI * 2);
+        c.fill();
+        c.stroke();
+        c.fillStyle = jumps < 1 ? "#ffe066" : "#c5cad6";
+        c.beginPath();
+        c.arc(PX + 8, y - 52, 5, 0, Math.PI * 2);
+        c.fill();
+        c.stroke();
+      }
+    },
+    score: () => clamp2((cleared + coins) / Math.max(5, total + coinsAll), 0, 1),
+    hud: () => `\u2714 ${cleared + coins}  \u2716 ${hits}`
+  };
+}
+function shooter(A, charged) {
+  const { w, h: h2, io, TH } = A;
+  let px = w / 2, fire = 0, spawn = 0.4, got = 0, missed = 0, total = 0, hold = 0, cool = 0;
+  const shots = [], foes = [];
+  return {
+    update(dt, t) {
+      const s4 = io.st;
+      if (s4.left) px -= 400 * dt;
+      if (s4.right) px += 400 * dt;
+      if (s4.x != null && !s4.left && !s4.right) px += (s4.x - px) * Math.min(1, dt * 14);
+      px = clamp2(px, 30, w - 30);
+      cool -= dt;
+      if (!charged) {
+        fire -= dt;
+        if (fire <= 0) {
+          shots.push({ x: px, y: h2 - 60, r: 6, dmg: 1 });
+          fire = 0.27;
+        }
+      } else {
+        if (s4.hold) hold += dt;
+        for (const e of s4.q) {
+          if ((e.k === "tap" || e.k === "act") && cool <= 0) {
+            shots.push({ x: px, y: h2 - 60, r: 6, dmg: 1 });
+            cool = 0.16;
+            hold = 0;
+          }
+          if (e.k === "release") {
+            if (hold >= 0.45) shots.push({ x: px, y: h2 - 60, r: 17, dmg: 3, big: true });
+            hold = 0;
+          }
+        }
+      }
+      spawn -= dt;
+      if (spawn <= 0 && t < A.seconds - 2) {
+        const big = charged && Math.random() < 0.4;
+        foes.push({ x: rnd(34, w - 34), y: -24, vy: (big ? 62 : 84) + t * 3, hp: big ? 3 : 1, big, ch: pick(TH.bad) });
+        total++;
+        spawn = charged ? rnd(0.75, 1.05) : rnd(0.5, 0.75);
+      }
+      for (const b of shots) {
+        if (b.gone) continue;
+        b.y -= 520 * dt;
+        if (b.y < -20) b.gone = true;
+        for (const f of foes) {
+          if (f.gone || b.gone) continue;
+          if (Math.abs(f.x - b.x) < (f.big ? 30 : 22) + b.r && Math.abs(f.y - b.y) < (f.big ? 30 : 22) + b.r) {
+            f.hp -= b.dmg;
+            if (!b.big) b.gone = true;
+            if (f.hp <= 0) {
+              f.gone = true;
+              got++;
+              A.good(f.x, f.y);
+            }
+          }
+        }
+      }
+      for (const f of foes) {
+        if (f.gone) continue;
+        f.y += f.vy * dt;
+        if (f.y > h2 - 44) {
+          f.gone = true;
+          missed++;
+          A.bad(f.x, h2 - 60);
+        }
+      }
+    },
+    draw() {
+      const c = A.ctx;
+      for (const f of foes) if (!f.gone) {
+        A.emoji(f.ch, f.x, f.y, f.big ? 46 : 30);
+        if (f.big) {
+          c.fillStyle = INK2;
+          c.font = "900 13px system-ui";
+          c.textAlign = "center";
+          c.fillText("\u25CF".repeat(Math.max(0, f.hp)), f.x, f.y + 34);
+        }
+      }
+      for (const b of shots) if (!b.gone) {
+        c.fillStyle = b.big ? "#ff8a3c" : "#ffd23c";
+        c.strokeStyle = INK2;
+        c.lineWidth = 2;
+        c.beginPath();
+        c.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        c.fill();
+        c.stroke();
+      }
+      c.fillStyle = "#3d7be0";
+      c.strokeStyle = INK2;
+      c.lineWidth = 3;
+      c.beginPath();
+      c.moveTo(px, h2 - 66);
+      c.lineTo(px + 24, h2 - 28);
+      c.lineTo(px - 24, h2 - 28);
+      c.closePath();
+      c.fill();
+      c.stroke();
+      if (charged && hold > 0) {
+        c.strokeStyle = hold >= 0.45 ? "#ff8a3c" : "#fff";
+        c.lineWidth = 5;
+        c.beginPath();
+        c.arc(px, h2 - 44, 30, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(1, hold / 0.45));
+        c.stroke();
+      }
+    },
+    score: () => clamp2(got / Math.max(5, total - 1), 0, 1),
+    hud: () => `\u2714 ${got}  \u2716 ${missed}`
+  };
+}
+function playMini(canvas, id, hooks, seconds = 12, theme = "work") {
+  if (!MAKE[id]) id = "catch";
+  const TH = THEMES[theme] || THEMES.work, dpr = Math.min(2, window.devicePixelRatio || 1), w = canvas.clientWidth, h2 = canvas.clientHeight;
+  canvas.width = w * dpr;
+  canvas.height = h2 * dpr;
+  const ctx2 = canvas.getContext("2d");
+  ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const io = input(canvas), fx = [], pops = [];
+  let streak = 0, shake = 0, frost = 0, t = 0, last = performance.now(), raf = 0, done = false;
+  const A = {
+    w,
+    h: h2,
+    ctx: ctx2,
+    io,
+    TH,
+    seconds,
+    emoji(ch, x, y, size = 28) {
+      ctx2.font = `${Math.round(size)}px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", system-ui`;
+      ctx2.textAlign = "center";
+      ctx2.textBaseline = "middle";
+      ctx2.fillText(ch, x, y);
+    },
+    // a good move: three in a row make the theme's bubbles rise and thaw the frost
+    good(x, y, text = "+1", quiet = false) {
+      streak++;
+      frost = Math.max(0, frost - 0.06);
+      pops.push({ x, y, text, life: 0.7, ok: true });
+      if (streak >= 3 && (!quiet || streak % 4 === 0)) for (let i = 0; i < 3; i++) fx.push({ x: x + (i - 1) * 22, y, v: 70 + i * 25, life: 1.3 });
+    },
+    // a bad move: the screen shakes and frosts over
+    bad(x, y, text = "\u22121") {
+      streak = 0;
+      shake = 0.35;
+      frost = Math.min(0.6, frost + 0.18);
+      pops.push({ x, y, text, life: 0.8 });
+    },
+    miss() {
+      streak = 0;
+      frost = Math.min(0.6, frost + 0.08);
+    }
+  };
+  const g = MAKE[id](A);
   const finish = () => {
     if (done) return;
     done = true;
     cancelAnimationFrame(raf);
     io.off();
-    hooks.onEnd({ ratio: good ? Math.max(0, caught - bad) / good : 0, caught, good, hits, bad });
-  };
-  const onGood = (x) => {
-    streak++;
-    frost = Math.max(0, frost - 0.06);
-    if (streak >= 3 && TH) for (let i = 0; i < 3; i++) fx.push({ x: x + (i - 1) * 22, y: h2 - 70, v: 70 + i * 25, life: 1.4 });
-  };
-  const onBad = () => {
-    streak = 0;
-    shake = 0.35;
-    frost = Math.min(0.6, frost + 0.18);
+    hooks.onEnd?.({ id, score: clamp2(g.score(), 0, 1), text: g.hud() });
   };
   function step(now) {
     const dt = Math.min(0.033, (now - last) / 1e3);
     last = now;
     t += dt;
-    if (io.st.left) px -= 420 * dt;
-    if (io.st.right) px += 420 * dt;
-    if (io.st.x != null && !io.st.left && !io.st.right) px += (io.st.x - px) * Math.min(1, dt * 14);
-    px = Math.max(40, Math.min(w - 40, px));
-    spawn -= dt;
-    if (spawn <= 0 && t < seconds - 1) {
-      seq++;
-      const isGood = kind === "catch" ? seq % 3 !== 0 : false;
-      const x = 30 + seq * 173 % (w - 60);
-      items.push({ x, y: -20, vy: 150 + seq % 5 * 22 + t * 6, good: isGood, ch: isGood ? GOOD[seq % GOOD.length] : BAD[seq % BAD.length] });
-      if (isGood) good++;
-      spawn = kind === "catch" ? 0.55 : 0.42;
-    }
-    for (const it of items) {
-      if (it.gone) continue;
-      it.y += it.vy * dt;
-      if (it.y > h2 - 56 && it.y < h2 - 26 && Math.abs(it.x - px) < 46) {
-        it.gone = true;
-        if (kind === "catch") {
-          if (it.good) {
-            caught++;
-            onGood(it.x);
-            pops.push({ x: it.x, y: h2 - 70, text: "+1", life: 0.7, ok: true });
-          } else {
-            bad++;
-            onBad();
-            pops.push({ x: it.x, y: h2 - 70, text: "\u22121", life: 0.7 });
-          }
-        } else {
-          hits++;
-          onBad();
-          pops.push({ x: it.x, y: h2 - 70, text: "\u6CA1\u5FCD\u4F4F\uFF01", life: 0.8 });
-        }
-      }
-      if (it.y > h2 + 20) {
-        it.gone = true;
-        if (kind !== "catch") onGood(it.x);
-      }
-    }
+    g.update(dt, t);
+    io.st.q.length = 0;
     for (const p of pops) {
       p.life -= dt;
       p.y -= 40 * dt;
     }
-    shake = Math.max(0, shake - dt);
     for (const q2 of fx) {
       q2.life -= dt;
       q2.y -= q2.v * dt;
     }
-    draw();
-    hooks.onTick?.({ left: Math.max(0, seconds - t), caught, good, hits });
-    if (t >= seconds) {
-      setTimeout(finish, 200);
-      return;
-    }
-    raf = requestAnimationFrame(step);
-  }
-  function draw() {
+    shake = Math.max(0, shake - dt);
     ctx2.clearRect(0, 0, w, h2);
-    const g = ctx2.createLinearGradient(0, 0, 0, h2);
-    g.addColorStop(0, TH?.bg || (kind === "catch" ? "#7fd0fb" : "#ffd8e4"));
-    g.addColorStop(1, "#fffdf6");
-    ctx2.fillStyle = g;
+    const bg = ctx2.createLinearGradient(0, 0, 0, h2);
+    bg.addColorStop(0, TH.bg);
+    bg.addColorStop(1, "#fffdf6");
+    ctx2.fillStyle = bg;
     ctx2.fillRect(0, 0, w, h2);
     ctx2.save();
     if (shake > 0) ctx2.translate((Math.random() - 0.5) * 14 * shake / 0.35, (Math.random() - 0.5) * 8 * shake / 0.35);
-    ctx2.font = '900 26px system-ui, "Segoe UI Emoji", sans-serif';
+    ctx2.textBaseline = "middle";
+    g.draw();
     ctx2.textAlign = "center";
     ctx2.textBaseline = "middle";
-    for (const it of items) {
-      if (it.gone) continue;
-      if (kind === "catch" && !TH) {
-        ctx2.fillStyle = it.good ? "#ffc531" : "#e04848";
-        ctx2.strokeStyle = INK2;
-        ctx2.lineWidth = 3;
-        ctx2.beginPath();
-        ctx2.arc(it.x, it.y, 16, 0, Math.PI * 2);
-        ctx2.fill();
-        ctx2.stroke();
-        ctx2.fillStyle = it.good ? INK2 : "#fff";
-        ctx2.font = "900 16px system-ui";
-        ctx2.fillText(it.ch, it.x, it.y + 1);
-      } else {
-        ctx2.font = '28px "Segoe UI Emoji", "Apple Color Emoji", system-ui';
-        ctx2.fillText(it.ch, it.x, it.y);
-      }
-    }
-    ctx2.save();
-    ctx2.translate(px, h2 - 40);
-    if (kind === "catch") {
-      ctx2.fillStyle = "#e8bf8a";
-      ctx2.strokeStyle = INK2;
-      ctx2.lineWidth = 3;
-      ctx2.beginPath();
-      ctx2.moveTo(-42, -8);
-      ctx2.lineTo(42, -8);
-      ctx2.lineTo(32, 16);
-      ctx2.lineTo(-32, 16);
-      ctx2.closePath();
-      ctx2.fill();
-      ctx2.stroke();
-      ctx2.beginPath();
-      ctx2.moveTo(-14, -8);
-      ctx2.lineTo(-11, 16);
-      ctx2.moveTo(14, -8);
-      ctx2.lineTo(11, 16);
-      ctx2.moveTo(-37, 4);
-      ctx2.lineTo(37, 4);
-      ctx2.stroke();
-      ctx2.fillStyle = "#d9a46b";
-      ctx2.beginPath();
-      ctx2.roundRect(-46, -14, 92, 8, 4);
-      ctx2.fill();
-      ctx2.stroke();
-    } else {
-      ctx2.fillStyle = "#2fae6b";
-      ctx2.strokeStyle = INK2;
-      ctx2.lineWidth = 3;
-      ctx2.beginPath();
-      ctx2.arc(0, -6, 18, 0, Math.PI * 2);
-      ctx2.fill();
-      ctx2.stroke();
-      ctx2.fillStyle = INK2;
-      ctx2.font = "900 14px system-ui";
-      ctx2.fillText("\u4F60", 0, -5);
-    }
-    ctx2.restore();
     for (const p of pops) if (p.life > 0) {
       ctx2.globalAlpha = Math.min(1, p.life * 2);
-      ctx2.font = "900 16px system-ui";
+      ctx2.font = "900 17px system-ui";
       ctx2.fillStyle = p.ok ? "#13784a" : "#b3262b";
       ctx2.fillText(p.text, p.x, p.y);
     }
-    ctx2.globalAlpha = 1;
-    if (TH) {
-      for (const q2 of fx) if (q2.life > 0) {
-        ctx2.globalAlpha = Math.min(1, q2.life);
-        ctx2.font = '22px "Segoe UI Emoji", system-ui';
-        ctx2.fillText(TH.fx, q2.x, q2.y);
-      }
+    for (const q2 of fx) if (q2.life > 0) {
+      ctx2.globalAlpha = Math.min(1, q2.life);
+      A.emoji(TH.fx, q2.x, q2.y, 22);
     }
     ctx2.globalAlpha = 1;
     if (frost > 0) {
@@ -4369,18 +4951,27 @@ function playChallenge(canvas, kind, hooks, seconds = 12, theme = null) {
       ctx2.lineWidth = 6 + frost * 30;
       ctx2.strokeRect(0, 0, w, h2);
       ctx2.globalAlpha = Math.min(1, frost * 3);
-      ctx2.font = '28px "Segoe UI Emoji", system-ui';
-      for (let i = 0; i < Math.ceil(frost * 18); i++) ctx2.fillText("\u2744\uFE0F", (i * 97 + 30) % w, 50 + i * 61 % (h2 - 80));
+      for (let i = 0; i < Math.ceil(frost * 18); i++) A.emoji("\u2744\uFE0F", (i * 97 + 30) % w, 50 + i * 61 % (h2 - 80));
       ctx2.globalAlpha = 1;
     }
     ctx2.restore();
-    rr(ctx2, 10, 10, 220, 28, 14);
-    ctx2.fillStyle = "rgba(29,43,79,.85)";
+    const label = `${g.hud()}   \u23F1 ${Math.ceil(Math.max(0, seconds - t))}`;
+    ctx2.font = "800 14px system-ui";
+    ctx2.textAlign = "left";
+    ctx2.textBaseline = "middle";
+    const tw = ctx2.measureText(label).width + 24;
+    ctx2.fillStyle = "rgba(29,43,79,.88)";
+    ctx2.beginPath();
+    ctx2.roundRect(10, 8, tw, 28, 14);
     ctx2.fill();
     ctx2.fillStyle = "#fff";
-    ctx2.font = "800 13px system-ui";
-    ctx2.textAlign = "left";
-    ctx2.fillText(kind === "catch" ? `\u63A5\u4F4F ${caught} \xB7 \u8E29\u96F7 ${bad} \xB7 \u5269 ${Math.ceil(Math.max(0, seconds - t))} \u79D2` : `\u6CA1\u5FCD\u4F4F ${hits} \u6B21 \xB7 \u5269 ${Math.ceil(Math.max(0, seconds - t))} \u79D2`, 20, 25);
+    ctx2.fillText(label, 22, 23);
+    hooks.onTick?.({ left: Math.max(0, seconds - t) });
+    if (t >= seconds) {
+      setTimeout(finish, 200);
+      return;
+    }
+    raf = requestAnimationFrame(step);
   }
   raf = requestAnimationFrame(step);
   return { stop: finish };
@@ -4666,6 +5257,10 @@ var T2 = {
   rothName: "Roth IRA \u9000\u4F11\u8D26\u6237\uFF08\u81EA\u5DF1\u5F00\uFF09",
   playFirst: "\u5148\u73A9\u5C0F\u6E38\u620F",
   decEff: { cheaper: "\u623F\u79DF \u2212$200/\u6708", nicer: "\u623F\u79DF +$400/\u6708", movehome: "\u623F\u79DF \u2192 $100/\u6708", moveout: "\u4ED8\u5168\u989D\u623F\u79DF", buycar: "\u5F00\u9500 +$220/\u6708", sellcar: "\u5F00\u9500 \u2212$220/\u6708", date: "\u5A31\u4E50 +$80/\u6708", marry: "\u4E24\u4EFD\u6536\u5165 \xB7 \u5F00\u9500\u53D8\u591A", course: "\u804C\u4E1A\u80FD\u529B +1", buyhome: "\u623F\u8D37\u4EE3\u66FF\u623F\u79DF", dropout: "\u53D8\u56DE\u5168\u804C\u5DE5\u8D44" },
+  mgName: { catch: "\u63A5\u4E1C\u897F", runner: "\u8DF3\u8DC3", snake: "\u8D2A\u5403\u86C7", shooter: "\u5C04\u51FB", match3: "\u4E09\u6D88", farm: "\u6536\u83DC", clicker: "\u72C2\u70B9", memory: "\u7FFB\u724C\u914D\u5BF9", runner2: "\u4E8C\u6BB5\u8DF3", shooter2: "\u84C4\u529B\u5C04\u51FB" },
+  mgHow: { catch: "\u7528 \u2190/\u2192 \u6216\u62D6\u52A8\u3002\u63A5\u597D\u7684\uFF0C\u8EB2\u574F\u7684\u3002", runner: "\u70B9\u51FB\u6216\u6309\u7A7A\u683C\uFF0C\u8DF3\u8FC7\u969C\u788D\u3002", snake: "\u65B9\u5411\u952E\uFF0C\u6216\u70B9\u4F60\u60F3\u8F6C\u7684\u65B9\u5411\u3002\u5403\u597D\u7684\uFF0C\u8EB2\u574F\u7684\u3002", shooter: "\u7528 \u2190/\u2192 \u6216\u62D6\u52A8\u3002\u5B50\u5F39\u81EA\u52A8\u53D1\u5C04\u3002", match3: "\u70B9\u4E24\u4E2A\u76F8\u90BB\u7684\u683C\u5B50\u4EA4\u6362\uFF0C\u51D1\u9F50\u4E09\u4E2A\u3002", farm: "\u7530\u53D8\u6210\u91D1\u8272\u65F6\u70B9\u5B83\uFF08\u6216\u6309 1\u20135\uFF09\u3002", clicker: "\u70B9\u5F97\u8D8A\u5FEB\u8D8A\u597D\u3002\u53D8\u7EA2\u65F6\u505C\u624B\u3002", memory: "\u7FFB\u5F00\u4E24\u5F20\u724C\uFF0C\u627E\u51FA\u4E00\u5BF9\u3002", runner2: "\u8FDE\u70B9\u4E24\u4E0B\u662F\u4E8C\u6BB5\u8DF3\u3002\u63A5\u4F4F\u7A7A\u4E2D\u7684\u4E1C\u897F\u3002", shooter2: "\u70B9\u4E00\u4E0B\u5C04\u51FB\uFF1B\u6309\u4F4F\u518D\u677E\u5F00\uFF0C\u653E\u5927\u62DB\u3002" },
+  mgDone: "\u5C0F\u6E38\u620F\u201C{g}\u201D\uFF1A{r} \u2192 \u52A0\u503C +{b}",
+  mgLeft: "\u8FD8\u5269 {s} \u79D2",
   locked: "\u672A\u89E3\u9501",
   skipGuide: "\u8DF3\u8FC7",
   next: "\u4E0B\u4E00\u6B65",
@@ -4876,8 +5471,8 @@ var heart = (x, y, k2 = 1, f = "#e05a8a") => `<path transform="translate(${x} ${
 var star = (x, y, r = 10, f = "#ffc531") => {
   let d = "";
   for (let i = 0; i < 10; i++) {
-    const a = Math.PI / 5 * i - Math.PI / 2, rr3 = i % 2 ? r * 0.45 : r;
-    d += (i ? "L" : "M") + (x + rr3 * Math.cos(a)).toFixed(1) + " " + (y + rr3 * Math.sin(a)).toFixed(1);
+    const a = Math.PI / 5 * i - Math.PI / 2, rr2 = i % 2 ? r * 0.45 : r;
+    d += (i ? "L" : "M") + (x + rr2 * Math.cos(a)).toFixed(1) + " " + (y + rr2 * Math.sin(a)).toFixed(1);
   }
   return P(d + "Z", f);
 };
@@ -5165,7 +5760,7 @@ var fvM = (m, years) => {
   const i = 0.05 / 12, n = Math.max(1, Math.round(years * 12));
   return m * ((1 + i) ** n - 1) / i;
 };
-function setupCanvas2(canvas) {
+function setupCanvas(canvas) {
   const dpr = Math.min(2, window.devicePixelRatio || 1), w = canvas.clientWidth, h2 = canvas.clientHeight;
   canvas.width = w * dpr;
   canvas.height = h2 * dpr;
@@ -5224,7 +5819,7 @@ function input2(canvas) {
     window.removeEventListener("pointercancel", pu);
   } };
 }
-var rr2 = (ctx2, x, y, w, h2, r) => {
+var rr = (ctx2, x, y, w, h2, r) => {
   ctx2.beginPath();
   ctx2.roundRect ? ctx2.roundRect(x, y, w, h2, r) : ctx2.rect(x, y, w, h2);
 };
@@ -5306,7 +5901,7 @@ var GAMES = {
         for (const b of bands) {
           if (b.lo >= maxI) break;
           const yt = y(Math.min(b.hi, maxI)), yb = y(b.lo);
-          rr2(ctx2, x0, yt, x1 - x0, yb - yt, 0);
+          rr(ctx2, x0, yt, x1 - x0, yb - yt, 0);
           ctx2.fillStyle = "#eef2f8";
           ctx2.fill();
           if (inc > b.lo) {
@@ -5369,16 +5964,16 @@ var GAMES = {
       draw(ctx2) {
         const s4 = sim ? at ? sim.steps[at - 1] : { cash: sim.cash0, inv: sim.inv0, card: 0 } : { cash: p.pot * share, inv: p.pot * (1 - share), card: 0 };
         [[s4.cash, BLUE, CG.cash], [s4.inv, GREEN, CG.invest]].forEach(([v, c, l], i) => {
-          rr2(ctx2, jx[i], jb - jh, jw, jh, 12);
+          rr(ctx2, jx[i], jb - jh, jw, jh, 12);
           ctx2.fillStyle = "#fff";
           ctx2.fill();
           const fh = Math.max(0, v / scale * jh);
-          rr2(ctx2, jx[i] + 4, jb - fh, jw - 8, Math.max(0, fh - 4), 8);
+          rr(ctx2, jx[i] + 4, jb - fh, jw - 8, Math.max(0, fh - 4), 8);
           ctx2.fillStyle = c;
           ctx2.globalAlpha = 0.75;
           ctx2.fill();
           ctx2.globalAlpha = 1;
-          rr2(ctx2, jx[i], jb - jh, jw, jh, 12);
+          rr(ctx2, jx[i], jb - jh, jw, jh, 12);
           ctx2.strokeStyle = INK3;
           ctx2.lineWidth = 3;
           ctx2.stroke();
@@ -5397,7 +5992,7 @@ var GAMES = {
         } else {
           txt(ctx2, CG.monthN(Math.max(1, at)), w / 2, 58, 14);
           if (s4.card > 0) {
-            rr2(ctx2, w - 132, 10, 122, 28, 14);
+            rr(ctx2, w - 132, 10, 122, 28, 14);
             ctx2.fillStyle = RED;
             ctx2.fill();
             txt(ctx2, "\u{1F525} " + CG.onCard + " " + k(s4.card), w - 71, 25, 12, "#fff");
@@ -5490,7 +6085,7 @@ var GAMES = {
       },
       draw(ctx2) {
         const emp = Math.min(pct2, cap) * p.rate, you = mo * pct2 / 100, boss = mo * emp / 100, x0 = 14, x1 = Math.max(190, w * 0.58), cw = x1 - x0;
-        rr2(ctx2, x0, 46, cw, h2 - 60, 10);
+        rr(ctx2, x0, 46, cw, h2 - 60, 10);
         ctx2.fillStyle = "#fff";
         ctx2.fill();
         ctx2.strokeStyle = INK3;
@@ -5512,10 +6107,10 @@ var GAMES = {
           }
         });
         const by = h2 - 44, bx0 = x0 + 12, bw = cw - 24, X = (v) => bx0 + bw * v / max;
-        rr2(ctx2, bx0, by, bw, 14, 7);
+        rr(ctx2, bx0, by, bw, 14, 7);
         ctx2.fillStyle = "#e6ecf5";
         ctx2.fill();
-        rr2(ctx2, bx0, by, Math.max(14, bw * pct2 / max), 14, 7);
+        rr(ctx2, bx0, by, Math.max(14, bw * pct2 / max), 14, 7);
         ctx2.fillStyle = BLUE;
         ctx2.fill();
         ctx2.strokeStyle = RED;
@@ -5562,10 +6157,10 @@ var GAMES = {
           txt(ctx2, CG.guessQ(p.age), w / 2, 70, 14);
           txt(ctx2, "\u2190 \xD7" + Math.round(guess) + " \u2192", w / 2, 112, 30, BLUE);
           const bx = 30, bw = w - 60;
-          rr2(ctx2, bx, 150, bw, 12, 6);
+          rr(ctx2, bx, 150, bw, 12, 6);
           ctx2.fillStyle = "#e6ecf5";
           ctx2.fill();
-          rr2(ctx2, bx, 150, bw * (guess - 1) / 11 + 12, 12, 6);
+          rr(ctx2, bx, 150, bw * (guess - 1) / 11 + 12, 12, 6);
           ctx2.fillStyle = BLUE;
           ctx2.fill();
           txt(ctx2, "\xD71", bx, 178, 11, "#5d6b8c");
@@ -5593,7 +6188,7 @@ var GAMES = {
         ctx2.lineTo(x(yr) + 8, gy + 26);
         ctx2.lineTo(x(yr), gy + 18);
         ctx2.fill();
-        rr2(ctx2, w - 132, 10, 122, 28, 14);
+        rr(ctx2, w - 132, 10, 122, 28, 14);
         ctx2.fillStyle = "rgba(29,43,79,.85)";
         ctx2.fill();
         txt(ctx2, `\u{1F330} ${CG.seeds} \xD7${pocket}`, w - 71, 25, 12, "#fff");
@@ -5656,7 +6251,7 @@ var GAMES = {
   }
 };
 function playConcept(canvas, id, p, hooks, seconds = 12) {
-  const { ctx: ctx2, w, h: h2 } = setupCanvas2(canvas), io = input2(canvas), G = GAMES[id](p, w, h2, seconds), pops = [];
+  const { ctx: ctx2, w, h: h2 } = setupCanvas(canvas), io = input2(canvas), G = GAMES[id](p, w, h2, seconds), pops = [];
   let t = 0, last = performance.now(), raf = 0, done = false;
   const pop = (x, y, text, ok) => pops.push({ x, y, text, ok, life: 0.9 });
   const finish = () => {
@@ -5695,7 +6290,7 @@ function playConcept(canvas, id, p, hooks, seconds = 12) {
     const hud2 = `${G.hud()} \xB7 ${Math.ceil(Math.max(0, seconds - t))}s`;
     ctx2.font = "800 13px system-ui";
     const tw = ctx2.measureText(hud2).width + 20;
-    rr2(ctx2, 10, 10, tw, 26, 13);
+    rr(ctx2, 10, 10, tw, 26, 13);
     ctx2.fillStyle = "rgba(29,43,79,.85)";
     ctx2.fill();
     txt(ctx2, hud2, 20, 24, 13, "#fff", "left");
@@ -6338,7 +6933,7 @@ function modalHtml() {
   const M = ui.modal, wrap = (inner, cls = "") => `<div class="scrim" aria-hidden="true"></div><div class="modal ${cls}" role="dialog" aria-modal="true">${inner}</div>`;
   if (M.kind === "game") {
     const F = ui.flow;
-    return wrap(`<header class="m-head"><span class="ribbon-tag">\u5C0F\u6E38\u620F \xB7 12 \u79D2</span><h2>${GAME_TITLE[themeOf(F)]}</h2><p id="game-live">\u2190/\u2192\u3001A/D \u6216\u62D6\u52A8\u6765\u79FB\u52A8\u3002</p></header>
+    return wrap(`<header class="m-head"><span class="ribbon-tag">\u5C0F\u6E38\u620F \xB7 12 \u79D2</span><h2>${h(T2.mgName[F.mg])}</h2><p id="game-live">${h(T2.mgHow[F.mg])}</p></header>
       <div class="arena small"><canvas id="challenge"></canvas></div><div class="m-foot">${btn("game-stop", "\u63D0\u524D\u7ED3\u675F", { cls: "btn ghost small" })}</div>`, "game-host");
   }
   if (M.kind === "decision") {
@@ -6450,7 +7045,6 @@ function endCg(G, r) {
   }
   update(false);
 }
-var GAME_TITLE = { love: "\u6765\u7535\uFF1A\u63A5\u4F4F\u7231\u5FC3\uFF0C\u8EB2\u5F00\u5FC3\u788E", work: "\u63A5\u4F4F\u661F\u661F\uFF0C\u8EB2\u5F00\u4E0B\u6ED1", biz: "\u63A5\u4F4F\u751F\u610F\uFF0C\u8EB2\u5F00\u4E8F\u635F", school: "\u63A5\u4F4F\u4E66\u672C\uFF0C\u8EB2\u5F00\u5206\u5FC3", tempt: "\u6BD4\u53CD\u5E94\uFF1A\u8EB2\u5F00\u6389\u4E0B\u6765\u7684\u4E1C\u897F" };
 function themeOf(F) {
   const id = F.source === "decision" ? F.id : s2.card?.id;
   if (["date", "meet", "marry"].includes(id)) return "love";
@@ -6458,18 +7052,27 @@ function themeOf(F) {
   if (["scholarship", "enroll", "course"].includes(id)) return "school";
   return F.game === "dodge" ? "tempt" : "work";
 }
+var MGKEY = "adulting.tycoon.mg.v1";
+function mgPlayed() {
+  const v = ls.get(MGKEY, null);
+  return v && v.seed === s2.seed && Array.isArray(v.played) ? v.played : [];
+}
+var mgNext = () => pickGame(mgPlayed(), s2.seed);
+function mgMark(id) {
+  let p = mgPlayed();
+  if (p.length >= 10) p = [];
+  ls.set(MGKEY, { seed: s2.seed, played: [...p.filter((x) => x !== id), id] });
+}
 function startGame() {
   const canvas = root.querySelector("#challenge");
   if (!canvas || gameRun) return;
   const live = root.querySelector("#game-live"), F = ui.flow;
-  gameRun = playChallenge(canvas, F.game, {
-    onTick: (r) => {
-      if (live) live.textContent = F.game === "catch" ? `\u63A5\u4F4F ${r.caught} \u4E2A \xB7 \u8FD8\u5269 ${Math.ceil(r.left)} \u79D2` : `\u6CA1\u5FCD\u4F4F ${r.hits} \u6B21 \xB7 \u8FD8\u5269 ${Math.ceil(r.left)} \u79D2`;
-    },
+  gameRun = playMini(canvas, F.mg, {
     onEnd: (r) => {
       gameRun = null;
       F.result = r;
-      finishFlow(bonusFrom(F.game, r));
+      mgMark(F.mg);
+      finishFlow(bonusOf(r.score));
     }
   }, 12, themeOf(F));
 }
@@ -6486,7 +7089,7 @@ function finishFlow(bonus) {
       ui.flow = { ...F, revealed: s2.age };
       ui.modal = null;
     }
-    notice = F.result ? F.game === "catch" ? `\u5C0F\u6E38\u620F\uFF1A\u63A5\u4F4F ${F.result.caught} / ${F.result.good}\uFF0C\u52A0\u503C +${bonus}` : `\u5C0F\u6E38\u620F\uFF1A\u6CA1\u5FCD\u4F4F ${F.result.hits} \u6B21\uFF0C\u52A0\u503C +${bonus}` : "";
+    notice = F.result ? fmt(T2.mgDone, { g: T2.mgName[F.result.id], r: F.result.text, b: bonus }) : "";
   } catch (e) {
     notice = e.message;
     ui.modal = null;
@@ -6993,7 +7596,7 @@ document.addEventListener("click", (e) => {
         return finishFlow(0);
       case "dec-game": {
         const d = decisions(s2).find((x) => x.id === ui.flow.id);
-        ui.flow = { ...ui.flow, game: d.throw.game };
+        ui.flow = { ...ui.flow, game: d.throw.game, mg: mgNext() };
         ui.modal = { kind: "game" };
         return update(false);
       }
@@ -7010,7 +7613,7 @@ document.addEventListener("click", (e) => {
         ui.flow = null;
         return commit(drawCard(s2));
       case "card-game":
-        ui.flow = { source: "card", game: s2.card.game };
+        ui.flow = { source: "card", game: s2.card.game, mg: mgNext() };
         ui.modal = { kind: "game" };
         return update(false);
       case "card-roll":

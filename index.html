@@ -1486,6 +1486,7 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .amt-chip.t-opportunity { background: var(--grass-2); } .amt-chip .ico { width: 20px; height: 20px; }
 .mo-chip { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: .82rem; color: var(--ink-2); } .mo-chip .ico { width: 15px; height: 15px; }
 .hud .icon-btn.hud-ico { color: var(--ink); } .hud .icon-btn.hud-ico svg, .hud .icon-btn.hud-ico .ico { display: block; color: var(--ink); stroke: currentColor; }
+.cover.warn { background: #ffe1dc; }
 </style>
 </head>
 <body>
@@ -1734,7 +1735,7 @@ var DECISIONS = [
     cost: 500,
     eligible: (s4) => !s4.service && !s4.side && !s4.business && s4.age >= 18,
     throw: { stat: "discipline", label: "Persistence", game: "catch" },
-    outcomes: { fail: { side: 150, note: "Slow start: about $150 a month." }, ok: { side: 400, note: "About $400 extra a month." }, great: { side: 800, note: "It took off: about $800 a month." } }
+    outcomes: { fail: { side: 80, note: "Slow start: about $80 a month." }, ok: { side: 200, note: "About $200 extra a month, like most side gigs." }, great: { side: 500, note: "It took off: about $500 a month." } }
   },
   {
     id: "startup",
@@ -1742,7 +1743,7 @@ var DECISIONS = [
     icon: "star",
     text: "Run a business full-time. In the US about 1 in 5 new businesses close in year one and about half by year five. Starting from a side hustle that already earns gives better odds.",
     eligible: (s4) => !s4.service && !s4.business && !s4.school && s4.age >= 18,
-    choices: [{ id: "own", label: "Go full-time with your side hustle (startup cost $1,000, needs $300+/mo side income)", cost: 1e3, base: 1900, needSide: 300 }, { id: "truck", label: "Food truck (startup cost $8,000)", cost: 8e3, base: 2800 }, { id: "shop", label: "Online shop (startup cost $3,000)", cost: 3e3, base: 1700 }, { id: "studio", label: "Design studio ($5,000, needs career skill \u2265 1)", cost: 5e3, base: 3400, needCareer: 1 }],
+    choices: [{ id: "own", label: "Go full-time with your side hustle (startup cost $1,000, needs $200+/mo side income)", cost: 1e3, base: 1900, needSide: 200 }, { id: "truck", label: "Food truck (startup cost $8,000)", cost: 8e3, base: 2800 }, { id: "shop", label: "Online shop (startup cost $3,000)", cost: 3e3, base: 1700 }, { id: "studio", label: "Design studio ($5,000, needs career skill \u2265 1)", cost: 5e3, base: 3400, needCareer: 1 }],
     throw: { stat: "career", label: "Launch", game: "catch" },
     outcomes: { fail: { bizMult: -0.3, note: "Rough launch: losing money every month." }, ok: { bizMult: 1, note: "The business is on track." }, great: { bizMult: 1.8, note: "Business is booming!" } }
   },
@@ -2283,7 +2284,9 @@ function raiseSalary(s4, newSalary) {
 function rollMarket(s4) {
   s4.marketReturn = r22(Math.max(-0.4, Math.min(0.45, ASSUME.stockReturnMean + ASSUME.stockReturnSd * normal(s4))));
 }
-var essentialsMonthly = (s4) => sum(Object.values(s4.essentials));
+var HEALTH_GAP = 150;
+var healthGap = (s4) => s4.age >= 26 && !s4.service && !s4.school && (s4.job?.employed && s4.job.part || !!s4.business) ? HEALTH_GAP : 0;
+var essentialsMonthly = (s4) => sum(Object.values(s4.essentials)) + healthGap(s4);
 var filing = (s4) => s4.spouse ? "joint" : "single";
 function minimums(s4) {
   return s4.debts.map((d) => {
@@ -2682,7 +2685,7 @@ function blockReason(s4, d) {
 }
 function choiceBlock(s4, d, c) {
   if (c.cost && liquid(s4) < c.cost) return `Costs ${money(c.cost)}.`;
-  if (c.needSide && (s4.side || 0) < c.needSide) return "Needs a side hustle earning at least $300 a month.";
+  if (c.needSide && (s4.side || 0) < c.needSide) return "Needs a side hustle earning at least $200 a month.";
   if (c.needCareer && s4.stats.career < c.needCareer) return `Requires career skill \u2265 ${c.needCareer}.`;
   if (d.id === "buycar" && s4.credit && s4.credit < 500) return "Credit score too low for a car loan.";
   return null;
@@ -3316,6 +3319,7 @@ function simulateYear(s0, { returnRate = s0.marketReturn ?? ASSUME.stockReturnMe
     y.essentials += ess;
     spend += ess;
     for (const k2 of Object.keys(s4.essentials)) y.cat[k2] = (y.cat[k2] || 0) + s4.essentials[k2];
+    y.cat.insurance += healthGap(s4);
     const left = charge(m, ess, "Essentials");
     if (left > 0) {
       overdue(m, left, "Essentials");
@@ -4358,7 +4362,7 @@ var GLOSSARY = {
   status: ["Status", "Good or bad conditions that affect throws for a while, e.g. \u201CInspired\u201D gives career throws +1 and \u201CGaming binge\u201D gives career throws \u22121. They wear off on their own."],
   dice: ["How a throw works", "First play a 12-second mini-game; your score becomes a bonus of 0 / +1 / +2. Then roll one die (1\u20136). Die + skill + status + mini-game bonus: \u22643 fail, 4\u20136 success, \u22657 great success. You can also skip the game and just roll. A roll of 1 always fails, however high your skill. When job hunting, aiming more than $15,000 above your current pay costs \u22121 per step (max \u22123)."],
   essentials: ["Essentials", "Money you must pay every month: housing costs beyond rent or mortgage, food, transportation, insurance, utilities and phone."],
-  insurance: ["Insurance", "Health, car and home cover are on automatically. The cost is already in Essentials, so there is nothing to buy. Life cards can raise it."],
+  insurance: ["Insurance", "Health, car and home cover are on automatically. The cost is already in Essentials, so there is nothing to buy. A part-time job or your own business usually has no employer health plan: from 26 you pay more. Life cards can raise it."],
   fun: ["Fun money", "Eating out, entertainment, subscriptions \u2014 spending you can cut. It grows automatically with raises (lifestyle creep), but you can lock it on payday."]
 };
 var planned = (d) => (d.emergency || 0) + (d.goal || 0) + (d.roth || 0) + (d.brokerage || 0) + Object.values(d.extra || {}).reduce((a, b) => a + b, 0) + (d.k401Pct || 0) > 0;
@@ -4595,6 +4599,8 @@ var T2 = {
   finMost: "Biggest month",
   finLeast: "Thriftiest month",
   finAge: "Age {a}, month {m}",
+  noPlan: "No employer plan +{m}/mo",
+  noPlanWhy: "Part-time jobs and your own business rarely come with health insurance (23% of part-time workers have access, vs 87% full-time), so from 26 you buy your own.",
   locked: "Locked",
   skipGuide: "Skip",
   next: "Next",
@@ -6213,7 +6219,7 @@ function sheet(m) {
   const rows = (list) => list.map(([n, v, k2, apr, perMo]) => `<li><span>${h(n)} ${k2 ? q(k2) : ""}${apr != null ? `<small> ${pct(apr, 1)}${perMo ? ` \xB7 ${money2(perMo)}${T2.perMo}` : ""}</small>` : ""}</span><i style="width:${Math.max(1, v / top * 100)}%"></i><b>${money2(v)}</b></li>`).join("");
   return `<section class="panel sheet"><h3>${icon.bank}What you own \u2212 what you owe = wealth ${q("netWorth")}</h3><div class="sheet-cols">
     <div class="own"><small>Own ${money2(m.assets)}</small><ul>${rows(assets)}</ul></div><div class="owe"><small>owes ${money2(m.totalDebt)}</small><ul>${rows(debts) || '<li class="hint">No debt</li>'}</ul></div></div>
-    <p class="sheet-total">= Your wealth <b class="${m.netWorth < 0 ? "neg" : "pos"}">${money2(m.netWorth)}</b></p><div class="cover-row">${icon.shield}<b>${T2.insurance}</b>${q("insurance")}<span class="cover">${icon.heart}${T2.coverHealth} ${money2(s2.essentials.insurance)}${T2.perMo}</span>${s2.car ? `<span class="cover">${icon.car}${T2.coverCar}</span>` : ""}${s2.home ? `<span class="cover">${icon.house}${T2.coverHome}</span>` : ""}<small>${icon.check}${T2.coverIn}</small></div></section>`;
+    <p class="sheet-total">= Your wealth <b class="${m.netWorth < 0 ? "neg" : "pos"}">${money2(m.netWorth)}</b></p><div class="cover-row">${icon.shield}<b>${T2.insurance}</b>${q("insurance")}<span class="cover">${icon.heart}${T2.coverHealth} ${money2(s2.essentials.insurance + healthGap(s2))}${T2.perMo}</span>${healthGap(s2) ? `<span class="cover warn" title="${h(T2.noPlanWhy)}">${icon.alert}${h(fmt(T2.noPlan, { m: money2(healthGap(s2)) }))}</span>` : ""}${s2.car ? `<span class="cover">${icon.car}${T2.coverCar}</span>` : ""}${s2.home ? `<span class="cover">${icon.house}${T2.coverHome}</span>` : ""}<small>${icon.check}${T2.coverIn}</small></div></section>`;
 }
 function stagePath() {
   const st = stage(s2);

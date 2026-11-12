@@ -1486,6 +1486,7 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .amt-chip.t-opportunity { background: var(--grass-2); } .amt-chip .ico { width: 20px; height: 20px; }
 .mo-chip { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: .82rem; color: var(--ink-2); } .mo-chip .ico { width: 15px; height: 15px; }
 .hud .icon-btn.hud-ico { color: var(--ink); } .hud .icon-btn.hud-ico svg, .hud .icon-btn.hud-ico .ico { display: block; color: var(--ink); stroke: currentColor; }
+.cover.warn { background: #ffe1dc; }
 </style>
 </head>
 <body>
@@ -1734,7 +1735,7 @@ var DECISIONS = [
     cost: 500,
     eligible: (s4) => !s4.service && !s4.side && !s4.business && s4.age >= 18,
     throw: { stat: "discipline", label: "\u575A\u6301", game: "catch" },
-    outcomes: { fail: { side: 150, note: "\u526F\u4E1A\u8D77\u6B65\u6162\uFF0C\u6BCF\u6708\u7EA6 $150\u3002" }, ok: { side: 400, note: "\u6BCF\u6708\u591A\u8D5A\u7EA6 $400\u3002" }, great: { side: 800, note: "\u526F\u4E1A\u5F88\u987A\uFF0C\u6BCF\u6708\u7EA6 $800\u3002" } }
+    outcomes: { fail: { side: 80, note: "\u8D77\u6B65\u6162\uFF0C\u6BCF\u6708\u7EA6 $80\u3002" }, ok: { side: 200, note: "\u6BCF\u6708\u591A\u8D5A\u7EA6 $200\uFF0C\u548C\u591A\u6570\u526F\u4E1A\u5DEE\u4E0D\u591A\u3002" }, great: { side: 500, note: "\u526F\u4E1A\u5F88\u987A\uFF0C\u6BCF\u6708\u7EA6 $500\u3002" } }
   },
   {
     id: "startup",
@@ -1742,7 +1743,7 @@ var DECISIONS = [
     icon: "star",
     text: "\u5168\u804C\u7ECF\u8425\u4E00\u95E8\u751F\u610F\u3002\u5728\u7F8E\u56FD\uFF0C\u5927\u7EA6\u4E94\u5206\u4E4B\u4E00\u7684\u65B0\u4F01\u4E1A\u7B2C\u4E00\u5E74\u5C31\u5173\u95E8\uFF0C\u4E94\u5E74\u5185\u7EA6\u4E00\u534A\u5173\u95E8\u3002\u4ECE\u5DF2\u7ECF\u8D5A\u94B1\u7684\u526F\u4E1A\u8F6C\u8FC7\u6765\uFF0C\u80DC\u7B97\u66F4\u5927\u3002",
     eligible: (s4) => !s4.service && !s4.business && !s4.school && s4.age >= 18,
-    choices: [{ id: "own", label: "\u628A\u526F\u4E1A\u8F6C\u6210\u5168\u804C\uFF08\u542F\u52A8 $1,000\uFF0C\u526F\u4E1A\u6708\u5165\u8981\u5230 $300\uFF09", cost: 1e3, base: 1900, needSide: 300 }, { id: "truck", label: "\u5F00\u4E00\u8F86\u9910\u8F66\uFF08\u542F\u52A8\u8D44\u91D1 $8,000\uFF09", cost: 8e3, base: 2800 }, { id: "shop", label: "\u5F00\u7F51\u5E97\uFF08\u542F\u52A8\u8D44\u91D1 $3,000\uFF09", cost: 3e3, base: 1700 }, { id: "studio", label: "\u5F00\u8BBE\u8BA1\u5DE5\u4F5C\u5BA4\uFF08$5,000\uFF0C\u8981\u804C\u4E1A\u80FD\u529B \u2265 1\uFF09", cost: 5e3, base: 3400, needCareer: 1 }],
+    choices: [{ id: "own", label: "\u628A\u526F\u4E1A\u8F6C\u6210\u5168\u804C\uFF08\u542F\u52A8 $1,000\uFF0C\u526F\u4E1A\u6708\u5165\u8981\u5230 $200\uFF09", cost: 1e3, base: 1900, needSide: 200 }, { id: "truck", label: "\u5F00\u4E00\u8F86\u9910\u8F66\uFF08\u542F\u52A8\u8D44\u91D1 $8,000\uFF09", cost: 8e3, base: 2800 }, { id: "shop", label: "\u5F00\u7F51\u5E97\uFF08\u542F\u52A8\u8D44\u91D1 $3,000\uFF09", cost: 3e3, base: 1700 }, { id: "studio", label: "\u5F00\u8BBE\u8BA1\u5DE5\u4F5C\u5BA4\uFF08$5,000\uFF0C\u8981\u804C\u4E1A\u80FD\u529B \u2265 1\uFF09", cost: 5e3, base: 3400, needCareer: 1 }],
     throw: { stat: "career", label: "\u5F00\u4E1A", game: "catch" },
     outcomes: { fail: { bizMult: -0.3, note: "\u5F00\u4E1A\u4E0D\u987A\uFF0C\u6BCF\u6708\u5728\u4E8F\u94B1\u3002" }, ok: { bizMult: 1, note: "\u751F\u610F\u4E0A\u4E86\u8F68\u9053\u3002" }, great: { bizMult: 1.8, note: "\u751F\u610F\u706B\u7206\uFF01" } }
   },
@@ -2283,7 +2284,9 @@ function raiseSalary(s4, newSalary) {
 function rollMarket(s4) {
   s4.marketReturn = r22(Math.max(-0.4, Math.min(0.45, ASSUME.stockReturnMean + ASSUME.stockReturnSd * normal(s4))));
 }
-var essentialsMonthly = (s4) => sum(Object.values(s4.essentials));
+var HEALTH_GAP = 150;
+var healthGap = (s4) => s4.age >= 26 && !s4.service && !s4.school && (s4.job?.employed && s4.job.part || !!s4.business) ? HEALTH_GAP : 0;
+var essentialsMonthly = (s4) => sum(Object.values(s4.essentials)) + healthGap(s4);
 var filing = (s4) => s4.spouse ? "joint" : "single";
 function minimums(s4) {
   return s4.debts.map((d) => {
@@ -2682,7 +2685,7 @@ function blockReason(s4, d) {
 }
 function choiceBlock(s4, d, c) {
   if (c.cost && liquid(s4) < c.cost) return `\u9700\u8981 ${money(c.cost)}\u3002`;
-  if (c.needSide && (s4.side || 0) < c.needSide) return "\u526F\u4E1A\u6708\u5165\u8981\u5230 $300\u3002";
+  if (c.needSide && (s4.side || 0) < c.needSide) return "\u526F\u4E1A\u6708\u5165\u8981\u5230 $200\u3002";
   if (c.needCareer && s4.stats.career < c.needCareer) return `\u8981\u6C42\u804C\u4E1A\u80FD\u529B \u2265 ${c.needCareer}\u3002`;
   if (d.id === "buycar" && s4.credit && s4.credit < 500) return "\u4FE1\u7528\u5206\u592A\u4F4E\uFF0C\u8F66\u8D37\u4E0D\u6279\u3002";
   return null;
@@ -3316,6 +3319,7 @@ function simulateYear(s0, { returnRate = s0.marketReturn ?? ASSUME.stockReturnMe
     y.essentials += ess;
     spend += ess;
     for (const k2 of Object.keys(s4.essentials)) y.cat[k2] = (y.cat[k2] || 0) + s4.essentials[k2];
+    y.cat.insurance += healthGap(s4);
     const left = charge(m, ess, "\u5FC5\u8981\u5F00\u9500");
     if (left > 0) {
       overdue(m, left, "\u5FC5\u8981\u5F00\u9500");
@@ -4358,7 +4362,7 @@ var GLOSSARY = {
   status: ["\u72B6\u6001", "\u4E00\u6BB5\u65F6\u95F4\u5185\u5F71\u54CD\u5224\u5B9A\u7684\u597D\u574F\u60C5\u51B5\uFF0C\u6BD4\u5982\u201C\u88AB\u9F13\u821E\u201D\u804C\u4E1A\u5224\u5B9A +1\u3001\u201C\u6C89\u8FF7\u6E38\u620F\u201D\u804C\u4E1A\u5224\u5B9A \u22121\u3002\u5230\u671F\u4F1A\u81EA\u52A8\u6D88\u5931\u3002"],
   dice: ["\u5224\u5B9A\u600E\u4E48\u7B97", "\u5148\u73A9\u4E00\u4E2A 12 \u79D2\u7684\u5C0F\u6E38\u620F\uFF0C\u6210\u7EE9\u6362\u6210 0 / +1 / +2 \u7684\u52A0\u503C\uFF1B\u518D\u63B7\u4E00\u4E2A\u9AB0\u5B50\uFF081\u20136\uFF09\u3002\u9AB0\u5B50 + \u80FD\u529B + \u72B6\u6001 + \u5C0F\u6E38\u620F\u52A0\u503C\uFF1A\u22643 \u5931\u8D25\uFF0C4\u20136 \u6210\u529F\uFF0C\u22657 \u5927\u6210\u529F\u3002\u4E0D\u60F3\u73A9\u53EF\u4EE5\u76F4\u63A5\u63B7\u9AB0\u5B50\u3002\u63B7\u51FA 1 \u4E00\u5F8B\u5931\u8D25\uFF0C\u80FD\u529B\u518D\u9AD8\u4E5F\u4E00\u6837\u3002\u627E\u5DE5\u4F5C\u65F6\uFF0C\u76EE\u6807\u5DE5\u8D44\u6BD4\u73B0\u5728\u6BCF\u9AD8 $15,000\uFF0C\u5224\u5B9A \u22121\uFF08\u6700\u591A \u22123\uFF09\u3002"],
   essentials: ["\u5FC5\u8981\u5F00\u9500", "\u623F\u79DF\u6216\u623F\u8D37\u4E4B\u5916\u7684\u4F4F\u623F\u8D39\u7528\u3001\u5403\u996D\u3001\u4EA4\u901A\u3001\u4FDD\u9669\u3001\u6C34\u7535\u624B\u673A\u7B49\uFF0C\u6BCF\u4E2A\u6708\u5FC5\u987B\u4ED8\u7684\u94B1\u3002"],
-  insurance: ["\u4FDD\u9669", "\u533B\u7597\u3001\u8F66\u548C\u623F\u7684\u4FDD\u9669\u90FD\u81EA\u52A8\u751F\u6548\uFF0C\u8D39\u7528\u5DF2\u7ECF\u7B97\u5728\u5FC5\u8981\u5F00\u9500\u91CC\uFF0C\u4E0D\u7528\u53E6\u5916\u4E70\u3002\u4EBA\u751F\u5361\u53EF\u80FD\u8BA9\u4FDD\u8D39\u4E0A\u6DA8\u3002"],
+  insurance: ["\u4FDD\u9669", "\u533B\u7597\u3001\u8F66\u548C\u623F\u7684\u4FDD\u9669\u90FD\u81EA\u52A8\u751F\u6548\uFF0C\u8D39\u7528\u5DF2\u7ECF\u7B97\u5728\u5FC5\u8981\u5F00\u9500\u91CC\uFF0C\u4E0D\u7528\u53E6\u5916\u4E70\u3002\u517C\u804C\u6216\u81EA\u5DF1\u505A\u751F\u610F\u4E00\u822C\u6CA1\u6709\u516C\u53F8\u533B\u4FDD\uFF0C26 \u5C81\u4EE5\u540E\u8981\u591A\u4ED8\u4E00\u4E9B\u3002\u4EBA\u751F\u5361\u53EF\u80FD\u8BA9\u4FDD\u8D39\u4E0A\u6DA8\u3002"],
   fun: ["\u5A31\u4E50\u5F00\u9500", "\u5403\u559D\u73A9\u4E50\u3001\u8BA2\u9605\u7B49\u53EF\u4EE5\u7701\u7684\u94B1\u3002\u52A0\u85AA\u65F6\u4F1A\u81EA\u52A8\u53D8\u591A\uFF08\u751F\u6D3B\u81A8\u80C0\uFF09\uFF0C\u53EF\u4EE5\u5728\u53D1\u85AA\u65E5\u9501\u4F4F\u3002"]
 };
 var planned = (d) => (d.emergency || 0) + (d.goal || 0) + (d.roth || 0) + (d.brokerage || 0) + Object.values(d.extra || {}).reduce((a, b) => a + b, 0) + (d.k401Pct || 0) > 0;
@@ -4595,6 +4599,8 @@ var T2 = {
   finMost: "\u82B1\u94B1\u6700\u591A\u7684\u6708",
   finLeast: "\u6700\u7701\u7684\u6708",
   finAge: "{a} \u5C81 {m} \u6708",
+  noPlan: "\u6CA1\u6709\u516C\u53F8\u533B\u4FDD +{m}/\u6708",
+  noPlanWhy: "\u517C\u804C\u548C\u81EA\u5DF1\u505A\u751F\u610F\u5F88\u5C11\u6709\u516C\u53F8\u533B\u4FDD\uFF08\u517C\u804C\u53EA\u6709 23% \u80FD\u62FF\u5230\uFF0C\u5168\u804C\u662F 87%\uFF09\uFF0C26 \u5C81\u4EE5\u540E\u8981\u81EA\u5DF1\u4E70\u3002",
   locked: "\u672A\u89E3\u9501",
   skipGuide: "\u8DF3\u8FC7",
   next: "\u4E0B\u4E00\u6B65",
@@ -6213,7 +6219,7 @@ function sheet(m) {
   const rows = (list) => list.map(([n, v, k2, apr, perMo]) => `<li><span>${h(n)} ${k2 ? q(k2) : ""}${apr != null ? `<small> ${pct(apr, 1)}${perMo ? ` \xB7 ${money2(perMo)}${T2.perMo}` : ""}</small>` : ""}</span><i style="width:${Math.max(1, v / top * 100)}%"></i><b>${money2(v)}</b></li>`).join("");
   return `<section class="panel sheet"><h3>${icon.bank}\u4F60\u62E5\u6709\u7684 \u2212 \u4F60\u6B20\u7684 = \u5BB6\u5E95 ${q("netWorth")}</h3><div class="sheet-cols">
     <div class="own"><small>\u62E5\u6709 ${money2(m.assets)}</small><ul>${rows(assets)}</ul></div><div class="owe"><small>\u6B20 ${money2(m.totalDebt)}</small><ul>${rows(debts) || '<li class="hint">\u6CA1\u6709\u6B20\u6B3E</li>'}</ul></div></div>
-    <p class="sheet-total">= \u5BB6\u5E95 <b class="${m.netWorth < 0 ? "neg" : "pos"}">${money2(m.netWorth)}</b></p><div class="cover-row">${icon.shield}<b>${T2.insurance}</b>${q("insurance")}<span class="cover">${icon.heart}${T2.coverHealth} ${money2(s2.essentials.insurance)}${T2.perMo}</span>${s2.car ? `<span class="cover">${icon.car}${T2.coverCar}</span>` : ""}${s2.home ? `<span class="cover">${icon.house}${T2.coverHome}</span>` : ""}<small>${icon.check}${T2.coverIn}</small></div></section>`;
+    <p class="sheet-total">= \u5BB6\u5E95 <b class="${m.netWorth < 0 ? "neg" : "pos"}">${money2(m.netWorth)}</b></p><div class="cover-row">${icon.shield}<b>${T2.insurance}</b>${q("insurance")}<span class="cover">${icon.heart}${T2.coverHealth} ${money2(s2.essentials.insurance + healthGap(s2))}${T2.perMo}</span>${healthGap(s2) ? `<span class="cover warn" title="${h(T2.noPlanWhy)}">${icon.alert}${h(fmt(T2.noPlan, { m: money2(healthGap(s2)) }))}</span>` : ""}${s2.car ? `<span class="cover">${icon.car}${T2.coverCar}</span>` : ""}${s2.home ? `<span class="cover">${icon.house}${T2.coverHome}</span>` : ""}<small>${icon.check}${T2.coverIn}</small></div></section>`;
 }
 function stagePath() {
   const st = stage(s2);

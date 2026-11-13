@@ -1497,6 +1497,11 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .left-now b { font-size: 1.1rem; } .left-now.bad { background: #ffe1dc; } .left-now.bad b { color: var(--neg); } .risk.left-neg { font-size: .8rem; margin: 4px 0 0; }
 .dice-box small.nat1-on { color: var(--neg); font-weight: 900; font-size: .92rem; } .dice-box .eq .tot.void { text-decoration: line-through; opacity: .55; }
 .throw-badge.eff-badge { background: #e3f4ff; }
+/* ---- Round 36 ---- */
+.ty-stepper input[type=number]::-webkit-inner-spin-button, .ty-stepper input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.ty-stepper input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+.ty-stepper button { touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.sl > small + .catbars { margin-bottom: 6px; }
 </style>
 </head>
 <body>
@@ -2101,7 +2106,7 @@ var LADDER = [
   { id: "more", title: "Other investing account", why: "Invest for the long run; compounding grows with time." }
 ];
 var INTRO = { "steps": [["Meet Maya.", "22. First full-time job: $42,000."], ["Payday!", "About $2,900 a month after taxes."], ["Then her car breaks down.", "$2,500, and no emergency fund. It goes on a 21.4% card."], ["Maya makes a plan.", "$100 a month saved, and 4% into her 401(k). Her company adds 4%."], ["Small steps, many years.", "At 50, she isn\u2019t rich, but she\u2019s secure."], ["That was Maya\u2019s story.", "Now write yours."]], "cta": "Make my character", "skip": "Skip", "next": "Next", "back": "Back", "replay": "Watch the opening story" };
-var LESSONS = [{ "id": "paycheck", "title": "Tax rates climb in steps", "short": "Each extra dollar is taxed at your top rate; your average rate is much lower.", "body": "Your pay is {gross} a month before tax and {net} after. US income tax is progressive: income is taxed in bands, 10% on the first part, 12% on the next, and so on. Your last dollar is taxed at your top band, but most of your pay was taxed less, so a raise never shrinks your take-home.", "q": [{ "q": "Your job pays {salary} a year. What should your monthly budget be based on?", "opts": ["{salaryM} a month (salary \xF7 12)", "What actually lands in checking after taxes and deductions", "Last month\u2019s pay plus your next raise"], "ok": 1, "why": "Taxes and deductions come out before you ever see the money. Only take-home pay can be spent." }, { "q": "Which of these is NOT taken out of your paycheck before it reaches you?", "opts": ["Social Security & Medicare tax", "Federal income tax", "Rent"], "ok": 2, "why": "Taxes are withheld from your pay automatically; rent is paid out of what\u2019s left." }] }, { "id": "emergency", "title": "Cash is safe but doesn\u2019t grow", "short": "Money you can reach fast protects you, but earns little.", "body": "Liquidity is how fast money can be used. Cash covers surprises like a repair or an ER bill; invested money usually grows but can be down just when you need it. Three months of your essentials is {ef3}; you have {ef} in the emergency fund. How much to keep in cash is a trade-off between safety and growth.", "q": [{ "q": "Your car needs a $1,200 repair. What\u2019s the best way to pay?", "opts": ["Put it on a credit card and pay the minimum", "Pay from your emergency fund", "Skip this month\u2019s rent"], "ok": 1, "why": "That\u2019s exactly what an emergency fund is for: no interest, no late fees, no new debt." }, { "q": "How big should an emergency fund be?", "opts": ["About $100", "3\u20136 months of essential costs (for you, {ef3}\u2013{ef6})", "A full year of salary before you do anything else"], "ok": 1, "why": "3\u20136 months covers most job losses and big repairs without borrowing." }] }, { "id": "debt", "title": "Borrowed money costs extra", "short": "Borrow $100 and you pay back more than $100. The extra is interest.", "body": "A credit card charges about 21% a year, and unpaid interest earns interest too. {bal} paid at the minimum takes about {minYears} years and {minInterest} in interest; at {fixed} a month it\u2019s {fixMonths} months and {fixInterest}. Paying faster means less money for other things this year.", "q": [{ "q": "You owe {bal} on a 21.4% credit card and have {bal} to spare. Best move?", "opts": ["Invest it: the stock market averages more", "Pay off the card", "Keep paying only the minimum"], "ok": 1, "why": "Paying off a 21.4% card is a guaranteed 21.4% return. No normal investment reliably beats that." }, { "q": "Paying only the minimum on a credit card means\u2026", "opts": ["You pay it off fastest", "Most of each payment goes to interest, so it takes years", "The interest rate goes down"], "ok": 1, "why": "Least you must repay are mostly interest, so the balance barely moves." }] }, { "id": "match", "title": "Incentives: the employer match", "short": "Your employer adds money when you save, but it\u2019s locked until retirement.", "body": "A match is an incentive: when you put money in your 401(k) retirement account, your employer adds some too. At your pay the full match is {free} a year. The trade-off: the money leaves your paycheck now, and taking it out before 59\xBD usually means a penalty.", "bodyNoMatch": "A match is an incentive: when you put money in a 401(k) retirement account, your employer adds some too. Your current job has no match; a typical 4% match at your pay would be {free4} a year. It\u2019s part of what a job pays.", "q": [{ "q": "Your employer matches {r}% of what you put in, up to {m}% of pay. How much should you contribute at least?", "opts": ["0%: keep the cash", "{m}%", "1%"], "ok": 1, "why": "Putting in {m}% collects every dollar of the free match." }, { "q": "Which comes first: getting a 100% employer match, or paying extra on a 5% car loan?", "opts": ["The 100% match", "The 5% car loan", "Neither"], "ok": 0, "why": "A 100% match is worth far more than saving 5% interest." }] }, { "id": "compound", "title": "The time value of money", "short": "Money set aside earlier has more years to grow.", "body": "Growth earns more growth: that\u2019s compounding. $200 a month from age {age} grows to about {now} by 65 (5% a year after inflation); starting at {age10} gives about {later}. Money saved young is money not spent young, so it\u2019s a choice between now and later.", "q": [{ "q": "Alex invests $200 a month from {age} to 65. Sam invests the same from {age10} to 65. Roughly how much more does Alex end up with?", "opts": ["About the same", "About $24,000 more (the extra money put in)", "About {diff} more"], "ok": 2, "why": "Alex put in only $24,000 more, but those early dollars had decades to grow: about {now} vs {later}." }, { "q": "Which usually grows the most?", "opts": ["A big amount invested for 5 years", "A smaller amount invested for 30 years", "Cash kept in checking"], "ok": 1, "why": "Compounding needs time. Long periods matter more than big amounts." }] }, { "id": "creep", "title": "Opportunity cost", "short": "Every dollar spent is a dollar not used for something else.", "body": "When pay rises, spending tends to rise with it. Your latest raise is about {raise} a year. Saving half of it every year until 50 would grow to about {fv}. Spending isn\u2019t wrong; the real cost of anything is the best option you gave up for it.", "q": [{ "q": "You get a {raise} raise. Which habit builds the most wealth?", "opts": ["Upgrade your car and apartment right away", "Save about half, enjoy the other half", "Spend it all: you earned it"], "ok": 1, "why": "Saving half locks in progress while you still enjoy part of the raise." }, { "q": "What is lifestyle creep?", "opts": ["Your spending rising every time your income rises", "A slow raise schedule at work", "Prices rising every year"], "ok": 0, "why": "It\u2019s your own spending growing with your pay, so savings stay flat." }] }];
+var LESSONS = [{ "id": "paycheck", "title": "Tax rates climb in steps", "short": "Each extra dollar is taxed at your top rate; your average rate is much lower.", "body": "Your pay is {gross} a month before tax and {net} after. US income tax is progressive: income is taxed in bands, 10% on the first part, 12% on the next, and so on. Your last dollar is taxed at your top band, but most of your pay was taxed less, so a raise never shrinks your take-home.", "q": [{ "q": "Your job pays {salary} a year. What should your monthly budget be based on?", "opts": ["{salaryM} a month (salary \xF7 12)", "What actually lands in checking after taxes and deductions", "Last month\u2019s pay plus your next raise"], "ok": 1, "why": "Taxes and deductions come out before you ever see the money. Only take-home pay can be spent." }, { "q": "Which of these is NOT taken out of your paycheck before it reaches you?", "opts": ["Social Security & Medicare tax", "Federal income tax", "Rent"], "ok": 2, "why": "Taxes are withheld from your pay automatically; rent is paid out of what\u2019s left." }] }, { "id": "emergency", "title": "Money you can reach, money that grows", "short": "Cash is there the day you need it but barely grows. Investments grow, but can be down on the day you need them.", "body": "Liquidity is how fast money can be used. Cash covers surprises like a repair or an ER bill; invested money usually grows but can be down just when you need it. Three months of your essentials is {ef3}; you have {ef} in the emergency fund. How much to keep in cash is a trade-off between safety and growth.", "q": [{ "q": "Your car needs a $1,200 repair. What\u2019s the best way to pay?", "opts": ["Put it on a credit card and pay the minimum", "Pay from your emergency fund", "Skip this month\u2019s rent"], "ok": 1, "why": "That\u2019s exactly what an emergency fund is for: no interest, no late fees, no new debt." }, { "q": "How big should an emergency fund be?", "opts": ["About $100", "3\u20136 months of essential costs (for you, {ef3}\u2013{ef6})", "A full year of salary before you do anything else"], "ok": 1, "why": "3\u20136 months covers most job losses and big repairs without borrowing." }] }, { "id": "debt", "title": "Borrowed money costs extra", "short": "Borrow $100 and you pay back more than $100. The extra is interest.", "body": "A credit card charges about 21% a year, and unpaid interest earns interest too. {bal} paid at the minimum takes about {minYears} years and {minInterest} in interest; at {fixed} a month it\u2019s {fixMonths} months and {fixInterest}. Paying faster means less money for other things this year.", "q": [{ "q": "You owe {bal} on a 21.4% credit card and have {bal} to spare. Best move?", "opts": ["Invest it: the stock market averages more", "Pay off the card", "Keep paying only the minimum"], "ok": 1, "why": "Paying off a 21.4% card is a guaranteed 21.4% return. No normal investment reliably beats that." }, { "q": "Paying only the minimum on a credit card means\u2026", "opts": ["You pay it off fastest", "Most of each payment goes to interest, so it takes years", "The interest rate goes down"], "ok": 1, "why": "Least you must repay are mostly interest, so the balance barely moves." }] }, { "id": "match", "title": "Employer match: you save, they add", "short": "Your employer adds money when you save, but it\u2019s locked until retirement.", "body": "A match is an incentive: when you put money in your 401(k) retirement account, your employer adds some too. At your pay the full match is {free} a year. The trade-off: the money leaves your paycheck now, and taking it out before 59\xBD usually means a penalty.", "bodyNoMatch": "A match is an incentive: when you put money in a 401(k) retirement account, your employer adds some too. Your current job has no match; a typical 4% match at your pay would be {free4} a year. It\u2019s part of what a job pays.", "q": [{ "q": "Your employer matches {r}% of what you put in, up to {m}% of pay. How much should you contribute at least?", "opts": ["0%: keep the cash", "{m}%", "1%"], "ok": 1, "why": "Putting in {m}% collects every dollar of the free match." }, { "q": "Which comes first: getting a 100% employer match, or paying extra on a 5% car loan?", "opts": ["The 100% match", "The 5% car loan", "Neither"], "ok": 0, "why": "A 100% match is worth far more than saving 5% interest." }] }, { "id": "compound", "title": "The time value of money", "short": "Money set aside earlier has more years to grow.", "body": "Growth earns more growth: that\u2019s compounding. $200 a month from age {age} grows to about {now} by 65 (5% a year after inflation); starting at {age10} gives about {later}. Money saved young is money not spent young, so it\u2019s a choice between now and later.", "q": [{ "q": "Alex invests $200 a month from {age} to 65. Sam invests the same from {age10} to 65. Roughly how much more does Alex end up with?", "opts": ["About the same", "About $24,000 more (the extra money put in)", "About {diff} more"], "ok": 2, "why": "Alex put in only $24,000 more, but those early dollars had decades to grow: about {now} vs {later}." }, { "q": "Which usually grows the most?", "opts": ["A big amount invested for 5 years", "A smaller amount invested for 30 years", "Cash kept in checking"], "ok": 1, "why": "Compounding needs time. Long periods matter more than big amounts." }] }, { "id": "creep", "title": "Opportunity cost", "short": "Every dollar spent is a dollar not used for something else.", "body": "When pay rises, spending tends to rise with it. Your latest raise is about {raise} a year. Saving half of it every year until 50 would grow to about {fv}. Spending isn\u2019t wrong; the real cost of anything is the best option you gave up for it.", "q": [{ "q": "You get a {raise} raise. Which habit builds the most wealth?", "opts": ["Upgrade your car and apartment right away", "Save about half, enjoy the other half", "Spend it all: you earned it"], "ok": 1, "why": "Saving half locks in progress while you still enjoy part of the raise." }, { "q": "What is lifestyle creep?", "opts": ["Your spending rising every time your income rises", "A slow raise schedule at work", "Prices rising every year"], "ok": 0, "why": "It\u2019s your own spending growing with your pay, so savings stay flat." }] }];
 var MOMENTS = [["Birthday money from family", 50], ["Sold an old jacket online", 40], ["Found $20 in a winter coat", 20], ["Cash back from your bank card", 35], ["Helped a neighbor move", 60], ["Parking ticket", -45], ["A friend\u2019s birthday dinner", -60], ["Forgot to cancel a free trial", -15], ["Coffee runs added up", -40], ["Gift for a coworker\u2019s farewell", -30], ["Late-night pizza", -28], ["Lost your bus pass", -35], ["Pharmacy visit", -55], ["Haircut", -30]];
 var LT = { "lesson": "Lesson {k} of {n}", "gotIt": "Got it", "perYear": "/yr", "perMonth": "/mo", "quick": "Quick check", "right": "Right!", "wrong": "Not quite.", "cont": "Continue", "walkTitle": "Age {age}: the year goes by", "walkSub": "", "toReview": "See the year-end review", "learned": "What you\u2019ve learned", "later": "Coming up later", "score": "{c}/{t} \u2713", "taughtAt": "learned at age {age}", "rerollOnce": "You can re-spin once.", "noReroll": "No more re-spins: like real life, you play the hand you\u2019re dealt.", "diffLock": "Changing the difficulty spins the reels again.", "skipWalk": "Skip ahead", "month": "{m}" };
 
@@ -3712,11 +3717,13 @@ function yearNotes(s4) {
   const bad = total((l) => l.type === "card-charge" || l.type === "overdue"), good = total((l) => l.type === "shortfall" && l.from === "emergency" || l.type === "pay" && l.from === "emergency");
   if (bad >= 50) out.push(fill20(R20.carded, { x: money(bad), i: money(bad * apr) }) + ((y.before?.emergency || 0) >= bad ? R20.could : R20.bigger));
   else if (good >= 50) out.push(fill20(R20.caught, { x: money(good), r: Math.round(apr * 100), i: money(good * apr) }));
+  const em0 = y.before?.emergency || 0, emD = em0 - s4.accounts.emergency, due = y.summary && y.summary.refund < -1 ? -y.summary.refund : 0;
+  if (emD >= 500 && s4.accounts.emergency < em0 * 0.5) out.push(fill20(due >= emD * 0.5 ? "Your emergency fund fell by {x}: {t} of tax came due at year end and checking couldn\u2019t cover it. Nobody withholds tax on business or side income, so set some aside." : "Your emergency fund fell by {x}: money ran short this year, so it came out of the fund.", { x: money(emD), t: money(due) }));
   const b = s4.business;
   if (b?.plan && b.since === s4.age) out.push(fill20(R20.review, { m: b.plan.months.toFixed(1), now: monthsLeft(liquid(s4), monthlyOut(s4)).toFixed(1), p: money(b.profit), need: money(b.plan.need) }));
   return out;
 }
-var R22 = { "debt": "Do you know the interest rate on your own credit card? It\u2019s on the statement.", "bill": "A {x} surprise. Could your real savings pay that today?", "health": "Do you know your own health plan\u2019s deductible, or where to find it?", "job": "If your pay stopped, how many months of rent and food could you cover?", "rent": "What share of your income goes to rent right now?", "family": "How much could you give someone without touching your bills?", "impulse": "Your last impulse buy: would you buy it again a week later?", "subs": "Which of your own subscriptions went unused last month?", "risk": "Has anyone pitched you a sure thing? What would you check first?", "match": "Does your job, or your next one, match retirement savings?", "fraud": "When did you last read your own card statement?", "car": "Thinking about a car? Add up payment, insurance and gas per month.", "home": "What would a home near you cost per month, with tax and insurance?", "biz": "What\u2019s the smallest version of your idea you could test first?", "school": "What would your course cost after aid, and what job would it lead to?" };
+var R22 = { "debt": "Do you know the interest rate on your own credit card? It\u2019s on the statement.", "bill": "A {x} surprise. Could your real savings pay that today?", "health": "Do you know your own health plan\u2019s deductible, or where to find it?", "job": "If your pay stopped, how many months of rent and food could you cover?", "rent": "What share of your income goes to rent right now?", "family": "How much could you give someone without touching your bills?", "impulse": "Your last impulse buy: would you buy it again a week later?", "subs": "Which of your own subscriptions went unused last month?", "risk": "Has anyone pitched you a sure thing? What would you check first?", "match": "Does your job, or your next one, match retirement savings?", "fraud": "When did you last read your own card statement?", "car": "Thinking about a car? Add up payment, insurance and gas per month.", "home": "What would a home near you cost per month, with tax and insurance?", "biz": "Got a business idea? What could you try first for very little money?", "school": "What would your course cost after aid, and what job would it lead to?" };
 var REAL_CARD = { bill: ["car-repair", "fender", "washer", "phone-broke", "roof", "flood"], health: ["er-visit", "dental", "checkup", "insurance-up"], job: ["layoff", "recession"], rent: ["rent-up", "bigger"], family: ["family-help", "parent-care", "friend-wedding", "friend-loan"], impulse: ["new-phone", "takeout", "concert", "trip", "console", "bag", "upgrade-car", "tv"], subs: ["subs", "gym", "lottery"], risk: ["stock-tip", "crypto", "casino", "timeshare"], match: ["match-start"], fraud: ["fraud"] };
 var REAL_DEC = { buycar: "car", buyhome: "home", startup: "biz", side: "biz", enroll: "school", course: "school", jobhunt: "match" };
 function realNote(s4) {
@@ -4907,7 +4914,7 @@ function playMini(canvas, id, hooks, seconds = 12, theme = "work") {
     hooks.onEnd?.({ id, score: clamp2(g.score(), 0, 1), text: g.hud() });
   };
   function step(now) {
-    const dt = Math.min(0.033, (now - last) / 1e3);
+    const dt = Math.max(0, Math.min(0.033, (now - last) / 1e3));
     last = now;
     t += dt;
     g.update(dt, t);
@@ -5063,7 +5070,9 @@ var TUTS = [
   { id: "goals", page: "goals", name: "How to win", steps: [
     [".win-panel", "How to win", "Stay afloat, climb, reach 50.", "trophy", "gold"],
     [".stage-path", "Life stages", "Safety first, then wealth.", "map", "purple"]
-  ] }
+  ] },
+  { id: "l-paycheck", page: "payday", hidden: true, name: "Tax", need: () => false, steps: [[".pd-flow", "This is your tax", "Your tax each month is here, worked out band by band like you just saw.", "receipt", "green"]] },
+  { id: "l-emergency", page: "payday", hidden: true, name: "Emergency fund", need: () => false, steps: [['[data-amt="emergency"], [data-pk="emergency"]', "The emergency fund is the cash side", "Money here is there the day you need it. How much goes in each month is your call.", "piggy", "blue"]] }
 ];
 var T2 = {
   ledger: "This month\u2019s money",
@@ -5261,6 +5270,8 @@ var T2 = {
   mgHow: { catch: "Move with \u2190/\u2192 or drag. Catch the good, skip the bad.", runner: "Tap or press Space to jump over the blocks.", snake: "Arrow keys, or tap where to turn. Eat the good, avoid the bad.", shooter: "Move with \u2190/\u2192 or drag. Shots fire by themselves.", match3: "Tap two neighbours to swap. Line up three.", farm: "Tap a plot (or press 1\u20135) when it turns gold.", clicker: "Tap as fast as you can. Stop when it turns red.", memory: "Turn over two cards to find a pair.", runner2: "Tap twice for a double jump. Grab what\u2019s in the air.", shooter2: "Tap to shoot. Hold, then let go, for a big shot." },
   mgDone: "Mini-game \u201C{g}\u201D: {r} \u2192 bonus +{b}",
   mgLeft: "{s} s left",
+  finOut: "Out of that, you paid",
+  finIn: "On top of that, you got",
   locked: "Locked",
   skipGuide: "Skip",
   next: "Next",
@@ -5695,8 +5706,8 @@ var CG = {
   skip: "Show the result",
   stop: "End early",
   secs: (n) => `${n} seconds`,
-  how: { paycheck: "Pour income into the tax brackets", emergency: "Split your savings, then live the year", debt: "Throw coins at the growing snowball", match: "Choose how much goes into your 401(k)", compound: "Plant savings as the years go by", creep: "Run through a year of temptations" },
-  ctl: { paycheck: "Hold: mouse, touch or Space", emergency: "Move \u2190/\u2192 to split", debt: "Tap or Space to throw", match: "Hold to raise", compound: "Tap or Space to plant", creep: "Tap or Space to jump" },
+  how: { paycheck: "Pour in a year of pay and see what each band of it is taxed", emergency: "Watch a year: cash stays put, investments go up and down", debt: "What you owe is a snowball: it grows every month. Tap it to pay", match: "Choose how much goes into your 401(k)", compound: "Plant savings as the years go by", creep: "Run through a year of temptations" },
+  ctl: { paycheck: "Hold: mouse, touch or Space", emergency: "When a bill comes, tap the jar that pays", debt: "Tap the snowball (or press Space)", match: "Hold to raise", compound: "Tap or Space to plant", creep: "Tap or Space to jump" },
   income: "Income",
   noTax: "Not taxed",
   yourPay: "Your pay",
@@ -5707,9 +5718,11 @@ var CG = {
   split: "Set your split",
   monthN: (m) => `Month ${m}`,
   onCard: "On card",
-  wallet: "Coins",
-  owe: "Owe",
-  interest: "Interest",
+  wallet: "Money to pay with",
+  owe: "You owe",
+  interest: "Interest paid",
+  aim: "Tap the snowball",
+  debtHint: "Tap the snowball to pay it down",
   perYr: "/yr",
   bossAdds: "Employer adds",
   you: "You",
@@ -5731,15 +5744,24 @@ var CG = {
   tvGuess: (g, a) => `You guessed \xD7${g}; planted now it grows \xD7${a}. `,
   taxLine: (i, m, a) => `At ${i} a year, your last dollar pays ${m} federal tax, but your whole income pays ${a} on average. A raise is never eaten whole by tax.`,
   taxBars: ["Federal income tax", "Left after it"],
-  liqLine: (c, v, g, k2) => `You kept ${c} in cash and invested ${v}. Investing made ${g}; ${k2} of bills went on the card.`,
-  liqSafe: (c, v, g) => `You kept ${c} in cash and invested ${v}. Cash covered every bill; investing made ${g}.`,
-  liqBars: ["Investment gain", "Card interest (a year)"],
+  taxHold: "Hold to pour in a year of pay",
+  taxKey: "mouse, finger or Space",
+  taxPart: (r) => r ? `The part taxed at ${r}` : "The tax-free part",
+  taxSum: "Federal tax",
+  taxOf: "of your pay:",
+  liqFlat: "always there",
+  liqNeed: (a) => `You need ${a} now. Which side pays?`,
+  liqSafeTag: "nothing lost",
+  liqSold: (a) => `sold while down: ${a} lost`,
+  liqCash: (b, ci, gi, dip) => `The ${b} came out of cash: nothing lost. But cash grew only ${ci} all year. The invested half grew ${gi}, after being down ${dip} on the way.`,
+  liqInv: (b, loss, ci, gi) => `The ${b} came out of investments while they were down, so about ${loss} was lost by selling low. Cash grew only ${ci} all year; the invested half grew ${gi}.`,
+  liqBars: ["Cash grew", "Investments grew"],
   debtClear: (m, i, p) => `Paid off in ${m} months. Borrowing cost ${i} in interest; you threw ${p} you couldn\u2019t spend elsewhere.`,
   debtStill: (b, i, mb) => `After 3 years you owe ${b} and paid ${i} in interest. Minimum payments only, you\u2019d still owe ${mb}.`,
   debtBars: ["Interest you paid", "Interest, minimum only"],
-  matchLine: (p, y, f, d) => `At ${p}%: you put in ${y} a year and your employer adds ${f}. Your take-home drops about ${d}, and the money is locked until 59\xBD.`,
-  matchOver: (c) => ` Above ${c}% the employer adds nothing more.`,
-  matchBars: ["Employer adds", "Take-home drops"],
+  matchLine: (p, y, f, d) => `You put ${p}% of your pay into the 401(k): ${y} a year, and your employer adds ${f} on top. That money isn\u2019t taxed now, so your take-home falls by only ${d}. It stays locked until 59\xBD.`,
+  matchOver: (c) => ` Your employer matches up to ${c}% of pay; above that it adds nothing.`,
+  matchBars: ["Your employer adds", "Your take-home falls by"],
   tvLine: (n, d, v, a, b, s4) => `You planted ${n} seeds (${d}); at 65 they\u2019re worth ${v}. The earliest grew ${a}\xD7, the latest ${b}\xD7. You kept ${s4} to spend along the way.`,
   tvNone: (s4, v) => `You spent all ${s4} along the way. Planted at the start, it would be worth ${v} at 65.`,
   tvBars: ["Worth at 65", "Spent along the way"],
@@ -5769,7 +5791,7 @@ function setupCanvas(canvas) {
   return { ctx: ctx2, w, h: h2 };
 }
 function input2(canvas) {
-  const st = { left: false, right: false, x: null, down: false, taps: 0 };
+  const st = { left: false, right: false, x: null, y: null, down: false, taps: 0, ptaps: 0 };
   const act = ["Space", "ArrowUp", "Enter"];
   const kd = (e) => {
     if (["ArrowLeft", "KeyA"].includes(e.code)) {
@@ -5794,11 +5816,13 @@ function input2(canvas) {
   const pos = (e) => {
     const r = canvas.getBoundingClientRect();
     st.x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+    st.y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
   };
   const pd = (e) => {
     pos(e);
     st.down = true;
     st.taps++;
+    st.ptaps++;
   }, pu = () => {
     st.down = false;
   };
@@ -5849,21 +5873,26 @@ var taxBands = (p) => {
   return [{ lo: 0, hi: std, rate: 0 }, ...b.map(([lo, rate], i) => ({ lo: std + lo, hi: i + 1 < b.length ? std + b[i + 1][0] : Infinity, rate }))];
 };
 var fedOn = (p, inc) => federalIncomeTax(Math.max(0, inc - FEDERAL.standardDeduction[p.status]), p.status).tax;
-var RET = [0.02, -0.06, 0.03, 0.04, -0.03, 0.05, 0.01, 0.03, -0.02, 0.04, 0.02, 0.03];
-var BILLS = [[2, 0.5], [5, 0.8], [8, 0.6], [10, 0.7]];
-function liqSim(p, share) {
-  let cash = p.pot * share, inv = p.pot - cash, card = 0, interest = 0;
-  const inv0 = inv, cash0 = cash, steps = [];
+var RETD = [0.03, -0.05, -0.06, 0.02, -0.04, 0.04, 0.03, 0.03, 0.02, 0.02, 0.02, 0.01];
+var BILL_M = 5;
+function liqDemo(p, from) {
+  const half = Math.max(500, Math.round(p.pot / 2 / 10) * 10), bill = Math.max(100, Math.min(Math.round(p.ess * 0.8 / 10) * 10, Math.round(half * 0.6 / 10) * 10));
+  let cash = half, inv = half, f = 1, low = 1, loss = 0, pre = null;
+  const steps = [];
   for (let m = 1; m <= 12; m++) {
-    inv *= 1 + RET[m - 1];
-    interest += card * p.apr / 12;
-    const bill = BILLS.find((b) => b[0] === m), amt = bill ? Math.round(p.ess * bill[1] / 10) * 10 : 0;
-    const fromCash = Math.min(cash, amt);
-    cash -= fromCash;
-    card += amt - fromCash;
-    steps.push({ m, cash, inv, card, bill: amt });
+    inv *= 1 + RETD[m - 1];
+    f *= 1 + RETD[m - 1];
+    low = Math.min(low, f);
+    if (m === BILL_M) {
+      pre = { cash, inv, f };
+      if (from === "inv") {
+        loss = bill / f - bill;
+        inv -= bill;
+      } else cash -= bill;
+    }
+    steps.push({ cash, inv, f });
   }
-  return { cash0, inv0, gain: inv - inv0, carded: card, interest: card * p.apr, steps };
+  return { half, bill, steps, pre, loss, from, dip: half * (1 - low), cashGain: half * 0.01, invGain: half * (f - 1) };
 }
 var debtMin = (b, apr) => {
   const i = b * apr / 12;
@@ -5883,44 +5912,47 @@ var SEEDS = 10;
 var SEED = 2400;
 var GAMES = {
   paycheck(p, w, h2, S2) {
-    const bands = taxBands(p), maxI = Math.max(p.salary * 1.6, bands[1].lo + 6e4), top = 46, bot = h2 - 22, x0 = 22, x1 = Math.max(150, w * 0.5);
+    const bands = taxBands(p), sal = Math.max(p.salary, 12e3), nextLo = (bands.find((b) => b.hi > sal) || bands.at(-1)).hi, maxI = Math.max(sal * 1.12, Math.min(nextLo * 1.08, sal * 1.6)), top = 50, bot = h2 - 20, x0 = 16, x1 = Math.max(120, w * 0.4);
     const y = (inc2) => bot - Math.min(1, inc2 / maxI) * (bot - top);
     let inc = 0, band = 0;
     return {
       update(dt, t, io, pop) {
-        if (io.down && inc < maxI) {
-          inc = Math.min(maxI, inc + maxI / (S2 * 0.55) * dt);
+        if (io.down && inc < sal) {
+          inc = Math.min(sal, inc + sal / (S2 * 0.5) * dt);
           const b = bands.findIndex((x) => inc < x.hi);
           if (b !== band) {
             band = b;
-            pop((x0 + x1) / 2, y(inc) - 12, bands[b].rate ? "+" + pc(bands[b].rate, 0) : CG.noTax, !bands[b].rate);
+            pop((x0 + x1) / 2, y(inc) - 12, bands[b].rate ? pc(bands[b].rate, 0) : CG.noTax, !bands[b].rate);
           }
         }
       },
       draw(ctx2) {
         for (const b of bands) {
           if (b.lo >= maxI) break;
-          const yt = y(Math.min(b.hi, maxI)), yb = y(b.lo);
-          rr(ctx2, x0, yt, x1 - x0, yb - yt, 0);
+          const yt = y(Math.min(b.hi, maxI)), yb = y(b.lo), fw = x1 - x0;
           ctx2.fillStyle = "#eef2f8";
-          ctx2.fill();
+          ctx2.fillRect(x0, yt, fw, yb - yt);
           if (inc > b.lo) {
-            const yf = y(Math.min(inc, b.hi, maxI));
-            ctx2.fillStyle = b.rate ? `hsl(8, 85%, ${Math.max(45, 86 - b.rate * 130)}%)` : "#bfe8cc";
-            ctx2.fillRect(x0, yf, x1 - x0, yb - yf);
+            const yf = y(Math.min(inc, b.hi));
+            ctx2.fillStyle = "#bfe8cc";
+            ctx2.fillRect(x0, yf, fw, yb - yf);
+            if (b.rate) {
+              ctx2.fillStyle = RED;
+              ctx2.fillRect(x1 - fw * b.rate, yf, fw * b.rate, yb - yf);
+            }
           }
-          ctx2.strokeStyle = "rgba(29,43,79,.35)";
+          ctx2.strokeStyle = "rgba(29,43,79,.4)";
           ctx2.lineWidth = 1;
           ctx2.beginPath();
           ctx2.moveTo(x0, yb);
           ctx2.lineTo(x1, yb);
           ctx2.stroke();
-          if (yb - yt > 14) txt(ctx2, b.rate ? pc(b.rate, 0) : CG.noTax, x1 - 8, (yt + yb) / 2 + 1, 12, INK3, "right");
+          if (yb - yt > 13) txt(ctx2, b.rate ? pc(b.rate, 0) : CG.noTax, x0 + 6, (yt + yb) / 2 + 1, 12, INK3, "left", 900);
         }
         ctx2.strokeStyle = INK3;
         ctx2.lineWidth = 3;
         ctx2.strokeRect(x0, top, x1 - x0, bot - top);
-        const ys = y(p.salary);
+        const ys = y(sal);
         ctx2.setLineDash([6, 5]);
         ctx2.strokeStyle = BLUE;
         ctx2.lineWidth = 2;
@@ -5929,40 +5961,68 @@ var GAMES = {
         ctx2.lineTo(x1 + 6, ys);
         ctx2.stroke();
         ctx2.setLineDash([]);
-        txt(ctx2, CG.yourPay, x1 + 10, ys + 1, 11, BLUE, "left");
-        const marg = inc > bands[1].lo ? bands.find((b) => inc < b.hi).rate : 0, avg = inc > 0 ? fedOn(p, inc) / inc : 0, cx = (x1 + w) / 2 + 6;
-        txt(ctx2, k(inc), cx, h2 * 0.3, 22, INK3);
-        txt(ctx2, CG.lastDollar, cx, h2 * 0.3 + 30, 12, "#5d6b8c");
-        txt(ctx2, pc(marg, 0), cx, h2 * 0.3 + 54, 26, RED);
-        txt(ctx2, CG.overall, cx, h2 * 0.3 + 86, 12, "#5d6b8c");
-        txt(ctx2, pc(avg), cx, h2 * 0.3 + 110, 26, GREEN);
+        txt(ctx2, `${CG.yourPay} ${k(sal)}`, x1 - 6, ys - 10, 11, BLUE, "right", 900);
+        const lx = x1 + 14, rx = w - 12;
+        let ly = top + 8, tot = 0;
+        if (inc <= 0) {
+          txt(ctx2, CG.taxHold, (lx + rx) / 2, h2 / 2 - 10, 14, BLUE, "center", 900);
+          txt(ctx2, CG.taxKey, (lx + rx) / 2, h2 / 2 + 14, 11, "#5d6b8c");
+        }
+        for (const b of bands) {
+          if (inc <= b.lo) break;
+          const amt = Math.min(inc, b.hi) - b.lo, tx = amt * b.rate;
+          tot += tx;
+          txt(ctx2, CG.taxPart(b.rate ? pc(b.rate, 0) : ""), lx, ly, 12, "#5d6b8c", "left");
+          txt(ctx2, b.rate ? `${k(amt)} \xD7 ${pc(b.rate, 0)} = ${k(tx)}` : `${k(amt)} \u2192 $0`, rx, ly + 17, 13, b.rate ? RED : GREEN, "right", 900);
+          ly += 40;
+        }
+        if (inc > 0) {
+          ctx2.strokeStyle = INK3;
+          ctx2.lineWidth = 2;
+          ctx2.beginPath();
+          ctx2.moveTo(lx, ly - 4);
+          ctx2.lineTo(rx, ly - 4);
+          ctx2.stroke();
+          txt(ctx2, CG.taxSum, lx, ly + 14, 13, INK3, "left", 900);
+          txt(ctx2, k(tot), rx, ly + 14, 17, RED, "right", 900);
+          txt(ctx2, `${CG.taxOf} ${pc(tot / inc)}`, rx, ly + 36, 13, GREEN, "right", 900);
+        }
       },
       hud: () => `${CG.income} ${k(inc)}`,
       result: () => ({ income: inc })
     };
   },
   emergency(p, w, h2, S2) {
-    const tA = S2 * 0.3, mDur = (S2 - tA - 0.6) / 12;
-    let share = 0.5, sim = null, at = 0, pops = /* @__PURE__ */ new Set();
-    const jx = [w * 0.08, w * 0.56], jw = w * 0.36, jb = h2 - 26, jh = h2 * 0.5, scale = p.pot * 1.15;
+    const mDur = (S2 - 2.6) / 12;
+    let from = null, clock = 0, wait = 0, sim = liqDemo(p, "cash"), taps = 0, flash = 0;
+    const jx = [w * 0.07, w * 0.55], jw = w * 0.38, jb = h2 - 24, jh = h2 * 0.46, scale = sim.half * 1.3, tBill = mDur * (BILL_M - 0.1);
     return {
       update(dt, t, io, pop) {
-        if (t < tA) {
-          if (io.st.left) share = Math.max(0, share - dt * 0.8);
-          if (io.st.right) share = Math.min(1, share + dt * 0.8);
-          if (io.st.x != null && !io.st.left && !io.st.right) share = Math.max(0, Math.min(1, io.st.x / w));
+        flash += dt;
+        if (!from && clock >= tBill) {
+          wait += dt;
+          let c = null;
+          if (io.st.left) c = "cash";
+          else if (io.st.right) c = "inv";
+          if (io.st.taps > taps) {
+            taps = io.st.taps;
+            if (io.st.x != null && io.st.ptaps) c = io.st.x < w / 2 ? "cash" : "inv";
+          }
+          if (!c && wait > 4.5) c = "cash";
+          if (c) {
+            from = c;
+            sim = liqDemo(p, c);
+            const x = jx[c === "cash" ? 0 : 1] + jw / 2;
+            pop(x, jb - jh - 30, "\u2212" + k(sim.bill), c === "cash");
+            pop(x, jb - jh - 8, c === "cash" ? CG.liqSafeTag : CG.liqSold(k(sim.loss)), c === "cash");
+          }
           return;
         }
-        if (!sim) sim = liqSim(p, share);
-        at = Math.min(12, Math.floor((t - tA) / mDur));
-        const s4 = sim.steps[at - 1];
-        if (s4 && s4.bill && !pops.has(at)) {
-          pops.add(at);
-          pop(jx[0] + jw / 2, jb - jh - 10, "\u2212" + k(s4.bill), false);
-        }
+        taps = io.st.taps;
+        clock = Math.max(0, clock + dt);
       },
       draw(ctx2) {
-        const s4 = sim ? at ? sim.steps[at - 1] : { cash: sim.cash0, inv: sim.inv0, card: 0 } : { cash: p.pot * share, inv: p.pot * (1 - share), card: 0 };
+        const at = Math.max(0, Math.min(12, Math.floor(clock / mDur))), waiting = !from && clock >= tBill, s4 = waiting ? sim.pre : at ? sim.steps[at - 1] : { cash: sim.half, inv: sim.half, f: 1 };
         [[s4.cash, BLUE, CG.cash], [s4.inv, GREEN, CG.invest]].forEach(([v, c, l], i) => {
           rr(ctx2, jx[i], jb - jh, jw, jh, 12);
           ctx2.fillStyle = "#fff";
@@ -5974,38 +6034,32 @@ var GAMES = {
           ctx2.fill();
           ctx2.globalAlpha = 1;
           rr(ctx2, jx[i], jb - jh, jw, jh, 12);
-          ctx2.strokeStyle = INK3;
-          ctx2.lineWidth = 3;
+          ctx2.strokeStyle = waiting && Math.floor(flash * 3) % 2 ? GOLD : INK3;
+          ctx2.lineWidth = waiting ? 6 : 3;
           ctx2.stroke();
-          txt(ctx2, l, jx[i] + jw / 2, jb - jh - 12, 13);
+          txt(ctx2, l, jx[i] + jw / 2, jb - jh - 12, 14, INK3, "center", 900);
           txt(ctx2, k(v), jx[i] + jw / 2, jb - 16, 15, "#fff");
         });
-        if (!sim) {
-          txt(ctx2, "\u2190 " + CG.split + " \u2192", w / 2, 58, 15, INK3);
-          const dx = w * (0.08 + 0.84 * share);
-          ctx2.fillStyle = INK3;
-          ctx2.beginPath();
-          ctx2.moveTo(dx - 8, 78);
-          ctx2.lineTo(dx + 8, 78);
-          ctx2.lineTo(dx, 90);
+        const d = s4.f - 1;
+        if (Math.abs(d) > 4e-3) txt(ctx2, `${d < 0 ? "\u25BC" : "\u25B2"} ${pc(Math.abs(d), 0)}`, jx[1] + jw / 2, jb - jh + 18, 14, d < 0 ? RED : "#13784a", "center", 900);
+        txt(ctx2, "= " + CG.liqFlat, jx[0] + jw / 2, jb - jh + 18, 12, "#5d6b8c");
+        if (waiting) {
+          rr(ctx2, w * 0.08, 44, w * 0.84, 34, 12);
+          ctx2.fillStyle = "#fff4d6";
           ctx2.fill();
-        } else {
-          txt(ctx2, CG.monthN(Math.max(1, at)), w / 2, 58, 14);
-          if (s4.card > 0) {
-            rr(ctx2, w - 132, 10, 122, 28, 14);
-            ctx2.fillStyle = RED;
-            ctx2.fill();
-            txt(ctx2, "\u{1F525} " + CG.onCard + " " + k(s4.card), w - 71, 25, 12, "#fff");
-          }
-        }
+          ctx2.strokeStyle = INK3;
+          ctx2.lineWidth = 2;
+          ctx2.stroke();
+          txt(ctx2, CG.liqNeed(k(sim.bill)), w / 2, 61, 14, INK3, "center", 900);
+        } else txt(ctx2, CG.monthN(Math.max(1, at)), w / 2, 58, 14);
       },
-      hud: () => sim ? `${CG.cash} ${k(at ? sim.steps[at - 1].cash : sim.cash0)}` : `${CG.cash} ${pc(share, 0)}`,
-      result: () => ({ share })
+      hud: () => CG.monthN(Math.max(1, Math.min(12, Math.floor(clock / mDur)))),
+      result: () => ({ from: from || "cash" })
     };
   },
   debt(p, w, h2, S2) {
     const md = S2 / 36, cv = coinValue(p), shots = [];
-    let b = p.balN, interest = 0, m = 0, acc = 0, wallet = 18, paid = 0, taps = 0, paidAt = null, spin2 = 0;
+    let b = p.balN, interest = 0, m = 0, acc = 0, wallet = 18, paid = 0, taps = 0, ptaps = 0, paidAt = null, spin2 = 0, age = 0;
     const pos = () => ({ x: 30 + (w - 60) * m / 36, y: 70 + (h2 - 150) * m / 36 });
     return {
       update(dt, t, io, pop) {
@@ -6020,8 +6074,16 @@ var GAMES = {
             b = Math.max(0, b + i - debtMin(b, p.aprN));
           }
         }
+        age += dt;
         while (io.st.taps > taps) {
           taps++;
+          const ptr = io.st.ptaps > ptaps;
+          ptaps = io.st.ptaps;
+          const q2 = pos();
+          if (ptr && Math.hypot(io.st.x - q2.x, io.st.y - q2.y) > 78) {
+            pop(io.st.x, io.st.y - 10, CG.aim, false);
+            continue;
+          }
           if (wallet > 0 && b > 0.5) {
             wallet--;
             shots.push({ t: 0 });
@@ -6063,6 +6125,8 @@ var GAMES = {
           ctx2.stroke();
           ctx2.restore();
           txt(ctx2, k(b), q2.x, q2.y + 27 - r, 13, "#9b1c1c");
+          txt(ctx2, CG.owe, q2.x, q2.y + 10 - r * 2, 12, "#9b1c1c", "center", 900);
+          if (age < 4) txt(ctx2, CG.debtHint, w / 2, 62, 14, BLUE, "center", 900);
         } else txt(ctx2, "\u2713", q2.x, q2.y, 28, GREEN);
         const tx = 46, ty = h2 - 40;
         coin2(ctx2, tx, ty, 18, GOLD, "$");
@@ -6265,7 +6329,7 @@ function playConcept(canvas, id, p, hooks, seconds = 12) {
     return io.st.down;
   } };
   function step(now) {
-    const dt = Math.min(0.033, (now - last) / 1e3);
+    const dt = Math.max(0, Math.min(0.033, (now - last) / 1e3));
     last = now;
     t += dt;
     G.update(dt, t, view, pop);
@@ -6305,7 +6369,7 @@ function playConcept(canvas, id, p, hooks, seconds = 12) {
 }
 function cgAuto(id, p) {
   if (id === "paycheck") return { income: p.salary };
-  if (id === "emergency") return { share: 0.5 };
+  if (id === "emergency") return { from: "cash" };
   if (id === "debt") {
     const cv = coinValue(p);
     let b = p.balN, interest = 0, paid = 0, m = 0, wallet = 18;
@@ -6332,8 +6396,8 @@ function cgSummary(id, p, r, money3) {
     return { line: CG.taxLine(money3(inc), pc(marg, 0), pc(tax / inc)), bars: [[CG.taxBars[0], tax, "tax"], [CG.taxBars[1], inc - tax, "ok"]] };
   }
   if (id === "emergency") {
-    const L = liqSim(p, r.share);
-    return { line: L.carded > 0.5 ? CG.liqLine(money3(L.cash0), money3(L.inv0), money3(L.gain), money3(L.carded)) : CG.liqSafe(money3(L.cash0), money3(L.inv0), money3(L.gain)), bars: [[CG.liqBars[0], Math.max(0, L.gain), "ok"], [CG.liqBars[1], L.interest, "tax"]] };
+    const L = liqDemo(p, r.from === "inv" ? "inv" : "cash");
+    return { line: L.from === "inv" ? CG.liqInv(money3(L.bill), money3(L.loss), money3(L.cashGain), money3(L.invGain)) : CG.liqCash(money3(L.bill), money3(L.cashGain), money3(L.invGain), money3(L.dip)), bars: [[CG.liqBars[0], L.cashGain, "held"], [CG.liqBars[1], L.invGain, "ok"]] };
   }
   if (id === "debt") {
     const mo = minOnly(p);
@@ -6737,12 +6801,9 @@ function stepWalk() {
   const W = ui.walk;
   if (!W || !s2?.year) return;
   const R2 = s2.year.review;
-  if (R2 && R2.answered == null && W.i >= R2.month) {
-    if (ui.modal?.kind !== "review") {
-      ui.modal = { kind: "review" };
-      update(false);
-    }
-    return;
+  if (R2 && R2.answered == null) {
+    s2 = practiceReview(s2);
+    ls.set(SAVE_KEY, s2);
   }
   if (W.i >= 12) return;
   walkTimer = setTimeout(() => {
@@ -6759,7 +6820,7 @@ function walkPage() {
   frame("live", `<section class="walk"><header class="page-head"><h1>${h(fmt(LT2.walkTitle, { age: s2.age }))}</h1><p>${h(LT2.walkSub)}</p></header>
     <div class="ty-months walk-months">${y.months.map((mo, i) => {
     const shown = i < W.i, m = mom.find((x) => x.month === mo.month), rv = y.review?.month === mo.month;
-    return `<div class="ty-mo ${shown ? "shown" : "todo"} ${i === W.i - 1 ? "now" : ""}"><small>${h(fmt(LT2.month, { m: mo.month }))}</small><b>${shown ? money2(moTotal(mo)) : ""}</b>${shown && m ? `<em class="${m.amount < 0 ? "m-cost" : "m-gain"}">${h(m.label)} ${m.amount > 0 ? "+" : "\u2212"}${money2(Math.abs(m.amount))}</em>` : ""}${shown && rv ? `<em class="m-quiz">${h(LT2.quick)}</em>` : ""}</div>`;
+    return `<div class="ty-mo ${shown ? "shown" : "todo"} ${i === W.i - 1 ? "now" : ""}"><small>${h(fmt(LT2.month, { m: mo.month }))}</small><b>${shown ? money2(moTotal(mo)) : ""}</b>${shown && m ? `<em class="${m.amount < 0 ? "m-cost" : "m-gain"}">${h(m.label)} ${m.amount > 0 ? "+" : "\u2212"}${money2(Math.abs(m.amount))}</em>` : ""}</div>`;
   }).join("")}</div>
     <div class="walk-bar"><i style="width:${Math.min(12, W.i) / 12 * 100}%"></i></div>
     <div class="center row">${W.i >= 12 ? btn("walk-done", LT2.toReview, { cls: "btn green big", ico: "arrow", attrs: "data-autofocus" }) : btn("walk-skip", LT2.skipWalk, { cls: "btn ghost" })}</div></section>`);
@@ -6779,7 +6840,10 @@ function pastPicker(past) {
 }
 function reviewPage() {
   const past = ui.pastAge != null ? s2.history.find((x) => x.age === ui.pastAge && x.review) : null;
-  if (!past && s2.phase === "review" && s2.year?.review && s2.year.review.answered == null && !ui.modal) ui.modal = { kind: "review" };
+  if (!past && s2.phase === "review" && s2.year?.review && s2.year.review.answered == null) {
+    s2 = practiceReview(s2);
+    ls.set(SAVE_KEY, s2);
+  }
   if (!past && s2.phase !== "review") return frame("review", `<section class="panel"><p>${T2.reviewLater}</p>${pastPicker()}${goNext()}</section>`);
   const y = past ? past.review : s2.year, age = past ? past.age : s2.age, sm = y.summary, t = sm.tax, before = y.before, after = y.after, stBefore = STAGES[y.stageBefore];
   const stNow = past ? STAGES[past.stage] : stage(s2, { netCashFlow: sm.netCashFlow, investRate: sm.investRate });
@@ -6845,8 +6909,8 @@ function finishPage() {
   const slides = [
     `<div class="sl s-cover"><small>Ages ${s2.startAge}\u201350 \xB7 ${STATES[s2.region].name} \xB7 ${h(DIFFICULTY[s2.difficulty || "normal"].name)}</small><h1>${s2.name ? h(s2.name) + "\u2019s" : "Your"} ${50 - s2.startAge} years</h1><p>Starting from \u201C${h(BACKSTORIES.find((b) => b.id === s2.backstory)?.title)}\u201D.</p>${avatar(look(), { cls: "big-av", label: false })}</div>`,
     `<div class="sl"><small>Over these years you earned</small><h2>${money2(w.income)}</h2>${(() => {
-      const r = [[T2.finTax, w.tax, "tax"], [T2.finInt, w.interest, "tax"], [T2.finMatch, w.match, "ok"], [T2.finGrowth, w.growth, w.growth < 0 ? "tax" : "ok"]], mx = Math.max(1, ...r.map((x) => Math.abs(x[1])));
-      return `<ul class="catbars finbars">${r.map(([l, v, c]) => `<li class="${c}"><span>${h(l)}</span><i style="width:${Math.abs(v) / mx * 100}%"></i><b>${v < 0 ? "\u2212" : ""}${money2(Math.abs(v))}</b></li>`).join("")}</ul>`;
+      const mx = Math.max(1, w.tax, w.interest, w.match, Math.abs(w.growth)), li = (l, v, c) => `<li class="${c}"><span>${h(l)}</span><i style="width:${Math.abs(v) / mx * 100}%"></i><b>${v < 0 ? "\u2212" : ""}${money2(Math.abs(v))}</b></li>`;
+      return `<small>${h(T2.finOut)}</small><ul class="catbars finbars">${li(T2.finTax, w.tax, "tax")}${li(T2.finInt, w.interest, "tax")}</ul><small>${h(T2.finIn)}</small><ul class="catbars finbars">${li(T2.finMatch, w.match, "ok")}${li(T2.finGrowth, w.growth, w.growth < 0 ? "tax" : "ok")}</ul>`;
     })()}</div>`,
     `<div class="sl"><ul class="catbars finbars">${[[T2.finMost, w.maxMonth, "tax"], [T2.finLeast, w.minMonth, "ok"]].map(([l, x, c]) => `<li class="${c}"><span>${h(l)}<small>${h(fmt(T2.finAge, { a: x.age, m: x.month }))}</small></span><i style="width:${Math.max(2, x.spend / Math.max(1, w.maxMonth.spend) * 100)}%"></i><b>${money2(x.spend)}</b></li>`).join("")}</ul></div>`,
     `<div class="sl"><small>Where the money went</small><h2>#1: ${CAT_NAME[w.topCat[0]]}</h2><ul class="catbars">${cats.slice(0, 6).map(([k2, v]) => `<li><span>${CAT_NAME[k2]}</span><i style="width:${v / catMax * 100}%"></i><b>${money2(v)}</b></li>`).join("")}</ul></div>`,
@@ -7166,7 +7230,7 @@ function endTour() {
 }
 function guideHtml() {
   return `<header class="m-head"><span class="ribbon-tag">${icon.help}${T2.guide}</span><h2>${T2.guideTitle}</h2>${btn("close", T2.close, { cls: "icon-btn", ico: "close" })}</header>
-    <div class="guide-grid">${TUTS.map((t) => `<button class="guide-card ${toursSeen[t.id] ? "seen" : ""}" data-go="tut" data-id="${t.id}">${bubbleArt(t.steps[0][3], t.steps[0][4])}<b>${h(t.name)}</b><small>${fmt(T2.nSteps, { n: t.steps.length })}${toursSeen[t.id] ? " \xB7 " + T2.seen : ""}</small></button>`).join("")}</div>`;
+    <div class="guide-grid">${TUTS.filter((t) => !t.hidden).map((t) => `<button class="guide-card ${toursSeen[t.id] ? "seen" : ""}" data-go="tut" data-id="${t.id}">${bubbleArt(t.steps[0][3], t.steps[0][4])}<b>${h(t.name)}</b><small>${fmt(T2.nSteps, { n: t.steps.length })}${toursSeen[t.id] ? " \xB7 " + T2.seen : ""}</small></button>`).join("")}</div>`;
 }
 var sndBtns = () => `<button class="icon-btn snd ${soundOn() ? "on" : ""}" data-go="sfx" aria-pressed="${soundOn()}" title="${T2.sound}" aria-label="${T2.sound}">${icon[soundOn() ? "speaker" : "mute"]}</button><button class="icon-btn snd ${musicOn() ? "on" : ""}" data-go="music" aria-pressed="${musicOn()}" title="${T2.music}" aria-label="${T2.music}">${icon.music}</button>`;
 var BTN_SOUND = { "plan-confirm": "coin", draw: "flip", "card-opt": "coin", "tour-next": "soft", "tour-skip": "soft", "next-year": "soft", pull: null, sfx: null, music: null, "rv-ans": null, lg: null };
@@ -7308,6 +7372,26 @@ addEventListener("resize", () => {
   placeTour();
   placeTip();
 });
+var holdT = null;
+var holdStop = () => {
+  clearTimeout(holdT);
+  holdT = null;
+};
+document.addEventListener("pointerdown", (e) => {
+  const b = e.target.closest?.(".ty-stepper button[data-go]");
+  holdStop();
+  if (!b || b.disabled) return;
+  const sel = `.ty-stepper button[data-go="${b.dataset.go}"]${b.dataset.key ? `[data-key="${b.dataset.key}"]` : ""}[data-d="${b.dataset.d}"]`;
+  let n = 0;
+  const tick = () => {
+    const x = document.querySelector(sel);
+    if (!x || x.disabled) return holdStop();
+    x.click();
+    holdT = setTimeout(tick, ++n > 12 ? 40 : 90);
+  };
+  holdT = setTimeout(tick, 420);
+});
+for (const ev of ["pointerup", "pointercancel", "blur"]) window.addEventListener(ev, holdStop);
 document.addEventListener("click", (e) => {
   if (ui.menu && !e.target.closest(".menu-wrap")) {
     ui.menu = false;
@@ -7659,11 +7743,19 @@ document.addEventListener("click", (e) => {
         if (snd) sfx(snd);
         return update(false);
       }
-      case "lesson-ok":
+      case "lesson-ok": {
+        const lid = s2.learn?.pending, tut = tutOf("l-" + lid);
         ui.modal = null;
         s2 = ackLesson(s2);
         ls.set(SAVE_KEY, s2);
-        return update(false);
+        if (tut && !ui.tour && s2.phase === "plan") ui.tour = { id: tut.id, i: 0 };
+        update(false);
+        if (tut && ui.tour?.id === tut.id && !document.querySelector(tut.steps[0][0])) {
+          ui.tour = null;
+          update(false);
+        }
+        return;
+      }
       case "rv-ans":
         s2 = answerReview(s2, +id);
         ls.set(SAVE_KEY, s2);

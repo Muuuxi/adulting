@@ -1514,6 +1514,18 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .home-scene svg { display: block; width: 100%; height: auto; } .home-scene small { display: flex; align-items: center; gap: 4px; padding: 3px 8px; font-weight: 800; font-size: .74rem; color: var(--ink-2); border-top: 2px solid var(--ink); }
 .home-scene small .ico { width: 14px; height: 14px; } .home-scene.low small { color: var(--neg); }
 @media (max-width: 1000px) { .home-scene { display: none; } }
+/* ---- Round 41: the home is the top of the ID card, with your character standing in it ---- */
+.home-scene { display: none !important; }
+.idcard > summary.id-room { position: relative; display: block; height: 132px; margin: -8px -10px 6px; padding: 0; overflow: hidden; border-radius: 13px 13px 0 0; border-bottom: 3px solid var(--ink); }
+.idcard:not([open]) > summary.id-room { margin-bottom: -8px; border-radius: 13px; border-bottom: 0; }
+.id-room .room-bg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.id-room .avatar.room-av { position: absolute; left: 50%; transform: translateX(-62%); bottom: -2px; width: 82px; height: 86px; border: 0; border-radius: 0; filter: drop-shadow(0 2px 0 rgba(29,43,79,.25)); }
+.id-room .room-tag { position: absolute; left: 6px; top: 6px; max-width: calc(100% - 44px); background: rgba(255,255,255,.92); border: 2px solid var(--ink); border-radius: 10px; padding: 1px 8px 2px; line-height: 1.2; }
+.id-room .room-tag b { font-size: .86rem; } .id-room .room-tag small { display: block; font-size: .66rem; }
+.id-room .room-low { position: absolute; right: 6px; bottom: 6px; background: #ffe1dc; color: var(--neg); border: 2px solid var(--ink); border-radius: 8px; font-style: normal; font-weight: 900; font-size: .68rem; padding: 0 6px; }
+.idcard > summary.id-room::after { content: '▾'; position: absolute; right: 6px; top: 6px; width: 22px; height: 22px; display: grid; place-items: center; background: #fff; border: 2px solid var(--ink); border-radius: 50%; font-size: .8rem; margin: 0; }
+.idcard[open] > summary.id-room::after { content: '▴'; }
+@media (max-width: 1000px) { .idcard > summary.id-room { height: 100px; } .id-room .avatar.room-av { width: 66px; height: 69px; } }
 </style>
 </head>
 <body>
@@ -5292,6 +5304,7 @@ var T2 = {
   homeCap: "\u4F60\u7684\u5BB6",
   homeLow: "\u4F60\u7684\u5BB6\uFF1A\u624B\u5934\u5F88\u7D27",
   homeTip: "\u5BB6\u91CC\u7684\u6837\u5B50\u8DDF\u7740\u4F60\u7684\u94B1\u53D8\uFF1A\u4EBA\u751F\u9636\u6BB5\u8D8A\u9AD8\uFF0C\u4E1C\u897F\u8D8A\u591A\uFF1B\u8D26\u5355\u4ED8\u4E0D\u4E0A\u6216\u5165\u4E0D\u6577\u51FA\u65F6\uFF0C\u5BB6\u91CC\u4F1A\u53D8\u7A7A\u3002",
+  homeLowShort: "\u624B\u5934\u5F88\u7D27",
   locked: "\u672A\u89E3\u9501",
   skipGuide: "\u8DF3\u8FC7",
   next: "\u4E0B\u4E00\u6B65",
@@ -6660,9 +6673,10 @@ function hud() {
   </header>`;
 }
 function idCard() {
+  const HS = homeScene();
   const p = profile(s2), pip = (v, base) => `<span class="pips">${[0, 1, 2, 3].map((i) => `<i class="${i < Math.min(3, Math.max(0, base)) ? "on" : ""}"></i>`).join("")}</span>${v !== base ? `<em class="${v > base ? "pos" : "neg"}">${v > base ? "+" : ""}${v - base}</em>` : ""}`;
   const credit = p.credit ? `${p.credit}<small> \xB7 ${p.credit >= 740 ? "\u5F88\u597D" : p.credit >= 670 ? "\u826F\u597D" : p.credit >= 580 ? "\u4E00\u822C" : "\u5DEE"}</small>` : "<small>\u8FD8\u6CA1\u6709\u8BB0\u5F55</small>";
-  return `<details class="idcard" ${ui.idOpen ? "open" : ""}><summary class="id-top" data-go="idcard" title="${h(T2.idMore)}">${avatar(look(), { cls: "mid", label: false })}<div><b>${h(s2.name || "\u4F60")}</b><small>${s2.phase === "finish" ? 50 : s2.age} \u5C81 \xB7 ${STATES[s2.region].name}</small></div></summary>
+  return `<details class="idcard" ${ui.idOpen ? "open" : ""}><summary class="id-top id-room ${HS.trouble ? "low" : ""}" data-go="idcard" title="${h(T2.homeTip)} ${h(T2.idMore)}">${HS.svg}${avatar(look(), { cls: "room-av", label: false, bg: "" })}${HS.trouble ? `<em class="room-low">${h(T2.homeLowShort)}</em>` : ""}<div class="room-tag"><b>${h(s2.name || "\u4F60")}</b><small>${s2.phase === "finish" ? 50 : s2.age} \u5C81 \xB7 ${STATES[s2.region].name}</small></div></summary>
     <dl><dt>\u5B66\u5386</dt><dd>${s2.school ? `${{ study: "\u8BFB\u5927\u5B66", both: "\u8BFB\u793E\u533A\u5B66\u9662", cert: "\u8BFB\u804C\u6821" }[s2.school.kind] || h(p.edu)}\uFF0C\u8FD8\u5269 ${s2.school.yearsLeft} \u5E74` : h(p.edu)}</dd><dt>\u5DE5\u4F5C</dt><dd>${h(p.job)}${p.salary ? `<small> ${money2(p.salary)}/\u5E74</small>` : ""}</dd>
       <dt>\u611F\u60C5</dt><dd>${p.love}</dd><dt>\u4F4F\u5904</dt><dd>${p.home}${s2.car ? " \xB7 \u6709\u8F66" : ""}</dd>
       <dt>\u804C\u4E1A\u80FD\u529B ${q("career")}</dt><dd>${pip(p.career, p.careerBase)}</dd><dt>\u81EA\u63A7\u529B ${q("discipline")}</dt><dd>${pip(p.discipline, p.disciplineBase)}</dd><dt>${TEXT.difficulty} ${q("difficulty")}</dt><dd>${h(DIFFICULTY[s2.difficulty || "normal"].name)}</dd><dt>\u4FE1\u7528\u5206 ${q("credit")}</dt><dd>${credit}</dd></dl>
@@ -6689,13 +6703,13 @@ function homeScene() {
   if (lv >= 4) g += R2(96, 64, 32, 20, "#1d2b4f", 3) + P2("M104 70l8 5-8 5z", "#7fd0fb");
   if (lv >= 6) g += P2("M30 60h16v6a8 8 0 0 1-16 0z", "#ffc531") + P2("M38 74v6M32 80h12");
   if (s2.flags?.pet) g += `<ellipse cx="62" cy="124" rx="${trouble ? 9 : 12}" ry="${trouble ? 5 : 7}" fill="#f0a35a" ${S2}/>` + C2(76, 118, 6, "#f0a35a") + P2("M72 114l1-6 4 4M80 114l-1-6-4 4", "#f0a35a") + P2("M50 124q-8-2-6-10") + R2(86, 126, 16, 6, "#c5cad6", 2) + (trouble ? "" : `<ellipse cx="94" cy="126" rx="6" ry="2.5" fill="#b0683a" ${S2}/>`);
-  return `<section class="home-scene ${trouble ? "low" : ""}" title="${h(T2.homeTip)}"><svg viewBox="0 0 220 140" role="img" aria-label="${h(T2.homeCap)}">${g}</svg><small>${icon.house}${h(trouble ? T2.homeLow : T2.homeCap)}</small></section>`;
+  return { svg: `<svg class="room-bg" viewBox="0 0 220 140" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${g}</svg>`, trouble };
 }
 function frame(active, body2) {
   const items = [["overview", "\u603B\u89C8", "pin"], ["payday", "\u53D1\u85AA\u65E5", "coin"], ["accounts", "\u8D26\u6237", "bank"], ["goals", "\u600E\u4E48\u8D62", "trophy"], ["journal", "\u8BB0\u5F55", "book"]];
   const k2 = STEPS.findIndex((x) => x[0] === s2.phase);
   root.innerHTML = `<div class="page tycoon">${hud()}${toastHtml()}<div class="tycoon-grid">
-    <aside class="side"><nav aria-label="\u6E38\u620F\u533A\u57DF">${items.map(([id, n, ico]) => `<button class="side-item ${active === id ? "on" : ""}" data-go="nav" data-id="${id}">${icon[ico]}<span>${n}</span></button>`).join("")}</nav>${idCard()}${homeScene()}</aside>
+    <aside class="side"><nav aria-label="\u6E38\u620F\u533A\u57DF">${items.map(([id, n, ico]) => `<button class="side-item ${active === id ? "on" : ""}" data-go="nav" data-id="${id}">${icon[ico]}<span>${n}</span></button>`).join("")}</nav>${idCard()}</aside>
     <main id="main" class="t-main">${s2.phase !== "finish" ? `<ol class="phase-steps">${STEPS.map(([ph, n], i) => `<li class="${ph === s2.phase ? "on" : i < k2 ? "done" : ""}"><button data-go="nav" data-id="${PHASE_PAGE[ph]}" ${i > k2 ? "disabled" : ""}><i>${i < k2 ? "\u2713" : i + 1}</i>${n}</button></li>`).join("")}</ol>` : ""}${body2}</main></div>
     ${modalHtml()}${tipHtml()}${tourHtml()}</div>`;
   const m = root.querySelector(".modal"), key = ui.modal ? ui.modal.kind + (ui.modal.id || "") : "";

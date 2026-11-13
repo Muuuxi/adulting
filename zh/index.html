@@ -1502,6 +1502,9 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .ty-stepper input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .ty-stepper button { touch-action: manipulation; user-select: none; -webkit-user-select: none; }
 .sl > small + .catbars { margin-bottom: 6px; }
+/* ---- Round 37 ---- */
+.ty-mo.haswarn { border-color: #e0a800; } .ty-mo em.warn { background: #fff1c9; color: #7a5600; } .cap-bad.cap-warn { border-color: #e0a800; }
+.mo-cap { flex-wrap: wrap; }
 </style>
 </head>
 <body>
@@ -2106,7 +2109,7 @@ var LADDER = [
   { id: "more", title: "\u5176\u4ED6\u6295\u8D44\u8D26\u6237", why: "\u957F\u671F\u6295\u8D44\uFF0C\u590D\u5229\u8D8A\u4E45\u8D8A\u591A\u3002" }
 ];
 var INTRO = { "steps": [["\u8BA4\u8BC6\u4E00\u4E0B\u5C0F\u7F8E\u3002", "22 \u5C81\uFF0C\u7B2C\u4E00\u4EFD\u5168\u804C\u5DE5\u4F5C\uFF0C\u5E74\u85AA $42,000\u3002"], ["\u53D1\u85AA\u65E5\uFF01", "\u6263\u5B8C\u7A0E\uFF0C\u6BCF\u6708\u5230\u624B\u7EA6 $2,900\u3002"], ["\u540E\u6765\uFF0C\u5979\u7684\u8F66\u574F\u4E86\u3002", "\u4FEE\u8F66 $2,500\uFF0C\u6CA1\u6709\u5E94\u6025\u91D1\uFF0C\u53EA\u597D\u5237 21.4% \u7684\u4FE1\u7528\u5361\u3002"], ["\u5C0F\u7F8E\u505A\u4E86\u4E00\u4E2A\u8BA1\u5212\u3002", "\u6BCF\u6708\u5B58 $100\uFF0C\u518D\u5B58\u5DE5\u8D44\u7684 4% \u8FDB 401(k)\uFF0C\u516C\u53F8\u4E5F\u7ED9 4%\u3002"], ["\u4E00\u5C0F\u6B65\uFF0C\u5F88\u591A\u5E74\u3002", "50 \u5C81\u4E0D\u7B97\u6709\u94B1\uFF0C\u4F46\u5FC3\u91CC\u8E0F\u5B9E\u3002"], ["\u8FD9\u662F\u5C0F\u7F8E\u7684\u6545\u4E8B\u3002", "\u73B0\u5728\u5199\u4F60\u81EA\u5DF1\u7684\u3002"]], "cta": "\u521B\u5EFA\u6211\u7684\u89D2\u8272", "skip": "\u8DF3\u8FC7", "next": "\u4E0B\u4E00\u6B65", "back": "\u4E0A\u4E00\u6B65", "replay": "\u770B\u5F00\u573A\u6545\u4E8B" };
-var LESSONS = [{ "id": "paycheck", "title": "\u7A0E\u7387\u662F\u4E00\u7EA7\u4E00\u7EA7\u5F80\u4E0A\u52A0\u7684", "short": "\u591A\u8D5A\u7684\u6BCF\u4E00\u5757\u94B1\u6309\u6700\u9AD8\u90A3\u6863\u4EA4\u7A0E\uFF0C\u4F46\u6574\u4F53\u7A0E\u7387\u4F4E\u5F97\u591A\u3002", "body": "\u4F60\u6BCF\u4E2A\u6708\u7A0E\u524D\u5DE5\u8D44\u662F {gross}\uFF0C\u5230\u624B {net}\u3002\u7F8E\u56FD\u7684\u6240\u5F97\u7A0E\u662F\u7D2F\u8FDB\u7684\uFF1A\u6536\u5165\u5206\u6BB5\u8BA1\u7A0E\uFF0C\u7B2C\u4E00\u6BB5 10%\uFF0C\u4E0B\u4E00\u6BB5 12%\uFF0C\u4EE5\u6B64\u7C7B\u63A8\u3002\u6700\u540E\u4E00\u5757\u94B1\u6309\u4F60\u6240\u5728\u7684\u6700\u9AD8\u6863\u4EA4\u7A0E\uFF0C\u4F46\u5927\u90E8\u5206\u5DE5\u8D44\u4EA4\u5F97\u5C11\uFF0C\u6240\u4EE5\u52A0\u85AA\u6C38\u8FDC\u4E0D\u4F1A\u8BA9\u5230\u624B\u7684\u94B1\u53D8\u5C11\u3002", "q": [{ "q": "\u4F60\u7684\u5DE5\u4F5C\u5E74\u85AA {salary}\u3002\u6BCF\u4E2A\u6708\u7684\u9884\u7B97\u5E94\u8BE5\u6309\u591A\u5C11\u6765\u505A\uFF1F", "opts": ["\u6BCF\u6708 {salaryM}\uFF08\u5E74\u85AA \xF7 12\uFF09", "\u6263\u5B8C\u7A0E\u548C\u5404\u79CD\u6263\u6B3E\u540E\uFF0C\u771F\u6B63\u8FDB\u65E5\u5E38\u8D26\u6237\u7684\u94B1", "\u4E0A\u4E2A\u6708\u7684\u5DE5\u8D44\u518D\u52A0\u4E0A\u660E\u5E74\u7684\u52A0\u85AA"], "ok": 1, "why": "\u7A0E\u548C\u6263\u6B3E\u5728\u4F60\u62FF\u5230\u94B1\u4E4B\u524D\u5C31\u6263\u6389\u4E86\uFF0C\u80FD\u82B1\u7684\u53EA\u6709\u5230\u624B\u5DE5\u8D44\u3002" }, { "q": "\u4E0B\u9762\u54EA\u4E00\u9879\u4E0D\u662F\u5728\u5DE5\u8D44\u5230\u8D26\u524D\u5C31\u6263\u6389\u7684\uFF1F", "opts": ["\u793E\u4FDD\u548C\u533B\u4FDD\u7A0E", "\u8054\u90A6\u6240\u5F97\u7A0E", "\u623F\u79DF"], "ok": 2, "why": "\u7A0E\u662F\u4ECE\u5DE5\u8D44\u91CC\u81EA\u52A8\u9884\u6263\u7684\uFF1B\u623F\u79DF\u8981\u7528\u5230\u624B\u7684\u94B1\u81EA\u5DF1\u4ED8\u3002" }] }, { "id": "emergency", "title": "\u968F\u65F6\u80FD\u7528\u7684\u94B1\uFF0C\u548C\u4F1A\u589E\u503C\u7684\u94B1", "short": "\u73B0\u91D1\u54EA\u5929\u8981\u7528\u90FD\u5728\uFF0C\u4F46\u51E0\u4E4E\u4E0D\u6DA8\u3002\u6295\u8D44\u4F1A\u6DA8\uFF0C\u4F46\u53EF\u80FD\u5728\u4F60\u6025\u7528\u90A3\u5929\u6B63\u597D\u5728\u8DCC\u3002", "body": "\u201C\u6D41\u52A8\u6027\u201D\u6307\u94B1\u80FD\u591A\u5FEB\u62FF\u6765\u7528\u3002\u73B0\u91D1\u80FD\u5E94\u4ED8\u4FEE\u8F66\u3001\u6025\u8BCA\u8FD9\u7C7B\u610F\u5916\uFF1B\u6295\u8D44\u901A\u5E38\u4F1A\u6DA8\uFF0C\u4F46\u5728\u4F60\u9700\u8981\u7528\u94B1\u65F6\u53EF\u80FD\u6B63\u597D\u8DCC\u4E86\u3002\u4F60 3 \u4E2A\u6708\u7684\u5FC5\u8981\u5F00\u9500\u662F {ef3}\uFF0C\u5E94\u6025\u91D1\u91CC\u73B0\u5728\u6709 {ef}\u3002\u7559\u591A\u5C11\u73B0\u91D1\uFF0C\u662F\u5B89\u5168\u548C\u589E\u957F\u4E4B\u95F4\u7684\u53D6\u820D\u3002", "q": [{ "q": "\u8F66\u8981\u4FEE\uFF0C$1,200\u3002\u6700\u597D\u600E\u4E48\u4ED8\uFF1F", "opts": ["\u5237\u4FE1\u7528\u5361\uFF0C\u6BCF\u6708\u53EA\u8FD8\u81F3\u5C11\u8981\u8FD8\u7684\u94B1", "\u7528\u5E94\u6025\u91D1\u4ED8", "\u8FD9\u4E2A\u6708\u5148\u4E0D\u4EA4\u623F\u79DF"], "ok": 1, "why": "\u5E94\u6025\u91D1\u5C31\u662F\u4E3A\u8FD9\u79CD\u4E8B\u51C6\u5907\u7684\uFF1A\u6CA1\u6709\u5229\u606F\u3001\u6CA1\u6709\u6EDE\u7EB3\u91D1\uFF0C\u4E5F\u4E0D\u4F1A\u591A\u51FA\u65B0\u7684\u503A\u3002" }, { "q": "\u5E94\u6025\u91D1\u5E94\u8BE5\u5B58\u591A\u5C11\uFF1F", "opts": ["$100 \u5DE6\u53F3", "3\u20136 \u4E2A\u6708\u7684\u5FC5\u8981\u5F00\u9500\uFF08\u4F60\u662F {ef3}\u2013{ef6}\uFF09", "\u5148\u5B58\u591F\u4E00\u6574\u5E74\u7684\u5DE5\u8D44\uFF0C\u522B\u7684\u90FD\u4E0D\u505A"], "ok": 1, "why": "3\u20136 \u4E2A\u6708\u8DB3\u591F\u5E94\u4ED8\u5927\u591A\u6570\u5931\u4E1A\u548C\u5927\u989D\u7EF4\u4FEE\uFF0C\u4E0D\u7528\u501F\u94B1\u3002" }] }, { "id": "debt", "title": "\u501F\u94B1\u8981\u591A\u8FD8", "short": "\u501F $100\uFF0C\u8FD8\u7684\u4E0D\u6B62 $100\u3002\u591A\u8FD8\u7684\u90A3\u90E8\u5206\u5C31\u662F\u5229\u606F\u3002", "body": "\u4FE1\u7528\u5361\u5E74\u5229\u7387\u7EA6 21%\uFF0C\u6CA1\u8FD8\u7684\u5229\u606F\u8FD8\u4F1A\u518D\u751F\u5229\u606F\u3002{bal} \u6BCF\u6708\u53EA\u8FD8\u6700\u4F4E\uFF0C\u5927\u7EA6 {minYears} \u5E74\u8FD8\u6E05\uFF0C\u5229\u606F {minInterest}\uFF1B\u6BCF\u6708\u8FD8 {fixed}\uFF0C{fixMonths} \u4E2A\u6708\u8FD8\u6E05\uFF0C\u5229\u606F {fixInterest}\u3002\u8FD8\u5F97\u5FEB\uFF0C\u4EE3\u4EF7\u662F\u8FD9\u4E00\u5E74\u80FD\u82B1\u5728\u522B\u5904\u7684\u94B1\u53D8\u5C11\u3002", "q": [{ "q": "\u4F60\u6B20\u4FE1\u7528\u5361 {bal}\uFF08\u5E74\u5229\u7387 21.4%\uFF09\uFF0C\u624B\u4E0A\u6B63\u597D\u591A\u51FA {bal}\u3002\u6700\u597D\u600E\u4E48\u505A\uFF1F", "opts": ["\u62FF\u53BB\u6295\u8D44\uFF0C\u80A1\u5E02\u5E73\u5747\u56DE\u62A5\u66F4\u9AD8", "\u628A\u4FE1\u7528\u5361\u8FD8\u6E05", "\u7EE7\u7EED\u6BCF\u6708\u53EA\u8FD8\u81F3\u5C11\u8981\u8FD8\u7684\u94B1"], "ok": 1, "why": "\u8FD8\u6E05 21.4% \u7684\u5361\u503A\uFF0C\u7B49\u4E8E\u7A33\u8D5A 21.4%\uFF0C\u6B63\u5E38\u7684\u6295\u8D44\u90FD\u5F88\u96BE\u7A33\u5B9A\u505A\u5230\u3002" }, { "q": "\u4FE1\u7528\u5361\u6BCF\u6708\u53EA\u8FD8\u81F3\u5C11\u8981\u8FD8\u7684\u94B1\uFF0C\u4F1A\u600E\u6837\uFF1F", "opts": ["\u8FD8\u5F97\u6700\u5FEB", "\u6BCF\u6B21\u8FD8\u7684\u94B1\u5927\u591A\u662F\u5229\u606F\uFF0C\u8981\u597D\u51E0\u5E74\u624D\u8FD8\u6E05", "\u5229\u7387\u4F1A\u53D8\u4F4E"], "ok": 1, "why": "\u81F3\u5C11\u8981\u8FD8\u7684\u94B1\u5927\u90E8\u5206\u90FD\u662F\u5229\u606F\uFF0C\u6B20\u6B3E\u51E0\u4E4E\u4E0D\u52A8\u3002" }] }, { "id": "match", "title": "\u516C\u53F8\u914D\u6BD4\uFF1A\u4F60\u5B58\uFF0C\u516C\u53F8\u4E5F\u5B58", "short": "\u4F60\u5B58\u94B1\uFF0C\u516C\u53F8\u5C31\u52A0\u94B1\uFF0C\u4F46\u8FD9\u7B14\u94B1\u8981\u9501\u5230\u9000\u4F11\u3002", "body": "\u914D\u6BD4\u662F\u4E00\u79CD\u6FC0\u52B1\uFF1A\u4F60\u5F80 401(k) \u9000\u4F11\u8D26\u6237\u5B58\u94B1\uFF0C\u516C\u53F8\u4E5F\u8DDF\u7740\u5B58\u3002\u6309\u4F60\u7684\u5DE5\u8D44\uFF0C\u62FF\u6EE1\u914D\u6BD4\u4E00\u5E74\u662F {free}\u3002\u4EE3\u4EF7\u662F\uFF1A\u8FD9\u7B14\u94B1\u73B0\u5728\u5C31\u4ECE\u5DE5\u8D44\u91CC\u6263\u8D70\uFF0C\u4E00\u822C\u8981\u5230 59\xBD \u5C81\u624D\u80FD\u53D6\uFF0C\u63D0\u524D\u53D6\u8981\u7F5A\u6B3E\u3002", "bodyNoMatch": "\u914D\u6BD4\u662F\u4E00\u79CD\u6FC0\u52B1\uFF1A\u4F60\u5F80 401(k) \u9000\u4F11\u8D26\u6237\u5B58\u94B1\uFF0C\u516C\u53F8\u4E5F\u8DDF\u7740\u5B58\u3002\u4F60\u73B0\u5728\u7684\u5DE5\u4F5C\u6CA1\u6709\u914D\u6BD4\uFF1B\u6309\u4F60\u7684\u5DE5\u8D44\uFF0C\u5E38\u89C1\u7684 4% \u914D\u6BD4\u4E00\u5E74\u662F {free4}\u3002\u6BD4\u8F83\u5DE5\u4F5C\u65F6\uFF0C\u5B83\u4E5F\u662F\u5DE5\u8D44\u7684\u4E00\u90E8\u5206\u3002", "q": [{ "q": "\u516C\u53F8\u6309 {r}% \u914D\u6BD4\uFF0C\u6700\u591A\u5230\u5DE5\u8D44\u7684 {m}%\u3002\u4F60\u81F3\u5C11\u5E94\u8BE5\u5B58\u591A\u5C11\uFF1F", "opts": ["0%\uFF0C\u7559\u7740\u73B0\u91D1", "{m}%", "1%"], "ok": 1, "why": "\u5B58\u5230 {m}%\uFF0C\u516C\u53F8\u767D\u7ED9\u7684\u6BCF\u4E00\u5206\u94B1\u90FD\u80FD\u62FF\u5230\u3002" }, { "q": "\u62FF\u6EE1 100% \u7684\u516C\u53F8\u914D\u6BD4\uFF0C\u548C\u591A\u8FD8 5% \u7684\u8F66\u8D37\uFF0C\u54EA\u4E2A\u5148\u505A\uFF1F", "opts": ["\u5148\u62FF\u6EE1 100% \u7684\u914D\u6BD4", "\u5148\u591A\u8FD8 5% \u7684\u8F66\u8D37", "\u90FD\u4E0D\u505A"], "ok": 0, "why": "100% \u7684\u914D\u6BD4\u6BD4\u7701\u4E0B 5% \u7684\u5229\u606F\u5212\u7B97\u5F97\u591A\u3002" }] }, { "id": "compound", "title": "\u8D27\u5E01\u7684\u65F6\u95F4\u4EF7\u503C", "short": "\u8D8A\u65E9\u5B58\u4E0B\u7684\u94B1\uFF0C\u6709\u8D8A\u957F\u7684\u65F6\u95F4\u589E\u957F\u3002", "body": "\u589E\u957F\u51FA\u6765\u7684\u94B1\u8FD8\u4F1A\u7EE7\u7EED\u589E\u957F\uFF0C\u8FD9\u5C31\u662F\u590D\u5229\u3002\u4ECE {age} \u5C81\u5F00\u59CB\u6BCF\u6708\u5B58 $200\uFF0C\u5230 65 \u5C81\u7EA6 {now}\uFF08\u6309\u6263\u9664\u901A\u80C0\u540E\u6BCF\u5E74 5% \u7B97\uFF09\uFF1B\u4ECE {age10} \u5C81\u5F00\u59CB\u53EA\u6709\u7EA6 {later}\u3002\u5E74\u8F7B\u65F6\u5B58\u4E0B\u7684\u94B1\uFF0C\u5C31\u662F\u5E74\u8F7B\u65F6\u6CA1\u82B1\u7684\u94B1\uFF0C\u8FD9\u662F\u201C\u73B0\u5728\u201D\u548C\u201C\u4EE5\u540E\u201D\u4E4B\u95F4\u7684\u9009\u62E9\u3002", "q": [{ "q": "\u5C0F\u660E\u4ECE {age} \u5C81\u5230 65 \u5C81\u6BCF\u6708\u6295 $200\uFF0C\u5C0F\u7EA2\u4ECE {age10} \u5C81\u5230 65 \u5C81\u6BCF\u6708\u4E5F\u6295 $200\u3002\u5230 65 \u5C81\uFF0C\u5C0F\u660E\u5927\u7EA6\u591A\u591A\u5C11\uFF1F", "opts": ["\u5DEE\u4E0D\u591A", "\u591A $24,000 \u5DE6\u53F3\uFF08\u5C31\u662F\u591A\u6295\u7684\u90A3\u90E8\u5206\uFF09", "\u591A {diff} \u5DE6\u53F3"], "ok": 2, "why": "\u5C0F\u660E\u53EA\u591A\u6295\u4E86 $24,000\uFF0C\u4F46\u65E9\u6295\u7684\u94B1\u591A\u957F\u4E86\u5341\u5E74\uFF1A\u5927\u7EA6 {now} \u5BF9 {later}\u3002" }, { "q": "\u901A\u5E38\u54EA\u4E00\u79CD\u94B1\u957F\u5F97\u6700\u591A\uFF1F", "opts": ["\u4E00\u5927\u7B14\u94B1\u6295 5 \u5E74", "\u4E00\u5C0F\u7B14\u94B1\u6295 30 \u5E74", "\u653E\u5728\u65E5\u5E38\u8D26\u6237\u91CC\u7684\u73B0\u91D1"], "ok": 1, "why": "\u590D\u5229\u9700\u8981\u65F6\u95F4\uFF0C\u65F6\u95F4\u957F\u6BD4\u91D1\u989D\u5927\u66F4\u91CD\u8981\u3002" }] }, { "id": "creep", "title": "\u673A\u4F1A\u6210\u672C", "short": "\u6BCF\u82B1\u4E00\u5757\u94B1\uFF0C\u5C31\u5C11\u4E86\u4E00\u5757\u94B1\u505A\u522B\u7684\u4E8B\u3002", "body": "\u5DE5\u8D44\u6DA8\u4E86\uFF0C\u82B1\u94B1\u5F80\u5F80\u4E5F\u8DDF\u7740\u6DA8\u3002\u4F60\u6700\u8FD1\u4E00\u6B21\u52A0\u85AA\u6BCF\u5E74\u591A {raise}\u3002\u5982\u679C\u6BCF\u5E74\u5B58\u4E0B\u4E00\u534A\u5230 50 \u5C81\uFF0C\u7EA6\u80FD\u53D8\u6210 {fv}\u3002\u82B1\u6389\u4E0D\u4E00\u5B9A\u662F\u9519\uFF1B\u4E00\u6837\u4E1C\u897F\u771F\u6B63\u7684\u4EE3\u4EF7\uFF0C\u662F\u4F60\u4E3A\u5B83\u653E\u5F03\u7684\u90A3\u4E2A\u6700\u597D\u7684\u9009\u62E9\u3002", "q": [{ "q": "\u4F60\u52A0\u85AA\u4E86\uFF0C\u6BCF\u5E74\u591A {raise}\u3002\u54EA\u79CD\u4E60\u60EF\u6700\u80FD\u6512\u4E0B\u94B1\uFF1F", "opts": ["\u9A6C\u4E0A\u6362\u66F4\u597D\u7684\u8F66\u548C\u623F\u5B50", "\u5B58\u4E00\u534A\u5DE6\u53F3\uFF0C\u53E6\u4E00\u534A\u62FF\u6765\u4EAB\u53D7", "\u5168\u90E8\u82B1\u6389\uFF0C\u8FD9\u662F\u4F60\u5E94\u5F97\u7684"], "ok": 1, "why": "\u5B58\u4E00\u534A\u80FD\u628A\u8FDB\u6B65\u7559\u4F4F\uFF0C\u540C\u65F6\u4E5F\u80FD\u4EAB\u53D7\u4E00\u90E8\u5206\u52A0\u85AA\u3002" }, { "q": "\u4EC0\u4E48\u662F\u201C\u751F\u6D3B\u81A8\u80C0\u201D\uFF1F", "opts": ["\u6536\u5165\u4E00\u6DA8\uFF0C\u82B1\u94B1\u4E5F\u8DDF\u7740\u6DA8", "\u516C\u53F8\u52A0\u85AA\u5F88\u6162", "\u7269\u4EF7\u6BCF\u5E74\u90FD\u5728\u6DA8"], "ok": 0, "why": "\u751F\u6D3B\u81A8\u80C0\u8BF4\u7684\u662F\u4F60\u81EA\u5DF1\u7684\u82B1\u9500\u8DDF\u7740\u6536\u5165\u4E00\u8D77\u6DA8\uFF0C\u7ED3\u679C\u5B58\u6B3E\u8FD8\u662F\u4E0D\u53D8\u3002" }] }];
+var LESSONS = [{ "id": "paycheck", "title": "\u7A0E\u7387\u662F\u4E00\u7EA7\u4E00\u7EA7\u5F80\u4E0A\u52A0\u7684", "short": "\u591A\u8D5A\u7684\u6BCF\u4E00\u5757\u94B1\u6309\u6700\u9AD8\u90A3\u6863\u4EA4\u7A0E\uFF0C\u4F46\u6574\u4F53\u7A0E\u7387\u4F4E\u5F97\u591A\u3002", "body": "\u4F60\u6BCF\u4E2A\u6708\u7A0E\u524D\u5DE5\u8D44\u662F {gross}\uFF0C\u5230\u624B {net}\u3002\u7F8E\u56FD\u7684\u6240\u5F97\u7A0E\u662F\u7D2F\u8FDB\u7684\uFF1A\u6536\u5165\u5206\u6BB5\u8BA1\u7A0E\uFF0C\u7B2C\u4E00\u6BB5 10%\uFF0C\u4E0B\u4E00\u6BB5 12%\uFF0C\u4EE5\u6B64\u7C7B\u63A8\u3002\u6700\u540E\u4E00\u5757\u94B1\u6309\u4F60\u6240\u5728\u7684\u6700\u9AD8\u6863\u4EA4\u7A0E\uFF0C\u4F46\u5927\u90E8\u5206\u5DE5\u8D44\u4EA4\u5F97\u5C11\uFF0C\u6240\u4EE5\u52A0\u85AA\u6C38\u8FDC\u4E0D\u4F1A\u8BA9\u5230\u624B\u7684\u94B1\u53D8\u5C11\u3002", "q": [{ "q": "\u4F60\u7684\u5DE5\u4F5C\u5E74\u85AA {salary}\u3002\u6BCF\u4E2A\u6708\u7684\u9884\u7B97\u5E94\u8BE5\u6309\u591A\u5C11\u6765\u505A\uFF1F", "opts": ["\u6BCF\u6708 {salaryM}\uFF08\u5E74\u85AA \xF7 12\uFF09", "\u6263\u5B8C\u7A0E\u548C\u5404\u79CD\u6263\u6B3E\u540E\uFF0C\u771F\u6B63\u8FDB\u65E5\u5E38\u8D26\u6237\u7684\u94B1", "\u4E0A\u4E2A\u6708\u7684\u5DE5\u8D44\u518D\u52A0\u4E0A\u660E\u5E74\u7684\u52A0\u85AA"], "ok": 1, "why": "\u7A0E\u548C\u6263\u6B3E\u5728\u4F60\u62FF\u5230\u94B1\u4E4B\u524D\u5C31\u6263\u6389\u4E86\uFF0C\u80FD\u82B1\u7684\u53EA\u6709\u5230\u624B\u5DE5\u8D44\u3002" }, { "q": "\u4E0B\u9762\u54EA\u4E00\u9879\u4E0D\u662F\u5728\u5DE5\u8D44\u5230\u8D26\u524D\u5C31\u6263\u6389\u7684\uFF1F", "opts": ["\u793E\u4FDD\u548C\u533B\u4FDD\u7A0E", "\u8054\u90A6\u6240\u5F97\u7A0E", "\u623F\u79DF"], "ok": 2, "why": "\u7A0E\u662F\u4ECE\u5DE5\u8D44\u91CC\u81EA\u52A8\u9884\u6263\u7684\uFF1B\u623F\u79DF\u8981\u7528\u5230\u624B\u7684\u94B1\u81EA\u5DF1\u4ED8\u3002" }] }, { "id": "emergency", "title": "\u968F\u65F6\u80FD\u7528\u7684\u94B1\uFF0C\u548C\u4F1A\u589E\u503C\u7684\u94B1", "short": "\u73B0\u91D1\u54EA\u5929\u8981\u7528\u90FD\u5728\uFF0C\u4F46\u51E0\u4E4E\u4E0D\u6DA8\u3002\u6295\u8D44\u4F1A\u6DA8\uFF0C\u4F46\u53EF\u80FD\u5728\u4F60\u6025\u7528\u90A3\u5929\u6B63\u597D\u5728\u8DCC\u3002", "body": "\u201C\u6D41\u52A8\u6027\u201D\u6307\u94B1\u80FD\u591A\u5FEB\u62FF\u6765\u7528\u3002\u73B0\u91D1\u80FD\u5E94\u4ED8\u4FEE\u8F66\u3001\u6025\u8BCA\u8FD9\u7C7B\u610F\u5916\uFF1B\u6295\u8D44\u901A\u5E38\u4F1A\u6DA8\uFF0C\u4F46\u5728\u4F60\u9700\u8981\u7528\u94B1\u65F6\u53EF\u80FD\u6B63\u597D\u8DCC\u4E86\u3002\u4F60 3 \u4E2A\u6708\u7684\u5FC5\u8981\u5F00\u9500\u662F {ef3}\uFF0C\u5E94\u6025\u91D1\u91CC\u73B0\u5728\u6709 {ef}\u3002\u7559\u591A\u5C11\u73B0\u91D1\uFF0C\u662F\u5B89\u5168\u548C\u589E\u957F\u4E4B\u95F4\u7684\u53D6\u820D\u3002", "q": [{ "q": "\u8F66\u8981\u4FEE\uFF0C$1,200\u3002\u6700\u597D\u600E\u4E48\u4ED8\uFF1F", "opts": ["\u5237\u4FE1\u7528\u5361\uFF0C\u6BCF\u6708\u53EA\u8FD8\u81F3\u5C11\u8981\u8FD8\u7684\u94B1", "\u7528\u5E94\u6025\u91D1\u4ED8", "\u8FD9\u4E2A\u6708\u5148\u4E0D\u4EA4\u623F\u79DF"], "ok": 1, "why": "\u5E94\u6025\u91D1\u5C31\u662F\u4E3A\u8FD9\u79CD\u4E8B\u51C6\u5907\u7684\uFF1A\u6CA1\u6709\u5229\u606F\u3001\u6CA1\u6709\u6EDE\u7EB3\u91D1\uFF0C\u4E5F\u4E0D\u4F1A\u591A\u51FA\u65B0\u7684\u503A\u3002" }, { "q": "\u5E94\u6025\u91D1\u5E94\u8BE5\u5B58\u591A\u5C11\uFF1F", "opts": ["$100 \u5DE6\u53F3", "3\u20136 \u4E2A\u6708\u7684\u5FC5\u8981\u5F00\u9500\uFF08\u4F60\u662F {ef3}\u2013{ef6}\uFF09", "\u5148\u5B58\u591F\u4E00\u6574\u5E74\u7684\u5DE5\u8D44\uFF0C\u522B\u7684\u90FD\u4E0D\u505A"], "ok": 1, "why": "3\u20136 \u4E2A\u6708\u8DB3\u591F\u5E94\u4ED8\u5927\u591A\u6570\u5931\u4E1A\u548C\u5927\u989D\u7EF4\u4FEE\uFF0C\u4E0D\u7528\u501F\u94B1\u3002" }] }, { "id": "debt", "title": "\u501F\u94B1\u8981\u591A\u8FD8", "short": "\u501F $100\uFF0C\u8FD8\u7684\u4E0D\u6B62 $100\u3002\u591A\u8FD8\u7684\u90A3\u90E8\u5206\u5C31\u662F\u5229\u606F\u3002", "body": "\u4FE1\u7528\u5361\u5E74\u5229\u7387\u7EA6 21%\uFF0C\u6CA1\u8FD8\u7684\u5229\u606F\u8FD8\u4F1A\u518D\u751F\u5229\u606F\u3002{bal} \u6BCF\u6708\u53EA\u8FD8\u6700\u4F4E\uFF0C\u5927\u7EA6 {minYears} \u5E74\u8FD8\u6E05\uFF0C\u5229\u606F {minInterest}\uFF1B\u6BCF\u6708\u8FD8 {fixed}\uFF0C{fixMonths} \u4E2A\u6708\u8FD8\u6E05\uFF0C\u5229\u606F {fixInterest}\u3002\u8FD8\u5F97\u5FEB\uFF0C\u4EE3\u4EF7\u662F\u8FD9\u4E00\u5E74\u80FD\u82B1\u5728\u522B\u5904\u7684\u94B1\u53D8\u5C11\u3002", "q": [{ "q": "\u4F60\u6B20\u4FE1\u7528\u5361 {bal}\uFF08\u5E74\u5229\u7387 21.4%\uFF09\uFF0C\u624B\u4E0A\u6B63\u597D\u591A\u51FA {bal}\u3002\u6700\u597D\u600E\u4E48\u505A\uFF1F", "opts": ["\u62FF\u53BB\u6295\u8D44\uFF0C\u80A1\u5E02\u5E73\u5747\u56DE\u62A5\u66F4\u9AD8", "\u628A\u4FE1\u7528\u5361\u8FD8\u6E05", "\u7EE7\u7EED\u6BCF\u6708\u53EA\u8FD8\u81F3\u5C11\u8981\u8FD8\u7684\u94B1"], "ok": 1, "why": "\u8FD8\u6E05 21.4% \u7684\u5361\u503A\uFF0C\u7B49\u4E8E\u7A33\u8D5A 21.4%\uFF0C\u6B63\u5E38\u7684\u6295\u8D44\u90FD\u5F88\u96BE\u7A33\u5B9A\u505A\u5230\u3002" }, { "q": "\u4FE1\u7528\u5361\u6BCF\u6708\u53EA\u8FD8\u81F3\u5C11\u8981\u8FD8\u7684\u94B1\uFF0C\u4F1A\u600E\u6837\uFF1F", "opts": ["\u8FD8\u5F97\u6700\u5FEB", "\u6BCF\u6B21\u8FD8\u7684\u94B1\u5927\u591A\u662F\u5229\u606F\uFF0C\u8981\u597D\u51E0\u5E74\u624D\u8FD8\u6E05", "\u5229\u7387\u4F1A\u53D8\u4F4E"], "ok": 1, "why": "\u81F3\u5C11\u8981\u8FD8\u7684\u94B1\u5927\u90E8\u5206\u90FD\u662F\u5229\u606F\uFF0C\u6B20\u6B3E\u51E0\u4E4E\u4E0D\u52A8\u3002" }] }, { "id": "match", "title": "\u516C\u53F8\u914D\u6BD4\uFF1A\u4F60\u5B58\uFF0C\u516C\u53F8\u4E5F\u5B58", "short": "\u4F60\u5B58\u94B1\uFF0C\u516C\u53F8\u5C31\u52A0\u94B1\uFF0C\u4F46\u8FD9\u7B14\u94B1\u8981\u9501\u5230\u9000\u4F11\u3002", "body": "\u914D\u6BD4\u662F\u4E00\u79CD\u6FC0\u52B1\uFF1A\u4F60\u5F80 401(k) \u9000\u4F11\u8D26\u6237\u5B58\u94B1\uFF0C\u516C\u53F8\u4E5F\u8DDF\u7740\u5B58\u3002\u6309\u4F60\u7684\u5DE5\u8D44\uFF0C\u62FF\u6EE1\u914D\u6BD4\u4E00\u5E74\u662F {free}\u3002\u4EE3\u4EF7\u662F\uFF1A\u8FD9\u7B14\u94B1\u73B0\u5728\u5C31\u4ECE\u5DE5\u8D44\u91CC\u6263\u8D70\uFF0C\u4E00\u822C\u8981\u5230 59\xBD \u5C81\u624D\u80FD\u53D6\uFF0C\u63D0\u524D\u53D6\u8981\u7F5A\u6B3E\u3002", "bodyNoMatch": "\u914D\u6BD4\u662F\u4E00\u79CD\u6FC0\u52B1\uFF1A\u4F60\u5F80 401(k) \u9000\u4F11\u8D26\u6237\u5B58\u94B1\uFF0C\u516C\u53F8\u4E5F\u8DDF\u7740\u5B58\u3002\u4F60\u73B0\u5728\u7684\u5DE5\u4F5C\u6CA1\u6709\u914D\u6BD4\uFF1B\u6309\u4F60\u7684\u5DE5\u8D44\uFF0C\u5E38\u89C1\u7684 4% \u914D\u6BD4\u4E00\u5E74\u662F {free4}\u3002\u6BD4\u8F83\u5DE5\u4F5C\u65F6\uFF0C\u5B83\u4E5F\u662F\u5DE5\u8D44\u7684\u4E00\u90E8\u5206\u3002", "q": [{ "q": "\u516C\u53F8\u6309 {r}% \u914D\u6BD4\uFF0C\u6700\u591A\u5230\u5DE5\u8D44\u7684 {m}%\u3002\u4F60\u81F3\u5C11\u5E94\u8BE5\u5B58\u591A\u5C11\uFF1F", "opts": ["0%\uFF0C\u7559\u7740\u73B0\u91D1", "{m}%", "1%"], "ok": 1, "why": "\u5B58\u5230 {m}%\uFF0C\u516C\u53F8\u767D\u7ED9\u7684\u6BCF\u4E00\u5206\u94B1\u90FD\u80FD\u62FF\u5230\u3002" }, { "q": "\u62FF\u6EE1 100% \u7684\u516C\u53F8\u914D\u6BD4\uFF0C\u548C\u591A\u8FD8 5% \u7684\u8F66\u8D37\uFF0C\u54EA\u4E2A\u5148\u505A\uFF1F", "opts": ["\u5148\u62FF\u6EE1 100% \u7684\u914D\u6BD4", "\u5148\u591A\u8FD8 5% \u7684\u8F66\u8D37", "\u90FD\u4E0D\u505A"], "ok": 0, "why": "100% \u7684\u914D\u6BD4\u6BD4\u7701\u4E0B 5% \u7684\u5229\u606F\u5212\u7B97\u5F97\u591A\u3002" }] }, { "id": "compound", "title": "\u8D8A\u65E9\u5B58\uFF0C\u6DA8\u5F97\u8D8A\u4E45", "short": "\u8D8A\u65E9\u5B58\u4E0B\u7684\u94B1\uFF0C\u6709\u8D8A\u957F\u7684\u65F6\u95F4\u589E\u957F\u3002", "body": "\u589E\u957F\u51FA\u6765\u7684\u94B1\u8FD8\u4F1A\u7EE7\u7EED\u589E\u957F\uFF0C\u8FD9\u5C31\u662F\u590D\u5229\u3002\u4ECE {age} \u5C81\u5F00\u59CB\u6BCF\u6708\u5B58 $200\uFF0C\u5230 65 \u5C81\u7EA6 {now}\uFF08\u6309\u6263\u9664\u901A\u80C0\u540E\u6BCF\u5E74 5% \u7B97\uFF09\uFF1B\u4ECE {age10} \u5C81\u5F00\u59CB\u53EA\u6709\u7EA6 {later}\u3002\u5E74\u8F7B\u65F6\u5B58\u4E0B\u7684\u94B1\uFF0C\u5C31\u662F\u5E74\u8F7B\u65F6\u6CA1\u82B1\u7684\u94B1\uFF0C\u8FD9\u662F\u201C\u73B0\u5728\u201D\u548C\u201C\u4EE5\u540E\u201D\u4E4B\u95F4\u7684\u9009\u62E9\u3002", "q": [{ "q": "\u5C0F\u660E\u4ECE {age} \u5C81\u5230 65 \u5C81\u6BCF\u6708\u6295 $200\uFF0C\u5C0F\u7EA2\u4ECE {age10} \u5C81\u5230 65 \u5C81\u6BCF\u6708\u4E5F\u6295 $200\u3002\u5230 65 \u5C81\uFF0C\u5C0F\u660E\u5927\u7EA6\u591A\u591A\u5C11\uFF1F", "opts": ["\u5DEE\u4E0D\u591A", "\u591A $24,000 \u5DE6\u53F3\uFF08\u5C31\u662F\u591A\u6295\u7684\u90A3\u90E8\u5206\uFF09", "\u591A {diff} \u5DE6\u53F3"], "ok": 2, "why": "\u5C0F\u660E\u53EA\u591A\u6295\u4E86 $24,000\uFF0C\u4F46\u65E9\u6295\u7684\u94B1\u591A\u957F\u4E86\u5341\u5E74\uFF1A\u5927\u7EA6 {now} \u5BF9 {later}\u3002" }, { "q": "\u901A\u5E38\u54EA\u4E00\u79CD\u94B1\u957F\u5F97\u6700\u591A\uFF1F", "opts": ["\u4E00\u5927\u7B14\u94B1\u6295 5 \u5E74", "\u4E00\u5C0F\u7B14\u94B1\u6295 30 \u5E74", "\u653E\u5728\u65E5\u5E38\u8D26\u6237\u91CC\u7684\u73B0\u91D1"], "ok": 1, "why": "\u590D\u5229\u9700\u8981\u65F6\u95F4\uFF0C\u65F6\u95F4\u957F\u6BD4\u91D1\u989D\u5927\u66F4\u91CD\u8981\u3002" }] }, { "id": "creep", "title": "\u673A\u4F1A\u6210\u672C", "short": "\u6BCF\u82B1\u4E00\u5757\u94B1\uFF0C\u5C31\u5C11\u4E86\u4E00\u5757\u94B1\u505A\u522B\u7684\u4E8B\u3002", "body": "\u5DE5\u8D44\u6DA8\u4E86\uFF0C\u82B1\u94B1\u5F80\u5F80\u4E5F\u8DDF\u7740\u6DA8\u3002\u4F60\u6700\u8FD1\u4E00\u6B21\u52A0\u85AA\u6BCF\u5E74\u591A {raise}\u3002\u5982\u679C\u6BCF\u5E74\u5B58\u4E0B\u4E00\u534A\u5230 50 \u5C81\uFF0C\u7EA6\u80FD\u53D8\u6210 {fv}\u3002\u82B1\u6389\u4E0D\u4E00\u5B9A\u662F\u9519\uFF1B\u4E00\u6837\u4E1C\u897F\u771F\u6B63\u7684\u4EE3\u4EF7\uFF0C\u662F\u4F60\u4E3A\u5B83\u653E\u5F03\u7684\u90A3\u4E2A\u6700\u597D\u7684\u9009\u62E9\u3002", "q": [{ "q": "\u4F60\u52A0\u85AA\u4E86\uFF0C\u6BCF\u5E74\u591A {raise}\u3002\u54EA\u79CD\u4E60\u60EF\u6700\u80FD\u6512\u4E0B\u94B1\uFF1F", "opts": ["\u9A6C\u4E0A\u6362\u66F4\u597D\u7684\u8F66\u548C\u623F\u5B50", "\u5B58\u4E00\u534A\u5DE6\u53F3\uFF0C\u53E6\u4E00\u534A\u62FF\u6765\u4EAB\u53D7", "\u5168\u90E8\u82B1\u6389\uFF0C\u8FD9\u662F\u4F60\u5E94\u5F97\u7684"], "ok": 1, "why": "\u5B58\u4E00\u534A\u80FD\u628A\u8FDB\u6B65\u7559\u4F4F\uFF0C\u540C\u65F6\u4E5F\u80FD\u4EAB\u53D7\u4E00\u90E8\u5206\u52A0\u85AA\u3002" }, { "q": "\u4EC0\u4E48\u662F\u201C\u751F\u6D3B\u81A8\u80C0\u201D\uFF1F", "opts": ["\u6536\u5165\u4E00\u6DA8\uFF0C\u82B1\u94B1\u4E5F\u8DDF\u7740\u6DA8", "\u516C\u53F8\u52A0\u85AA\u5F88\u6162", "\u7269\u4EF7\u6BCF\u5E74\u90FD\u5728\u6DA8"], "ok": 0, "why": "\u751F\u6D3B\u81A8\u80C0\u8BF4\u7684\u662F\u4F60\u81EA\u5DF1\u7684\u82B1\u9500\u8DDF\u7740\u6536\u5165\u4E00\u8D77\u6DA8\uFF0C\u7ED3\u679C\u5B58\u6B3E\u8FD8\u662F\u4E0D\u53D8\u3002" }] }];
 var MOMENTS = [["\u5BB6\u4EBA\u7ED9\u7684\u751F\u65E5\u7EA2\u5305", 50], ["\u4E8C\u624B\u7F51\u7AD9\u5356\u6389\u4E00\u4EF6\u65E7\u5916\u5957", 40], ["\u51AC\u5929\u5916\u5957\u53E3\u888B\u91CC\u7FFB\u51FA $20", 20], ["\u94F6\u884C\u5361\u8FD4\u73B0", 35], ["\u5E2E\u90BB\u5C45\u642C\u5BB6\u62FF\u5230\u7684\u916C\u8C22", 60], ["\u505C\u8F66\u7F5A\u5355", -45], ["\u670B\u53CB\u7684\u751F\u65E5\u805A\u9910", -60], ["\u5FD8\u4E86\u53D6\u6D88\u514D\u8D39\u8BD5\u7528", -15], ["\u4E70\u5496\u5561\u4E0D\u77E5\u4E0D\u89C9\u82B1\u591A\u4E86", -40], ["\u540C\u4E8B\u79BB\u804C\uFF0C\u51D1\u94B1\u4E70\u793C\u7269", -30], ["\u6DF1\u591C\u70B9\u4E86\u62AB\u8428", -28], ["\u516C\u4EA4\u5361\u4E22\u4E86\uFF0C\u8865\u529E", -35], ["\u53BB\u836F\u5E97\u4E70\u836F", -55], ["\u7406\u53D1", -30]];
 var LT = { "lesson": "\u7B2C {k} \u8BFE / \u5171 {n} \u8BFE", "gotIt": "\u660E\u767D\u4E86", "perYear": "/\u5E74", "perMonth": "/\u6708", "quick": "\u5C0F\u6D4B\u9A8C", "right": "\u7B54\u5BF9\u4E86\uFF01", "wrong": "\u4E0D\u592A\u5BF9\u3002", "cont": "\u7EE7\u7EED", "walkTitle": "{age} \u5C81\uFF1A\u8FD9\u4E00\u5E74\u8FC7\u53BB\u4E86", "walkSub": "", "toReview": "\u770B\u5E74\u7EC8\u7ED3\u7B97", "learned": "\u4F60\u5B66\u5230\u7684\u9053\u7406", "later": "\u4E4B\u540E\u4F1A\u5B66\u5230", "score": "{c}/{t} \u2713", "taughtAt": "{age} \u5C81\u5B66\u5230", "rerollOnce": "\u53EA\u80FD\u91CD\u65B0\u62C9\u4E00\u6B21\u3002", "noReroll": "\u4E0D\u80FD\u518D\u91CD\u62C9\u4E86\uFF1A\u5C31\u50CF\u73B0\u5B9E\u4E00\u6837\uFF0C\u62BD\u5230\u4EC0\u4E48\u5C31\u7528\u4EC0\u4E48\u3002", "diffLock": "\u6362\u96BE\u5EA6\u4F1A\u91CD\u65B0\u62BD\u4E00\u6B21\u3002", "skipWalk": "\u8DF3\u5230\u5E74\u5E95", "month": "{m} \u6708" };
 
@@ -5272,6 +5275,8 @@ var T2 = {
   mgLeft: "\u8FD8\u5269 {s} \u79D2",
   finOut: "\u5176\u4E2D\u4EA4\u51FA\u53BB\u7684",
   finIn: "\u53E6\u5916\u5F97\u5230\u7684",
+  drewSav: "\u52A8\u7528\u5B58\u6B3E {m}",
+  warnMeans: "\u9EC4\u8272\uFF1A\u65E5\u5E38\u8D26\u6237\u4E0D\u591F\uFF0C\u7528\u5B58\u6B3E\u8865\u4E0A\u4E86\u3002",
   locked: "\u672A\u89E3\u9501",
   skipGuide: "\u8DF3\u8FC7",
   next: "\u4E0B\u4E00\u6B65",
@@ -5706,8 +5711,8 @@ var CG = {
   skip: "\u76F4\u63A5\u770B\u7ED3\u679C",
   stop: "\u63D0\u524D\u7ED3\u675F",
   secs: (n) => `${n} \u79D2`,
-  how: { paycheck: "\u628A\u4E00\u5E74\u7684\u5DE5\u8D44\u5012\u8FDB\u53BB\uFF0C\u770B\u6BCF\u4E00\u6BB5\u5404\u4EA4\u591A\u5C11\u7A0E", emergency: "\u770B\u4E00\u5E74\uFF1A\u73B0\u91D1\u4E0D\u52A8\uFF0C\u6295\u8D44\u6709\u6DA8\u6709\u8DCC", debt: "\u6B20\u7684\u94B1\u50CF\u96EA\u7403\uFF0C\u6BCF\u4E2A\u6708\u6EDA\u5927\u4E00\u70B9\u3002\u70B9\u96EA\u7403\u8FD8\u94B1", match: "\u51B3\u5B9A\u5F80 401(k) \u5B58\u591A\u5C11", compound: "\u5C81\u6708\u6D41\u901D\uFF0C\u968F\u65F6\u79CD\u4E0B\u50A8\u84C4", creep: "\u8DD1\u8FC7\u4E00\u5E74\u7684\u5404\u79CD\u8BF1\u60D1" },
-  ctl: { paycheck: "\u6309\u4F4F\uFF1A\u9F20\u6807\u3001\u624B\u6307\u6216\u7A7A\u683C", emergency: "\u8D26\u5355\u6765\u4E86\uFF0C\u70B9\u4F60\u60F3\u7528\u54EA\u4E00\u8FB9\u4ED8", debt: "\u70B9\u96EA\u7403\uFF08\u6216\u6309\u7A7A\u683C\uFF09", match: "\u6309\u4F4F\u5F80\u4E0A\u52A0", compound: "\u70B9\u51FB\u6216\u7A7A\u683C\u79CD\u4E0B", creep: "\u70B9\u51FB\u6216\u7A7A\u683C\u8DF3\u8D77" },
+  how: { paycheck: "\u628A\u4E00\u5E74\u7684\u5DE5\u8D44\u5012\u8FDB\u53BB\uFF0C\u770B\u6BCF\u4E00\u6BB5\u5404\u4EA4\u591A\u5C11\u7A0E", emergency: "\u770B\u4E00\u5E74\uFF1A\u73B0\u91D1\u4E0D\u52A8\uFF0C\u6295\u8D44\u6709\u6DA8\u6709\u8DCC", debt: "\u6B20\u7684\u94B1\u50CF\u96EA\u7403\uFF0C\u6BCF\u4E2A\u6708\u6EDA\u5927\u4E00\u70B9\u3002\u70B9\u96EA\u7403\u8FD8\u94B1", match: "\u51B3\u5B9A\u5F80 401(k) \u5B58\u591A\u5C11", compound: "\u4ECE\u73B0\u5728\u5230 65 \u5C81\u3002\u70B9\u4E00\u4E0B\u5C31\u5F00\u59CB\u6BCF\u5E74\u5B58\u94B1\uFF1A\u8D8A\u65E9\u70B9\uFF0C\u6DA8\u7684\u5E74\u6570\u8D8A\u591A", creep: "\u8DD1\u8FC7\u4E00\u5E74\u7684\u5404\u79CD\u8BF1\u60D1" },
+  ctl: { paycheck: "\u6309\u4F4F\uFF1A\u9F20\u6807\u3001\u624B\u6307\u6216\u7A7A\u683C", emergency: "\u8D26\u5355\u6765\u4E86\uFF0C\u70B9\u4F60\u60F3\u7528\u54EA\u4E00\u8FB9\u4ED8", debt: "\u70B9\u96EA\u7403\uFF08\u6216\u6309\u7A7A\u683C\uFF09", match: "\u6309\u4F4F\u5F80\u4E0A\u52A0", compound: "\u53EA\u9700\u8981\u70B9\u4E00\u4E0B\uFF08\u6216\u6309\u7A7A\u683C\uFF09", creep: "\u70B9\u51FB\u6216\u7A7A\u683C\u8DF3\u8D77" },
   income: "\u6536\u5165",
   noTax: "\u4E0D\u4EA4\u7A0E",
   yourPay: "\u4F60\u7684\u5DE5\u8D44",
@@ -5741,6 +5746,15 @@ var CG = {
   skipped: "\u8DF3\u8FC7",
   kept: "\u5B58\u4E0B",
   altFood: (n) => `${n} \u5468\u4F19\u98DF`,
+  tvStart: "\u70B9\u4E00\u4E0B\uFF0C\u5F00\u59CB\u5B58\u94B1",
+  tvEarly: (a) => `${a} \u5C81\u5F00\u59CB\u5B58`,
+  tvYou: (a) => `\u4F60\uFF1A${a} \u5C81\u5F00\u59CB\u5B58`,
+  tvYouWait: "\u4F60\uFF1A\u8FD8\u6CA1\u5F00\u59CB",
+  tvPut: "\u5B58\u8FDB\u53BB\u7684",
+  tvGrew: "\u6DA8\u51FA\u6765\u7684",
+  tvNever: (a, s4, e, g) => `\u4F60\u4E00\u76F4\u6CA1\u5F00\u59CB\u5B58\u3002\u4ECE ${a} \u5C81\u8D77\u6BCF\u5E74\u5B58 ${s4}\uFF0C\u5230 65 \u5C81\u4F1A\u6709 ${e}\uFF0C\u5176\u4E2D ${g} \u662F\u6DA8\u51FA\u6765\u7684\uFF0C\u4E0D\u662F\u5B58\u8FDB\u53BB\u7684\u3002`,
+  tvSame: (a, s4, e, p, g) => `\u4F60\u4ECE ${a} \u5C81\u5C31\u5F00\u59CB\u5B58\u3002\u6BCF\u5E74\u5B58 ${s4}\uFF0C\u5230 65 \u5C81\u6709 ${e}\uFF1A\u5B58\u8FDB\u53BB ${p}\uFF0C\u6DA8\u51FA\u6765 ${g}\u3002\u8D8A\u65E9\u5B58\u7684\u94B1\uFF0C\u6DA8\u7684\u5E74\u6570\u8D8A\u591A\u3002`,
+  tvLate: (a, b, s4, e, lp, le) => `\u4ECE ${a} \u5C81\u8D77\u6BCF\u5E74\u5B58 ${s4}\uFF0C\u5230 65 \u5C81\u6709 ${e}\u3002\u4F60\u4ECE ${b} \u5C81\u624D\u5F00\u59CB\uFF1A\u5C11\u5B58\u4E86 ${lp}\uFF0C\u5230 65 \u5C81\u5374\u5C11\u4E86 ${le}\u3002\u8D8A\u65E9\u5B58\u7684\u94B1\u6DA8\u7684\u5E74\u6570\u8D8A\u591A\uFF1B\u4F46\u65E9\u5B58\u4E5F\u610F\u5473\u7740\u5E74\u8F7B\u65F6\u5C11\u82B1\u3002`,
   tvGuess: (g, a) => `\u4F60\u731C \xD7${g}\uFF1B\u73B0\u5728\u79CD\u4E0B\u4F1A\u53D8\u6210 \xD7${a}\u3002`,
   taxLine: (i, m, a) => `\u5E74\u6536\u5165 ${i} \u65F6\uFF0C\u6700\u540E\u4E00\u5757\u94B1\u4EA4 ${m} \u7684\u8054\u90A6\u7A0E\uFF0C\u4F46\u5168\u90E8\u6536\u5165\u5E73\u5747\u53EA\u4EA4 ${a}\u3002\u52A0\u85AA\u6C38\u8FDC\u4E0D\u4F1A\u88AB\u7A0E\u5168\u90E8\u5403\u6389\u3002`,
   taxBars: ["\u8054\u90A6\u6240\u5F97\u7A0E", "\u4EA4\u5B8C\u5269\u4E0B"],
@@ -5908,8 +5922,8 @@ var minOnly = (p) => {
   return { b, i };
 };
 var coinValue = (p) => Math.max(20, Math.round(p.fixedN * 1.2 / 10) * 10);
-var SEEDS = 10;
 var SEED = 2400;
+var fvYear = (n) => n > 0 ? SEED * (1.05 ** n - 1) / 0.05 : 0;
 var GAMES = {
   paycheck(p, w, h2, S2) {
     const bands = taxBands(p), sal = Math.max(p.salary, 12e3), nextLo = (bands.find((b) => b.hi > sal) || bands.at(-1)).hi, maxI = Math.max(sal * 1.12, Math.min(nextLo * 1.08, sal * 1.6)), top = 50, bot = h2 - 20, x0 = 16, x1 = Math.max(120, w * 0.4);
@@ -6194,71 +6208,59 @@ var GAMES = {
     };
   },
   compound(p, w, h2, S2) {
-    const H = p.H, gy = h2 - 56, x = (yr2) => 24 + (w - 48) * yr2 / H, plants = [], tG = S2 * 0.3;
-    let yr = 0, pocket = SEEDS, taps = 0, guess = 3, guessing = true;
+    const H = p.H, gy = h2 - 40, top = 78, bw = Math.min(120, w * 0.28), bx = [w * 0.27 - bw / 2, w * 0.73 - bw / 2], maxV = fvYear(H) * 1.04;
+    let yr = 0, start = null, taps = 0, clock = 0;
     return {
       update(dt, t, io, pop) {
-        if (t < tG) {
-          if (io.st.left) guess = Math.max(1, guess - dt * 6);
-          if (io.st.right) guess = Math.min(12, guess + dt * 6);
-          if (io.st.x != null && !io.st.left && !io.st.right) guess = Math.max(1, Math.min(12, 1 + 11 * io.st.x / w));
+        clock += dt;
+        yr = Math.min(H, H * t / (S2 - 0.6));
+        if (io.st.taps > taps) {
           taps = io.st.taps;
-          return;
-        }
-        guessing = false;
-        yr = Math.min(H, H * (t - tG) / (S2 - tG - 0.4));
-        while (io.st.taps > taps) {
-          taps++;
-          if (pocket > 0 && yr < H) {
-            pocket--;
-            plants.push(yr);
-            pop(x(yr), gy - 30, "\u{1F331}", true);
+          if (start == null && yr < H) {
+            start = yr;
+            pop(bx[1] + bw / 2, gy - 40, "\u{1F331}", true);
           }
         }
       },
       draw(ctx2) {
-        if (guessing) {
-          txt(ctx2, CG.guessQ(p.age), w / 2, 70, 14);
-          txt(ctx2, "\u2190 \xD7" + Math.round(guess) + " \u2192", w / 2, 112, 30, BLUE);
-          const bx = 30, bw = w - 60;
-          rr(ctx2, bx, 150, bw, 12, 6);
-          ctx2.fillStyle = "#e6ecf5";
-          ctx2.fill();
-          rr(ctx2, bx, 150, bw * (guess - 1) / 11 + 12, 12, 6);
-          ctx2.fillStyle = BLUE;
-          ctx2.fill();
-          txt(ctx2, "\xD71", bx, 178, 11, "#5d6b8c");
-          txt(ctx2, "\xD712", bx + bw, 178, 11, "#5d6b8c");
-          txt(ctx2, "\u{1F330}", w / 2, h2 - 50, 30);
-          return;
-        }
+        const lx = w / 2;
+        ctx2.fillStyle = BLUE;
+        ctx2.fillRect(lx - 96, 48, 12, 12);
+        txt(ctx2, CG.tvPut, lx - 80, 55, 12, INK3, "left");
+        ctx2.fillStyle = GREEN;
+        ctx2.fillRect(lx + 10, 48, 12, 12);
+        txt(ctx2, CG.tvGrew, lx + 26, 55, 12, INK3, "left");
         ctx2.strokeStyle = INK3;
         ctx2.lineWidth = 3;
         ctx2.beginPath();
         ctx2.moveTo(14, gy);
         ctx2.lineTo(w - 14, gy);
         ctx2.stroke();
-        for (let a = 0; a <= H; a += 10) txt(ctx2, String(p.age + a), x(a), gy + 16, 11, "#5d6b8c");
-        const maxV = SEED * 1.05 ** H;
-        for (const s4 of plants) {
-          const v = SEED * 1.05 ** Math.max(0, yr - s4), r = 6 + 40 * Math.sqrt(v / maxV), px = x(s4);
-          ctx2.fillStyle = "#8a5a33";
-          ctx2.fillRect(px - 2, gy - r * 1.2, 4, r * 1.2);
-          coin2(ctx2, px, gy - r * 1.3, r * 0.6, "#9fe0a8");
+        [[yr, CG.tvEarly(p.age)], [start == null ? 0 : yr - start, start == null ? CG.tvYouWait : CG.tvYou(Math.round(p.age + start))]].forEach(([n, label], i) => {
+          const v = fvYear(n), put = SEED * n, hp = put / maxV * (gy - top), hv = v / maxV * (gy - top), x = bx[i];
+          ctx2.fillStyle = GREEN;
+          ctx2.fillRect(x, gy - hv, bw, hv);
+          ctx2.fillStyle = BLUE;
+          ctx2.fillRect(x, gy - hp, bw, hp);
+          ctx2.strokeStyle = INK3;
+          ctx2.lineWidth = 2;
+          if (hv > 1) ctx2.strokeRect(x, gy - hv, bw, hv);
+          txt(ctx2, k(v), x + bw / 2, gy - hv - 12, 15, INK3, "center", 900);
+          txt(ctx2, label, x + bw / 2, gy + 17, 12, i ? BLUE : "#5d6b8c", "center", 900);
+        });
+        if (start == null && yr < H) {
+          rr(ctx2, bx[1] - 10, gy - 76, bw + 20, 60, 12);
+          ctx2.fillStyle = Math.floor(clock * 2.5) % 2 ? "#fff4d6" : "#ffe08a";
+          ctx2.fill();
+          ctx2.strokeStyle = INK3;
+          ctx2.lineWidth = 2;
+          ctx2.stroke();
+          txt(ctx2, "\u{1F446}", bx[1] + bw / 2, gy - 58, 20);
+          txt(ctx2, CG.tvStart, bx[1] + bw / 2, gy - 32, 12, INK3, "center", 900);
         }
-        ctx2.fillStyle = BLUE;
-        ctx2.beginPath();
-        ctx2.moveTo(x(yr) - 8, gy + 26);
-        ctx2.lineTo(x(yr) + 8, gy + 26);
-        ctx2.lineTo(x(yr), gy + 18);
-        ctx2.fill();
-        rr(ctx2, w - 132, 10, 122, 28, 14);
-        ctx2.fillStyle = "rgba(29,43,79,.85)";
-        ctx2.fill();
-        txt(ctx2, `\u{1F330} ${CG.seeds} \xD7${pocket}`, w - 71, 25, 12, "#fff");
       },
-      hud: () => guessing ? CG.guessHud : CG.ageN(Math.round(p.age + yr)),
-      result: () => ({ plants: plants.slice(), guess: Math.round(guess) })
+      hud: () => CG.ageN(Math.round(p.age + yr)),
+      result: () => ({ start })
     };
   },
   creep(p, w, h2, S2) {
@@ -6387,7 +6389,7 @@ function cgAuto(id, p) {
     return { b, interest, paid, m: b > 0.5 ? 36 : m };
   }
   if (id === "match") return { pct: p.upTo * 100 };
-  if (id === "compound") return { plants: Array.from({ length: 5 }, (_, i) => p.H * i / 10), guess: null };
+  if (id === "compound") return { start: Math.min(10, p.H / 2) };
   return { bought: 4, spent: Math.min(p.raise, 4 * Math.max(50, Math.round(p.raise / 8 / 10) * 10)) };
 }
 function cgSummary(id, p, r, money3) {
@@ -6408,9 +6410,10 @@ function cgSummary(id, p, r, money3) {
     return { line: CG.matchLine(r.pct, money3(you), money3(free), money3(drop)) + (r.pct > p.upTo * 100 ? CG.matchOver(p.upTo * 100) : ""), bars: [[CG.matchBars[0], free, "ok"], [CG.matchBars[1], drop, "tax"]] };
   }
   if (id === "compound") {
-    const n = r.plants.length, spent = (SEEDS - n) * SEED, grow = (s4) => 1.05 ** (p.H - s4), v = r.plants.reduce((x, s4) => x + SEED * grow(s4), 0), g = r.guess ? CG.tvGuess(r.guess, grow(0).toFixed(1)) : "";
-    if (!n) return { line: g + CG.tvNone(money3(spent), money3(SEEDS * SEED * grow(0))), bars: [[CG.tvBars[0], 0, "ok"], [CG.tvBars[1], spent, "held"]] };
-    return { line: g + CG.tvLine(n, money3(n * SEED), money3(v), grow(Math.min(...r.plants)).toFixed(1), grow(Math.max(...r.plants)).toFixed(1), money3(spent)), bars: [[CG.tvBars[0], v, "ok"], [CG.tvBars[1], spent, "held"]] };
+    const st = r.start == null ? null : Math.max(0, Math.min(p.H, r.start)), early = fvYear(p.H), you = st == null ? 0 : fvYear(p.H - st), bars = [[CG.tvEarly(p.age), early, "ok"], [st == null ? CG.tvYouWait : CG.tvYou(Math.round(p.age + st)), you, "held"]];
+    if (st == null) return { line: CG.tvNever(p.age, money3(SEED), money3(early), money3(early - SEED * p.H)), bars };
+    if (st < 1) return { line: CG.tvSame(p.age, money3(SEED), money3(early), money3(SEED * p.H), money3(early - SEED * p.H)), bars };
+    return { line: CG.tvLate(p.age, Math.round(p.age + st), money3(SEED), money3(early), money3(SEED * st), money3(early - you)), bars };
   }
   const kept = Math.max(0, p.raise - r.spent);
   return { line: CG.ocLine(r.bought, money3(r.spent), money3(kept), money3(fvM(r.spent / 12, p.years))), bars: [[CG.ocBars[0], r.spent, "tax"], [CG.ocBars[1], kept, "ok"]] };
@@ -6864,10 +6867,10 @@ function reviewPage() {
   const legend = (segs) => `<ul class="io-legend">${segs.filter((x) => x.v > 0.5).map((x) => `<li class="k-${x.cls}"><i></i>${x.label}<b>${money2(x.v)}</b></li>`).join("")}</ul>`;
   const baRow = (label, a0, b0, better, show) => `<div class="ba-row"><span class="ba-lab">${label}</span>${beforeAfter(a0, b0, better)}<b>${show}</b></div>`;
   frame("review", `<section class="ty-review"><header class="page-head"><h1>${fmt(past ? T2.ageLookBack : T2.ageDone, { age })}</h1>${y.news ? `<p class="news">${icon.chart}${h(y.news)} (${fmt(T2.marketNote, { r: pct(sm.returnRate, 1) })})</p>` : ""}${pastPicker(past)}</header>
-    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans}</p>${past ? "" : yearNotes(s2).map((x) => `<p class="yr-note">${icon.piggy}<span>${h(x)}</span></p>`).join("")}
+    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans} <span class="cap-bad cap-warn"></span>${T2.warnMeans}</p>${past ? "" : yearNotes(s2).map((x) => `<p class="yr-note">${icon.piggy}<span>${h(x)}</span></p>`).join("")}
     <div class="ty-months ${anim ? "anim" : ""}">${y.months.map((mo, i) => {
-    const e = ev(mo.month), b2 = e.find((l) => bad.includes(l.type));
-    return `<div class="ty-mo ${e.some((l) => bad.includes(l.type)) ? "hasbad" : ""}" style="--i:${i}" title="${h(fmt(T2.cashIn, { m: money2(mo.checking) }))}"><small>${h(fmt(LT2.month, { m: mo.month }))}</small><span class="mo-bar"><i style="height:${Math.max(4, moTotal(mo) / moMax * 100)}%"></i></span><b>${money2(moTotal(mo))}</b>${b2 ? `<em class="${bad.includes(b2.type) ? "bad" : ""}" title="${h(b2.label)}">${h(b2.label.replace(/[:：].*$/, ""))}</em>` : ""}</div>`;
+    const e = ev(mo.month), b2 = e.find((l) => bad.includes(l.type) && l.type !== "shortfall"), sf = sum2(e.filter((l) => l.type === "shortfall").map((l) => l.amount));
+    return `<div class="ty-mo ${b2 ? "hasbad" : sf > 0.5 ? "haswarn" : ""}" style="--i:${i}" title="${h(fmt(T2.cashIn, { m: money2(mo.checking) }))}"><small>${h(fmt(LT2.month, { m: mo.month }))}</small><span class="mo-bar"><i style="height:${Math.max(4, moTotal(mo) / moMax * 100)}%"></i></span><b>${money2(moTotal(mo))}</b>${b2 ? `<em class="bad" title="${h(b2.label)}">${h(b2.label.replace(/[:：].*$/, ""))}</em>` : sf > 0.5 ? `<em class="warn" title="${h(e.find((l) => l.type === "shortfall").label)}">${h(fmt(T2.drewSav, { m: money2(sf) }))}</em>` : ""}</div>`;
   }).join("")}</div>
     <div class="ty-rv-grid">
       <section class="panel rv-tax"><h3>${icon.receipt}${T2.taxReturn} ${q("refund")}</h3>

@@ -1514,18 +1514,16 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .home-scene svg { display: block; width: 100%; height: auto; } .home-scene small { display: flex; align-items: center; gap: 4px; padding: 3px 8px; font-weight: 800; font-size: .74rem; color: var(--ink-2); border-top: 2px solid var(--ink); }
 .home-scene small .ico { width: 14px; height: 14px; } .home-scene.low small { color: var(--neg); }
 @media (max-width: 1000px) { .home-scene { display: none; } }
-/* ---- Round 41: the home is the top of the ID card, with your character standing in it ---- */
-.home-scene { display: none !important; }
-.idcard > summary.id-room { position: relative; display: block; height: 132px; margin: -8px -10px 6px; padding: 0; overflow: hidden; border-radius: 13px 13px 0 0; border-bottom: 3px solid var(--ink); }
-.idcard:not([open]) > summary.id-room { margin-bottom: -8px; border-radius: 13px; border-bottom: 0; }
-.id-room .room-bg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.id-room .avatar.room-av { position: absolute; left: 50%; transform: translateX(-62%); bottom: -2px; width: 82px; height: 86px; border: 0; border-radius: 0; filter: drop-shadow(0 2px 0 rgba(29,43,79,.25)); }
-.id-room .room-tag { position: absolute; left: 6px; top: 6px; max-width: calc(100% - 44px); background: rgba(255,255,255,.92); border: 2px solid var(--ink); border-radius: 10px; padding: 1px 8px 2px; line-height: 1.2; }
-.id-room .room-tag b { font-size: .86rem; } .id-room .room-tag small { display: block; font-size: .66rem; }
-.id-room .room-low { position: absolute; right: 6px; bottom: 6px; background: #ffe1dc; color: var(--neg); border: 2px solid var(--ink); border-radius: 8px; font-style: normal; font-weight: 900; font-size: .68rem; padding: 0 6px; }
-.idcard > summary.id-room::after { content: '▾'; position: absolute; right: 6px; top: 6px; width: 22px; height: 22px; display: grid; place-items: center; background: #fff; border: 2px solid var(--ink); border-radius: 50%; font-size: .8rem; margin: 0; }
-.idcard[open] > summary.id-room::after { content: '▴'; }
-@media (max-width: 1000px) { .idcard > summary.id-room { height: 100px; } .id-room .avatar.room-av { width: 66px; height: 69px; } }
+/* ---- Round 42: the home under the ID card, one place per life stage ---- */
+.home-scene { display: block !important; background: #fff; border: 3px solid var(--ink); border-radius: 16px; overflow: hidden; box-shadow: var(--lift-sm); }
+.home-scene .hs-pic { position: relative; } .home-scene svg { display: block; width: 100%; height: auto; }
+.home-scene .hs-av { position: absolute; left: 50%; bottom: 4%; width: 34%; height: auto; transform: translateX(-50%); border: 0; border-radius: 0; filter: drop-shadow(0 2px 0 rgba(29,43,79,.25)); }
+.home-scene.lv-6 .hs-av { left: 30%; }
+.home-scene.low .hs-pic svg { filter: grayscale(.7) brightness(.92); }
+.home-scene .hs-low { position: absolute; right: 6px; top: 6px; background: #ffe1dc; color: var(--neg); border: 2px solid var(--ink); border-radius: 8px; font-style: normal; font-weight: 900; font-size: .72rem; padding: 0 6px; }
+.home-scene .hs-cap { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 4px 8px; border-top: 2px solid var(--ink); font-size: .78rem; }
+.home-scene .hs-dots { display: inline-flex; gap: 3px; } .home-scene .hs-dots i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--ink); background: #fff; } .home-scene .hs-dots i.on { background: var(--sun); }
+@media (max-width: 1000px) { .home-scene { display: none !important; } }
 </style>
 </head>
 <body>
@@ -5303,8 +5301,9 @@ var T2 = {
   warnMeans: "\u9EC4\u8272\uFF1A\u7528\u5B58\u6B3E\u8865\u4E86\u7F3A\u53E3\u3002",
   homeCap: "\u4F60\u7684\u5BB6",
   homeLow: "\u4F60\u7684\u5BB6\uFF1A\u624B\u5934\u5F88\u7D27",
-  homeTip: "\u5BB6\u91CC\u7684\u6837\u5B50\u8DDF\u7740\u4F60\u7684\u94B1\u53D8\uFF1A\u4EBA\u751F\u9636\u6BB5\u8D8A\u9AD8\uFF0C\u4E1C\u897F\u8D8A\u591A\uFF1B\u8D26\u5355\u4ED8\u4E0D\u4E0A\u6216\u5165\u4E0D\u6577\u51FA\u65F6\uFF0C\u5BB6\u91CC\u4F1A\u53D8\u7A7A\u3002",
+  homeTip: "\u4F60\u4F4F\u7684\u5730\u65B9\u8DDF\u7740\u4EBA\u751F\u9636\u6BB5\u53D8\uFF1A\u4ECE\u501F\u4F4F\u7684\u89D2\u843D\uFF0C\u5230\u81EA\u5DF1\u7684\u623F\u5B50\u548C\u9662\u5B50\u3002\u624B\u5934\u7D27\u7684\u65F6\u5019\uFF0C\u753B\u9762\u53D8\u7070\uFF0C\u67B6\u5B50\u4E5F\u7A7A\u4E86\u3002",
   homeLowShort: "\u624B\u5934\u5F88\u7D27",
+  homeStage: "\u7B2C {n} \u7EA7 \xB7 {name}",
   locked: "\u672A\u89E3\u9501",
   skipGuide: "\u8DF3\u8FC7",
   next: "\u4E0B\u4E00\u6B65",
@@ -6673,43 +6672,47 @@ function hud() {
   </header>`;
 }
 function idCard() {
-  const HS = homeScene();
   const p = profile(s2), pip = (v, base) => `<span class="pips">${[0, 1, 2, 3].map((i) => `<i class="${i < Math.min(3, Math.max(0, base)) ? "on" : ""}"></i>`).join("")}</span>${v !== base ? `<em class="${v > base ? "pos" : "neg"}">${v > base ? "+" : ""}${v - base}</em>` : ""}`;
   const credit = p.credit ? `${p.credit}<small> \xB7 ${p.credit >= 740 ? "\u5F88\u597D" : p.credit >= 670 ? "\u826F\u597D" : p.credit >= 580 ? "\u4E00\u822C" : "\u5DEE"}</small>` : "<small>\u8FD8\u6CA1\u6709\u8BB0\u5F55</small>";
-  return `<details class="idcard" ${ui.idOpen ? "open" : ""}><summary class="id-top id-room ${HS.trouble ? "low" : ""}" data-go="idcard" title="${h(T2.homeTip)} ${h(T2.idMore)}">${HS.svg}${avatar(look(), { cls: "room-av", label: false, bg: "" })}${HS.trouble ? `<em class="room-low">${h(T2.homeLowShort)}</em>` : ""}<div class="room-tag"><b>${h(s2.name || "\u4F60")}</b><small>${s2.phase === "finish" ? 50 : s2.age} \u5C81 \xB7 ${STATES[s2.region].name}</small></div></summary>
+  return `<details class="idcard" ${ui.idOpen ? "open" : ""}><summary class="id-top" data-go="idcard" title="${h(T2.idMore)}">${avatar(look(), { cls: "mid", label: false })}<div><b>${h(s2.name || "\u4F60")}</b><small>${s2.phase === "finish" ? 50 : s2.age} \u5C81 \xB7 ${STATES[s2.region].name}</small></div></summary>
     <dl><dt>\u5B66\u5386</dt><dd>${s2.school ? `${{ study: "\u8BFB\u5927\u5B66", both: "\u8BFB\u793E\u533A\u5B66\u9662", cert: "\u8BFB\u804C\u6821" }[s2.school.kind] || h(p.edu)}\uFF0C\u8FD8\u5269 ${s2.school.yearsLeft} \u5E74` : h(p.edu)}</dd><dt>\u5DE5\u4F5C</dt><dd>${h(p.job)}${p.salary ? `<small> ${money2(p.salary)}/\u5E74</small>` : ""}</dd>
       <dt>\u611F\u60C5</dt><dd>${p.love}</dd><dt>\u4F4F\u5904</dt><dd>${p.home}${s2.car ? " \xB7 \u6709\u8F66" : ""}</dd>
       <dt>\u804C\u4E1A\u80FD\u529B ${q("career")}</dt><dd>${pip(p.career, p.careerBase)}</dd><dt>\u81EA\u63A7\u529B ${q("discipline")}</dt><dd>${pip(p.discipline, p.disciplineBase)}</dd><dt>${TEXT.difficulty} ${q("difficulty")}</dt><dd>${h(DIFFICULTY[s2.difficulty || "normal"].name)}</dd><dt>\u4FE1\u7528\u5206 ${q("credit")}</dt><dd>${credit}</dd></dl>
     ${p.status.length ? `<div class="statuses">${p.status.map((x) => `<span class="st-chip ${x.tone}" title="${h(x.why)}">${h(x.label)} ${x.delta > 0 ? "+" : ""}${x.delta}</span>`).join("")}${q("status")}</div>` : ""}</details>`;
 }
+var STAGE_LIST = () => STAGES;
 function homeScene() {
   const m = metrics(s2), st = stage(s2), av = payday(s2.phase === "plan" ? { ...s2, plan: draft() } : s2).available, last = s2.history.at(-1)?.review?.summary;
-  const trouble = av < -0.5 || last && (last.missed > 0 || last.evicted) || s2.status.some((x) => x.id === "couch");
-  const lv = trouble ? Math.min(st.id, 1) : st.id, cans = trouble ? 0 : m.runway >= 3 ? 3 : m.runway >= 1 ? 2 : 1, K2 = "#1d2b4f", S2 = `stroke="${K2}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"`;
+  const low = av < -0.5 || !!(last && (last.missed > 0 || last.evicted)) || s2.status.some((x) => x.id === "couch"), lv = st.id, cans = low ? 0 : m.runway >= 3 ? 3 : m.runway >= 1 ? 2 : 1;
+  const K2 = "#1d2b4f", S2 = `stroke="${K2}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"`, F = 158;
   const R2 = (x, y, w, h2, f, r = 3) => `<rect x="${x}" y="${y}" width="${w}" height="${h2}" rx="${r}" fill="${f}" ${S2}/>`, C2 = (x, y, r, f) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${f}" ${S2}/>`, P2 = (d, f = "none") => `<path d="${d}" fill="${f}" ${S2}/>`;
-  let g = `<rect width="220" height="140" fill="${trouble ? "#e6e2da" : "#fff3d6"}"/><rect y="108" width="220" height="32" fill="${trouble ? "#bfae94" : "#d9b98c"}"/><path d="M0 108H220" ${S2}/>`;
-  g += R2(160, 16, 46, 40, trouble ? "#aab7c9" : "#bfe8ff") + P2("M183 16V56M160 36H206");
-  if (lv >= 4) g += P2("M158 14q8 22 0 44", "#e58a8a") + P2("M208 14q-8 22 0 44", "#e58a8a");
-  g += lv === 0 ? P2("M40 0V20") + C2(40, 26, 6, trouble ? "#d8d2c2" : "#ffe066") : "";
-  g += P2("M96 34H142M96 58H142");
-  for (let i = 0; i < cans; i++) g += R2(100 + i * 14, 20, 10, 14, ["#e04848", "#2fae6b", "#ffc531"][i], 2);
-  if (lv >= 5) for (let i = 0; i < 4; i++) g += R2(100 + i * 10, 42, 8, 16, ["#3d7be0", "#8a5cf0", "#2fae6b", "#e04848"][i], 1);
-  if (lv >= 3) g += R2(52, 20, 30, 24, "#fff", 2) + P2("M56 40l8-10 6 6 5-4 5 8", "#bfe8cc");
-  g += lv === 0 ? R2(12, 98, 70, 10, "#c5cad6", 4) : R2(12, 84, 76, 24, "#3d7be0", 5) + R2(16, 78, 24, 12, "#fff", 4) + P2("M12 108v6M88 108v6");
-  if (lv >= 2) g += `<ellipse cx="124" cy="122" rx="34" ry="8" fill="#f2c7a0" ${S2}/>` + R2(104, 92, 36, 6, "#b98952", 2) + P2("M108 98v12M136 98v12");
-  if (lv >= 2) g += R2(148, 96, 12, 12, "#c7723f", 2) + P2("M154 96c-10-14-2-22 0-26 2 4 10 12 0 26", "#2fae6b");
-  if (lv >= 3) g += P2("M122 92V76") + P2("M114 76h16l-4-12h-8z", "#ffe066");
-  if (lv >= 3) g += R2(166, 86, 48, 22, "#8a5cf0", 6) + R2(162, 94, 8, 14, "#7446d8", 3) + R2(210, 94, 8, 14, "#7446d8", 3);
-  if (lv >= 4) g += R2(96, 64, 32, 20, "#1d2b4f", 3) + P2("M104 70l8 5-8 5z", "#7fd0fb");
-  if (lv >= 6) g += P2("M30 60h16v6a8 8 0 0 1-16 0z", "#ffc531") + P2("M38 74v6M32 80h12");
-  if (s2.flags?.pet) g += `<ellipse cx="62" cy="124" rx="${trouble ? 9 : 12}" ry="${trouble ? 5 : 7}" fill="#f0a35a" ${S2}/>` + C2(76, 118, 6, "#f0a35a") + P2("M72 114l1-6 4 4M80 114l-1-6-4 4", "#f0a35a") + P2("M50 124q-8-2-6-10") + R2(86, 126, 16, 6, "#c5cad6", 2) + (trouble ? "" : `<ellipse cx="94" cy="126" rx="6" ry="2.5" fill="#b0683a" ${S2}/>`);
-  return { svg: `<svg class="room-bg" viewBox="0 0 220 140" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${g}</svg>`, trouble };
+  const room = (wall, floor) => `<rect width="220" height="${F}" fill="${wall}"/><rect y="${F}" width="220" height="${200 - F}" fill="${floor}"/><path d="M0 ${F}H220" ${S2}/>`;
+  const win = (x, y, w, h2, view = "#bfe8ff") => R2(x, y, w, h2, view) + P2(`M${x + w / 2} ${y}V${y + h2}M${x} ${y + h2 / 2}H${x + w}`);
+  const shelf = (x, y) => {
+    let g2 = P2(`M${x} ${y}H${x + 44}`);
+    for (let i = 0; i < cans; i++) g2 += R2(x + 3 + i * 14, y - 14, 10, 14, ["#e04848", "#2fae6b", "#ffc531"][i], 2);
+    return g2;
+  };
+  const plant = (x, y, k2 = 1) => R2(x, y, 14 * k2, 14 * k2, "#c7723f", 2) + P2(`M${x + 7 * k2} ${y}c-12-16-2-26 0-30 2 4 12 14 0 30`, "#2fae6b");
+  const sofa = (x, y, c = "#8a5cf0") => R2(x, y + 8, 60, 22, c, 6) + R2(x - 4, y + 16, 10, 16, c, 3) + R2(x + 54, y + 16, 10, 16, c, 3) + R2(x + 4, y, 52, 12, c, 5);
+  const bed = (x, y, c = "#3d7be0") => R2(x, y, 74, 26, c, 5) + R2(x + 4, y - 6, 22, 12, "#fff", 4) + P2(`M${x} ${y + 26}v6M${x + 74} ${y + 26}v6`);
+  let g = "";
+  if (lv === 0) g = room("#d9d4c7", "#b7aa92") + win(160, 26, 34, 22, "#aab7c9") + P2("M100 0V24") + C2(100, 30, 6, "#ffe066") + R2(14, 168, 80, 12, "#c5cad6", 5) + R2(14, 162, 26, 8, "#fff", 3) + R2(150, 128, 34, 30, "#c9a06a", 2) + R2(172, 140, 30, 18, "#d8b27a", 2) + P2("M150 140h34M172 148h30") + R2(40, 70, 40, 24, "#efe6d2", 2) + P2("M44 80h32M44 86h20");
+  else if (lv === 1) g = room("#efe6d2", "#caa36f") + win(146, 26, 52, 40) + bed(12, 132) + shelf(22, 74) + R2(120, 128, 34, 6, "#b98952", 2) + P2("M124 134v24M150 134v24") + R2(160, 132, 18, 26, "#c7723f", 3);
+  else if (lv === 2) g = room("#fff1d6", "#d9b98c") + win(150, 24, 52, 44) + P2("M146 22q8 26 0 50", "#e58a8a") + P2("M206 22q-8 26 0 50", "#e58a8a") + shelf(20, 70) + bed(10, 136, "#2fae6b") + `<ellipse cx="128" cy="182" rx="40" ry="9" fill="#f2c7a0" ${S2}/>` + sofa(128, 128) + plant(200, 144);
+  else if (lv === 3) g = room("#e3f0ff", "#c9a06a") + R2(140, 22, 66, 46, "#9fc8f0") + P2("M146 68V48h10v20M160 68V38h12v30M176 68V44h10v24M190 68V32h10v36", "#5d7bb0") + P2("M173 22V68M140 45H206") + R2(14, 128, 72, 8, "#b98952", 2) + P2("M20 136v22M80 136v22") + R2(28, 104, 40, 24, K2, 3) + P2("M34 122l8-8 6 4 12-10", "none").replace('stroke="#1d2b4f"', 'stroke="#7fe0a0"') + R2(150, 80, 56, 78, "#b98952", 3) + [92, 112, 132].map((y) => P2(`M150 ${y}H206`)).join("") + [0, 1, 2, 3, 4].map((i) => R2(154 + i * 10, 80 + 2, 8, 10, ["#3d7be0", "#e04848", "#ffc531", "#2fae6b", "#8a5cf0"][i], 1)).join("") + shelf(156, 130) + R2(40, 30, 34, 26, "#fff", 2) + P2("M44 52l8-10 6 6 6-4 6 8", "#bfe8cc");
+  else if (lv === 4) g = room("#e8f6e8", "#b8875a") + R2(16, 22, 92, 66, "#bfe8ff") + C2(46, 62, 16, "#2fae6b") + P2("M46 78V88", "#8b5a2b") + C2(80, 56, 12, "#5bbf6e") + P2("M62 22V88M16 55H108") + `<ellipse cx="96" cy="182" rx="56" ry="10" fill="#e9c7a8" ${S2}/>` + sofa(20, 130, "#e07a3c") + R2(150, 128, 54, 30, "#8b5a2b", 3) + R2(156, 96, 42, 30, K2, 3) + P2("M170 104l10 6-10 6z", "#7fd0fb") + shelf(150, 70) + plant(118, 144);
+  else if (lv === 5) g = room("#fbeee6", "#a8774e") + P2("M140 158V96q30-30 60 0v62z", "#d9cfc4") + R2(152, 128, 36, 30, "#5a3a2a", 2) + P2("M160 158c0-14 10-10 10-22 4 8 12 10 10 22z", "#ff9a3c") + P2("M136 96h68") + R2(20, 24, 40, 30, "#fff", 2) + P2("M24 50l10-12 8 8 6-4 8 8", "#bfd8ff") + R2(70, 30, 30, 24, "#fff", 2) + C2(85, 42, 7, "#ffc531") + sofa(16, 128, "#3d7be0") + plant(104, 140, 1.3) + shelf(150, 72) + `<ellipse cx="80" cy="184" rx="60" ry="9" fill="#d6b4e8" ${S2}/>`;
+  else g = `<rect width="220" height="${F}" fill="#bfe8ff"/>` + C2(190, 28, 14, "#ffe066") + `<rect y="${F}" width="220" height="${200 - F}" fill="#7fcf8a"/><path d="M0 ${F}H220" ${S2}/>` + P2("M96 70L150 34L204 70Z", "#e04848") + R2(104, 70, 92, 88, "#fff7e0", 2) + R2(140, 116, 20, 42, "#8b5a2b", 2) + win(112, 84, 22, 20) + win(168, 84, 22, 20) + P2("M30 158V118", "#8b5a2b") + C2(30, 104, 22, "#2fae6b") + C2(16, 116, 12, "#5bbf6e") + [8, 20, 32, 44, 56, 68, 80].map((x) => P2(`M${x} 176v-14`)).join("") + P2("M4 168H86") + [60, 72, 84].map((x) => C2(x, 186, 4, "#ff7aa8")).join("") + P2("M196 30v-14h12l-4 4 4 4h-12", "#ffc531");
+  if (s2.flags?.pet) g += `<ellipse cx="54" cy="190" rx="${low ? 9 : 12}" ry="${low ? 5 : 7}" fill="#f0a35a" ${S2}/>` + C2(68, 184, 6, "#f0a35a") + P2("M64 180l1-6 4 4M72 180l-1-6-4 4", "#f0a35a") + R2(80, 190, 16, 6, "#c5cad6", 2) + (low ? "" : `<ellipse cx="88" cy="190" rx="6" ry="2.5" fill="#b0683a" ${S2}/>`);
+  const dots = () => STAGE_LIST().slice(1).map((x) => `<i class="${x.id <= lv ? "on" : ""}"></i>`).join("");
+  return `<section class="home-scene lv-${lv} ${low ? "low" : ""}" title="${h(T2.homeTip)}"><div class="hs-pic"><svg viewBox="0 0 220 200" aria-hidden="true">${g}</svg>${avatar(look(), { cls: "hs-av", label: false, bg: "" })}${low ? `<em class="hs-low">${h(T2.homeLowShort)}</em>` : ""}</div><div class="hs-cap"><b>${h(fmt(T2.homeStage, { n: lv, name: st.name }))}</b><span class="hs-dots">${dots()}</span></div></section>`;
 }
 function frame(active, body2) {
   const items = [["overview", "\u603B\u89C8", "pin"], ["payday", "\u53D1\u85AA\u65E5", "coin"], ["accounts", "\u8D26\u6237", "bank"], ["goals", "\u600E\u4E48\u8D62", "trophy"], ["journal", "\u8BB0\u5F55", "book"]];
   const k2 = STEPS.findIndex((x) => x[0] === s2.phase);
   root.innerHTML = `<div class="page tycoon">${hud()}${toastHtml()}<div class="tycoon-grid">
-    <aside class="side"><nav aria-label="\u6E38\u620F\u533A\u57DF">${items.map(([id, n, ico]) => `<button class="side-item ${active === id ? "on" : ""}" data-go="nav" data-id="${id}">${icon[ico]}<span>${n}</span></button>`).join("")}</nav>${idCard()}</aside>
+    <aside class="side"><nav aria-label="\u6E38\u620F\u533A\u57DF">${items.map(([id, n, ico]) => `<button class="side-item ${active === id ? "on" : ""}" data-go="nav" data-id="${id}">${icon[ico]}<span>${n}</span></button>`).join("")}</nav>${idCard()}${homeScene()}</aside>
     <main id="main" class="t-main">${s2.phase !== "finish" ? `<ol class="phase-steps">${STEPS.map(([ph, n], i) => `<li class="${ph === s2.phase ? "on" : i < k2 ? "done" : ""}"><button data-go="nav" data-id="${PHASE_PAGE[ph]}" ${i > k2 ? "disabled" : ""}><i>${i < k2 ? "\u2713" : i + 1}</i>${n}</button></li>`).join("")}</ol>` : ""}${body2}</main></div>
     ${modalHtml()}${tipHtml()}${tourHtml()}</div>`;
   const m = root.querySelector(".modal"), key = ui.modal ? ui.modal.kind + (ui.modal.id || "") : "";

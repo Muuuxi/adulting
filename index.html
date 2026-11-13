@@ -1507,6 +1507,8 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .mo-cap { flex-wrap: wrap; }
 /* ---- Round 38: save menu text was white on white ---- */
 .hud .menu, .hud .menu .menu-item { color: var(--ink); } .hud .menu .menu-item.danger { color: var(--red); } .hud .menu p { color: var(--muted); }
+/* ---- Round 39 ---- */
+.dice-box .eq span.void { text-decoration: line-through; opacity: .5; }
 </style>
 </head>
 <body>
@@ -1815,7 +1817,7 @@ var SEVERITY = { easy: 0.75, normal: 1, hard: 1.5 };
 var PAY_CAP = 1.3;
 var JUMP_STEP = 15e3;
 var JUMP_MAX = 3;
-var TEXT = { capNote: " (top of this job\u2019s pay range)", capBlock: "You\u2019re at the top of this job\u2019s pay range. To earn more, change jobs or get more education.", jump: "Big jump", upTo: "up to", nat1: "A roll of 1 always fails.", difficulty: "Difficulty", diffHint: "Changing the difficulty respins the reels." };
+var TEXT = { capNote: " (top of this job\u2019s pay range)", capBlock: "You\u2019re at the top of this job\u2019s pay range. To earn more, change jobs or get more education.", jump: "Big jump", upTo: "up to", nat1: "Rolled a 1: the mini-game bonus doesn\u2019t count.", difficulty: "Difficulty", diffHint: "Changing the difficulty respins the reels." };
 var CARD_WEIGHTS = [{ until: 24, w: { life: 40, opportunity: 25, impulse: 30, quiet: 5 } }, { until: 35, w: { life: 45, opportunity: 25, impulse: 25, quiet: 5 } }, { until: 49, w: { life: 50, opportunity: 25, impulse: 20, quiet: 5 } }];
 var pays = (cost, extra = []) => [{ id: "emergency", label: "Pay from emergency fund", pay: "emergency", cost }, { id: "card", label: "Put it on the credit card", pay: "card", cost }, { id: "checking", label: "Pay from checking", pay: "checking", cost }, ...extra];
 var CARDS = [
@@ -2148,7 +2150,10 @@ function normal(s4) {
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
 }
 var d6 = (s4) => 1 + Math.floor(rand(s4) * 6);
-var tierOf = (total, roll) => roll === 1 || total <= 3 ? "fail" : total <= 6 ? "ok" : "great";
+var tierOf = (total, roll, bonus = 0) => {
+  const t = roll === 1 ? total - bonus : total;
+  return t <= 3 ? "fail" : t <= 6 ? "ok" : "great";
+};
 var TIER_NAME = { fail: "Fail", ok: "Success", great: "Great success" };
 function reelValue(seed, i, tick, difficulty = "normal") {
   let x = (seed ^ Math.imul(i + 1, 2654435761) ^ Math.imul(tick + 7, 2246822519)) >>> 0;
@@ -2765,7 +2770,7 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0, bizPla
   if (d.throw) {
     th = n.throw;
     bonus = clamp(Math.round(bonus || 0), 0, 2);
-    tier = tierOf(th.roll + th.mod + bonus - (th.pen || 0), th.roll);
+    tier = tierOf(th.roll + th.mod + bonus - (th.pen || 0), th.roll, bonus);
     outcome = d.outcomes[tier];
   }
   n.throw = null;
@@ -3002,7 +3007,7 @@ function setCardBonus(s4, bonus) {
   const n = clone(s4);
   n.card.judged = true;
   n.card.bonus = clamp(Math.round(bonus || 0), 0, 2);
-  n.card.tier = tierOf(n.card.roll + n.card.mod + n.card.bonus, n.card.roll);
+  n.card.tier = tierOf(n.card.roll + n.card.mod + n.card.bonus, n.card.roll, n.card.bonus);
   return n;
 }
 var severity = (s4) => SEVERITY[s4.difficulty] || 1;
@@ -3603,7 +3608,7 @@ function nextYear(s4) {
   }
   if (n.job.employed && !n.school && !n.service) raiseSalary(n, n.job.salary * (1 + ASSUME.meritRaise));
   if (n.business) {
-    const die = d6(n), r = die + modFor(n, "career"), t = tierOf(r, die);
+    const die = d6(n), r = die + modFor(n, "career"), t = die === 1 ? "fail" : tierOf(r, die);
     const old = n.business.profit;
     n.business.profit = Math.round((t === "fail" ? old * 0.7 - 150 : t === "great" ? Math.max(old, 200) * 1.25 : old * 1.05) / 10) * 10;
     n.records.push({ age: n.age, kind: "biz", text: `${n.business.label} this year was ${t === "fail" ? "rough" : t === "great" ? "booming" : "steady"}: monthly profit ${money(old)} \u2192 ${money(n.business.profit)}` });
@@ -4452,7 +4457,7 @@ var MAKE = {
           A.emoji(K2[g[y][x]], ox + (x + 0.5) * cell, oy + (y + 0.5) * cell, cell * 0.56);
         }
       },
-      score: () => clamp2((cleared - fails * 2) / 24, 0, 1),
+      score: () => clamp2((cleared - fails * 2) / 32, 0, 1),
       hud: () => `\u2714 ${cleared}  \u2716 ${fails}`
     };
   },
@@ -4653,7 +4658,7 @@ var MAKE = {
           if (show) A.emoji(k2.f, x + cw / 2, y + ch / 2, Math.min(cw, ch) * 0.46);
         });
       },
-      score: () => clamp2(pairs / 5, 0, 1),
+      score: () => clamp2(pairs / 6, 0, 1),
       hud: () => `\u2714 ${pairs}  \u2716 ${misses}`
     };
   }
@@ -5023,7 +5028,7 @@ var GLOSSARY = {
   career: ["Career skill (0\u20133)", "Added to the die on throws like interviews, raises and leading projects. Certificates, training and mentors raise it."],
   discipline: ["Self-control (0\u20133)", "Added to the die on throws against impulse buys and temptation."],
   status: ["Status", "Good or bad conditions that affect throws for a while, e.g. \u201CInspired\u201D gives career throws +1 and \u201CGaming binge\u201D gives career throws \u22121. They wear off on their own."],
-  dice: ["How a throw works", "First play a 12-second mini-game; your score becomes a bonus of 0 / +1 / +2. Then roll one die (1\u20136). Die + skill + status + mini-game bonus: \u22643 fail, 4\u20136 success, \u22657 great success. You can also skip the game and just roll. A roll of 1 always fails, however high your skill. When job hunting, aiming more than $15,000 above your current pay costs \u22121 per step (max \u22123)."],
+  dice: ["How a throw works", "First play a short mini-game; your score becomes a bonus of 0 / +1 / +2. Then roll one die (1\u20136). Die + skill + status + mini-game bonus: \u22643 fail, 4\u20136 success, \u22657 great success. You can also skip the game and just roll. On a roll of 1 the mini-game bonus doesn\u2019t count. When job hunting, aiming more than $15,000 above your current pay costs \u22121 per step (max \u22123)."],
   essentials: ["Essentials", "Money you must pay every month: housing costs beyond rent or mortgage, food, transportation, insurance, utilities and phone."],
   insurance: ["Insurance", "Health, car and home cover are on automatically. The cost is already in Essentials, so there is nothing to buy. A part-time job or your own business usually has no employer health plan: from 26 you pay more. Life cards can raise it."],
   fun: ["Fun money", "Eating out, entertainment, subscriptions \u2014 spending you can cut. It grows automatically with raises (lifestyle creep), but you can lock it on payday."]
@@ -5192,8 +5197,8 @@ var T2 = {
   ageLookBack: "Age {age}: looking back",
   ageDone: "Age {age}: the year is done",
   marketNote: "market {r} this year, after inflation",
-  boxMeans: "Each box: total saved at month-end (not income).",
-  redMeans: "Red: a month with trouble, such as a missed bill.",
+  boxMeans: "Each box: savings at month-end.",
+  redMeans: "Red: a bill was missed.",
   cashIn: "Cash in checking: {m}",
   refundIn: "Refund, paid into checking",
   taxDue: "Tax due, taken from checking",
@@ -5278,7 +5283,7 @@ var T2 = {
   finOut: "Out of that, you paid",
   finIn: "On top of that, you got",
   drewSav: "From savings {m}",
-  warnMeans: "Yellow: checking ran short and savings covered it.",
+  warnMeans: "Yellow: savings covered a gap.",
   locked: "Locked",
   skipGuide: "Skip",
   next: "Next",
@@ -6785,7 +6790,7 @@ function cardPage() {
     return a ? `<span class="amt-chip t-${c.type}">${icon.coin}${c.type === "opportunity" ? "+" : "\u2212"}${a}</span>` : "";
   })()}${c.month ? `<span class="mo-chip">${icon.clock}Month ${c.month}</span>` : ""}</div></div>
     <div class="card-side">
-      ${c.roll != null ? judged ? `<div class="panel">${diceBox(c.roll, c.mod, c.bonus, c.game === "dodge" ? STAT[c.stat] : c.throwLabel, c.stat)}</div>` : `<div class="panel judge"><h3>${icon.dice}Throw: ${h(c.game === "dodge" ? STAT[c.stat] : c.throwLabel)} ${q("dice")}</h3><p>First play a 12-second mini-game for a bonus (up to +2), then roll. Your current ${STAT[c.stat]}: ${c.mod}.</p>
+      ${c.roll != null ? judged ? `<div class="panel">${diceBox(c.roll, c.mod, c.bonus, c.game === "dodge" ? STAT[c.stat] : c.throwLabel, c.stat)}</div>` : `<div class="panel judge"><h3>${icon.dice}Throw: ${h(c.game === "dodge" ? STAT[c.stat] : c.throwLabel)} ${q("dice")}</h3><p>First play a short mini-game for a bonus (up to +2), then roll. Your current ${STAT[c.stat]}: ${c.mod}.</p>
           ${diceStrip(null)}<div class="row">${btn("card-game", T2.playFirst, { cls: "btn blue", ico: "star", attrs: reduced ? "disabled" : "data-autofocus" })}${btn("card-roll", "Just roll", { cls: "btn ghost", ico: "dice" })}</div></div>` : ""}
       ${judged ? `<div class="panel"><h3>How do you respond?</h3><div class="opts">${opts.map((o) => `<button class="opt ${o.blocked ? "blocked" : ""}" data-go="card-opt" data-id="${o.id}" ${o.blocked ? "disabled" : ""}><b>${h(o.label)}</b>${o.cost ? `<small class="opt-cost">${icon.coin}${money2(o.cost)}</small>` : ""}${optionEffect(s2, o) ? `<small class="opt-effect">${h(optionEffect(s2, o))}</small>` : ""}${o.blocked ? `<small class="why">${h(o.blocked)}</small>` : ""}</button>`).join("")}</div></div>` : ""}
     </div></section>`);
@@ -6795,10 +6800,10 @@ function diceStrip(total) {
   return `<div class="dstrip">${seg("ds-f", "1\u20133", "fail")}${seg("ds-o", "4\u20136", "ok")}${seg("ds-g", "7+", "great")}${total != null ? `<i style="left:${(Math.max(0.5, Math.min(8.5, total - 0.5)) / 9 * 100).toFixed(1)}%"></i>` : ""}</div>`;
 }
 function diceBox(roll, mod, bonus, label, stat, pen = 0) {
-  const total = roll + mod + (bonus || 0) - (pen || 0), tier = tierOf(total, roll);
+  const one = roll === 1, total = roll + mod + (one ? 0 : bonus || 0) - (pen || 0), tier = tierOf(roll + mod + (bonus || 0) - (pen || 0), roll, bonus || 0);
   return `<div class="dice-box ${tier}"><div class="die ${reduced ? "" : "rolling"}" data-final="${roll}">${roll}</div><div class="calc"><b>${h(label)}</b>
-    <div class="eq"><span>Die <b>${roll}</b></span>+<span>${STAT[stat]} <b>${mod}</b></span>+<span>Mini-game <b>${bonus || 0}</b></span>${pen ? `\u2212<span>${h(TEXT.jump)} <b>${pen}</b></span>` : ""}=<span class="tot ${roll === 1 ? "void" : ""}">${total}</span></div>
-    ${diceStrip(roll === 1 ? Math.min(total, 2) : total)}<small class="${roll === 1 ? "nat1-on" : ""}">${h(TEXT.nat1)}</small><span class="tier">${TIER_NAME[tier]}</span></div></div>`;
+    <div class="eq"><span>Die <b>${roll}</b></span>+<span>${STAT[stat]} <b>${mod}</b></span>+<span class="${one && bonus ? "void" : ""}">Mini-game <b>${bonus || 0}</b></span>${pen ? `\u2212<span>${h(TEXT.jump)} <b>${pen}</b></span>` : ""}=<span class="tot">${total}</span></div>
+    ${diceStrip(total)}<small class="${one ? "nat1-on" : ""}">${h(TEXT.nat1)}</small><span class="tier">${TIER_NAME[tier]}</span></div></div>`;
 }
 var walkTimer = null;
 function stepWalk() {
@@ -7002,7 +7007,7 @@ function modalHtml() {
   const M = ui.modal, wrap = (inner, cls = "") => `<div class="scrim" aria-hidden="true"></div><div class="modal ${cls}" role="dialog" aria-modal="true">${inner}</div>`;
   if (M.kind === "game") {
     const F = ui.flow;
-    return wrap(`<header class="m-head"><span class="ribbon-tag">Mini-game \xB7 12 seconds</span><h2>${h(T2.mgName[F.mg])}</h2><p id="game-live">${h(T2.mgHow[F.mg])}</p></header>
+    return wrap(`<header class="m-head"><span class="ribbon-tag">Mini-game \xB7 ${mgSecs(F.mg)} seconds</span><h2>${h(T2.mgName[F.mg])}</h2><p id="game-live">${h(T2.mgHow[F.mg])}</p></header>
       <div class="arena small"><canvas id="challenge"></canvas></div><div class="m-foot">${btn("game-stop", "End early", { cls: "btn ghost small" })}</div>`, "game-host");
   }
   if (M.kind === "decision") {
@@ -7132,6 +7137,7 @@ function mgMark(id) {
   if (p.length >= 10) p = [];
   ls.set(MGKEY, { seed: s2.seed, played: [...p.filter((x) => x !== id), id] });
 }
+var mgSecs = (id) => ["match3", "memory"].includes(id) ? 18 : 12;
 function startGame() {
   const canvas = root.querySelector("#challenge");
   if (!canvas || gameRun) return;
@@ -7143,7 +7149,7 @@ function startGame() {
       mgMark(F.mg);
       finishFlow(bonusOf(r.score));
     }
-  }, 12, themeOf(F));
+  }, mgSecs(F.mg), themeOf(F));
 }
 function finishFlow(bonus) {
   const F = ui.flow;

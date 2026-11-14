@@ -6167,7 +6167,15 @@ var GAMES = {
           ctx2.restore();
           txt(ctx2, k(b), q2.x, q2.y + 27 - r, 13, "#9b1c1c");
           txt(ctx2, CG.owe, q2.x, q2.y + 10 - r * 2, 12, "#9b1c1c", "center", 900);
-          if (age < 4) txt(ctx2, CG.debtHint, w / 2, 62, 14, BLUE, "center", 900);
+          if (age < 4) {
+            rr(ctx2, w / 2 - 4, h2 - 54, w / 2 - 10, 30, 12);
+            ctx2.fillStyle = "#fff4d6";
+            ctx2.fill();
+            ctx2.strokeStyle = INK3;
+            ctx2.lineWidth = 2;
+            ctx2.stroke();
+            txt(ctx2, "\u{1F446} " + CG.debtHint, w * 0.75 - 7, h2 - 38, 13, INK3, "center", 900);
+          }
         } else txt(ctx2, "\u2713", q2.x, q2.y, 28, GREEN);
         const tx = 46, ty = h2 - 40;
         coin2(ctx2, tx, ty, 18, GOLD, "$");

@@ -1524,6 +1524,12 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .home-scene .hs-cap { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 4px 8px; border-top: 2px solid var(--ink); font-size: .78rem; }
 .home-scene .hs-dots { display: inline-flex; gap: 3px; } .home-scene .hs-dots i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--ink); background: #fff; } .home-scene .hs-dots i.on { background: var(--sun); }
 @media (max-width: 1000px) { .home-scene { display: none !important; } }
+/* ---- Round 43: the scene docks bottom-right on tall wide screens, stays under the ID card otherwise ---- */
+.home-dock { display: none; }
+@media (min-height: 900px) and (min-width: 1100px) {
+  .side .home-scene { display: none !important; }
+  .home-dock { display: flex; justify-content: flex-end; margin-top: 12px; } .home-dock .home-scene { width: 250px; }
+}
 </style>
 </head>
 <body>
@@ -5301,7 +5307,7 @@ var T2 = {
   warnMeans: "\u9EC4\u8272\uFF1A\u7528\u5B58\u6B3E\u8865\u4E86\u7F3A\u53E3\u3002",
   homeCap: "\u4F60\u7684\u5BB6",
   homeLow: "\u4F60\u7684\u5BB6\uFF1A\u624B\u5934\u5F88\u7D27",
-  homeTip: "\u4F60\u4F4F\u7684\u5730\u65B9\u8DDF\u7740\u4EBA\u751F\u9636\u6BB5\u53D8\uFF1A\u4ECE\u501F\u4F4F\u7684\u89D2\u843D\uFF0C\u5230\u81EA\u5DF1\u7684\u623F\u5B50\u548C\u9662\u5B50\u3002\u624B\u5934\u7D27\u7684\u65F6\u5019\uFF0C\u753B\u9762\u53D8\u7070\uFF0C\u67B6\u5B50\u4E5F\u7A7A\u4E86\u3002",
+  homeTip: "\u4F4F\u7684\u5730\u65B9\u8DDF\u7740\u4EBA\u751F\u9636\u6BB5\u53D8\uFF0C\u5C0F\u72D7\u4EE3\u8868\u4F60\u73B0\u5728\u8FC7\u5F97\u600E\u4E48\u6837\uFF1A\u8FC7\u5F97\u5BBD\u88D5\u65F6\u5B83\u6447\u5C3E\u5DF4\uFF0C\u624B\u5934\u7D27\u65F6\u5B83\u8DB4\u7740\u3001\u53D8\u7626\u3001\u7897\u662F\u7A7A\u7684\u3002",
   homeLowShort: "\u624B\u5934\u5F88\u7D27",
   homeStage: "\u7B2C {n} \u7EA7 \xB7 {name}",
   locked: "\u672A\u89E3\u9501",
@@ -6712,16 +6718,21 @@ function homeScene() {
   else if (lv === 4) g = room("#e8f6e8", "#b8875a") + R2(16, 22, 92, 66, "#bfe8ff") + C2(46, 62, 16, "#2fae6b") + P2("M46 78V88", "#8b5a2b") + C2(80, 56, 12, "#5bbf6e") + P2("M62 22V88M16 55H108") + `<ellipse cx="96" cy="182" rx="56" ry="10" fill="#e9c7a8" ${S2}/>` + sofa(20, 130, "#e07a3c") + R2(150, 128, 54, 30, "#8b5a2b", 3) + R2(156, 96, 42, 30, K2, 3) + P2("M170 104l10 6-10 6z", "#7fd0fb") + shelf(150, 70) + plant(118, 144);
   else if (lv === 5) g = room("#fbeee6", "#a8774e") + P2("M140 158V96q30-30 60 0v62z", "#d9cfc4") + R2(152, 128, 36, 30, "#5a3a2a", 2) + P2("M160 158c0-14 10-10 10-22 4 8 12 10 10 22z", "#ff9a3c") + P2("M136 96h68") + R2(20, 24, 40, 30, "#fff", 2) + P2("M24 50l10-12 8 8 6-4 8 8", "#bfd8ff") + R2(70, 30, 30, 24, "#fff", 2) + C2(85, 42, 7, "#ffc531") + sofa(16, 128, "#3d7be0") + plant(104, 140, 1.3) + shelf(150, 72) + `<ellipse cx="80" cy="184" rx="60" ry="9" fill="#d6b4e8" ${S2}/>`;
   else g = `<rect width="220" height="${F}" fill="#bfe8ff"/>` + C2(190, 28, 14, "#ffe066") + `<rect y="${F}" width="220" height="${200 - F}" fill="#7fcf8a"/><path d="M0 ${F}H220" ${S2}/>` + P2("M96 70L150 34L204 70Z", "#e04848") + R2(104, 70, 92, 88, "#fff7e0", 2) + R2(140, 116, 20, 42, "#8b5a2b", 2) + win(112, 84, 22, 20) + win(168, 84, 22, 20) + P2("M30 158V118", "#8b5a2b") + C2(30, 104, 22, "#2fae6b") + C2(16, 116, 12, "#5bbf6e") + [8, 20, 32, 44, 56, 68, 80].map((x) => P2(`M${x} 176v-14`)).join("") + P2("M4 168H86") + [60, 72, 84].map((x) => C2(x, 186, 4, "#ff7aa8")).join("") + P2("M196 30v-14h12l-4 4 4 4h-12", "#ffc531");
-  if (s2.flags?.pet) g += `<ellipse cx="54" cy="190" rx="${low ? 9 : 12}" ry="${low ? 5 : 7}" fill="#f0a35a" ${S2}/>` + C2(68, 184, 6, "#f0a35a") + P2("M64 180l1-6 4 4M72 180l-1-6-4 4", "#f0a35a") + R2(80, 190, 16, 6, "#c5cad6", 2) + (low ? "" : `<ellipse cx="88" cy="190" rx="6" ry="2.5" fill="#b0683a" ${S2}/>`);
+  const dx = lv === 6 ? 58 : 100, dy = 180, coat = low ? "#b9a78c" : "#d9a05b", ear = low ? "#8f7d63" : "#a8703a", mood = low ? "sad" : lv >= 2 ? "happy" : "ok";
+  if (mood === "sad") g += `<ellipse cx="${dx}" cy="${dy + 6}" rx="24" ry="8" fill="${coat}" ${S2}/>` + P2(`M${dx - 8} ${dy + 2}v7M${dx} ${dy + 1}v8M${dx + 8} ${dy + 2}v7`) + C2(dx + 26, dy + 4, 9, coat) + P2(`M${dx + 20} ${dy - 2}q-6 6-2 14`, ear) + `<ellipse cx="${dx + 34}" cy="${dy + 7}" rx="5" ry="3.5" fill="#f1dcc0" ${S2}/>` + P2(`M${dx + 25} ${dy + 3}q3-2 5 0`) + P2(`M${dx - 23} ${dy + 6}q-8 2-8 8`);
+  else g += `<ellipse cx="${dx}" cy="${dy}" rx="20" ry="${mood === "happy" ? 12 : 13}" fill="${coat}" ${S2}/>` + R2(dx - 14, dy + 8, 7, 10, coat, 3) + R2(dx + 8, dy + 8, 7, 10, coat, 3) + C2(dx + 20, dy - 15, 11, coat) + P2(`M${dx + 12} ${dy - 22}q-8 2-6 16`, ear) + `<ellipse cx="${dx + 29}" cy="${dy - 12}" rx="6" ry="4.5" fill="#f1dcc0" ${S2}/><circle cx="${dx + 34}" cy="${dy - 14}" r="2" fill="${K2}"/><circle cx="${dx + 22}" cy="${dy - 18}" r="1.8" fill="${K2}"/>` + (mood === "happy" ? P2(`M${dx - 19} ${dy - 4}q-10-8-4-20`) + P2(`M${dx - 30} ${dy - 20}l-4-3M${dx - 27} ${dy - 26}l-2-5`) + P2(`M${dx + 28} ${dy - 8}q2 8 5 0z`, "#ff8aa8") : P2(`M${dx - 19} ${dy - 2}q-9 0-10-8`));
+  g += R2(dx + 42, dy + 9, 18, 7, "#c5cad6", 2) + (low ? "" : `<ellipse cx="${dx + 51}" cy="${dy + 9}" rx="7" ry="2.6" fill="#b0683a" ${S2}/>`);
+  if (!low && lv >= 4) g += C2(dx - 40, dy + 10, 6, "#e04848");
+  if (!low && lv >= 6) g += P2(`M${dx + 66} ${dy + 4}h14`, "none") + C2(dx + 64, dy + 2, 3, "#fff") + C2(dx + 64, dy + 7, 3, "#fff") + C2(dx + 82, dy + 2, 3, "#fff") + C2(dx + 82, dy + 7, 3, "#fff") + P2(`M${dx + 6} ${dy - 40}l2 5 5 2-5 2-2 5-2-5-5-2 5-2z`, "#ffe066");
   const dots = () => STAGE_LIST().slice(1).map((x) => `<i class="${x.id <= lv ? "on" : ""}"></i>`).join("");
-  return `<section class="home-scene lv-${lv} ${low ? "low" : ""}" title="${h(T2.homeTip)}"><div class="hs-pic"><svg viewBox="0 0 220 200" aria-hidden="true">${g}</svg>${avatar(look(), { cls: "hs-av", label: false, bg: "" })}${low ? `<em class="hs-low">${h(T2.homeLowShort)}</em>` : ""}</div><div class="hs-cap"><b>${h(fmt(T2.homeStage, { n: lv, name: st.name }))}</b><span class="hs-dots">${dots()}</span></div></section>`;
+  return `<section class="home-scene lv-${lv} ${low ? "low" : ""}" title="${h(T2.homeTip)}"><div class="hs-pic"><svg viewBox="0 0 220 200" aria-hidden="true">${g}</svg>${low ? `<em class="hs-low">${h(T2.homeLowShort)}</em>` : ""}</div><div class="hs-cap"><b>${h(fmt(T2.homeStage, { n: lv, name: st.name }))}</b><span class="hs-dots">${dots()}</span></div></section>`;
 }
 function frame(active, body2) {
   const items = [["overview", "\u603B\u89C8", "pin"], ["payday", "\u53D1\u85AA\u65E5", "coin"], ["accounts", "\u8D26\u6237", "bank"], ["goals", "\u600E\u4E48\u8D62", "trophy"], ["journal", "\u8BB0\u5F55", "book"]];
   const k2 = STEPS.findIndex((x) => x[0] === s2.phase);
   root.innerHTML = `<div class="page tycoon">${hud()}${toastHtml()}<div class="tycoon-grid">
     <aside class="side"><nav aria-label="\u6E38\u620F\u533A\u57DF">${items.map(([id, n, ico]) => `<button class="side-item ${active === id ? "on" : ""}" data-go="nav" data-id="${id}">${icon[ico]}<span>${n}</span></button>`).join("")}</nav>${idCard()}${homeScene()}</aside>
-    <main id="main" class="t-main">${s2.phase !== "finish" ? `<ol class="phase-steps">${STEPS.map(([ph, n], i) => `<li class="${ph === s2.phase ? "on" : i < k2 ? "done" : ""}"><button data-go="nav" data-id="${PHASE_PAGE[ph]}" ${i > k2 ? "disabled" : ""}><i>${i < k2 ? "\u2713" : i + 1}</i>${n}</button></li>`).join("")}</ol>` : ""}${body2}</main></div>
+    <main id="main" class="t-main">${s2.phase !== "finish" ? `<ol class="phase-steps">${STEPS.map(([ph, n], i) => `<li class="${ph === s2.phase ? "on" : i < k2 ? "done" : ""}"><button data-go="nav" data-id="${PHASE_PAGE[ph]}" ${i > k2 ? "disabled" : ""}><i>${i < k2 ? "\u2713" : i + 1}</i>${n}</button></li>`).join("")}</ol>` : ""}${body2}<div class="home-dock">${homeScene()}</div></main></div>
     ${modalHtml()}${tipHtml()}${tourHtml()}</div>`;
   const m = root.querySelector(".modal"), key = ui.modal ? ui.modal.kind + (ui.modal.id || "") : "";
   if (m && key === lastModal) m.classList.add("steady");

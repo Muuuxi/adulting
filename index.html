@@ -1526,6 +1526,40 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 @media (max-width: 1000px) { .home-scene { display: none !important; } }
 /* ---- Round 44 ---- */
 .cg-how { margin: 0 0 6px; font-weight: 800; font-size: .86rem; } .cg-how small { display: block; font-weight: 700; color: var(--muted); font-size: .76rem; }
+/* ---- Round 47: borderless corner scene with weather ---- */
+.side { display: flex; flex-direction: column; gap: 8px; min-height: calc(100vh - 104px); }
+.side .home-scene { margin-top: auto; margin-left: -6px; margin-right: -6px; background: none !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important; overflow: visible !important; }
+.home-scene .hs-pic { position: relative; } .home-scene.low .hs-pic svg { filter: none; } .home-scene.low .hs-house { filter: grayscale(.7) brightness(.92); }
+.home-scene .hs-low { top: auto; bottom: 30px; right: 10px; }
+.home-scene .hs-cap { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; padding: 0 8px; border: 0 !important; background: none; font-size: .74rem; }
+.home-scene .hs-cap b { flex: 1 1 100%; } .home-scene .hs-wx { font-weight: 800; color: var(--ink-2); } .home-scene .hs-wx.alert { color: #fff; background: var(--neg); border-radius: 8px; padding: 0 6px; }
+.home-scene .spin, .home-scene .tail, .home-scene .breathe, .home-scene .blink { transform-box: fill-box; }
+.home-scene .spin { transform-origin: center; animation: hs-spin 20s linear infinite; }
+.home-scene .drift { animation: hs-drift 7s ease-in-out infinite alternate; }
+.home-scene .drop { animation: hs-drop .9s linear infinite; } .home-scene .drop.wind { animation-name: hs-drop-wind; animation-duration: .7s; }
+.home-scene .flake { animation: hs-snow 4s linear infinite; } .home-scene .flake.wind { animation-name: hs-snow-wind; animation-duration: 1.8s; }
+.home-scene .flash { opacity: 0; animation: hs-flash 3.4s infinite; }
+.home-scene .gust { animation: hs-gust 1.5s linear infinite; opacity: 0; }
+.home-scene .shimmer { animation: hs-shimmer 1.6s ease-in-out infinite alternate; }
+.home-scene .wave { animation: hs-wave 2.4s ease-in-out infinite alternate; }
+.home-scene .tail { transform-origin: 100% 100%; animation: hs-wag .32s ease-in-out infinite alternate; }
+.home-scene .breathe { transform-origin: 50% 100%; animation: hs-breathe 2.4s ease-in-out infinite; } .home-scene .breathe.slow { animation-duration: 4s; }
+.home-scene .blink { transform-origin: center; animation: hs-blink 4.5s infinite; }
+@keyframes hs-spin { to { transform: rotate(360deg); } }
+@keyframes hs-drift { from { transform: translateX(-6px); } to { transform: translateX(8px); } }
+@keyframes hs-drop { from { transform: translateY(0); opacity: 1; } to { transform: translateY(170px); opacity: .2; } }
+@keyframes hs-drop-wind { from { transform: translate(0, 0); opacity: 1; } to { transform: translate(-60px, 170px); opacity: .2; } }
+@keyframes hs-snow { from { transform: translate(0, 0); } 50% { transform: translate(6px, 85px); } to { transform: translate(-4px, 170px); opacity: .3; } }
+@keyframes hs-snow-wind { from { transform: translate(0, 0); } to { transform: translate(-70px, 170px); opacity: .3; } }
+@keyframes hs-flash { 0%, 86%, 100% { opacity: 0; } 88%, 92% { opacity: 1; } 90% { opacity: .2; } }
+@keyframes hs-gust { from { transform: translateX(60px); opacity: 0; } 30% { opacity: .9; } to { transform: translateX(-80px); opacity: 0; } }
+@keyframes hs-shimmer { from { transform: translateY(0); opacity: .3; } to { transform: translateY(-6px); opacity: .8; } }
+@keyframes hs-wave { from { transform: translateX(-10px); } to { transform: translateX(6px) translateY(-3px); } }
+@keyframes hs-wag { from { transform: rotate(-10deg); } to { transform: rotate(16deg); } }
+@keyframes hs-breathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.03); } }
+@keyframes hs-blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+@media (prefers-reduced-motion: reduce) { .home-scene * { animation: none !important; } }
+@media (max-width: 1000px) { .side { min-height: 0; } }
 </style>
 </head>
 <body>
@@ -1841,8 +1875,28 @@ var DIVORCE = {
   legal: 7e3
   /* design value */
 };
+var DISASTER = {
+  TX: { rate: 0.017, kinds: [["hurricane", 0.4, 8], ["flood", 0.4, 5], ["freeze", 0.2, 2]] },
+  NC: { rate: 9e-3, kinds: [["hurricane", 0.65, 9], ["flood", 0.35, 7]] },
+  PA: { rate: 6e-3, kinds: [["flood", 0.7, 9], ["freeze", 0.3, 1]] }
+};
+var SBA = { apr: 0.028, months: 360 };
+var CLIMATE = {
+  NC: ["cloud", "cloud", "rain", "sun", "sun", "heat", "storm", "heat", "rain", "sun", "sun", "cloud"],
+  TX: ["cloud", "sun", "sun", "storm", "rain", "heat", "heat", "heat", "sun", "sun", "sun", "cloud"],
+  PA: ["snow", "snow", "cloud", "rain", "sun", "sun", "storm", "sun", "rain", "cloud", "rain", "snow"]
+};
 var CARD_WEIGHTS = [{ until: 24, w: { life: 40, opportunity: 25, impulse: 30, quiet: 5 } }, { until: 35, w: { life: 45, opportunity: 25, impulse: 25, quiet: 5 } }, { until: 49, w: { life: 50, opportunity: 25, impulse: 20, quiet: 5 } }];
 var pays = (cost, extra = []) => [{ id: "emergency", label: "Pay from emergency fund", pay: "emergency", cost }, { id: "card", label: "Put it on the credit card", pay: "card", cost }, { id: "checking", label: "Pay from checking", pay: "checking", cost }, ...extra];
+var hit = (rent, home, hike = 0) => {
+  const up = hike ? { recurring: { essentials: { insurance: hike } } } : {};
+  return [
+    ...pays(rent).map((o) => ({ ...o, id: "r-" + o.id, who: "rent" })),
+    { id: "r-sba", who: "rent", label: "Low-rate SBA disaster loan (2.8%, repaid over 30 years)", cost: rent, disasterLoan: true },
+    ...pays(home).map((o) => ({ ...o, ...up, id: "h-" + o.id, who: "home" })),
+    { id: "h-sba", who: "home", label: "Low-rate SBA disaster loan (2.8%, repaid over 30 years)", cost: home, disasterLoan: true, ...up }
+  ];
+};
 var CARDS = [
   /* ---- life events ---- */
   { id: "car-repair", type: "life", title: "Car trouble", text: "The transmission failed. Repairs cost $2,500.", month: 4, when: (s4) => s4.car, options: pays(2500, [{ id: "sell", label: "Don\u2019t fix it \u2014 sell the car and take the bus", sellCar: 2500 }]) },
@@ -1912,6 +1966,36 @@ var CARDS = [
     month: 6,
     when: () => false,
     options: [{ id: "ok", label: "Split everything and start over", divorce: true, status: "heartbroken", pay: "checking", cost: 7e3 }]
+  },
+  {
+    id: "disaster-hurricane",
+    type: "life",
+    title: "Hurricane",
+    month: 9,
+    when: () => false,
+    options: hit(3e3, 6e3, 40),
+    textRent: "A hurricane hits. You evacuate for two weeks and water ruins your furniture and clothes. With no renters insurance, the hotel and replacing things cost $3,000.",
+    textHome: "A hurricane hits. Your homeowners policy pays for wind damage after a 2% hurricane deductible, and never for flood water. Your share: $6,000, and the premium rises $40 a month."
+  },
+  {
+    id: "disaster-flood",
+    type: "life",
+    title: "Flash flood",
+    month: 5,
+    when: () => false,
+    options: hit(3e3, 12e3),
+    textRent: "Flash flooding fills your apartment. Renters and homeowners policies don\u2019t cover flood. Replacing your things and a few weeks elsewhere: $3,000.",
+    textHome: "Flash flooding gets into your house. Homeowners insurance doesn\u2019t cover flood, and you had no separate flood policy (NFIP). Repairs: $12,000."
+  },
+  {
+    id: "disaster-freeze",
+    type: "life",
+    title: "Winter storm",
+    month: 2,
+    when: () => false,
+    options: hit(1200, 2500),
+    textRent: "A winter storm knocks out power for days and the pipes burst. A week in a hotel and replacing ruined things: $1,200.",
+    textHome: "A winter storm bursts your pipes. Insurance pays for the water damage after your $1,000 deductible; spoiled food, a hotel and what it won\u2019t cover come to $2,500."
   },
   { id: "breakup", type: "life", title: "Breakup", text: "You two split up.", month: 6, when: (s4) => s4.partner && !s4.spouse, options: [{ id: "ok", label: "Take time to heal", partnerEnd: true, status: "heartbroken", recurring: { fun: -80 } }] },
   { id: "checkup", type: "life", title: "High blood pressure at a checkup", text: "The doctor recommends medication: $30 a month.", month: 10, when: (s4) => s4.age >= 38, options: [{ id: "ok", label: "Take the meds (+$30 a month)", recurring: { essentials: { insurance: 30 } } }, { id: "gym", label: "Meds plus a gym membership ($600/yr, working out)", recurring: { essentials: { insurance: 30 } }, pay: "checking", cost: 600, status: "fit" }] },
@@ -2717,6 +2801,11 @@ function applyFx(n, fx, month, label) {
   if (fx.partner) n.partner = true;
   if (fx.partnerEnd) n.partner = false;
   if (fx.divorce) divorce(n, month);
+  if (fx.disasterLoan) {
+    const amt = fx.cost;
+    n.debts.push(debt(n, "personal", amt, { apr: SBA.apr, payment: r22(amortized(amt, SBA.apr, SBA.months)) }));
+    n.pending.push({ month, kind: "expenseFinanced", amount: amt, label });
+  }
   if (fx.side) n.side = fx.side;
   if (fx.unemployed) n.pending.push({ month, kind: "unemployed", months: fx.unemployed, label: "Unemployed" });
   if (fx.unpaidMonths) n.pending.push({ month, kind: "unpaid", months: fx.unpaidMonths, label: "Unpaid leave" });
@@ -3048,6 +3137,20 @@ function drawCard(s4) {
     n.card = { id: c2.id, type: "life", title: c2.title, text: c2.text.split(money(DIVORCE.legal)).join(money(scaled(n, c2, DIVORCE.legal))), month: c2.month, roll: null, bonus: 0, tier: null };
     return n;
   }
+  const dz = DISASTER[n.region];
+  if (dz && rand(n) < dz.rate) {
+    let x2 = rand(n), k2 = dz.kinds.at(-1);
+    for (const q2 of dz.kinds) {
+      if (x2 < q2[1]) {
+        k2 = q2;
+        break;
+      }
+      x2 -= q2[1];
+    }
+    const c2 = CARDS.find((y2) => y2.id === "disaster-" + k2[0]), cost = c2.options.find((o) => o.who === (n.home ? "home" : "rent")).cost;
+    n.card = { id: c2.id, type: "life", title: c2.title, text: (n.home ? c2.textHome : c2.textRent).split(money(cost)).join(money(scaled(n, c2, cost))), month: k2[2], weather: k2[0], roll: null, bonus: 0, tier: null };
+    return n;
+  }
   const { pool, odds } = cardOdds(n);
   const live = Object.entries(odds).filter(([, p]) => p > 0);
   let x = rand(n), type = live.at(-1)[0];
@@ -3099,7 +3202,7 @@ var scaled = (s4, c, cost) => c.type === "life" && severity(s4) !== 1 ? Math.rou
 function cardOptions(s4) {
   const c = CARDS.find((x) => x.id === s4.card?.id);
   if (!c) return [{ id: "continue", label: "Continue" }];
-  const list = c.options.map((o) => o.cost ? { ...o, cost: scaled(s4, c, o.cost) } : o).map((o) => ({ ...o, blocked: optionBlock(s4, o) }));
+  const list = c.options.filter((o) => !o.who || o.who === (s4.home ? "home" : "rent")).map((o) => o.cost ? { ...o, cost: scaled(s4, c, o.cost) } : o).map((o) => ({ ...o, blocked: optionBlock(s4, o) }));
   if (list.every((o) => o.blocked)) {
     const p = list.find((o) => o.pay) || list[0];
     return list.map((o) => o === p ? { ...o, pay: o.pay ? "checking" : o.pay, blocked: null, label: o.pay ? "Pay from checking first (if short, savings get tapped or it becomes overdue)" : o.label } : o);
@@ -3135,7 +3238,7 @@ function resolveCard(s4, optionId) {
     const c = CARDS.find((x) => x.id === n.card.id), o = cardOptions(s4).find((x) => x.id === optionId);
     if (!o) throw Error("No such option.");
     if (o.blocked) throw Error(o.blocked);
-    applyFx(n, o, c.month, c.title);
+    applyFx(n, o, n.card.month || c.month, c.title);
     let note = null;
     if (o.throwOutcome && c.outcomes && n.card.tier) {
       const out = c.outcomes[n.card.tier];
@@ -3801,6 +3904,10 @@ function optionEffect(s4, o) {
   if (o.pay === "card") {
     const apr = s4.debts.find((d) => d.kind === "card")?.apr ?? CARD.apr;
     return fill20(R20.optCard, { i: money(o.cost * apr) });
+  }
+  if (o.disasterLoan) {
+    const m = amortized(o.cost, SBA.apr, SBA.months);
+    return fill20("{m}/mo for 30 years \xB7 {i} interest in total", { m: money(Math.round(m)), i: money(Math.round(m * SBA.months - o.cost)) });
   }
   return null;
 }
@@ -4475,11 +4582,11 @@ var MAKE = {
     const resolve = () => {
       let total = 0;
       for (let pass = 0; pass < 6; pass++) {
-        const hit = [];
-        for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (lineAt(x, y)) hit.push([x, y]);
-        if (!hit.length) break;
-        total += hit.length;
-        for (const [x, y] of hit) g[y][x] = null;
+        const hit2 = [];
+        for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (lineAt(x, y)) hit2.push([x, y]);
+        if (!hit2.length) break;
+        total += hit2.length;
+        for (const [x, y] of hit2) g[y][x] = null;
         for (let x = 0; x < COLS; x++) {
           const col = [];
           for (let y = ROWS - 1; y >= 0; y--) if (g[y][x] != null) col.push(g[y][x]);
@@ -5370,7 +5477,9 @@ var T2 = {
   warnMeans: "Yellow: savings covered a gap.",
   homeCap: "Your place",
   homeLow: "Your place: money is tight",
-  homeTip: "Your home changes with your life stage, and the dog shows how things are going: wagging when you are comfortable; thin with an empty bowl when bills are missed, or when you spend more than comes in and the emergency fund covers less than three months.",
+  homeTip: "Your home follows your life stage. The dog shows how things are going: wagging when you are comfortable; lying thin by an empty bowl when bills are missed, or when you spend more than comes in and savings last under 3 months. The sky shows the weather in your state; during the year replay it changes month by month, and a hurricane, flood or winter storm shows up in the month it hits.",
+  wx: { sun: "Sunny", cloud: "Cloudy", rain: "Rain", storm: "Thunderstorms", snow: "Snow", heat: "Hot", hurricane: "Hurricane", flood: "Flood", freeze: "Winter storm" },
+  wxMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
   homeLowShort: "Money is tight",
   homeStage: "Stage {n} \xB7 {name}",
   locked: "Locked",
@@ -5624,6 +5733,8 @@ var SCENES = {
   storeUp: () => R(94, 46, 112, 64, "#fff7e0", 3) + P("M88 46l10-22h104l10 22z", "#2fae6b") + R(108, 66, 34, 26, "#bfe8ff", 2) + R(156, 66, 30, 44, "#8b5a2b", 2) + arrowUp(244, 34) + star(70, 40, 10),
   wedding: () => R(116, 64, 68, 44, "#fff", 6) + R(126, 40, 48, 26, "#fff", 6) + R(138, 22, 24, 20, "#fff", 5) + heart(150, 4, 0.45) + [70, 96, 210, 236].map((x, i) => star(x, 30 + i * 9, 6, ["#ffc531", "#e05a8a", "#7fd0fb", "#2fae6b"][i])).join(""),
   flood: () => house(110, 22) + P("M60 92c20-10 30 10 50 0s30 10 50 0 30 10 50 0 30 10 50 0V112H60z", "#7fd0fb"),
+  hurricane: () => house(110, 22) + P("M56 30c0-16 26-20 34-6 8-16 36-12 36 4z", "#7d879a") + P("M196 26c0-14 22-18 30-4 8-12 30-8 30 6z", "#7d879a") + [66, 86, 206, 228, 250].map((x) => P(`M${x} 48l-10 26`, "none", 'stroke="#3d7be0" stroke-width="4"')).join("") + P("M64 96h40M206 92h44", "none", 'stroke="#8a93a8" stroke-width="4"'),
+  freeze: () => house(110, 22) + [70, 92, 212, 232, 252, 82, 242].map((x, i) => C(x, 30 + i * 17 % 60, 4, "#fff")).join("") + P("M60 110h180", "none", 'stroke="#f2f6fb" stroke-width="8"'),
   insurance: () => P("M150 22l46 16v24c0 26-20 40-46 50-26-10-46-24-46-50V38z", "#7fd0fb") + P("M134 66l12 12 22-24", "none", 'stroke="#fff" stroke-width="6"') + arrowUp(232, 30, "#e04848"),
   lend: () => P("M70 96h40l40 10 50-24c8-4 14 6 6 12l-46 28H70z", "#f2c29b") + coin(176, 54) + coin(200, 40) + coin(152, 38) + T(236, 46, "?", 30),
   match: () => pig(0) + coin(147, 16, 13) + T(244, 48, "+", 34, "#2fae6b") + coin(262, 76),
@@ -5678,6 +5789,9 @@ var CARD_SCENE = {
   "biz-slump": "storeDown",
   "friend-wedding": "wedding",
   flood: "flood",
+  "disaster-flood": "flood",
+  "disaster-hurricane": "hurricane",
+  "disaster-freeze": "freeze",
   "insurance-up": "insurance",
   "friend-loan": "lend",
   "match-start": "match",
@@ -6790,6 +6904,18 @@ function idCard() {
     ${p.status.length ? `<div class="statuses">${p.status.map((x) => `<span class="st-chip ${x.tone}" title="${h(x.why)}">${h(x.label)} ${x.delta > 0 ? "+" : ""}${x.delta}</span>`).join("")}${q("status")}</div>` : ""}</details>`;
 }
 var STAGE_LIST = () => STAGES;
+function weatherNow() {
+  const W = ui.walk, cd = s2.card, ph = s2.phase;
+  const mo = W && ph === "review" ? Math.max(1, Math.min(12, W.i || 1)) : cd?.weather && ["card", "live", "review"].includes(ph) ? cd.month : ph === "card" ? 4 : ph === "live" || ph === "review" ? 12 : 1;
+  const dis = !!(cd?.weather && cd.month === mo && ["card", "live", "review"].includes(ph));
+  return { mo, kind: dis ? cd.weather : (CLIMATE[s2.region] || CLIMATE.NC)[mo - 1], disaster: dis };
+}
+var hsh = (x) => {
+  let v = 5381;
+  for (let i = 0; i < x.length; i++) v = (v * 33 ^ x.charCodeAt(i)) >>> 0;
+  return v.toString(36);
+};
+var sceneEl = null;
 function homeScene() {
   const m = metrics(s2), st = stage(s2), av = payday(s2.phase === "plan" ? { ...s2, plan: draft() } : s2).available, last = s2.history.at(-1)?.review?.summary;
   const low = av < -0.5 && m.runway < 3 || !!(last && (last.missed > 0 || last.evicted)) || s2.status.some((x) => x.id === "couch"), lv = Math.max(st.id, s2.home ? 4 : 0), cans = low ? 0 : m.runway >= 3 ? 3 : m.runway >= 1 ? 2 : 1;
@@ -6802,7 +6928,7 @@ function homeScene() {
     for (let i = 0; i < cans; i++) g2 += R2(x + 3 + i * 14, y - 14, 10, 14, ["#e04848", "#2fae6b", "#ffc531"][i], 2);
     return g2;
   };
-  const plant = (x, y, k2 = 1) => R2(x, y, 14 * k2, 14 * k2, "#c7723f", 2) + P2(`M${x + 7 * k2} ${y}c-12-16-2-26 0-30 2 4 12 14 0 30`, "#2fae6b");
+  const plant = (x, y, k3 = 1) => R2(x, y, 14 * k3, 14 * k3, "#c7723f", 2) + P2(`M${x + 7 * k3} ${y}c-12-16-2-26 0-30 2 4 12 14 0 30`, "#2fae6b");
   const sofa = (x, y, c = "#8a5cf0") => R2(x, y + 8, 60, 22, c, 6) + R2(x - 4, y + 16, 10, 16, c, 3) + R2(x + 54, y + 16, 10, 16, c, 3) + R2(x + 4, y, 52, 12, c, 5);
   const bed = (x, y, c = "#3d7be0") => R2(x, y, 74, 26, c, 5) + R2(x + 4, y - 6, 22, 12, "#fff", 4) + P2(`M${x} ${y + 26}v6M${x + 74} ${y + 26}v6`);
   let g = "";
@@ -6812,15 +6938,48 @@ function homeScene() {
   else if (lv === 3) g = room("#e3f0ff", "#c9a06a") + R2(140, 22, 66, 46, "#9fc8f0") + P2("M146 68V48h10v20M160 68V38h12v30M176 68V44h10v24M190 68V32h10v36", "#5d7bb0") + P2("M173 22V68M140 45H206") + R2(14, 128, 72, 8, "#b98952", 2) + P2("M20 136v22M80 136v22") + R2(28, 104, 40, 24, K2, 3) + P2("M34 122l8-8 6 4 12-10", "none").replace('stroke="#1d2b4f"', 'stroke="#7fe0a0"') + R2(150, 80, 56, 78, "#b98952", 3) + [92, 112, 132].map((y) => P2(`M150 ${y}H206`)).join("") + [0, 1, 2, 3, 4].map((i) => R2(154 + i * 10, 80 + 2, 8, 10, ["#3d7be0", "#e04848", "#ffc531", "#2fae6b", "#8a5cf0"][i], 1)).join("") + shelf(156, 130) + R2(40, 30, 34, 26, "#fff", 2) + P2("M44 52l8-10 6 6 6-4 6 8", "#bfe8cc");
   else if (lv === 4) g = room("#e8f6e8", "#b8875a") + R2(16, 22, 92, 66, "#bfe8ff") + C2(46, 62, 16, "#2fae6b") + P2("M46 78V88", "#8b5a2b") + C2(80, 56, 12, "#5bbf6e") + P2("M62 22V88M16 55H108") + `<ellipse cx="96" cy="182" rx="56" ry="10" fill="#e9c7a8" ${S2}/>` + sofa(20, 130, "#e07a3c") + R2(150, 128, 54, 30, "#8b5a2b", 3) + R2(156, 96, 42, 30, K2, 3) + P2("M170 104l10 6-10 6z", "#7fd0fb") + shelf(150, 70) + plant(118, 144);
   else if (lv === 5) g = room("#fbeee6", "#a8774e") + P2("M140 158V96q30-30 60 0v62z", "#d9cfc4") + R2(152, 128, 36, 30, "#5a3a2a", 2) + P2("M160 158c0-14 10-10 10-22 4 8 12 10 10 22z", "#ff9a3c") + P2("M136 96h68") + R2(20, 24, 40, 30, "#fff", 2) + P2("M24 50l10-12 8 8 6-4 8 8", "#bfd8ff") + R2(70, 30, 30, 24, "#fff", 2) + C2(85, 42, 7, "#ffc531") + sofa(16, 128, "#3d7be0") + plant(104, 140, 1.3) + shelf(150, 72) + `<ellipse cx="80" cy="184" rx="60" ry="9" fill="#d6b4e8" ${S2}/>`;
-  else g = `<rect width="220" height="${F}" fill="#bfe8ff"/>` + C2(190, 28, 14, "#ffe066") + `<rect y="${F}" width="220" height="${200 - F}" fill="#7fcf8a"/><path d="M0 ${F}H220" ${S2}/>` + P2("M96 70L150 34L204 70Z", "#e04848") + R2(104, 70, 92, 88, "#fff7e0", 2) + R2(140, 116, 20, 42, "#8b5a2b", 2) + win(112, 84, 22, 20) + win(168, 84, 22, 20) + P2("M30 158V118", "#8b5a2b") + C2(30, 104, 22, "#2fae6b") + C2(16, 116, 12, "#5bbf6e") + [8, 20, 32, 44, 56, 68, 80].map((x) => P2(`M${x} 176v-14`)).join("") + P2("M4 168H86") + [60, 72, 84].map((x) => C2(x, 186, 4, "#ff7aa8")).join("") + P2("M196 30v-14h12l-4 4 4 4h-12", "#ffc531");
+  else g = `<ellipse cx="110" cy="180" rx="112" ry="24" fill="#7fcf8a" ${S2}/>` + P2("M96 70L150 34L204 70Z", "#e04848") + R2(104, 70, 92, 88, "#fff7e0", 2) + R2(140, 116, 20, 42, "#8b5a2b", 2) + win(112, 84, 22, 20) + win(168, 84, 22, 20) + P2("M30 158V118", "#8b5a2b") + C2(30, 104, 22, "#2fae6b") + C2(16, 116, 12, "#5bbf6e") + [8, 20, 32, 44, 56, 68, 80].map((x) => P2(`M${x} 176v-14`)).join("") + P2("M4 168H86") + [60, 72, 84].map((x) => C2(x, 186, 4, "#ff7aa8")).join("") + P2("M196 30v-14h12l-4 4 4 4h-12", "#ffc531");
   const dx = lv === 6 ? 58 : 100, dy = 180, coat = low ? "#b9a78c" : "#d9a05b", ear = low ? "#8f7d63" : "#a8703a", mood = low ? "sad" : lv >= 2 ? "happy" : "ok";
+  g += `<g class="breathe ${mood === "sad" ? "slow" : ""}">`;
   if (mood === "sad") g += `<ellipse cx="${dx}" cy="${dy + 6}" rx="24" ry="8" fill="${coat}" ${S2}/>` + P2(`M${dx - 8} ${dy + 2}v7M${dx} ${dy + 1}v8M${dx + 8} ${dy + 2}v7`) + C2(dx + 26, dy + 4, 9, coat) + P2(`M${dx + 20} ${dy - 2}q-6 6-2 14`, ear) + `<ellipse cx="${dx + 34}" cy="${dy + 7}" rx="5" ry="3.5" fill="#f1dcc0" ${S2}/>` + P2(`M${dx + 25} ${dy + 3}q3-2 5 0`) + P2(`M${dx - 23} ${dy + 6}q-8 2-8 8`);
-  else g += `<ellipse cx="${dx}" cy="${dy}" rx="20" ry="${mood === "happy" ? 12 : 13}" fill="${coat}" ${S2}/>` + R2(dx - 14, dy + 8, 7, 10, coat, 3) + R2(dx + 8, dy + 8, 7, 10, coat, 3) + C2(dx + 20, dy - 15, 11, coat) + P2(`M${dx + 12} ${dy - 22}q-8 2-6 16`, ear) + `<ellipse cx="${dx + 29}" cy="${dy - 12}" rx="6" ry="4.5" fill="#f1dcc0" ${S2}/><circle cx="${dx + 34}" cy="${dy - 14}" r="2" fill="${K2}"/><circle cx="${dx + 22}" cy="${dy - 18}" r="1.8" fill="${K2}"/>` + (mood === "happy" ? P2(`M${dx - 19} ${dy - 4}q-10-8-4-20`) + P2(`M${dx - 30} ${dy - 20}l-4-3M${dx - 27} ${dy - 26}l-2-5`) + P2(`M${dx + 28} ${dy - 8}q2 8 5 0z`, "#ff8aa8") : P2(`M${dx - 19} ${dy - 2}q-9 0-10-8`));
+  else g += `<ellipse cx="${dx}" cy="${dy}" rx="20" ry="${mood === "happy" ? 12 : 13}" fill="${coat}" ${S2}/>` + R2(dx - 14, dy + 8, 7, 10, coat, 3) + R2(dx + 8, dy + 8, 7, 10, coat, 3) + C2(dx + 20, dy - 15, 11, coat) + P2(`M${dx + 12} ${dy - 22}q-8 2-6 16`, ear) + `<ellipse cx="${dx + 29}" cy="${dy - 12}" rx="6" ry="4.5" fill="#f1dcc0" ${S2}/><g class="blink"><circle cx="${dx + 34}" cy="${dy - 14}" r="2" fill="${K2}"/><circle cx="${dx + 22}" cy="${dy - 18}" r="1.8" fill="${K2}"/></g>` + (mood === "happy" ? '<g class="tail">' + P2(`M${dx - 19} ${dy - 4}q-10-8-4-20`) + "</g>" + P2(`M${dx - 30} ${dy - 20}l-4-3M${dx - 27} ${dy - 26}l-2-5`) + P2(`M${dx + 28} ${dy - 8}q2 8 5 0z`, "#ff8aa8") : P2(`M${dx - 19} ${dy - 2}q-9 0-10-8`));
+  g += "</g>";
   g += R2(dx + 42, dy + 9, 18, 7, "#c5cad6", 2) + (low ? "" : `<ellipse cx="${dx + 51}" cy="${dy + 9}" rx="7" ry="2.6" fill="#b0683a" ${S2}/>`);
   if (!low && lv >= 4) g += C2(dx - 40, dy + 10, 6, "#e04848");
   if (!low && lv >= 6) g += P2(`M${dx + 66} ${dy + 4}h14`, "none") + C2(dx + 64, dy + 2, 3, "#fff") + C2(dx + 64, dy + 7, 3, "#fff") + C2(dx + 82, dy + 2, 3, "#fff") + C2(dx + 82, dy + 7, 3, "#fff") + P2(`M${dx + 6} ${dy - 40}l2 5 5 2-5 2-2 5-2-5-5-2 5-2z`, "#ffe066");
   const dots = () => STAGE_LIST().slice(1).map((x) => `<i class="${x.id <= lv ? "on" : ""}"></i>`).join("");
-  return `<section class="home-scene lv-${lv} ${low ? "low" : ""}" title="${h(T2.homeTip)}"><div class="hs-pic"><svg viewBox="0 0 220 200" aria-hidden="true">${g}</svg>${low ? `<em class="hs-low">${h(T2.homeLowShort)}</em>` : ""}</div><div class="hs-cap"><b>${h(fmt(T2.homeStage, { n: lv, name: st.name }))}</b><span class="hs-dots">${dots()}</span></div></section>`;
+  const wx = weatherNow(), k2 = wx.kind, wet = ["rain", "storm", "hurricane", "flood"].includes(k2), cold = ["snow", "freeze"].includes(k2), dark = ["storm", "hurricane"].includes(k2);
+  const VIEW = { sun: "#bfe8ff", cloud: "#d3dde9", rain: "#9fb0c4", storm: "#6f7f96", snow: "#e8eef6", heat: "#ffe0a3", hurricane: "#5d6b80", flood: "#8a9db3", freeze: "#dfe7f1" }[k2] || "#bfe8ff";
+  if (lv < 6) g = g.split("#bfe8ff").join(VIEW).split("#9fc8f0").join(VIEW);
+  if (k2 === "flood") g += `<g class="wave"><path d="M-10 150q28-9 56 0t56 0 56 0 56 0 56 0V200H-10z" fill="rgba(61,123,224,.5)" ${S2}/></g>`;
+  const cloud2 = (x, y, sc2, f, i) => `<g class="drift" style="animation-delay:${-i * 2.3}s"><g transform="translate(${x} ${y}) scale(${sc2})"><path d="M0 0h44a10 10 0 0 0-4-19a14 14 0 0 0-26-6a10 10 0 0 0-14 25z" fill="${f}" ${S2}/></g></g>`;
+  let sky = "";
+  if (k2 === "sun" || k2 === "heat") sky += `<g class="spin">${[0, 45, 90, 135, 180, 225, 270, 315].map((a) => P2(`M${200 + Math.cos(a * Math.PI / 180) * 20} ${34 + Math.sin(a * Math.PI / 180) * 20}L${200 + Math.cos(a * Math.PI / 180) * 28} ${34 + Math.sin(a * Math.PI / 180) * 28}`)).join("")}${C2(200, 34, k2 === "heat" ? 16 : 13, k2 === "heat" ? "#ffb02e" : "#ffe066")}</g>`;
+  if (k2 === "heat") sky += [0, 1, 2].map((i) => `<g class="shimmer" style="animation-delay:${-i * 0.5}s">${P2(`M${20 + i * 12} ${120 + i * 8}q4-4 8 0t8 0`)}</g>`).join("");
+  if (k2 === "sun") sky += cloud2(18, 40, 0.8, "#fff", 0);
+  if (k2 === "cloud") sky += cloud2(16, 44, 1, "#fff", 0) + cloud2(150, 30, 1.1, "#eef2f7", 1) + C2(206, 22, 10, "#ffe066");
+  if (wet || cold) {
+    const f = dark ? "#7d879a" : cold ? "#f4f6fa" : "#c9d2de";
+    sky += cloud2(10, 40, 1.15, f, 0) + cloud2(96, 26, 1.3, f, 1) + cloud2(170, 42, 1.1, f, 2);
+  }
+  if (wet) for (let i = 0; i < (k2 === "hurricane" ? 18 : 12); i++) {
+    const x = 6 + i * 37 % 236, y = 34 + i * 23 % 40;
+    sky += `<path class="drop ${k2 === "hurricane" ? "wind" : ""}" style="animation-delay:${-(i * 0.17) % 1}s" d="M${x} ${y}l${k2 === "hurricane" ? -7 : -2} 10" fill="none" stroke="#3d7be0" stroke-width="2.4" stroke-linecap="round"/>`;
+  }
+  if (cold) for (let i = 0; i < (k2 === "freeze" ? 18 : 11); i++) {
+    const x = 6 + i * 41 % 236, y = 30 + i * 19 % 40;
+    sky += `<circle class="flake ${k2 === "freeze" ? "wind" : ""}" style="animation-delay:${-(i * 0.53) % 4}s" cx="${x}" cy="${y}" r="${2 + i % 2}" fill="#fff" stroke="#9aa9bd" stroke-width="1"/>`;
+  }
+  if (dark) sky += `<path class="flash" d="M128 30l-10 22h9l-8 20 20-28h-10l8-14z" fill="#ffe066" ${S2}/>`;
+  const ground2 = lv === 6 ? "" : `<ellipse cx="120" cy="238" rx="118" ry="12" fill="${cold ? "#f2f6fb" : k2 === "heat" ? "#d8c48a" : "#9fd88a"}" ${S2}/>`;
+  let house2;
+  if (lv < 6) {
+    const hx = 34, hy = 80, roof = ["#b98952", "#e07a3c", "#e04848", "#3d7be0", "#c0392b", "#8a5cf0"][lv];
+    house2 = P2(`M${hx - 12} ${hy + 2}L120 ${hy - 40}L${hx + 184} ${hy + 2}Z`, roof) + (cold ? P2(`M${hx - 4} ${hy - 4}L120 ${hy - 40}L${hx + 176} ${hy - 4}q-6-8-14-4L120 ${hy - 30}l-72 30q-8-6-14 0z`, "#fff") : "") + `<g transform="translate(${hx} ${hy}) scale(.78)">${g}</g><rect x="${hx}" y="${hy}" width="171.6" height="156" fill="none" ${S2}/>` + (k2 === "freeze" ? [0, 1, 2, 3, 4, 5, 6].map((i) => P2(`M${hx + 8 + i * 24} ${hy + 2}l3 9 3-9z`, "#e8f4ff")).join("") : "");
+  } else house2 = `<g transform="translate(8 34)">${g}</g>`;
+  const front = k2 === "hurricane" || k2 === "freeze" ? [0, 1, 2].map((i) => `<g class="gust" style="animation-delay:${-i * 0.5}s">${P2(`M${40 + i * 60} ${120 + i * 30}h34q8 0 8-6`, "none").replace(`stroke="${K2}"`, 'stroke="#ffffff"')}</g>`).join("") : "";
+  const html = `<section class="home-scene lv-${lv} ${low ? "low" : ""} wx-${k2}" title="${h(T2.homeTip)}"><div class="hs-pic"><svg viewBox="0 -16 240 268" aria-hidden="true">${sky}${ground2}<g class="hs-house">${house2}</g>${front}</svg>${low ? `<em class="hs-low">${h(T2.homeLowShort)}</em>` : ""}</div><div class="hs-cap"><b>${h(fmt(T2.homeStage, { n: lv, name: st.name }))}</b><span class="hs-wx ${wx.disaster ? "alert" : ""}">${h(T2.wxMonths[wx.mo - 1])} \xB7 ${h(T2.wx[k2])}</span><span class="hs-dots">${dots()}</span></div></section>`;
+  return html.replace("<section ", `<section data-k="${hsh(html)}" `);
 }
 function frame(active, body2) {
   const items = [["overview", "Overview", "pin"], ["payday", "Payday", "coin"], ["accounts", "Accounts", "bank"], ["goals", "How to win", "trophy"], ["journal", "Journal", "book"]];
@@ -6829,6 +6988,11 @@ function frame(active, body2) {
     <aside class="side"><nav aria-label="Game areas">${items.map(([id, n, ico]) => `<button class="side-item ${active === id ? "on" : ""}" data-go="nav" data-id="${id}">${icon[ico]}<span>${n}</span></button>`).join("")}</nav>${idCard()}${homeScene()}</aside>
     <main id="main" class="t-main">${s2.phase !== "finish" ? `<ol class="phase-steps">${STEPS.map(([ph, n], i) => `<li class="${ph === s2.phase ? "on" : i < k2 ? "done" : ""}"><button data-go="nav" data-id="${PHASE_PAGE[ph]}" ${i > k2 ? "disabled" : ""}><i>${i < k2 ? "\u2713" : i + 1}</i>${n}</button></li>`).join("")}</ol>` : ""}${body2}</main></div>
     ${modalHtml()}${tipHtml()}${tourHtml()}</div>`;
+  const hs = root.querySelector(".home-scene");
+  if (hs) {
+    if (sceneEl && sceneEl.dataset.k === hs.dataset.k) hs.replaceWith(sceneEl);
+    else sceneEl = hs;
+  }
   const m = root.querySelector(".modal"), key = ui.modal ? ui.modal.kind + (ui.modal.id || "") : "";
   if (m && key === lastModal) m.classList.add("steady");
   lastModal = key;

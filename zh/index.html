@@ -1524,12 +1524,8 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .home-scene .hs-cap { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 4px 8px; border-top: 2px solid var(--ink); font-size: .78rem; }
 .home-scene .hs-dots { display: inline-flex; gap: 3px; } .home-scene .hs-dots i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--ink); background: #fff; } .home-scene .hs-dots i.on { background: var(--sun); }
 @media (max-width: 1000px) { .home-scene { display: none !important; } }
-/* ---- Round 43: the scene docks bottom-right on tall wide screens, stays under the ID card otherwise ---- */
-.home-dock { display: none; }
-@media (min-height: 900px) and (min-width: 1100px) {
-  .side .home-scene { display: none !important; }
-  .home-dock { display: flex; justify-content: flex-end; margin-top: 12px; } .home-dock .home-scene { width: 250px; }
-}
+/* ---- Round 44 ---- */
+.cg-how { margin: 0 0 6px; font-weight: 800; font-size: .86rem; } .cg-how small { display: block; font-weight: 700; color: var(--muted); font-size: .76rem; }
 </style>
 </head>
 <body>
@@ -1828,7 +1824,8 @@ var DECISIONS = [
   }
 ];
 var consumerDebtOf = (s4) => s4.debts.filter((d) => ["card", "personal", "medical", "arrears"].includes(d.kind)).reduce((n, d) => n + d.balance, 0);
-var DIFFICULTY = { easy: { name: "\u987A\u98CE\u5C40", text: "\u8D77\u70B9\u66F4\u597D\uFF0C\u574F\u4E8B\u66F4\u5C11\u3002" }, normal: { name: "\u666E\u901A\u5C40", text: "\u8D77\u70B9\u548C\u8FD0\u6C14\u90FD\u4E00\u822C\u3002" }, hard: { name: "\u9006\u98CE\u5C40", text: "\u8D77\u70B9\u66F4\u5DEE\uFF0C\u574F\u4E8B\u66F4\u591A\u3002" } };
+var DIE_TILT = 0.5;
+var DIFFICULTY = { easy: { name: "\u987A\u98CE\u5C40", text: "\u8D77\u70B9\u66F4\u597D\uFF0C\u574F\u4E8B\u66F4\u5C11\uFF0C\u9AB0\u5B50\u504F\u5927\u3002" }, normal: { name: "\u666E\u901A\u5C40", text: "\u8D77\u70B9\u548C\u8FD0\u6C14\u90FD\u4E00\u822C\u3002" }, hard: { name: "\u9006\u98CE\u5C40", text: "\u8D77\u70B9\u66F4\u5DEE\uFF0C\u574F\u4E8B\u66F4\u591A\uFF0C\u9AB0\u5B50\u504F\u5C0F\u3002" } };
 var REEL_BY_DIFFICULTY = {
   easy: { salary: [0, 3e4, 35e3, 38e3, 4e4, 45e3, 5e4, 55e3, 6e4], savings: [2e3, 3e3, 4e3, 5e3, 6e3, 8e3, 1e4], debt: [0, 0, 0, 0, 1e3, 2e3, 3e3] },
   hard: { salary: [0, 0, 0, 2e4, 24e3, 28e3, 3e4, 32e3], savings: [0, 0, 0, 500, 1e3, 1500], debt: [5e3, 8e3, 1e4, 15e3, 2e4] }
@@ -1839,6 +1836,11 @@ var PAY_CAP = 1.3;
 var JUMP_STEP = 15e3;
 var JUMP_MAX = 3;
 var TEXT = { capNote: "\uFF08\u5DF2\u5230\u8FD9\u4E2A\u804C\u4F4D\u7684\u5DE5\u8D44\u4E0A\u9650\uFF09", capBlock: "\u4F60\u5DF2\u7ECF\u5230\u4E86\u8FD9\u4E2A\u804C\u4F4D\u7684\u5DE5\u8D44\u4E0A\u9650\u3002\u60F3\u518D\u6DA8\uFF0C\u5C31\u6362\u4E00\u4E2A\u804C\u4F4D\u6216\u8005\u53BB\u8BFB\u4E66\u3002", jump: "\u8DE8\u7EA7\u8DF3\u69FD", upTo: "\u6700\u9AD8", nat1: "\u63B7\u51FA 1\uFF1A\u5C0F\u6E38\u620F\u52A0\u503C\u4E0D\u7B97", difficulty: "\u96BE\u5EA6", diffHint: "\u6362\u96BE\u5EA6\u4F1A\u91CD\u65B0\u8F6C\u3002" };
+var DIVORCE = {
+  rate: (age) => age < 25 ? 0.0192 : age >= 50 ? 0.0103 : 0.0142,
+  legal: 7e3
+  /* design value */
+};
 var CARD_WEIGHTS = [{ until: 24, w: { life: 40, opportunity: 25, impulse: 30, quiet: 5 } }, { until: 35, w: { life: 45, opportunity: 25, impulse: 25, quiet: 5 } }, { until: 49, w: { life: 50, opportunity: 25, impulse: 20, quiet: 5 } }];
 var pays = (cost, extra = []) => [{ id: "emergency", label: "\u7528\u5E94\u6025\u91D1\u4ED8", pay: "emergency", cost }, { id: "card", label: "\u5237\u4FE1\u7528\u5361", pay: "card", cost }, { id: "checking", label: "\u7528\u65E5\u5E38\u8D26\u6237\u4ED8", pay: "checking", cost }, ...extra];
 var CARDS = [
@@ -1901,6 +1903,15 @@ var CARDS = [
     month: 2,
     when: (s4) => s4.debts.some((d) => d.kind === "card" && !d.closed),
     options: [{ id: "call", label: "\u9A6C\u4E0A\u6253\u7535\u8BDD\u7ED9\u94F6\u884C\u6302\u5931\uFF08\u8FD9\u7B14\u94B1\u4E0D\u7528\u4F60\u4ED8\uFF09", decline: true }, { id: "ignore", label: "\u61D2\u5F97\u7BA1\uFF0C\u4E0B\u4E2A\u6708\u518D\u8BF4\uFF08$800 \u8981\u81EA\u5DF1\u4ED8\uFF09", pay: "card", cost: 800 }]
+  },
+  {
+    id: "divorce",
+    type: "life",
+    title: "\u79BB\u5A5A",
+    text: "\u4F60\u4EEC\u7684\u5A5A\u59FB\u7ED3\u675F\u4E86\u3002\u5A5A\u540E\u4E00\u8D77\u6512\u4E0B\u7684\u4E1C\u897F\u5BF9\u534A\u5206\uFF1A\u5A5A\u540E\u589E\u52A0\u7684\u5B58\u6B3E\u548C\u6295\u8D44\u5BF9\u534A\u5206\uFF1B\u5982\u679C\u623F\u5B50\u662F\u5A5A\u540E\u4E00\u8D77\u4E70\u7684\uFF0C\u4F60\u7559\u4E0B\u623F\u5B50\uFF0C\u4F46\u8981\u628A\u5BF9\u65B9\u90A3\u4E00\u534A\u4E70\u4E0B\u6765\u3002\u5BF9\u65B9\u7684\u6536\u5165\u4E5F\u8DDF\u7740\u8D70\u4E86\u3002\u5F8B\u5E08\u8D39 $7,000\u3002",
+    month: 6,
+    when: () => false,
+    options: [{ id: "ok", label: "\u5206\u5B8C\u8D22\u4EA7\uFF0C\u91CD\u65B0\u5F00\u59CB", divorce: true, status: "heartbroken", pay: "checking", cost: 7e3 }]
   },
   { id: "breakup", type: "life", title: "\u5206\u624B\u4E86", text: "\u4F60\u4EEC\u5206\u5F00\u4E86\u3002", month: 6, when: (s4) => s4.partner && !s4.spouse, options: [{ id: "ok", label: "\u6162\u6162\u8D70\u51FA\u6765", partnerEnd: true, status: "heartbroken", recurring: { fun: -80 } }] },
   { id: "checkup", type: "life", title: "\u4F53\u68C0\u53D1\u73B0\u9AD8\u8840\u538B", text: "\u533B\u751F\u5EFA\u8BAE\u5403\u836F\u63A7\u5236\uFF0C\u6BCF\u6708\u836F\u8D39 $30\u3002", month: 10, when: (s4) => s4.age >= 38, options: [{ id: "ok", label: "\u6309\u65F6\u5403\u836F\uFF08\u6BCF\u6708 +$30\uFF09", recurring: { essentials: { insurance: 30 } } }, { id: "gym", label: "\u5403\u836F\uFF0C\u518D\u529E\u5F20\u5065\u8EAB\u5361\uFF08$600/\u5E74\uFF0C\u575A\u6301\u5065\u8EAB\uFF09", recurring: { essentials: { insurance: 30 } }, pay: "checking", cost: 600, status: "fit" }] },
@@ -2170,7 +2181,12 @@ function normal(s4) {
   const u = Math.max(1e-9, rand(s4)), v = rand(s4);
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
 }
-var d6 = (s4) => 1 + Math.floor(rand(s4) * 6);
+var d6 = (s4) => {
+  const a = 1 + Math.floor(rand(s4) * 6), dif = s4?.difficulty;
+  if (dif !== "easy" && dif !== "hard") return a;
+  const b = 1 + Math.floor(rand(s4) * 6), tilt = rand(s4) < DIE_TILT;
+  return !tilt ? a : dif === "easy" ? Math.max(a, b) : Math.min(a, b);
+};
 var tierOf = (total, roll, bonus = 0) => {
   const t = roll === 1 ? total - bonus : total;
   return t <= 3 ? "fail" : t <= 6 ? "ok" : "great";
@@ -2305,6 +2321,7 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
   s4.essentials = startEssentials(s4.job.salary || 27e3, path, col);
   for (const [k2, v] of Object.entries(fx.essentials || {})) s4.essentials[k2] += v;
   if (fx.spouse) s4.spouse = { salary: fx.spouse.salary }, s4.partner = true;
+  if (s4.spouse) s4.marriedWith = {};
   const sav = reels.savings;
   s4.accounts.checking = Math.round(sav / 3 / 100) * 100;
   s4.accounts.emergency = sav - s4.accounts.checking;
@@ -2315,7 +2332,7 @@ function newGame({ seed, reels, backstoryId, path = "work", goal = "safety", nam
     else s4.debts.push(debt(s4, "card", reels.debt, { apr: s4.flags.gamblingPast ? CARD.aprGambling : CARD.apr, limit: Math.max(reels.debt + 1e3, 3e3) }));
   }
   if (fx.home) {
-    s4.home = { value: fx.home.value };
+    s4.home = { value: fx.home.value, marital: !!fx.spouse };
     s4.essentials.housing = Math.round(fx.home.value * region.propertyTax / 12 + 120);
     s4.debts.push(debt(s4, "mortgage", fx.home.mortgage, { apr: fx.home.apr, payment: r22(amortized(fx.home.mortgage, fx.home.apr, fx.home.years * 12)) }));
   }
@@ -2449,9 +2466,9 @@ function stage(s4, year = s4.history.at(-1)) {
     if (c()) k2++;
     else break;
   }
-  if (k2 === 2) {
+  if (k2 < 3 && !m.highDebt) {
     for (let j = 5; j >= 3; j--) if (checks[j]()) {
-      k2 = j + 1;
+      k2 = Math.max(k2, j + 1);
       break;
     }
   }
@@ -2699,6 +2716,7 @@ function applyFx(n, fx, month, label) {
   }
   if (fx.partner) n.partner = true;
   if (fx.partnerEnd) n.partner = false;
+  if (fx.divorce) divorce(n, month);
   if (fx.side) n.side = fx.side;
   if (fx.unemployed) n.pending.push({ month, kind: "unemployed", months: fx.unemployed, label: "\u5931\u4E1A" });
   if (fx.unpaidMonths) n.pending.push({ month, kind: "unpaid", months: fx.unpaidMonths, label: "\u65E0\u85AA\u5047" });
@@ -2842,6 +2860,7 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0, bizPla
       if (outcome.partner) n.fun += 80;
       break;
     case "marry":
+      n.marriedWith = { ...n.accounts };
       n.spouse = { salary: 36e3 };
       n.essentials.food += 350;
       n.essentials.other += 250;
@@ -2927,7 +2946,7 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0, bizPla
       n.accounts.checking = r22(n.accounts.checking - (down + closing - fromGoal));
       n.ledger.push({ age: n.age, month: 0, type: "down-payment", amount: down + closing, label: "\u4E70\u623F\u9996\u4ED8\u548C\u4EA4\u6613\u8D39\u7528" });
       n.flags.closingCosts = (n.flags.closingCosts || 0) + closing;
-      n.home = { value: price };
+      n.home = { value: price, marital: !!n.spouse };
       n.essentials.housing = Math.round(price * region.propertyTax / 12 + 120);
       removeStatus(n, "couch");
       n.debts.push(debt(n, "mortgage", price - down, { apr: MORTGAGE_APR, payment: r22(amortized(price - down, MORTGAGE_APR, 360)) }));
@@ -2964,6 +2983,44 @@ function chooseDecision(s4, id, { choice = null, jobId = null, bonus = 0, bizPla
   n.phase = "card";
   return n;
 }
+function divorce(n, month) {
+  const a = n.accounts, base = n.marriedWith || {}, col = STATES[n.region].costOfLiving;
+  let gone = 0;
+  for (const k2 of Object.keys(a)) {
+    const half = r22(Math.max(0, a[k2] - (base[k2] || 0)) / 2);
+    a[k2] = r22(a[k2] - half);
+    gone += half;
+  }
+  if (n.home?.marital) {
+    const mort = sum(n.debts.filter((d) => d.kind === "mortgage").map((d) => d.balance));
+    let owe = r22(Math.max(0, n.home.value - mort) / 2);
+    for (const k2 of ["brokerage", "goal", "emergency", "checking", "k401", "roth"]) {
+      const t = Math.min(a[k2], owe);
+      a[k2] = r22(a[k2] - t);
+      owe = r22(owe - t);
+      gone += t;
+    }
+    if (owe > 0) {
+      n.debts.push(debt(n, "personal", owe, { apr: 0.12, payment: r22(amortized(owe, 0.12, 120)) }));
+      n.ledger.push({ age: n.age, month, type: "loan", amount: owe, label: "\u4E70\u4E0B\u524D\u4EFB\u90A3\u4E00\u534A\u623F\u5B50\u7684\u8D37\u6B3E" });
+      gone += owe;
+    }
+    n.home.marital = false;
+  }
+  n.ledger.push({ age: n.age, month, type: "divorce", amount: r22(gone), label: "\u79BB\u5A5A\uFF1A\u5A5A\u540E\u8D22\u4EA7\u5BF9\u534A\u5206" });
+  n.spouse = null;
+  n.partner = false;
+  n.marriedWith = null;
+  n.flags.divorced = (n.flags.divorced || 0) + 1;
+  const e = n.essentials, cut = (k2, d, min) => {
+    e[k2] = Math.min(e[k2], Math.max(min, e[k2] - d));
+  };
+  cut("food", 350, 250);
+  cut("other", 250, 100);
+  cut("insurance", 200, 100);
+  if (!n.home) cut("housing", Math.round(400 * col.housing), Math.round(700 * col.housing));
+  n.fun = Math.max(0, n.fun - 150);
+}
 var cardWeight = (c, s4) => typeof c.weight === "function" ? c.weight(s4) : c.weight ?? (c.rare ? 0.3 : 1);
 function cardOdds(s4) {
   const seen = new Set(s4.history.map((h2) => h2.cardId).filter(Boolean));
@@ -2985,7 +3042,13 @@ function cardOdds(s4) {
 function drawCard(s4) {
   assertPhase(s4, "card");
   if (s4.card) throw Error("\u4ECA\u5E74\u5DF2\u7ECF\u62BD\u8FC7\u4E86\u3002");
-  const n = clone(s4), { pool, odds } = cardOdds(n);
+  const n = clone(s4);
+  if (n.spouse && rand(n) < DIVORCE.rate(n.age)) {
+    const c2 = CARDS.find((x2) => x2.id === "divorce");
+    n.card = { id: c2.id, type: "life", title: c2.title, text: c2.text.split(money(DIVORCE.legal)).join(money(scaled(n, c2, DIVORCE.legal))), month: c2.month, roll: null, bonus: 0, tier: null };
+    return n;
+  }
+  const { pool, odds } = cardOdds(n);
   const live = Object.entries(odds).filter(([, p]) => p > 0);
   let x = rand(n), type = live.at(-1)[0];
   for (const [k2, p] of live) {
@@ -5018,7 +5081,7 @@ function playMini(canvas, id, hooks, seconds = 12, theme = "work") {
 // ui/glossary.js
 var GLOSSARY = {
   taxes: ["\u7A0E", "\u6BCF\u5F20\u5DE5\u8D44\u5355\u90FD\u8981\u6263\u4E09\u79CD\u7A0E\uFF1A\u8054\u90A6\u6240\u5F97\u7A0E\u3001\u5DDE\u7A0E\uFF0C\u4EE5\u53CA\u793E\u4FDD\u548C\u533B\u4FDD\u7A0E\uFF08\u5DE5\u8D44\u7684 7.65%\uFF09\u3002\u70B9\u201C\u67E5\u770B\u660E\u7EC6\u201D\u53EF\u4EE5\u770B\u5230\u6BCF\u4E00\u9879\u3002"],
-  difficulty: ["\u96BE\u5EA6", "\u96BE\u5EA6\u53EA\u6539\u53D8\u4E24\u4EF6\u4E8B\uFF1A\u8001\u864E\u673A\u80FD\u62BD\u5230\u4EC0\u4E48\u6837\u7684\u8D77\u70B9\uFF08\u201C\u6295\u80CE\u201D\uFF09\uFF0C\u4EE5\u53CA\u574F\u4E8B\u51FA\u73B0\u5F97\u591A\u4E0D\u591A\uFF08\u201C\u8FD0\u6C14\u201D\uFF09\u3002\u987A\u98CE\u5C40\uFF1A\u5B58\u6B3E\u66F4\u591A\u3001\u6B20\u6B3E\u66F4\u5C11\u3001\u5DE5\u8D44\u66F4\u9AD8\uFF0C\u574F\u4E8B\u66F4\u5C11\uFF0C\u800C\u4E14\u574F\u4E8B\u82B1\u7684\u94B1\u5C11 25%\uFF1B\u9006\u98CE\u5C40\u6B63\u597D\u76F8\u53CD\uFF0C\u574F\u4E8B\u82B1\u7684\u94B1\u591A 50%\u3002\u7A0E\u548C\u89C4\u5219\u5728\u6BCF\u4E2A\u96BE\u5EA6\u4E0B\u90FD\u4E00\u6837\u3002"],
+  difficulty: ["\u96BE\u5EA6", "\u96BE\u5EA6\u6539\u53D8\u4E09\u4EF6\u4E8B\uFF1A\u8001\u864E\u673A\u80FD\u62BD\u5230\u4EC0\u4E48\u6837\u7684\u8D77\u70B9\uFF08\u201C\u6295\u80CE\u201D\uFF09\u3001\u574F\u4E8B\u51FA\u73B0\u5F97\u591A\u4E0D\u591A\uFF08\u201C\u8FD0\u6C14\u201D\uFF09\uFF0C\u4EE5\u53CA\u6574\u5C40\u7684\u9AB0\u5B50\u3002\u987A\u98CE\u5C40\uFF1A\u5B58\u6B3E\u66F4\u591A\u3001\u6B20\u6B3E\u66F4\u5C11\u3001\u5DE5\u8D44\u66F4\u9AD8\uFF0C\u574F\u4E8B\u66F4\u5C11\uFF0C\u800C\u4E14\u574F\u4E8B\u82B1\u7684\u94B1\u5C11 25%\uFF1B\u9AB0\u5B50\u504F\u5927\uFF0C\u5E73\u5747\u7EA6 4 \u70B9\uFF08\u666E\u901A\u5C40\u662F 3.5\uFF09\u3002\u9006\u98CE\u5C40\u6B63\u597D\u76F8\u53CD\uFF1A\u574F\u4E8B\u82B1\u7684\u94B1\u591A 50%\uFF0C\u9AB0\u5B50\u504F\u5C0F\uFF0C\u5E73\u5747\u7EA6 3 \u70B9\u3002\u7A0E\u548C\u89C4\u5219\u5728\u6BCF\u4E2A\u96BE\u5EA6\u4E0B\u90FD\u4E00\u6837\u3002"],
   gross: ["\u7A0E\u524D\u6708\u85AA", "\u5408\u540C\u4E0A\u5199\u7684\u5DE5\u8D44\uFF0C\u8FD8\u6CA1\u6263\u7A0E\u3002"],
   federal: ["\u8054\u90A6\u6240\u5F97\u7A0E", "\u4EA4\u7ED9\u7F8E\u56FD\u8054\u90A6\u653F\u5E9C\u7684\u7A0E\u3002\u6BCF\u5E74\u5148\u51CF\u6389\u201C\u6807\u51C6\u6263\u9664\u201D\uFF08\u5355\u8EAB $16,100\uFF09\uFF0C\u5269\u4E0B\u7684\u90E8\u5206\u5206\u6863\u8BA1\u7A0E\uFF1A\u524D $12,400 \u4EA4 10%\uFF0C\u518D\u5F80\u4E0A\u4EA4 12%\u300122%\u2026\u2026\u6536\u5165\u8D8A\u9AD8\uFF0C\u591A\u51FA\u6765\u7684\u90A3\u90E8\u5206\u7A0E\u7387\u8D8A\u9AD8\u3002"],
   state: ["\u5DDE\u7A0E", "\u4EA4\u7ED9\u4F60\u4F4F\u7684\u5DDE\u3002\u5317\u5361 3.99%\uFF0C\u5BBE\u5DDE 3.07%\uFF0C\u5FB7\u5DDE\u6CA1\u6709\u5DDE\u6240\u5F97\u7A0E\u3002"],
@@ -5307,7 +5370,7 @@ var T2 = {
   warnMeans: "\u9EC4\u8272\uFF1A\u7528\u5B58\u6B3E\u8865\u4E86\u7F3A\u53E3\u3002",
   homeCap: "\u4F60\u7684\u5BB6",
   homeLow: "\u4F60\u7684\u5BB6\uFF1A\u624B\u5934\u5F88\u7D27",
-  homeTip: "\u4F4F\u7684\u5730\u65B9\u8DDF\u7740\u4EBA\u751F\u9636\u6BB5\u53D8\uFF0C\u5C0F\u72D7\u4EE3\u8868\u4F60\u73B0\u5728\u8FC7\u5F97\u600E\u4E48\u6837\uFF1A\u8FC7\u5F97\u5BBD\u88D5\u65F6\u5B83\u6447\u5C3E\u5DF4\uFF0C\u624B\u5934\u7D27\u65F6\u5B83\u8DB4\u7740\u3001\u53D8\u7626\u3001\u7897\u662F\u7A7A\u7684\u3002",
+  homeTip: "\u4F4F\u7684\u5730\u65B9\u8DDF\u7740\u4EBA\u751F\u9636\u6BB5\u53D8\uFF0C\u5C0F\u72D7\u4EE3\u8868\u4F60\u73B0\u5728\u8FC7\u5F97\u600E\u4E48\u6837\uFF1A\u8FC7\u5F97\u5BBD\u88D5\u65F6\u5B83\u6447\u5C3E\u5DF4\uFF1B\u8D26\u5355\u6CA1\u4ED8\u4E0A\uFF0C\u6216\u8005\u5165\u4E0D\u6577\u51FA\u3001\u5E94\u6025\u91D1\u53C8\u6491\u4E0D\u8FC7 3 \u4E2A\u6708\u65F6\uFF0C\u5B83\u8DB4\u7740\u3001\u53D8\u7626\u3001\u7897\u662F\u7A7A\u7684\u3002",
   homeLowShort: "\u624B\u5934\u5F88\u7D27",
   homeStage: "\u7B2C {n} \u7EA7 \xB7 {name}",
   locked: "\u672A\u89E3\u9501",
@@ -5610,6 +5673,7 @@ var CARD_SCENE = {
   "phone-broke": "phonebroke",
   fraud: "fraud",
   breakup: "breakup",
+  divorce: "breakup",
   checkup: "checkup",
   "biz-slump": "storeDown",
   "friend-wedding": "wedding",
@@ -5740,6 +5804,14 @@ function gameStep(g, act) {
 
 // ui/conceptgames.js
 var CG = {
+  next: "\u770B\u61C2\u4E86\uFF0C\u770B\u7ED3\u679C",
+  noLimit: "\u4E0D\u9650\u65F6",
+  overHint: "\u6F14\u793A\u7ED3\u675F\u4E86\uFF0C\u70B9\u4E0B\u9762\u7684\u6309\u94AE\u3002",
+  taxLegend: ["\u7A0E", "\u4F60\u7559\u4E0B\u7684"],
+  matchBar: "\u4F60\u5B58\u8FDB\u53BB\u7684\u5DE5\u8D44\u6BD4\u4F8B\uFF080\u201310%\uFF09",
+  matchHold: "\u6309\u4F4F\u5F80\u4E0A\u52A0",
+  creepHint: "\u8DF3\u8FC7\u53BB = \u4E0D\u4E70  \xB7  \u649E\u4E0A\u53BB = \u4E70\u4E0B",
+  youTag: "\u4F60",
   play: "\u5F00\u59CB\u73A9",
   skip: "\u76F4\u63A5\u770B\u7ED3\u679C",
   stop: "\u63D0\u524D\u7ED3\u675F",
@@ -5959,7 +6031,7 @@ var SEED = 2400;
 var fvYear = (n) => n > 0 ? SEED * (1.05 ** n - 1) / 0.05 : 0;
 var GAMES = {
   paycheck(p, w, h2, S2) {
-    const bands = taxBands(p), sal = Math.max(p.salary, 12e3), nextLo = (bands.find((b) => b.hi > sal) || bands.at(-1)).hi, maxI = Math.max(sal * 1.12, Math.min(nextLo * 1.08, sal * 1.6)), top = 50, bot = h2 - 20, x0 = 16, x1 = Math.max(120, w * 0.4);
+    const bands = taxBands(p), sal = Math.max(p.salary, 12e3), nextLo = (bands.find((b) => b.hi > sal) || bands.at(-1)).hi, maxI = Math.max(sal * 1.12, Math.min(nextLo * 1.08, sal * 1.6)), top = 50, bot = h2 - 26, x0 = 16, x1 = Math.max(120, w * 0.4);
     const y = (inc2) => bot - Math.min(1, inc2 / maxI) * (bot - top);
     let inc = 0, band = 0;
     return {
@@ -6011,6 +6083,12 @@ var GAMES = {
         txt(ctx2, `${CG.yourPay} ${k(sal)}`, x1 - 6, ys - 10, 11, BLUE, "right", 900);
         const lx = x1 + 14, rx = w - 12;
         let ly = top + 8, tot = 0;
+        ctx2.fillStyle = RED;
+        ctx2.fillRect(x0, bot + 5, 10, 10);
+        txt(ctx2, CG.taxLegend[0], x0 + 14, bot + 11, 11, INK3, "left");
+        ctx2.fillStyle = "#bfe8cc";
+        ctx2.fillRect(x0 + 56, bot + 5, 10, 10);
+        txt(ctx2, CG.taxLegend[1], x0 + 70, bot + 11, 11, INK3, "left");
         if (inc <= 0) {
           txt(ctx2, CG.taxHold, (lx + rx) / 2, h2 / 2 - 10, 14, BLUE, "center", 900);
           txt(ctx2, CG.taxKey, (lx + rx) / 2, h2 / 2 + 14, 11, "#5d6b8c");
@@ -6035,6 +6113,7 @@ var GAMES = {
           txt(ctx2, `${CG.taxOf} ${pc(tot / inc)}`, rx, ly + 36, 13, GREEN, "right", 900);
         }
       },
+      over: () => inc >= sal,
       hud: () => `${CG.income} ${k(inc)}`,
       result: () => ({ income: inc })
     };
@@ -6055,7 +6134,7 @@ var GAMES = {
             taps = io.st.taps;
             if (io.st.x != null && io.st.ptaps) c = io.st.x < w / 2 ? "cash" : "inv";
           }
-          if (!c && wait > 4.5) c = "cash";
+          if (!c && wait > 4.5 && S2 <= 8) c = "cash";
           if (c) {
             from = c;
             sim = liqDemo(p, c);
@@ -6100,6 +6179,7 @@ var GAMES = {
           txt(ctx2, CG.liqNeed(k(sim.bill)), w / 2, 61, 14, INK3, "center", 900);
         } else txt(ctx2, CG.monthN(Math.max(1, at)), w / 2, 58, 14);
       },
+      over: () => !!from && clock >= mDur * 12.4,
       hud: () => CG.monthN(Math.max(1, Math.min(12, Math.floor(clock / mDur)))),
       result: () => ({ from: from || "cash" })
     };
@@ -6191,6 +6271,7 @@ var GAMES = {
           coin2(ctx2, tx + (e.x - tx) * s4.t, ty + (e.y - ty) * s4.t - Math.sin(s4.t * Math.PI) * 60, 9, GOLD);
         }
       },
+      over: () => m >= 36 || b <= 0.5,
       hud: () => `${CG.monthN(m)} \xB7 ${CG.interest} ${k(interest)}`,
       result: () => ({ b, interest, paid, m: paidAt ?? m })
     };
@@ -6225,7 +6306,7 @@ var GAMES = {
             ctx2.stroke();
           }
         });
-        const by = h2 - 44, bx0 = x0 + 12, bw = cw - 24, X = (v) => bx0 + bw * v / max;
+        const by = h2 - 58, bx0 = x0 + 12, bw = cw - 24, X = (v) => bx0 + bw * v / max;
         rr(ctx2, bx0, by, bw, 14, 7);
         ctx2.fillStyle = "#e6ecf5";
         ctx2.fill();
@@ -6239,6 +6320,8 @@ var GAMES = {
         ctx2.lineTo(X(cap), by + 20);
         ctx2.stroke();
         txt(ctx2, CG.limit, X(cap), by - 14, 10, RED);
+        txt(ctx2, CG.matchBar, bx0, by + 27, 10, "#5d6b8c", "left");
+        if (pct2 <= 0) txt(ctx2, "\u{1F446} " + CG.matchHold, x0 + cw / 2, by - 34, 13, BLUE, "center", 900);
         const yr = p.salary * (pct2 + emp) / 100, cx = (x1 + w) / 2;
         txt(ctx2, "\u{1F512}", cx, h2 * 0.36, 34);
         txt(ctx2, k(yr) + CG.perYr, cx, h2 * 0.36 + 38, 17);
@@ -6300,6 +6383,7 @@ var GAMES = {
           txt(ctx2, CG.tvStart, bx[1] + bw / 2, gy - 32, 12, INK3, "center", 900);
         }
       },
+      over: () => yr >= H,
       hud: () => CG.ageN(Math.round(p.age + yr)),
       result: () => ({ start })
     };
@@ -6349,15 +6433,18 @@ var GAMES = {
           txt(ctx2, k(price), it.x, gy - 44, 12, "#9b1c1c", "center", 900);
           txt(ctx2, "= " + CG.altFood(Math.max(1, Math.round(price / 100))), it.x, gy - 60, 10, "#5d6b8c");
         }
+        txt(ctx2, CG.creepHint, w / 2, 58, 13, BLUE, "center", 900);
+        txt(ctx2, CG.youTag, 70, gy + 14, 11, "#5d6b8c");
         coin2(ctx2, 70, gy - 18 + py, 18, joy > 0 ? "#ffd166" : "#9fe0a8");
         txt(ctx2, joy > 0 ? "\u{1F60A}" : "\u{1F642}", 70, gy - 17 + py, 16);
       },
+      over: (t) => t > S2 && items.every((i) => i.done),
       hud: () => `${CG.bought} ${bought} \xB7 ${CG.kept} ${k(Math.max(0, p.raise - spent))}`,
       result: () => ({ bought, spent: Math.min(p.raise, spent) })
     };
   }
 };
-function playConcept(canvas, id, p, hooks, seconds = 12) {
+function playConcept(canvas, id, p, hooks, seconds = 12, untimed = false) {
   const { ctx: ctx2, w, h: h2 } = setupCanvas(canvas), io = input2(canvas), G = GAMES[id](p, w, h2, seconds), pops = [];
   let t = 0, last = performance.now(), raf = 0, done = false;
   const pop = (x, y, text, ok) => pops.push({ x, y, text, ok, life: 0.9 });
@@ -6394,14 +6481,22 @@ function playConcept(canvas, id, p, hooks, seconds = 12) {
       txt(ctx2, q2.text, q2.x, q2.y, 15, q2.ok ? "#13784a" : "#b3262b", "center", 900);
     }
     ctx2.globalAlpha = 1;
-    const hud2 = `${G.hud()} \xB7 ${Math.ceil(Math.max(0, seconds - t))}s`;
+    const hud2 = untimed ? G.hud() : `${G.hud()} \xB7 ${Math.ceil(Math.max(0, seconds - t))}s`;
     ctx2.font = "800 13px system-ui";
     const tw = ctx2.measureText(hud2).width + 20;
     rr(ctx2, 10, 10, tw, 26, 13);
     ctx2.fillStyle = "rgba(29,43,79,.85)";
     ctx2.fill();
     txt(ctx2, hud2, 20, 24, 13, "#fff", "left");
-    if (t >= seconds) {
+    if (untimed && G.over?.(t)) {
+      ctx2.font = "900 13px system-ui";
+      const tw2 = Math.min(w - 20, ctx2.measureText(CG.overHint).width + 28);
+      rr(ctx2, w - tw2 - 10, 10, tw2, 26, 13);
+      ctx2.fillStyle = "rgba(19,120,74,.92)";
+      ctx2.fill();
+      txt(ctx2, CG.overHint, w - 10 - tw2 / 2, 23, 13, "#fff", "center", 900);
+    }
+    if (!untimed && t >= seconds) {
       setTimeout(finish, 200);
       return;
     }
@@ -6697,7 +6792,7 @@ function idCard() {
 var STAGE_LIST = () => STAGES;
 function homeScene() {
   const m = metrics(s2), st = stage(s2), av = payday(s2.phase === "plan" ? { ...s2, plan: draft() } : s2).available, last = s2.history.at(-1)?.review?.summary;
-  const low = av < -0.5 || !!(last && (last.missed > 0 || last.evicted)) || s2.status.some((x) => x.id === "couch"), lv = st.id, cans = low ? 0 : m.runway >= 3 ? 3 : m.runway >= 1 ? 2 : 1;
+  const low = av < -0.5 && m.runway < 3 || !!(last && (last.missed > 0 || last.evicted)) || s2.status.some((x) => x.id === "couch"), lv = Math.max(st.id, s2.home ? 4 : 0), cans = low ? 0 : m.runway >= 3 ? 3 : m.runway >= 1 ? 2 : 1;
   const K2 = "#1d2b4f", S2 = `stroke="${K2}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"`, F = 158;
   const R2 = (x, y, w, h2, f, r = 3) => `<rect x="${x}" y="${y}" width="${w}" height="${h2}" rx="${r}" fill="${f}" ${S2}/>`, C2 = (x, y, r, f) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${f}" ${S2}/>`, P2 = (d, f = "none") => `<path d="${d}" fill="${f}" ${S2}/>`;
   const room = (wall, floor) => `<rect width="220" height="${F}" fill="${wall}"/><rect y="${F}" width="220" height="${200 - F}" fill="${floor}"/><path d="M0 ${F}H220" ${S2}/>`;
@@ -6732,7 +6827,7 @@ function frame(active, body2) {
   const k2 = STEPS.findIndex((x) => x[0] === s2.phase);
   root.innerHTML = `<div class="page tycoon">${hud()}${toastHtml()}<div class="tycoon-grid">
     <aside class="side"><nav aria-label="\u6E38\u620F\u533A\u57DF">${items.map(([id, n, ico]) => `<button class="side-item ${active === id ? "on" : ""}" data-go="nav" data-id="${id}">${icon[ico]}<span>${n}</span></button>`).join("")}</nav>${idCard()}${homeScene()}</aside>
-    <main id="main" class="t-main">${s2.phase !== "finish" ? `<ol class="phase-steps">${STEPS.map(([ph, n], i) => `<li class="${ph === s2.phase ? "on" : i < k2 ? "done" : ""}"><button data-go="nav" data-id="${PHASE_PAGE[ph]}" ${i > k2 ? "disabled" : ""}><i>${i < k2 ? "\u2713" : i + 1}</i>${n}</button></li>`).join("")}</ol>` : ""}${body2}<div class="home-dock">${homeScene()}</div></main></div>
+    <main id="main" class="t-main">${s2.phase !== "finish" ? `<ol class="phase-steps">${STEPS.map(([ph, n], i) => `<li class="${ph === s2.phase ? "on" : i < k2 ? "done" : ""}"><button data-go="nav" data-id="${PHASE_PAGE[ph]}" ${i > k2 ? "disabled" : ""}><i>${i < k2 ? "\u2713" : i + 1}</i>${n}</button></li>`).join("")}</ol>` : ""}${body2}</main></div>
     ${modalHtml()}${tipHtml()}${tourHtml()}</div>`;
   const m = root.querySelector(".modal"), key = ui.modal ? ui.modal.kind + (ui.modal.id || "") : "";
   if (m && key === lastModal) m.classList.add("steady");
@@ -6941,7 +7036,7 @@ function reviewPage() {
   const legend = (segs) => `<ul class="io-legend">${segs.filter((x) => x.v > 0.5).map((x) => `<li class="k-${x.cls}"><i></i>${x.label}<b>${money2(x.v)}</b></li>`).join("")}</ul>`;
   const baRow = (label, a0, b0, better, show) => `<div class="ba-row"><span class="ba-lab">${label}</span>${beforeAfter(a0, b0, better)}<b>${show}</b></div>`;
   frame("review", `<section class="ty-review"><header class="page-head"><h1>${fmt(past ? T2.ageLookBack : T2.ageDone, { age })}</h1>${y.news ? `<p class="news">${icon.chart}${h(y.news)} (${fmt(T2.marketNote, { r: pct(sm.returnRate, 1) })})</p>` : ""}${pastPicker(past)}</header>
-    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans} <span class="cap-bad cap-warn"></span>${T2.warnMeans}</p>${past ? "" : yearNotes(s2).map((x) => `<p class="yr-note">${icon.piggy}<span>${h(x)}</span></p>`).join("")}
+    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans} <span class="cap-bad cap-warn"></span>${T2.warnMeans}</p>${past ? "" : ((n) => n.length ? `<p class="yr-note">${icon.piggy}<span>${n.map(h).join("<br>")}</span></p>` : "")(yearNotes(s2))}
     <div class="ty-months ${anim ? "anim" : ""}">${y.months.map((mo, i) => {
     const e = ev(mo.month), b2 = e.find((l) => bad.includes(l.type) && l.type !== "shortfall"), sf = sum2(e.filter((l) => l.type === "shortfall").map((l) => l.amount));
     return `<div class="ty-mo ${b2 ? "hasbad" : sf > 0.5 ? "haswarn" : ""}" style="--i:${i}" title="${h(fmt(T2.cashIn, { m: money2(mo.checking) }))}"><small>${h(fmt(LT2.month, { m: mo.month }))}</small><span class="mo-bar"><i style="height:${Math.max(4, moTotal(mo) / moMax * 100)}%"></i></span><b>${money2(moTotal(mo))}</b>${b2 ? `<em class="bad" title="${h(b2.label)}">${h(b2.label.replace(/[:：].*$/, ""))}</em>` : sf > 0.5 ? `<em class="warn" title="${h(e.find((l) => l.type === "shortfall").label)}">${h(fmt(T2.drewSav, { m: money2(sf) }))}</em>` : ""}</div>`;
@@ -7097,7 +7192,7 @@ function modalHtml() {
   if (M.kind === "lesson" && s2.learn?.pending) {
     const t = lessonText(s2, s2.learn.pending), LICO = { paycheck: ["coin", "green"], emergency: ["piggy", "blue"], debt: ["flame", "red"], match: ["hands", "gold"], compound: ["sprout", "green"], creep: ["chart", "purple"] }[s2.learn.pending] || ["star", "gold"];
     const P2 = s2.learn.pending;
-    M.cg ??= { id: P2, p: cgParams(P2), st: "ready", secs: 12 };
+    M.cg ??= { id: P2, p: cgParams(P2), st: "ready", secs: { paycheck: 14, emergency: 16, debt: 30, match: 12, compound: 20, creep: 16 }[P2] || 12, untimed: true };
     const G = M.cg, done = G.st === "done", short = done ? `<p class="lesson-short">${icon.star}<b>${h(t.short)}</b></p>` : "";
     return wrap(`<header class="m-head lesson-head">${bubbleArt(LICO[0], LICO[1])}<div><span class="ribbon-tag">${h(fmt(LT2.lesson, t))}</span><h2>${h(t.title)}</h2></div></header>${cgBlock(G)}${short}${done ? `<details class="more"><summary>${h(LG.more)}</summary><p class="lesson-body">${h(t.body)}</p></details>` : ""}
       <div class="m-foot">${cgFoot(G, btn("lesson-ok", LT2.gotIt, { cls: "btn green big", ico: "check", attrs: "data-autofocus" }))}</div>`, "small-modal lesson-modal cg-modal");
@@ -7163,18 +7258,18 @@ function cgParams(id) {
   return { raise: raise >= 1500 ? raise : 5e3, years: Math.max(5, 50 - s2.age) };
 }
 function cgBlock(G) {
-  if (G.st !== "done") return `<div class="arena small cg-arena"><canvas id="cg-canvas"></canvas>${G.st === "ready" ? `<div class="cg-cover">${icon.star}<b>${h(CG.how[G.id])}</b><small>${h(CG.secs(G.secs))} \xB7 ${h(CG.ctl[G.id])}</small></div>` : ""}</div>`;
+  if (G.st !== "done") return `${G.st === "play" ? `<p class="cg-how">${h(CG.how[G.id])} <small>${h(CG.ctl[G.id])}</small></p>` : ""}<div class="arena small cg-arena"><canvas id="cg-canvas"></canvas>${G.st === "ready" ? `<div class="cg-cover">${icon.star}<b>${h(CG.how[G.id])}</b><small>${h(G.untimed ? CG.noLimit : CG.secs(G.secs))} \xB7 ${h(CG.ctl[G.id])}</small></div>` : ""}</div>`;
   const S2 = cgSummary(G.id, G.p, G.r, money2), max = Math.max(1, ...S2.bars.map((b) => b[1]));
   return `<div class="cg-result">${S2.bars.map(([l, v, cls, d]) => `<div class="cg-row"><span>${h(l)}</span>${meter(v, max, cls)}<b>${h(d ?? money2(v))}</b></div>`).join("")}</div><p class="lg-debrief">${h(S2.line)}</p>`;
 }
-var cgFoot = (G, doneBtn) => G.st === "done" ? doneBtn : G.st === "ready" ? `${btn("cg-skip", CG.skip, { cls: "btn ghost small" })}${reduced ? "" : btn("cg-play", CG.play, { cls: "btn blue big", ico: "star", attrs: "data-autofocus" })}` : btn("cg-stop", CG.stop, { cls: "btn ghost small" });
+var cgFoot = (G, doneBtn) => G.st === "done" ? doneBtn : G.st === "ready" ? `${btn("cg-skip", CG.skip, { cls: "btn ghost small" })}${reduced ? "" : btn("cg-play", CG.play, { cls: "btn blue big", ico: "star", attrs: "data-autofocus" })}` : btn("cg-stop", G.untimed ? CG.next : CG.stop, { cls: G.untimed ? "btn green" : "btn ghost small", ico: G.untimed ? "check" : "" });
 function startCg() {
   const G = ui.modal?.cg, canvas = root.querySelector("#cg-canvas");
   if (!G || G.st !== "play" || !canvas || cgRun) return;
   cgRun = playConcept(canvas, G.id, G.p, { onEnd: (r) => {
     cgRun = null;
     endCg(G, r);
-  } }, G.secs);
+  } }, G.secs, !!G.untimed);
 }
 function endCg(G, r) {
   G.r = r;

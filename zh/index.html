@@ -1454,6 +1454,9 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 .dstrip { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 2px solid var(--ink); border-radius: 10px; margin: 8px 0 4px; font-weight: 900; font-size: .8rem; text-align: center; }
 .dstrip span { padding: 3px 2px; color: #fff; display: flex; flex-direction: column; line-height: 1.15; } .dstrip span small { font-weight: 700; font-size: .66rem; }
 .dstrip .ds-f { background: #d64545; border-radius: 8px 0 0 8px; } .dstrip .ds-o { background: #3d7be0; } .dstrip .ds-g { background: #23955a; border-radius: 0 8px 8px 0; }
+.dstrip.has-hit span:not(.hit) { filter: saturate(.3) brightness(1.25); } .dstrip span.hit { box-shadow: inset 0 0 0 3px #fff; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.opt .opt-chain { display: inline-flex; align-items: center; gap: 3px; font-size: .72rem; } .opt .opt-chain .ico { width: 13px; height: 13px; } .opt .why { display: inline-flex; align-items: center; gap: 4px; } .opt .why .ico { width: 13px; height: 13px; }
 .dstrip i { position: absolute; top: -7px; bottom: -7px; width: 5px; margin-left: -2.5px; background: var(--ink); border-radius: 3px; box-shadow: 0 0 0 2px #fff; }
 .idcard > summary { list-style: none; cursor: default; } .idcard > summary::-webkit-details-marker { display: none; }
 @media (max-width: 1000px) { .idcard > summary { cursor: pointer; } .idcard > summary::after { content: '▾'; margin-left: auto; font-weight: 900; font-size: 1.1rem; } .idcard[open] > summary::after { content: '▴'; } }
@@ -3205,12 +3208,12 @@ function cardOptions(s4) {
   const list = c.options.filter((o) => !o.who || o.who === (s4.home ? "home" : "rent")).map((o) => o.cost ? { ...o, cost: scaled(s4, c, o.cost) } : o).map((o) => ({ ...o, blocked: optionBlock(s4, o) }));
   if (list.every((o) => o.blocked)) {
     const p = list.find((o) => o.pay) || list[0];
-    return list.map((o) => o === p ? { ...o, pay: o.pay ? "checking" : o.pay, blocked: null, label: o.pay ? "\u5148\u7528\u65E5\u5E38\u8D26\u6237\u4ED8\uFF08\u4E0D\u591F\u4F1A\u52A8\u7528\u5B58\u6B3E\u6216\u53D8\u6210\u903E\u671F\uFF09" : o.label } : o);
+    return list.map((o) => o === p ? { ...o, pay: o.pay ? "checking" : o.pay, blocked: null, label: o.pay ? "\u7528\u65E5\u5E38\u8D26\u6237\u4ED8" : o.label, cascade: !!o.pay } : o);
   }
   return list;
 }
 function optionBlock(s4, o) {
-  if (o.needs === "ok" && s4.card.tier === "fail") return "\u5224\u5B9A\u5931\u8D25\uFF1A\u8FD9\u6B21\u6CA1\u5FCD\u4F4F\uFF0C\u53EA\u80FD\u5728\u82B1\u94B1\u7684\u9009\u9879\u91CC\u9009\u3002";
+  if (o.needs === "ok" && s4.card.tier === "fail") return "\u5224\u5B9A\u5931\u8D25";
   if (o.pay === "emergency" && s4.accounts.emergency < o.cost) return `\u5E94\u6025\u91D1\u53EA\u6709 ${money(s4.accounts.emergency)}\u3002`;
   if (o.pay === "goal" && s4.accounts.goal < o.cost) return `\u6512\u94B1\u57FA\u91D1\u53EA\u6709 ${money(s4.accounts.goal)}\u3002`;
   if (o.pay === "card") {
@@ -3865,7 +3868,7 @@ function nextYear(s4) {
   pickLesson(n);
   return n;
 }
-var R20 = { "q1": "\u5982\u679C\u7B2C\u4E00\u5E74\u4E00\u5206\u94B1\u6CA1\u8D5A\uFF0C\u4F60\u7684\u94B1\u5927\u7EA6\u80FD\u6491 {n} \u4E2A\u6708\u3002\u591F\u5417\uFF1F", "q1o": [["yes", "\u591F"], ["no", "\u4E0D\u592A\u591F"], ["risk", "\u4E0D\u591F\uFF0C\u4F46\u6211\u613F\u610F\u5192\u9669"]], "q2": "\u4F60\u6BCF\u5E74\u8981\u653E\u5F03 {give} \u5DE5\u8D44\u548C\u798F\u5229\u3002\u751F\u610F\u6BCF\u6708\u8981\u8D5A\u7EA6 {need} \u624D\u8FFD\u5F97\u4E0A\u3002\u503C\u5F97\u5417\uFF1F", "q2b": "\u4F60\u6BCF\u6708\u81F3\u5C11\u8981 {need} \u624D\u591F\u5F00\u9500\u3002\u8FD9\u95E8\u751F\u610F\u8D5A\u5F97\u5230\u5417\uFF1F", "q2o": [["yes", "\u503C\u5F97"], ["unsure", "\u8FD8\u4E0D\u786E\u5B9A"], ["no", "\u53EF\u80FD\u4E0D\u503C\u5F97"]], "q3": "\u5982\u679C\u5931\u8D25\uFF0C\u8FD8\u8981\u8FD8\u7EA6 {bill} \u8D26\u5355\u3002\u4F60\u6253\u7B97\u600E\u4E48\u529E\uFF1F", "q3o": [["work", "\u56DE\u53BB\u5DE5\u4F5C"], ["again", "\u518D\u8BD5\u4E00\u6B21"], ["savings", "\u5148\u9760\u5B58\u6B3E\u6491\u4E00\u9635"]], "review": "\u80FD\u6491\uFF1A\u5F53\u521D\u7B97 {m} \u4E2A\u6708\uFF0C\u73B0\u5728 {now} \u4E2A\u6708\u3002\u6708\u5229\u6DA6\uFF1A{p}\uFF0C\u5F53\u521D\u7B97\u8981 {need}\u3002", "reflect": "\u4F60\u7684{label}\u7ECF\u8425\u4E86 {y} \u5E74\u3002\u4E0B\u6B21\u4F60\u4F1A\u6539\u4EC0\u4E48\uFF1F", "reflectPlan": "\u5F53\u65F6\u4F60\u8BF4\u5931\u8D25\u540E\u8981\uFF1A\u201C{w}\u201D\u3002", "reflectO": [["save", "\u5148\u591A\u5B58\u70B9\u94B1"], ["side", "\u5148\u5F53\u526F\u4E1A\u8BD5\u8BD5"], ["small", "\u505A\u5C0F\u4E00\u70B9"], ["none", "\u8FD8\u662F\u62FF\u5DE5\u8D44"], ["same", "\u4E0D\u6539\uFF0C\u8FD8\u4F1A\u8FD9\u6837\u505A"]], "reflectRec": "\u4E0B\u6B21\uFF1A{x}\u3002", "caught": "\u5B58\u6B3E\u6321\u4E0B\u4E86 {x}\u3002\u5237 {r}% \u7684\u5361\uFF0C\u4E00\u5E74\u7EA6\u4ED8 {i} \u5229\u606F\u3002", "carded": "{x} \u4E0A\u4E86\u4FE1\u7528\u5361\u6216\u903E\u671F\uFF1A\u4E00\u5E74\u7EA6\u4ED8 {i} \u5229\u606F\u3002", "could": " \u4F60\u7684\u5E94\u6025\u91D1\u672C\u6765\u591F\u4ED8\u3002", "bigger": " \u5E94\u6025\u91D1\u518D\u591A\u4E00\u4E9B\u5C31\u4E0D\u7528\u8FD9\u6837\u3002", "optFund": "\u6CA1\u6709\u5229\u606F \xB7 \u80FD\u6491 {a} \u2192 {b} \u4E2A\u6708", "optCard": "\u4E00\u5E74\u7EA6\u4ED8 {i} \u5229\u606F" };
+var R20 = { "q1": "\u5982\u679C\u7B2C\u4E00\u5E74\u4E00\u5206\u94B1\u6CA1\u8D5A\uFF0C\u4F60\u7684\u94B1\u5927\u7EA6\u80FD\u6491 {n} \u4E2A\u6708\u3002\u591F\u5417\uFF1F", "q1o": [["yes", "\u591F"], ["no", "\u4E0D\u592A\u591F"], ["risk", "\u4E0D\u591F\uFF0C\u4F46\u6211\u613F\u610F\u5192\u9669"]], "q2": "\u4F60\u6BCF\u5E74\u8981\u653E\u5F03 {give} \u5DE5\u8D44\u548C\u798F\u5229\u3002\u751F\u610F\u6BCF\u6708\u8981\u8D5A\u7EA6 {need} \u624D\u8FFD\u5F97\u4E0A\u3002\u503C\u5F97\u5417\uFF1F", "q2b": "\u4F60\u6BCF\u6708\u81F3\u5C11\u8981 {need} \u624D\u591F\u5F00\u9500\u3002\u8FD9\u95E8\u751F\u610F\u8D5A\u5F97\u5230\u5417\uFF1F", "q2o": [["yes", "\u503C\u5F97"], ["unsure", "\u8FD8\u4E0D\u786E\u5B9A"], ["no", "\u53EF\u80FD\u4E0D\u503C\u5F97"]], "q3": "\u5982\u679C\u5931\u8D25\uFF0C\u8FD8\u8981\u8FD8\u7EA6 {bill} \u8D26\u5355\u3002\u4F60\u6253\u7B97\u600E\u4E48\u529E\uFF1F", "q3o": [["work", "\u56DE\u53BB\u5DE5\u4F5C"], ["again", "\u518D\u8BD5\u4E00\u6B21"], ["savings", "\u5148\u9760\u5B58\u6B3E\u6491\u4E00\u9635"]], "review": "\u80FD\u6491\uFF1A\u5F53\u521D\u7B97 {m} \u4E2A\u6708\uFF0C\u73B0\u5728 {now} \u4E2A\u6708\u3002\u6708\u5229\u6DA6\uFF1A{p}\uFF0C\u5F53\u521D\u7B97\u8981 {need}\u3002", "reflect": "\u4F60\u7684{label}\u7ECF\u8425\u4E86 {y} \u5E74\u3002\u4E0B\u6B21\u4F60\u4F1A\u6539\u4EC0\u4E48\uFF1F", "reflectPlan": "\u5F53\u65F6\u4F60\u8BF4\u5931\u8D25\u540E\u8981\uFF1A\u201C{w}\u201D\u3002", "reflectO": [["save", "\u5148\u591A\u5B58\u70B9\u94B1"], ["side", "\u5148\u5F53\u526F\u4E1A\u8BD5\u8BD5"], ["small", "\u505A\u5C0F\u4E00\u70B9"], ["none", "\u8FD8\u662F\u62FF\u5DE5\u8D44"], ["same", "\u4E0D\u6539\uFF0C\u8FD8\u4F1A\u8FD9\u6837\u505A"]], "reflectRec": "\u4E0B\u6B21\uFF1A{x}\u3002", "caught": "\u5B58\u6B3E\u6321\u4E0B {x} \u2192 \u514D\u4E86 {r}% \u7684\u5361\u5229\u606F\uFF08\u4E00\u5E74\u7EA6 {i}\uFF09\u3002", "carded": "{x} \u4E0A\u4E86\u4FE1\u7528\u5361\u6216\u903E\u671F \u2192 \u4E00\u5E74\u7EA6 {i} \u5229\u606F\u3002", "could": " \u5E94\u6025\u91D1\u672C\u6765\u591F\u4ED8\u3002", "bigger": " \u5B58\u6B3E\u518D\u591A\u4E9B\u5C31\u80FD\u6321\u4F4F\u3002", "optFund": "\u6CA1\u6709\u5229\u606F \xB7 \u80FD\u6491 {a} \u2192 {b} \u4E2A\u6708", "optCard": "\u4E00\u5E74\u7EA6\u4ED8 {i} \u5229\u606F" };
 var fill20 = (t, v) => t.replace(/\{(\w+)\}/g, (_, k2) => v[k2] ?? "");
 var monthlyOut = (s4) => essentialsMonthly(s4) + s4.fun + sum(minimums(s4).map((x) => x.due));
 var monthsLeft = (cash, out) => out > 0 ? Math.round(cash / out * 10) / 10 : 99;
@@ -3919,7 +3922,7 @@ function yearNotes(s4) {
   if (bad >= 50) out.push(fill20(R20.carded, { x: money(bad), i: money(bad * apr) }) + ((y.before?.emergency || 0) >= bad ? R20.could : R20.bigger));
   else if (good >= 50) out.push(fill20(R20.caught, { x: money(good), r: Math.round(apr * 100), i: money(good * apr) }));
   const em0 = y.before?.emergency || 0, emD = em0 - s4.accounts.emergency, due = y.summary && y.summary.refund < -1 ? -y.summary.refund : 0;
-  if (emD >= 500 && s4.accounts.emergency < em0 * 0.5) out.push(fill20(due >= emD * 0.5 ? "\u5E94\u6025\u91D1\u5C11\u4E86 {x}\uFF1A\u5E74\u5E95\u8981\u8865\u7A0E {t}\uFF0C\u65E5\u5E38\u8D26\u6237\u4E0D\u591F\uFF0C\u5C31\u4ECE\u5E94\u6025\u91D1\u91CC\u62FF\u4E86\u3002\u505A\u751F\u610F\u6216\u526F\u4E1A\u7684\u6536\u5165\u6CA1\u4EBA\u66FF\u4F60\u9884\u6263\u7A0E\uFF0C\u8BB0\u5F97\u7559\u51FA\u4EA4\u7A0E\u7684\u94B1\u3002" : "\u5E94\u6025\u91D1\u5C11\u4E86 {x}\uFF1A\u8FD9\u4E00\u5E74\u94B1\u4E0D\u591F\u82B1\uFF0C\u5DEE\u7684\u90E8\u5206\u4ECE\u5E94\u6025\u91D1\u91CC\u62FF\u4E86\u3002", { x: money(emD), t: money(due) }));
+  if (emD >= 500 && s4.accounts.emergency < em0 * 0.5) out.push(fill20(due >= emD * 0.5 ? "\u5E94\u6025\u91D1 \u2212{x}\uFF1A\u5E74\u5E95\u8865\u7A0E {t}\uFF08\u751F\u610F\u548C\u526F\u4E1A\u6536\u5165\u6CA1\u4EBA\u66FF\u4F60\u9884\u6263\u7A0E\uFF09\u3002" : "\u5E94\u6025\u91D1 \u2212{x}\uFF1A\u8865\u4E86\u4ECA\u5E74\u7684\u7F3A\u53E3\u3002", { x: money(emD), t: money(due) }));
   const b = s4.business;
   if (b?.plan && b.since === s4.age) out.push(fill20(R20.review, { m: b.plan.months.toFixed(1), now: monthsLeft(liquid(s4), monthlyOut(s4)).toFixed(1), p: money(b.profit), need: money(b.plan.need) }));
   return out;
@@ -5200,6 +5203,7 @@ var GLOSSARY = {
   emergency: ["\u5E94\u6025\u91D1", "\u53EA\u4E3A\u610F\u5916\u51C6\u5907\u7684\u94B1\uFF1A\u5931\u4E1A\u3001\u751F\u75C5\u3001\u4FEE\u8F66\u3002\u653E\u5728\u9AD8\u6536\u76CA\u50A8\u84C4\u8D26\u6237\u3002\u5EFA\u8BAE\u5B58\u591F 3\u20136 \u4E2A\u6708\u7684\u5FC5\u8981\u5F00\u9500\u3002"],
   goalfund: ["\u6512\u94B1\u57FA\u91D1", "1\u20135 \u5E74\u5185\u8981\u7528\u7684\u94B1\uFF0C\u6BD4\u5982\u4E70\u623F\u9996\u4ED8\u3001\u65C5\u884C\u3001\u6362\u8F66\u3002"],
   checking: ["\u65E5\u5E38\u8D26\u6237", "\u5DE5\u8D44\u8FDB\u6765\u3001\u8D26\u5355\u51FA\u53BB\u7684\u8D26\u6237\u3002\u6CA1\u6709\u5229\u606F\u3002"],
+  monthBoxes: ["\u6BCF\u6708\u683C\u5B50", "\u6BCF\u683C\u662F\u6708\u5E95\u7684\u5B58\u6B3E\uFF08\u4E0D\u662F\u6536\u5165\uFF09\u3002\u7EA2\u6846\uFF1A\u6709\u8D26\u5355\u6CA1\u4ED8\u4E0A\u3002\u9EC4\u6846\uFF1A\u7528\u5B58\u6B3E\u8865\u4E86\u7F3A\u53E3\u3002"],
   available: ["\u6BCF\u6708\u8FD8\u80FD\u5B89\u6392\u7684\u94B1", "\u5230\u624B\u7684\u94B1\uFF0C\u51CF\u53BB\u5FC5\u8981\u5F00\u9500\u3001\u5A31\u4E50\u548C\u6BCF\u7B14\u503A\u7684\u81F3\u5C11\u8981\u8FD8\u7684\u94B1\uFF0C\u5269\u4E0B\u7684\u5C31\u662F\u6BCF\u4E2A\u6708\u80FD\u81EA\u7531\u5B89\u6392\u7684\u94B1\u3002\u8D1F\u6570\u8868\u793A\u5165\u4E0D\u6577\u51FA\uFF1A\u6E38\u620F\u4F1A\u5148\u52A8\u7528\u5B58\u6B3E\uFF0C\u518D\u5237\u4FE1\u7528\u5361\uFF0C\u6700\u540E\u53D8\u6210\u903E\u671F\u8D26\u5355\u3002"],
   minimum: ["\u81F3\u5C11\u8981\u8FD8\u7684\u94B1", "\u6BCF\u7B14\u503A\u6BCF\u4E2A\u6708\u81F3\u5C11\u8981\u8FD8\u7684\u94B1\uFF0C\u6E38\u620F\u4F1A\u81EA\u52A8\u6263\u3002\u5C11\u8FD8\u4E00\u6B21\u5C31\u7B97\u903E\u671F\uFF1A\u7F5A\u6B3E $30\uFF0C\u4FE1\u7528\u5206\u4E0B\u964D\u3002"],
   extra: ["\u591A\u8FD8", "\u5728\u81F3\u5C11\u8981\u8FD8\u7684\u94B1\u4E4B\u5916\u518D\u591A\u8FD8\u4E00\u4E9B\u3002\u5229\u7387\u8D8A\u9AD8\u7684\u503A\u8D8A\u503C\u5F97\u5148\u591A\u8FD8\u3002"],
@@ -7028,7 +7032,7 @@ function paydayPage() {
     ${segBar([{ v: taxes, cls: "tax", label: T2.taxes }, { v: pay.k401, cls: "save", label: T2.k401Name }, { v: pay.essentials, cls: "ess", label: T2.essentials }, { v: pay.fun, cls: "fun", label: T2.fun }, { v: pay.minimums, cls: "min", label: T2.minimums }, { v: avail, cls: "avail", label: T2.available }], Math.max(gross + extras, taxes + pay.k401 + costs + avail))}
     <ul class="wf-legend ledger">${leg("plus", T2.wage, "+" + money2(gross), "")}${aidIn ? leg("plus", T2.aidIn, "+" + money2(aidIn), a.livingLoan ? "livingLoan" : "pell") : ""}${otherIn > 0.5 ? leg("plus", T2.otherIn, "+" + money2(otherIn), "") : ""}
       ${leg("tax", T2.taxes, money2(-taxes), "taxes")}${pay.k401 ? leg("save", T2.k401Name, money2(-pay.k401), "k401") : ""}${leg("ess", T2.essentials, money2(-pay.essentials), "essentials")}${leg("fun", T2.fun, money2(-pay.fun), "fun")}${pay.minimums ? leg("min", T2.minimums, money2(-pay.minimums), "minimum") : ""}</ul>
-    <div class="fl total ${pay.available < -0.5 ? "bad" : "good"}" data-ok="${Math.abs(toLeft - pay.available) < 1}"><span>${T2.available} ${q("available")}</span><b>${fmt(pay.available < -0.5 ? T2.shortOf : T2.spare, { m: money2(Math.abs(pay.available)) })}</b></div>${editable && pay.available >= -0.5 ? `<div class="left-now ${pay.left < -0.5 ? "bad" : ""}"><span>${T2.unassigned}</span><b>${money2(pay.left)}</b></div>${pay.left < -0.5 ? `<p class="risk left-neg">${icon.alert}<span>${T2.leftNeg}</span></p>` : ""}` : ""}
+    <div class="fl total ${pay.available < -0.5 ? "bad" : "good"}" data-ok="${Math.abs(toLeft - pay.available) < 1}"><span>${T2.available} ${q("available")}</span><b>${fmt(pay.available < -0.5 ? T2.shortOf : T2.spare, { m: money2(Math.abs(pay.available)) })}</b></div>${editable && pay.available >= -0.5 ? `${pay.left < -0.5 ? `<p class="risk left-neg">${icon.alert}<span>${T2.leftNeg}</span></p>` : ""}` : ""}
     <details class="more"><summary>${T2.lineByLine}</summary>
     ${line(T2.grossMonthly + (s2.spouse ? T2.inclSpouse : ""), money2(gross), "gross")}
     ${line("\u2212 " + T2.federal, money2(-pay.tax.federal), "federal", "minus")}${line("\u2212 " + fmt(T2.stateTax, { st: STATES[s2.region].name }), money2(-pay.tax.state), "state", "minus")}
@@ -7118,18 +7122,38 @@ function cardPage() {
     <div class="card-side">
       ${c.roll != null ? judged ? `<div class="panel">${diceBox(c.roll, c.mod, c.bonus, c.game === "dodge" ? STAT[c.stat] : c.throwLabel, c.stat)}</div>` : `<div class="panel judge"><h3>${icon.dice}\u5224\u5B9A\uFF1A${h(c.game === "dodge" ? STAT[c.stat] : c.throwLabel)} ${q("dice")}</h3><p>\u5148\u73A9\u4E00\u4E2A\u5C0F\u6E38\u620F\u62FF\u52A0\u503C\uFF08\u6700\u591A +2\uFF09\uFF0C\u518D\u63B7\u9AB0\u5B50\u3002\u4F60\u73B0\u5728\u7684${STAT[c.stat]}\uFF1A${c.mod}\u3002</p>
           ${diceStrip(null)}<div class="row">${btn("card-game", T2.playFirst, { cls: "btn blue", ico: "star", attrs: reduced ? "disabled" : "data-autofocus" })}${btn("card-roll", "\u76F4\u63A5\u63B7\u9AB0\u5B50", { cls: "btn ghost", ico: "dice" })}</div></div>` : ""}
-      ${judged ? `<div class="panel"><h3>\u4F60\u600E\u4E48\u5E94\u5BF9\uFF1F</h3><div class="opts">${opts.map((o) => `<button class="opt ${o.blocked ? "blocked" : ""}" data-go="card-opt" data-id="${o.id}" ${o.blocked ? "disabled" : ""}><b>${h(o.label)}</b>${o.cost ? `<small class="opt-cost">${icon.coin}${money2(o.cost)}</small>` : ""}${optionEffect(s2, o) ? `<small class="opt-effect">${h(optionEffect(s2, o))}</small>` : ""}${o.blocked ? `<small class="why">${h(o.blocked)}</small>` : ""}</button>`).join("")}</div></div>` : ""}
+      ${judged ? `<div class="panel"><h3>\u4F60\u600E\u4E48\u5E94\u5BF9\uFF1F</h3><div class="opts">${opts.map((o) => `<button class="opt ${o.blocked ? "blocked" : ""}" data-go="card-opt" data-id="${o.id}" ${o.blocked ? "disabled" : ""}><b>${h(o.label)}</b>${o.cost ? `<small class="opt-cost">${icon.coin}${money2(o.cost)}</small>` : ""}${optionEffect(s2, o) ? `<small class="opt-effect">${h(optionEffect(s2, o))}</small>` : ""}${o.cascade ? `<small class="opt-chain">${icon.bank}\u65E5\u5E38 \u2192 ${icon.piggy}\u5B58\u6B3E \u2192 ${icon.alert}\u903E\u671F</small>` : ""}${o.blocked ? `<small class="why">${icon.lock}${h(o.blocked)}</small>` : ""}</button>`).join("")}</div></div>` : ""}
     </div></section>`);
 }
-function diceStrip(total) {
-  const seg = (cls, r, k2) => `<span class="${cls}">${r}<small>${h(TIER_NAME[k2])}</small></span>`;
-  return `<div class="dstrip">${seg("ds-f", "1\u20133", "fail")}${seg("ds-o", "4\u20136", "ok")}${seg("ds-g", "7+", "great")}${total != null ? `<i style="left:${(Math.max(0.5, Math.min(8.5, total - 0.5)) / 9 * 100).toFixed(1)}%"></i>` : ""}</div>`;
+var legendAge = null;
+var lgFull = true;
+function legendFull(s4, past) {
+  let seen = false;
+  try {
+    seen = localStorage.getItem("adulting.tycoon.legend.v1") === "1";
+  } catch {
+  }
+  if (legendAge === s4.age || !seen) {
+    if (!past) {
+      legendAge = s4.age;
+      try {
+        localStorage.setItem("adulting.tycoon.legend.v1", "1");
+      } catch {
+      }
+    }
+    return true;
+  }
+  return false;
+}
+function diceStrip(total, tier) {
+  const seg = (cls, r, k2) => `<span class="${cls}${tier === k2 ? " hit" : ""}">${r}<small>${h(TIER_NAME[k2])}</small></span>`;
+  return `<div class="dstrip${tier ? " has-hit" : ""}">${seg("ds-f", "1\u20133", "fail")}${seg("ds-o", "4\u20136", "ok")}${seg("ds-g", "7+", "great")}${total != null ? `<i style="left:${(Math.max(0.5, Math.min(8.5, total - 0.5)) / 9 * 100).toFixed(1)}%"></i>` : ""}</div>`;
 }
 function diceBox(roll, mod, bonus, label, stat, pen = 0) {
   const one = roll === 1, total = roll + mod + (one ? 0 : bonus || 0) - (pen || 0), tier = tierOf(roll + mod + (bonus || 0) - (pen || 0), roll, bonus || 0);
   return `<div class="dice-box ${tier}"><div class="die ${reduced ? "" : "rolling"}" data-final="${roll}">${roll}</div><div class="calc"><b>${h(label)}</b>
     <div class="eq"><span>\u9AB0\u5B50 <b>${roll}</b></span>+<span>${STAT[stat]} <b>${mod}</b></span>+<span class="${one && bonus ? "void" : ""}">\u5C0F\u6E38\u620F <b>${bonus || 0}</b></span>${pen ? `\u2212<span>${h(TEXT.jump)} <b>${pen}</b></span>` : ""}=<span class="tot">${total}</span></div>
-    ${diceStrip(total)}<small class="${one ? "nat1-on" : ""}">${h(TEXT.nat1)}</small><span class="tier">${TIER_NAME[tier]}</span></div></div>`;
+    ${diceStrip(total, tier)}${one ? `<small class="nat1-on">${h(TEXT.nat1)}</small>` : ""}<span class="tier sr-only">${TIER_NAME[tier]}</span></div></div>`;
 }
 var walkTimer = null;
 function stepWalk() {
@@ -7199,8 +7223,8 @@ function reviewPage() {
   const outSegs = [{ v: t.total, cls: "tax", label: T2.taxes }, { v: sm.essentials, cls: "ess", label: T2.essentials }, { v: sm.fun, cls: "fun", label: T2.fun }, { v: sm.interest + sm.lateFees, cls: "int", label: T2.interest }, { v: sm.tuition, cls: "tui", label: T2.tuition }, { v: sm.costs + Math.max(0, -sm.biz), cls: "one", label: T2.oneOff }];
   const legend = (segs) => `<ul class="io-legend">${segs.filter((x) => x.v > 0.5).map((x) => `<li class="k-${x.cls}"><i></i>${x.label}<b>${money2(x.v)}</b></li>`).join("")}</ul>`;
   const baRow = (label, a0, b0, better, show) => `<div class="ba-row"><span class="ba-lab">${label}</span>${beforeAfter(a0, b0, better)}<b>${show}</b></div>`;
-  frame("review", `<section class="ty-review"><header class="page-head"><h1>${fmt(past ? T2.ageLookBack : T2.ageDone, { age })}</h1>${y.news ? `<p class="news">${icon.chart}${h(y.news)} (${fmt(T2.marketNote, { r: pct(sm.returnRate, 1) })})</p>` : ""}${pastPicker(past)}</header>
-    <p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans} <span class="cap-bad cap-warn"></span>${T2.warnMeans}</p>${past ? "" : ((n) => n.length ? `<p class="yr-note">${icon.piggy}<span>${n.map(h).join("<br>")}</span></p>` : "")(yearNotes(s2))}
+  frame("review", `<section class="ty-review"><header class="page-head"><h1>${fmt(past ? T2.ageLookBack : T2.ageDone, { age })}${(lgFull = legendFull(s2, past)) ? "" : " " + q("monthBoxes")}</h1>${y.news ? `<p class="news">${icon.chart}${h(y.news)} (${fmt(T2.marketNote, { r: pct(sm.returnRate, 1) })})</p>` : ""}${pastPicker(past)}</header>
+    ${lgFull ? `<p class="mo-cap">${icon.piggy}${T2.boxMeans} <span class="cap-bad"></span>${T2.redMeans} <span class="cap-bad cap-warn"></span>${T2.warnMeans}</p>` : ""}${past ? "" : ((n) => n.length ? `<p class="yr-note">${icon.piggy}<span>${n.map(h).join("<br>")}</span></p>` : "")(yearNotes(s2))}
     <div class="ty-months ${anim ? "anim" : ""}">${y.months.map((mo, i) => {
     const e = ev(mo.month), b2 = e.find((l) => bad.includes(l.type) && l.type !== "shortfall"), sf = sum2(e.filter((l) => l.type === "shortfall").map((l) => l.amount));
     return `<div class="ty-mo ${b2 ? "hasbad" : sf > 0.5 ? "haswarn" : ""}" style="--i:${i}" title="${h(fmt(T2.cashIn, { m: money2(mo.checking) }))}"><small>${h(fmt(LT2.month, { m: mo.month }))}</small><span class="mo-bar"><i style="height:${Math.max(4, moTotal(mo) / moMax * 100)}%"></i></span><b>${money2(moTotal(mo))}</b>${b2 ? `<em class="bad" title="${h(b2.label)}">${h(b2.label.replace(/[:：].*$/, ""))}</em>` : sf > 0.5 ? `<em class="warn" title="${h(e.find((l) => l.type === "shortfall").label)}">${h(fmt(T2.drewSav, { m: money2(sf) }))}</em>` : ""}</div>`;

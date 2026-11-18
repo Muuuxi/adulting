@@ -3468,6 +3468,7 @@ function simulateYear(s0, { returnRate = s0.marketReturn ?? ASSUME.stockReturnMe
         y.withheld.ss += p.amount * 0.062;
         y.withheld.med += p.amount * 0.0145;
         y.withheld.state += p.amount * st;
+        y.cat.tax += w;
         y.gross += p.amount;
         post(m, "income", p.amount - w, `Bonus ${money(p.amount)} (22% federal withholding)`);
       }
@@ -3945,7 +3946,7 @@ function realNote(s4) {
   if (REAL_DEC[s4.decision?.id]) want.push(REAL_DEC[s4.decision.id]);
   const id = want.find((x) => !seen.includes(x));
   if (!id) return null;
-  const cost = CARDS.find((c) => c.id === s4.card?.id)?.options?.find((o) => o.cost)?.cost || 0;
+  const cc = CARDS.find((c) => c.id === s4.card?.id), co = cc?.options?.find((o) => o.id === s4.card?.choice && o.cost) || cc?.options?.find((o) => o.cost), cost = co ? scaled(s4, cc, co.cost) : 0;
   return { id, text: fill20(R22[id], { x: money(cost) }) };
 }
 function leaveService(n) {

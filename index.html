@@ -2217,7 +2217,7 @@ var CARDS = [
 var STAGES = [
   { id: 0, name: "Starting Out", en: "Starting Out", enter: "Not yet at Survival" },
   { id: 1, name: "Survival", en: "Survival", enter: "Positive cash flow for a year, at least $1,000 you can reach" },
-  { id: 2, name: "Stability", en: "Stability", enter: "No high-interest debt (APR \u2265 8%); cash, savings and investments you can reach \u2265 3 months of essentials" },
+  { id: 2, name: "Stability", en: "Stability", enter: "No high-interest debt (APR \u2265 8%) that your cash couldn\u2019t pay off today; after paying it, cash, savings and investments you can reach \u2265 3 months of essentials" },
   { id: 3, name: "Momentum", en: "Momentum", enter: "Investing \u2265 15% of pre-tax income a year (including employer match), positive wealth" },
   { id: 4, name: "Security", en: "Security", enter: "Investments can pay (at 4%) \u2265 25% of essential costs" },
   { id: 5, name: "Optionality", en: "Optionality", enter: "Investments can pay \u2265 50% of a year\u2019s spending" },
@@ -2519,6 +2519,7 @@ function metrics(s4) {
   const totalDebt = sum(debts.map((d) => d.balance)), consumerDebt = sum(debts.filter((d) => !["mortgage", "student"].includes(d.kind)).map((d) => d.balance));
   const assets = a.checking + a.emergency + a.goal + invested + (s4.home ? s4.home.value : 0);
   const fiNumber = annualSpend * ASSUME.fiMultiple, passive = invested * ASSUME.withdrawRate;
+  const hd = debts.filter((d) => d.apr >= 0.08 && d.kind !== "mortgage" || d.kind === "arrears"), highBal = r22(sum(hd.map((d) => d.balance))), reachCash = a.checking + a.emergency + a.goal + a.brokerage;
   return {
     cash: a.checking,
     emergency: a.emergency,
@@ -2536,13 +2537,16 @@ function metrics(s4) {
     fiNumber,
     fiProgress: fiNumber > 0 ? invested / fiNumber : 0,
     passive,
-    highDebt: debts.some((d) => d.apr >= 0.08 && d.kind !== "mortgage" || d.kind === "arrears")
+    highDebt: hd.length > 0,
+    highBal,
+    highDebtCovered: hd.length > 0 && reachCash - highBal >= ess
   };
 }
 function stage(s4, year = s4.history.at(-1)) {
   const m = metrics(s4), reach = s4.accounts.emergency + s4.accounts.checking + s4.accounts.goal + s4.accounts.brokerage, checks = [
     () => (year ? year.netCashFlow > 0 : true) && reach >= 1e3,
-    () => !m.highDebt && (m.essentials > 0 ? reach / m.essentials : 0) >= 3,
+    () => (!m.highDebt || m.highDebtCovered) && (m.essentials > 0 ? (reach - m.highBal) / m.essentials : 0) >= 3,
+    // round 50: count cash as if the balance were paid
     () => (year ? year.investRate >= 0.15 : false) && m.netWorth > 0,
     () => m.passive >= m.essentials * 12 * 0.25,
     () => m.passive >= m.annualSpend * 0.5,
@@ -2553,7 +2557,7 @@ function stage(s4, year = s4.history.at(-1)) {
     if (c()) k2++;
     else break;
   }
-  if (k2 < 3 && !m.highDebt) {
+  if (k2 < 3 && (!m.highDebt || m.highDebtCovered)) {
     for (let j = 5; j >= 3; j--) if (checks[j]()) {
       k2 = Math.max(k2, j + 1);
       break;

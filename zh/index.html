@@ -1563,6 +1563,28 @@ details.more summary::before { content: '▸ '; } details.more[open] summary::be
 @keyframes hs-blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
 @media (prefers-reduced-motion: reduce) { .home-scene * { animation: none !important; } }
 @media (max-width: 1000px) { .side { min-height: 0; } }
+
+/* round 53: mini-game intro and result; the three-slide age-50 summary */
+.mg-goal { display: flex; gap: 6px; align-items: center; font-weight: 800; color: var(--ink); } .mg-goal .ico { width: 18px; height: 18px; }
+.mg-arena { position: relative; }
+.mg-result { display: grid; gap: 8px; padding: 6px 2px 4px; } .mg-result small { color: var(--muted); font-weight: 800; }
+.mg-meter { position: relative; height: 22px; border: 3px solid var(--ink); border-radius: 12px; background: var(--quiet-2); margin: 18px 0 4px; }
+.mg-meter i { display: block; height: 100%; border-radius: 9px; background: var(--grass); }
+.mg-meter span { position: absolute; top: -18px; transform: translateX(-50%); font-size: .7rem; font-weight: 900; } .mg-meter span::after { content: ''; position: absolute; left: 50%; top: 16px; width: 2px; height: 22px; background: var(--ink); }
+.mg-bonus { display: flex; gap: 8px; align-items: center; font-size: 1.2rem; } .mg-bonus .ico { width: 24px; height: 24px; } .mg-bonus.b0 { color: var(--muted); } .mg-bonus.b2 { color: #1c6b45; }
+.sl.ls { align-content: start; gap: 8px; padding: 22px 26px; } .sl.ls h2 { font-size: 1.7rem; } .sl.ls h2 span { white-space: nowrap; }
+.ls-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.ls-tiles > div { background: rgba(255, 255, 255, .14); border: 2px solid rgba(255, 255, 255, .4); border-radius: 14px; padding: 8px 12px; display: grid; gap: 4px; align-content: start; }
+.ls-tiles small { font-size: .85rem; } .ls-tiles b { font-size: 1.45rem; display: flex; gap: 6px; align-items: center; } .ls-tiles b .ico { width: 22px; height: 22px; }
+.ls-tiles em { font-style: normal; font-size: .8rem; font-weight: 700; opacity: .95; } .ls-keys { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.ls-keys span { display: inline-flex; gap: 4px; align-items: center; } .ls-keys i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; border: 1px solid rgba(29, 43, 79, .5); }
+.ls .segbar { border-color: #fff; } .sl.ls .catbars li { grid-template-columns: 150px minmax(0, 1fr) 110px; }
+.ls-grow { width: 100%; height: auto; } .ls-grow .g-val { fill: rgba(255, 213, 79, .55); stroke: #ffd54f; stroke-width: 3; } .ls-grow .g-in { fill: none; stroke: #fff; stroke-width: 3; stroke-dasharray: 8 6; }
+.ls-grow .zero { stroke: rgba(255, 255, 255, .6); } .ls-grow text { fill: #fff; font-weight: 800; font-size: 14px; }
+.ls-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; } .ls-col h3 { font-size: 1.05rem !important; margin: 0 0 4px; }
+.ls-col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; } .ls-col li { display: flex; gap: 6px; align-items: flex-start; font-weight: 700; font-size: .92rem; }
+.ls-col li .ico { width: 18px; height: 18px; flex: none; margin-top: 2px; } .ls-col.warn li .ico { color: #ffd54f; } .ls-col.ok li .ico { color: #9ff5c2; }
+@media (max-width: 640px) { .ls-tiles, .ls-cols { grid-template-columns: 1fr; } .sl.ls h2 { font-size: 1.35rem; } }
 </style>
 </head>
 <body>
@@ -1770,6 +1792,13 @@ var STATUSES = {
   searching: { label: "\u5728\u627E\u5DE5\u4F5C", stat: "career", delta: 1, years: 1, tone: "good", why: "\u5728\u6295\u7B80\u5386\u3001\u7EC3\u9762\u8BD5\u3002" },
   gap: { label: "\u8131\u8282", stat: "career", delta: -1, years: 1, tone: "bad", why: "\u79BB\u5F00\u804C\u573A\u548C\u5B66\u6821\u4E00\u9635\u5B50\u4E86\uFF0C\u9762\u8BD5\u4F1A\u66F4\u96BE\u3002" },
   couch: { label: "\u501F\u4F4F\u670B\u53CB\u5BB6", stat: "career", delta: -1, years: 99, tone: "bad", why: "\u6CA1\u6709\u81EA\u5DF1\u7684\u5730\u65B9\u4F4F\uFF0C\u89C9\u4E5F\u7761\u4E0D\u597D\u3002\u642C\u8FDB\u65B0\u4F4F\u5904\u540E\u5C31\u597D\u4E86\u3002" }
+};
+var GOALS = {
+  safety: { title: "\u5B58\u591F 6 \u4E2A\u6708\u5E94\u6025\u91D1", icon: "shield", target: (s4) => s4.essentialsMonthly * 6, now: (m) => m.emergency, hint: "\u5E94\u6025\u91D1\u53EA\u7559\u7ED9\u610F\u5916\uFF1A\u4E22\u4E86\u5DE5\u4F5C\u3001\u751F\u75C5\u3001\u4FEE\u8F66\u3002" },
+  debtfree: { title: "\u8FD8\u6E05\u6240\u6709\u4FE1\u7528\u5361\u8FD9\u7C7B\u503A", icon: "chain", target: () => 0, now: (m) => m.consumerDebt, reverse: true, hint: "\u4FE1\u7528\u5361\u3001\u8F66\u8D37\u3001\u4E2A\u4EBA\u8D37\u6B3E\u3001\u903E\u671F\u8D26\u5355\u90FD\u7B97\uFF1B\u623F\u8D37\u548C\u5B66\u8D37\u4E0D\u7B97\u3002" },
+  home: { title: "\u6512\u591F\u4E70\u623F\u9996\u4ED8", icon: "house", target: () => 3e4, now: (m) => m.goal, hint: "\u9996\u4ED8\u57FA\u91D1\uFF1A\u4E70 $260,000 \u7684\u623F\u5B50\uFF0C10% \u9996\u4ED8\u52A0\u4E0A\u4EA4\u6613\u8D39\u7528\uFF0C\u4E00\u5171\u7EA6 $30,000\u3002" },
+  retire: { title: "\u9000\u4F11\u8D26\u6237\u6512\u5230 $100,000", icon: "sprout", target: () => 1e5, now: (m) => m.retirement, hint: "401(k) \u52A0\u4E0A Roth IRA\u3002\u5F00\u59CB\u5F97\u8D8A\u65E9\uFF0C\u94B1\u6EDA\u5F97\u8D8A\u4E45\u3002" },
+  fi: { title: "\u8FBE\u5230\u8D22\u52A1\u81EA\u7531", icon: "flag", target: (s4) => s4.fiNumber, now: (m) => m.invested, hint: "\u8D22\u52A1\u81EA\u7531\u6570\u5B57 = \u4E00\u5E74\u5F00\u9500 \xD7 25\uFF084% \u6CD5\u5219\uFF0C\u7B97\u662F\u7B80\u5316\u7684\u8BF4\u6CD5\uFF09\u3002" }
 };
 var MOVE_CHOICES = (extra) => [
   { id: "diy", label: "\u81EA\u5DF1\u642C\uFF08$300\uFF0C\u53EF\u80FD\u95EA\u4E86\u8170\uFF09", cost: 300, risk: "backache" },
@@ -2564,6 +2593,14 @@ function stage(s4, year = s4.history.at(-1)) {
     }
   }
   return STAGES[k2];
+}
+function goalStatus(s4) {
+  const g = GOALS[s4.goal], m = metrics(s4), target = g.target({ essentialsMonthly: m.essentials, fiNumber: m.fiNumber }), now = g.now(m);
+  if (g.reverse) {
+    const start = Math.max(s4.debtAtStart || 0, now);
+    return { ...g, id: s4.goal, now, target, done: now <= 0.5, progress: start > 0 ? Math.max(0, Math.min(1, 1 - now / start)) : 1, label: now <= 0.5 ? "\u4FE1\u7528\u5361\u8FD9\u7C7B\u503A\u5DF2\u7ECF\u6E05\u96F6" : `\u8FD8\u5269 ${money(now)}` };
+  }
+  return { ...g, id: s4.goal, now, target, done: target > 0 && now >= target, progress: target > 0 ? Math.max(0, Math.min(1, now / target)) : 0, label: `${money(now)} / ${money(target)}` };
 }
 function profile(s4) {
   return {
@@ -4039,6 +4076,44 @@ function wrapUp(s4) {
     crashes: H.filter((h2) => h2.returnRate <= -0.15).map((h2) => h2.age),
     ending: ending(s4),
     worth: H.map((h2) => h2.netWorth)
+  };
+}
+function lifeSummary(s4) {
+  const H = s4.history;
+  if (!H.length) return null;
+  const m = metrics(s4), S2 = (h2) => h2.review?.summary || {}, c = (k2) => sum(H.map((h2) => h2.cat?.[k2] || 0));
+  const earned = sum(H.map((h2) => {
+    const y = S2(h2);
+    return (y.gross || 0) + (y.spouseGross || 0) + (y.side || 0) + Math.max(0, y.biz || 0) + (y.bonus || 0);
+  }));
+  const spent = { essentials: r22(c("housing") + c("food") + c("transport") + c("insurance") + c("other")), lifestyle: r22(c("fun") + c("oneoff")), taxes: r22(c("tax")), other: r22(c("interest") + c("education")) };
+  let g = 0;
+  const series = H.map((h2) => {
+    g += h2.growth || 0;
+    return { age: h2.age, value: r22(h2.invested || 0), principal: r22(Math.max(0, (h2.invested || 0) - g)) };
+  });
+  const returns = r22(sum(H.map((h2) => h2.growth || 0)));
+  return {
+    netWorth: m.netWorth,
+    assets: m.assets,
+    liabilities: m.totalDebt,
+    invested: m.invested,
+    home: m.homeValue,
+    cash: r22(m.cash + m.emergency + m.goal),
+    principal: r22(Math.max(0, m.invested - returns)),
+    returns,
+    earned: r22(earned),
+    spent,
+    series,
+    firstInvest: H.find((h2) => (h2.invested || 0) > 0)?.age ?? null,
+    cardYears: H.filter((h2) => (h2.review?.after?.consumerDebt || 0) > 500).length,
+    interest: r22(sum(H.map((h2) => h2.interest || 0))),
+    runway: m.runway,
+    crashes: H.filter((h2) => h2.returnRate <= -0.15).length,
+    lifeCards: H.filter((h2) => h2.cardType === "life").length,
+    start: { savings: s4.reels?.savings || 0, debt: s4.reels?.debt || 0 },
+    difficulty: s4.difficulty || "normal",
+    goal: goalStatus(s4)
   };
 }
 var LESSON_IDS = LESSONS.map((l) => l.id);
@@ -6956,7 +7031,7 @@ function homeScene() {
   g += R2(dx + 42, dy + 9, 18, 7, "#c5cad6", 2) + (low ? "" : `<ellipse cx="${dx + 51}" cy="${dy + 9}" rx="7" ry="2.6" fill="#b0683a" ${S2}/>`);
   if (!low && lv >= 4) g += C2(dx - 40, dy + 10, 6, "#e04848");
   if (!low && lv >= 6) g += P2(`M${dx + 66} ${dy + 4}h14`, "none") + C2(dx + 64, dy + 2, 3, "#fff") + C2(dx + 64, dy + 7, 3, "#fff") + C2(dx + 82, dy + 2, 3, "#fff") + C2(dx + 82, dy + 7, 3, "#fff") + P2(`M${dx + 6} ${dy - 40}l2 5 5 2-5 2-2 5-2-5-5-2 5-2z`, "#ffe066");
-  const dots = () => STAGE_LIST().slice(1).map((x) => `<i class="${x.id <= lv ? "on" : ""}"></i>`).join("");
+  const dots = () => STAGE_LIST().slice(1).map((x) => `<i class="${x.id <= st.id ? "on" : ""}"></i>`).join("");
   const wx = weatherNow(), k2 = wx.kind, wet = ["rain", "storm", "hurricane", "flood"].includes(k2), cold = ["snow", "freeze"].includes(k2), dark = ["storm", "hurricane"].includes(k2);
   const VIEW = { sun: "#bfe8ff", cloud: "#d3dde9", rain: "#9fb0c4", storm: "#6f7f96", snow: "#e8eef6", heat: "#ffe0a3", hurricane: "#5d6b80", flood: "#8a9db3", freeze: "#dfe7f1" }[k2] || "#bfe8ff";
   if (lv < 6) g = g.split("#bfe8ff").join(VIEW).split("#9fc8f0").join(VIEW);
@@ -6987,7 +7062,7 @@ function homeScene() {
     house2 = P2(`M${hx - 12} ${hy + 2}L120 ${hy - 40}L${hx + 184} ${hy + 2}Z`, roof) + (cold ? P2(`M${hx - 4} ${hy - 4}L120 ${hy - 40}L${hx + 176} ${hy - 4}q-6-8-14-4L120 ${hy - 30}l-72 30q-8-6-14 0z`, "#fff") : "") + `<g transform="translate(${hx} ${hy}) scale(.78)">${g}</g><rect x="${hx}" y="${hy}" width="171.6" height="156" fill="none" ${S2}/>` + (k2 === "freeze" ? [0, 1, 2, 3, 4, 5, 6].map((i) => P2(`M${hx + 8 + i * 24} ${hy + 2}l3 9 3-9z`, "#e8f4ff")).join("") : "");
   } else house2 = `<g transform="translate(8 34)">${g}</g>`;
   const front = k2 === "hurricane" || k2 === "freeze" ? [0, 1, 2].map((i) => `<g class="gust" style="animation-delay:${-i * 0.5}s">${P2(`M${40 + i * 60} ${120 + i * 30}h34q8 0 8-6`, "none").replace(`stroke="${K2}"`, 'stroke="#ffffff"')}</g>`).join("") : "";
-  const html = `<section class="home-scene lv-${lv} ${low ? "low" : ""} wx-${k2}" title="${h(T2.homeTip)}"><div class="hs-pic"><svg viewBox="0 -16 240 268" aria-hidden="true">${sky}${ground2}<g class="hs-house">${house2}</g>${front}</svg>${low ? `<em class="hs-low">${h(T2.homeLowShort)}</em>` : ""}</div><div class="hs-cap"><b>${h(fmt(T2.homeStage, { n: lv, name: st.name }))}</b><span class="hs-wx ${wx.disaster ? "alert" : ""}">${h(T2.wxMonths[wx.mo - 1])} \xB7 ${h(T2.wx[k2])}</span><span class="hs-dots">${dots()}</span></div></section>`;
+  const html = `<section class="home-scene lv-${lv} ${low ? "low" : ""} wx-${k2}" title="${h(T2.homeTip)}"><div class="hs-pic"><svg viewBox="0 -16 240 268" aria-hidden="true">${sky}${ground2}<g class="hs-house">${house2}</g>${front}</svg>${low ? `<em class="hs-low">${h(T2.homeLowShort)}</em>` : ""}</div><div class="hs-cap"><b>${h(fmt(T2.homeStage, { n: st.id, name: st.name }))}</b><span class="hs-wx ${wx.disaster ? "alert" : ""}">${h(T2.wxMonths[wx.mo - 1])} \xB7 ${h(T2.wx[k2])}</span><span class="hs-dots">${dots()}</span></div></section>`;
   return html.replace("<section ", `<section data-k="${hsh(html)}" `);
 }
 function frame(active, body2) {
@@ -7266,23 +7341,42 @@ function reviewPage() {
     ${!past && realNote(s2) ? `<p class="yr-note yr-real">${icon.pin}<span><b>${T2.realLife}</b> ${h(realNote(s2).text)}</span></p>` : ""}
     <div class="center row">${past ? btn("past-year", s2.phase === "review" ? fmt(T2.backThisYear, { age: s2.age }) : T2.backJournal, { cls: "btn green big", ico: "back", attrs: "data-autofocus" }) : `${btn("ledger", fmt(T2.ledgerN, { n: y.lines.length }), { cls: "btn ghost small", ico: "book" })}${btn("next-year", s2.age + 1 >= FINAL_AGE ? T2.turn50 : fmt(T2.onToAge, { age: s2.age + 1 }), { cls: "btn green big", ico: "arrow", attrs: "data-autofocus" })}`}</div></section>`);
 }
-var CAT_NAME = { housing: "\u4F4F\u623F", food: "\u5403\u996D", transport: "\u4EA4\u901A", insurance: "\u4FDD\u9669\u548C\u533B\u7597", other: "\u6C34\u7535\u624B\u673A\u7B49", fun: "\u5A31\u4E50", interest: "\u5229\u606F", tax: "\u7A0E", oneoff: "\u4E00\u6B21\u6027\u82B1\u8D39", education: "\u5B66\u8D39" };
+function saveName() {
+  const d = /* @__PURE__ */ new Date(), p = (n) => String(n).padStart(2, "0"), clean = (x) => String(x || "").replace(/[\\/:*?"<>|()（）\s]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+  return ["Adulting-Tycoon", clean(s2.name), clean(profile(s2).job), `${s2.age}\u5C81`, `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}`].filter(Boolean).join("_") + ".json";
+}
 function finishPage() {
   const w = wrapUp(s2), m = metrics(s2), st = stage(s2);
   if (!w) return frame("finish", '<section class="panel"><p>\u6CA1\u6709\u8BB0\u5F55\u3002</p></section>');
   const cats = Object.entries(w.cats).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]), catMax = cats[0]?.[1] || 1;
+  const L = lifeSummary(s2), F = { "cover": "{a}\u201350 \u5C81 \xB7 {st}", "worth": "50 \u5C81\u65F6\u7684\u51C0\u8D44\u4EA7", "assets": "\u4F60\u62E5\u6709\u7684", "debts": "\u4F60\u6B20\u7684", "earned": "\u4E00\u8F88\u5B50\u5DE5\u4F5C\u6323\u7684\u94B1", "earnedNote": "\u53EA\u7B97\u5DE5\u8D44\uFF0C\u4E0D\u7B97\u6295\u8D44\u6536\u76CA", "spent": "\u4E00\u8F88\u5B50\u82B1\u6389\u7684\u94B1", "ess": "\u5FC5\u8981\u5F00\u9500", "life": "\u751F\u6D3B\u65B9\u5F0F", "tax": "\u7A0E", "other": "\u5229\u606F\u548C\u5B66\u8D39", "portfolio": "50 \u5C81\u65F6\u7684\u6295\u8D44", "principal": "\u4F60\u6295\u8FDB\u53BB\u7684", "returns": "\u6DA8\u51FA\u6765\u7684", "goal": "\u4F60\u7684\u76EE\u6807", "goalDone": "\u8FBE\u6210\u4E86", "goalNot": "\u8FD8\u6CA1\u8FBE\u6210", "growTitle": "\u6295\u8FDB\u53BB\u7684\u94B1\u662F\u600E\u4E48\u957F\u5927\u7684", "growHead": "\u4F60\u6295\u8FDB\u53BB {p}\uFF0C\u590D\u5229\u53C8\u591A\u957F\u51FA {r}", "growLoss": "\u4F60\u6295\u8FDB\u53BB {p}\uFF0C\u73B0\u5728\u8FD8\u4E8F {r}", "value": "\u603B\u503C", "putIn": "\u6295\u5165", "firstInvest": "\u4F60\u4ECE {a} \u5C81\u5F00\u59CB\u6295\u8D44\u3002", "neverInvested": "\u4F60\u4E00\u76F4\u6CA1\u6295\u8D44\uFF0C\u94B1\u5C31\u6CA1\u6709\u673A\u4F1A\u590D\u5229\u3002", "crashes": "\u4F60\u625B\u8FC7\u4E86 {n} \u6B21\u80A1\u5E02\u5927\u8DCC\u3002", "back": "\u56DE\u5934\u770B", "good": "\u505A\u5F97\u597D\u7684", "better": "\u53EF\u4EE5\u66F4\u597D\u7684", "helped": "\u5E2E\u4E86\u4F60\u7684", "hurt": "\u62D6\u4E86\u4F60\u540E\u817F\u7684", "investEarly": "{a} \u5C81\u5C31\u5F00\u59CB\u6295\u8D44", "investLate": "\u5230 {a} \u5C81\u624D\u5F00\u59CB\u6295\u8D44\uFF1A\u8D8A\u65E9\u7684\u5E74\u4EFD\u590D\u5229\u8D8A\u591A", "noCard": "\u4ECE\u6CA1\u628A\u4FE1\u7528\u5361\u8FD9\u7C7B\u503A\u62D6\u5230\u7B2C\u4E8C\u5E74", "cardYears": "\u6709 {n} \u5E74\u80CC\u7740\u4FE1\u7528\u5361\u8FD9\u7C7B\u503A\uFF0C\u5229\u606F\u82B1\u4E86 {i}", "runwayOk": "\u5E94\u6025\u91D1\u80FD\u6491 {m} \u4E2A\u6708", "runwayLow": "\u5E94\u6025\u91D1\u53EA\u80FD\u6491 {m} \u4E2A\u6708", "goalHit": "\u8FBE\u6210\u76EE\u6807\uFF1A{g}", "goalMiss": "\u76EE\u6807\u6CA1\u8FBE\u6210\uFF1A{g}", "startSav": "\u5F00\u5C40\u5C31\u6709 {x} \u5B58\u6B3E", "startNoDebt": "\u5F00\u5C40\u6CA1\u6709\u503A", "startDebt": "\u5F00\u5C40\u80CC\u7740 {x} \u7684\u503A", "easy": "\u7B80\u5355\u6A21\u5F0F\uFF1A\u9AB0\u5B50\u66F4\u53CB\u597D", "hard": "\u56F0\u96BE\u6A21\u5F0F\uFF1A\u9AB0\u5B50\u66F4\u96BE", "crashN": "{n} \u6B21\u80A1\u5E02\u5927\u8DCC", "lifeN": "{n} \u6B21\u751F\u6D3B\u610F\u5916\uFF08\u8D26\u5355\u3001\u4FEE\u8F66\u3001\u88C1\u5458\u2026\u2026\uFF09", "stageAt": "50 \u5C81\u65F6\u7684\u4EBA\u751F\u9636\u6BB5\uFF1A{s}" };
+  const row = (label, v, cls, max) => `<li class="${cls}"><span>${h(label)}</span><i style="width:${Math.max(1, Math.abs(v) / Math.max(1, max) * 100)}%"></i><b>${money2(v)}</b></li>`;
+  const sp = L.spent, spTot = sp.essentials + sp.lifestyle + sp.taxes + sp.other, key = (cls, label, v) => `<span class="k-${cls}"><i></i>${h(label)} ${money2(v)}</span>`;
+  const good = [], better = [], helped = [], hurt = [], age0 = s2.startAge;
+  if (L.firstInvest == null) better.push(F.neverInvested);
+  else (L.firstInvest - age0 <= 5 ? good : better).push(fmt(L.firstInvest - age0 <= 5 ? F.investEarly : F.investLate, { a: L.firstInvest }));
+  (L.cardYears ? better : good).push(L.cardYears ? fmt(F.cardYears, { n: L.cardYears, i: money2(L.interest) }) : F.noCard);
+  (L.runway >= 3 ? good : better).push(fmt(L.runway >= 3 ? F.runwayOk : F.runwayLow, { m: L.runway.toFixed(1) }));
+  (L.goal.done ? good : better).push(fmt(L.goal.done ? F.goalHit : F.goalMiss, { g: L.goal.title }));
+  if (L.start.savings >= 5e3) helped.push(fmt(F.startSav, { x: money2(L.start.savings) }));
+  if (L.start.debt > 0) hurt.push(fmt(F.startDebt, { x: money2(L.start.debt) }));
+  else helped.push(F.startNoDebt);
+  if (L.difficulty === "easy") helped.push(F.easy);
+  if (L.difficulty === "hard") hurt.push(F.hard);
+  if (L.crashes) hurt.push(fmt(F.crashN, { n: L.crashes }));
+  if (L.lifeCards) hurt.push(fmt(F.lifeN, { n: L.lifeCards }));
+  const list = (title, items, cls) => !items.length ? "" : `<div class="ls-col ${cls}"><h3>${h(title)}</h3><ul>${items.map((x) => `<li>${cls === "ok" ? icon.check : icon.alert}<span>${h(x)}</span></li>`).join("")}</ul></div>`;
   const slides = [
-    `<div class="sl s-cover"><small>${s2.startAge}\u201350 \u5C81 \xB7 ${STATES[s2.region].name} \xB7 ${h(DIFFICULTY[s2.difficulty || "normal"].name)}</small><h1>${h(s2.name || "\u4F60")}\u7684 ${50 - s2.startAge} \u5E74</h1><p>\u4ECE\u201C${h(BACKSTORIES.find((b) => b.id === s2.backstory)?.title)}\u201D\u5F00\u59CB\u3002</p>${avatar(look(), { cls: "big-av", label: false })}</div>`,
-    `<div class="sl"><small>\u8FD9\u4E9B\u5E74\u4F60\u4E00\u5171\u8D5A\u4E86</small><h2>${money2(w.income)}</h2>${(() => {
-      const mx = Math.max(1, w.tax, w.interest, w.match, Math.abs(w.growth)), li = (l, v, c) => `<li class="${c}"><span>${h(l)}</span><i style="width:${Math.abs(v) / mx * 100}%"></i><b>${v < 0 ? "\u2212" : ""}${money2(Math.abs(v))}</b></li>`;
-      return `<small>${h(T2.finOut)}</small><ul class="catbars finbars">${li(T2.finTax, w.tax, "tax")}${li(T2.finInt, w.interest, "tax")}</ul><small>${h(T2.finIn)}</small><ul class="catbars finbars">${li(T2.finMatch, w.match, "ok")}${li(T2.finGrowth, w.growth, w.growth < 0 ? "tax" : "ok")}</ul>`;
-    })()}</div>`,
-    `<div class="sl"><ul class="catbars finbars">${[[T2.finMost, w.maxMonth, "tax"], [T2.finLeast, w.minMonth, "ok"]].map(([l, x, c]) => `<li class="${c}"><span>${h(l)}<small>${h(fmt(T2.finAge, { a: x.age, m: x.month }))}</small></span><i style="width:${Math.max(2, x.spend / Math.max(1, w.maxMonth.spend) * 100)}%"></i><b>${money2(x.spend)}</b></li>`).join("")}</ul></div>`,
-    `<div class="sl"><small>\u94B1\u90FD\u82B1\u5728\u4E86\u54EA\u91CC</small><h2>\u7B2C\u4E00\u540D\uFF1A${CAT_NAME[w.topCat[0]]}</h2><ul class="catbars">${cats.slice(0, 6).map(([k2, v]) => `<li><span>${CAT_NAME[k2]}</span><i style="width:${v / catMax * 100}%"></i><b>${money2(v)}</b></li>`).join("")}</ul></div>`,
-    `<div class="sl"><small>\u5370\u8C61\u6700\u6DF1\u7684\u4E00\u5E74</small><h2>${w.swingYear.age} \u5C81</h2><p>\u8FD9\u4E00\u5E74\u5BB6\u5E95${w.swingYear.delta >= 0 ? "\u591A\u4E86" : "\u5C11\u4E86"} <b>${money2(Math.abs(w.swingYear.delta))}</b>\u3002</p>${w.memorable ? `<p class="quote">\u201C${h(w.memorable.text)}\u201D</p>` : ""}${w.crashes.length ? `<p>\u4F60\u7ECF\u5386\u4E86 ${w.crashes.length} \u6B21\u80A1\u5E02\u66B4\u8DCC\uFF08${w.crashes.join("\u3001")} \u5C81\uFF09\u3002</p>` : ""}</div>`,
-    `<div class="sl"><small>\u5BB6\u5E95\u8D70\u52BF</small>${sparkline(w.worth)}<p>50 \u5C81\u65F6\uFF1A<b>${money2(m.netWorth)}</b>\uFF0C\u53EF\u6295\u8D44\u8D44\u4EA7 <b>${money2(m.invested)}</b>\u3002</p></div>`,
-    `<div class="sl"><small>${h(LT2.learned)}</small><h2>${mastery(s2).filter((x) => x.taughtAt != null).length} / ${LESSONS.length}</h2><ul class="learn-list big">${mastery(s2).map((x) => `<li class="${x.taughtAt != null ? "ok" : ""}"><b>${h(x.title)}</b><small>${x.asked ? h(fmt(LT2.score, { c: x.right, t: x.asked })) : ""}</small></li>`).join("")}</ul><p>${h(fmt(T2.finishPlan, { d: s2.decidedYears || 0, r: s2.repeatYears || 0 }))}</p></div>`,
-    `<div class="sl s-end"><small>\u4F60\u7684\u7ED3\u5C40</small><h1>${h(w.ending.title)}</h1><p>${h(w.ending.text)}</p><p>\u4EBA\u751F\u9636\u6BB5 <b>${st.id}. ${st.name}</b></p></div>`
+    `<div class="sl s-cover ls"><small>${h(fmt(F.cover, { a: age0, st: STATES[s2.region].name }))}</small><h2>${h(F.worth)} <span class="${L.netWorth < 0 ? "neg" : "pos"}">${money2(L.netWorth)}</span></h2>
+      <ul class="catbars finbars">${row(F.assets, L.assets, "ok", Math.max(L.assets, L.liabilities))}${row(F.debts, L.liabilities, "tax", Math.max(L.assets, L.liabilities))}</ul>
+      <div class="ls-tiles"><div><small>${h(F.earned)}</small><b>${money2(L.earned)}</b><em>${h(F.earnedNote)}</em></div>
+        <div><small>${h(F.spent)}</small><b>${money2(spTot)}</b>${segBar([{ v: sp.essentials, cls: "ess", label: F.ess }, { v: sp.lifestyle, cls: "fun", label: F.life }, { v: sp.taxes, cls: "tax", label: F.tax }, { v: sp.other, cls: "min", label: F.other }], spTot)}<em class="ls-keys">${key("ess", F.ess, sp.essentials)}${key("fun", F.life, sp.lifestyle)}${key("tax", F.tax, sp.taxes)}${key("min", F.other, sp.other)}</em></div>
+        <div><small>${h(F.portfolio)}</small><b>${money2(L.invested)}</b>${segBar([{ v: L.principal, cls: "save", label: F.principal }, { v: Math.max(0, L.returns), cls: "avail", label: F.returns }], 0)}<em class="ls-keys">${key("save", F.principal, L.principal)}<span class="k-plus"><i></i>${h(F.returns)} ${L.returns < 0 ? "\u2212" : ""}${money2(Math.abs(L.returns))}</span></em></div>
+        <div><small>${h(F.goal)}</small><b>${L.goal.done ? icon.check + h(F.goalDone) : h(F.goalNot)}</b><em>${h(L.goal.title)} \xB7 ${h(L.goal.label)}</em></div></div></div>`,
+    `<div class="sl ls"><small>${h(F.growTitle)}</small><h2>${h(fmt(L.returns >= 0 ? F.growHead : F.growLoss, { r: money2(Math.abs(L.returns)), p: money2(L.principal) }))}</h2>${growChart(L.series, F)}
+      <p>${h(L.firstInvest != null ? fmt(F.firstInvest, { a: L.firstInvest }) : F.neverInvested)}${L.crashes ? " " + h(fmt(F.crashes, { n: L.crashes })) : ""}</p></div>`,
+    `<div class="sl s-end ls"><small>${h(F.back)}</small><h2>${h(w.ending.title)}</h2><div class="ls-cols">${list(F.good, good, "ok")}${list(F.better, better, "warn")}${list(F.helped, helped, "ok")}${list(F.hurt, hurt, "warn")}</div>
+      <p>${h(fmt(F.stageAt, { s: `${st.id}. ${st.name}` }))}</p></div>`
   ];
   const i = Math.min(ui.slide, slides.length);
   if (i < slides.length) return frame("finish", `<section class="wrapped"><div class="sl-wrap">${slides[i]}</div>
@@ -7290,6 +7384,14 @@ function finishPage() {
   frame("finish", `<section><header class="page-head"><h1>\u8D70\u8FC7\u7684\u8DEF</h1>${btn("slide", "\u91CD\u770B\u5E74\u5EA6\u62A5\u544A", { id: 0, cls: "btn ghost small" })}</header>
     <section class="panel"><ol class="timeline">${s2.records.filter((r) => r.big).map((r) => `<li class="${r.big ? "big" : ""}"><b>${r.age} \u5C81</b><span>${h(r.text)}</span></li>`).join("")}</ol></section>
     <div class="center">${btn("new-life", "\u518D\u6765\u4E00\u6BB5\u4EBA\u751F", { cls: "btn green big", ico: "loop" })}</div></section>`);
+}
+function growChart(S2, F) {
+  if (!S2?.length) return "";
+  const w = 640, hg = 190, max = Math.max(1, ...S2.map((x2) => x2.value)), x = (i) => 12 + i * (w - 24) / Math.max(1, S2.length - 1), y = (v) => hg - 22 - v / max * (hg - 40);
+  const line = (k2) => S2.map((p, i) => `${x(i)},${y(p[k2])}`).join(" ");
+  return `<svg class="ls-grow" viewBox="0 0 ${w} ${hg}" role="img" aria-label="${h(F.growTitle)}"><polygon class="g-val" points="${x(0)},${y(0)} ${line("value")} ${x(S2.length - 1)},${y(0)}"/><polyline class="g-in" points="${line("principal")}"/>
+    <line class="zero" x1="12" x2="${w - 12}" y1="${y(0)}" y2="${y(0)}"/><text x="12" y="${hg - 4}">${S2[0].age + 1}</text><text x="${w - 12}" y="${hg - 4}" text-anchor="end">${S2.at(-1).age + 1}</text>
+    <g class="g-key"><rect x="${w - 230}" y="6" width="12" height="12" class="g-val"/><text x="${w - 212}" y="17">${h(F.value)}</text><line x1="${w - 140}" x2="${w - 120}" y1="12" y2="12" class="g-in"/><text x="${w - 114}" y="17">${h(F.putIn)}</text></g></svg>`;
 }
 function sparkline(vals) {
   if (!vals?.length) return "";
@@ -7361,9 +7463,16 @@ function modalHtml() {
   if (!ui.modal) return "";
   const M = ui.modal, wrap = (inner, cls = "") => `<div class="scrim" aria-hidden="true"></div><div class="modal ${cls}" role="dialog" aria-modal="true">${inner}</div>`;
   if (M.kind === "game") {
-    const F = ui.flow;
-    return wrap(`<header class="m-head"><span class="ribbon-tag">\u5C0F\u6E38\u620F \xB7 ${mgSecs(F.mg)} \u79D2</span><h2>${h(T2.mgName[F.mg])}</h2><p id="game-live">${h(T2.mgHow[F.mg])}</p></header>
-      <div class="arena small"><canvas id="challenge"></canvas></div><div class="m-foot">${btn("game-stop", "\u63D0\u524D\u7ED3\u675F", { cls: "btn ghost small" })}</div>`, "game-host");
+    const F = ui.flow, st = F.mgState || "play", MG = { "start": "\u5F00\u59CB", "skip": "\u4E0D\u73A9\u4E86\uFF0C\u76F4\u63A5\u63B7\u9AB0\u5B50", "goal": "\u5F97\u5206\u5230 40%\uFF0C\u9AB0\u5B50 +1\uFF1B\u5230 70%\uFF0C\u9AB0\u5B50 +2\u3002", "score": "\u4F60\u5F97\u4E86 {p}%", "bonus": "\u9AB0\u5B50\u52A0\u503C +{b}", "why": ["\u4E0D\u5230 40%\uFF0C\u8FD9\u6B21\u6CA1\u6709\u52A0\u503C\u3002", "\u5230\u4E86 40%\uFF0C\u52A0 1\u3002\u5230 70% \u80FD\u52A0 2\u3002", "\u5230\u4E86 70%\uFF0C\u62FF\u6EE1 +2\u3002"], "roll": "\u63B7\u9AB0\u5B50" };
+    const head = `<header class="m-head"><span class="ribbon-tag">\u5C0F\u6E38\u620F \xB7 ${mgSecs(F.mg)} \u79D2</span><h2>${h(T2.mgName[F.mg])}</h2><p id="game-live">${h(T2.mgHow[F.mg])}</p></header>`;
+    if (st === "done") {
+      const p = Math.round((F.result?.score || 0) * 100), b = F.bonus || 0;
+      return wrap(`${head}<div class="mg-result"><div class="mg-meter" role="img" aria-label="${h(fmt(MG.score, { p }))}"><i style="width:${p}%"></i><span style="left:40%">40%</span><span style="left:70%">70%</span></div>
+        <p><b>${h(fmt(MG.score, { p }))}</b>${F.result?.text ? ` \xB7 ${h(F.result.text)}` : ""}</p><p class="mg-bonus b${b}">${icon.dice}<b>${h(fmt(MG.bonus, { b }))}</b></p><small>${h(MG.why[b])}</small></div>
+        <div class="m-foot">${btn("game-continue", MG.roll, { cls: "btn green big", ico: "dice", attrs: "data-autofocus" })}</div>`, "game-host");
+    }
+    return wrap(`${head}<div class="arena small mg-arena"><canvas id="challenge"></canvas>${st === "ready" ? `<div class="cg-cover">${icon.star}<b>${h(MG.goal)}</b></div>` : ""}</div>
+      <div class="m-foot">${st === "ready" ? `${btn("game-skip", MG.skip, { cls: "btn ghost", ico: "dice" })}${btn("game-start", MG.start, { cls: "btn blue big", ico: "star", attrs: "data-autofocus" })}` : btn("game-stop", "\u63D0\u524D\u7ED3\u675F", { cls: "btn ghost small" })}</div>`, "game-host");
   }
   if (M.kind === "decision") {
     const d = decisions(s2).find((x) => x.id === M.id), F = ui.flow || {}, jobs = d.id === "jobhunt" ? jobsFor(s2) : null;
@@ -7502,7 +7611,10 @@ function startGame() {
       gameRun = null;
       F.result = r;
       mgMark(F.mg);
-      finishFlow(bonusOf(r.score));
+      F.bonus = bonusOf(r.score);
+      F.mgState = "done";
+      if (F.bonus) sfx("good");
+      update(false);
     }
   }, mgSecs(F.mg), themeOf(F));
 }
@@ -7519,7 +7631,7 @@ function finishFlow(bonus) {
       ui.flow = { ...F, revealed: s2.age };
       ui.modal = null;
     }
-    notice = F.result ? fmt(T2.mgDone, { g: T2.mgName[F.result.id], r: F.result.text, b: bonus }) : "";
+    notice = "";
   } catch (e) {
     notice = e.message;
     ui.modal = null;
@@ -7624,7 +7736,7 @@ function update(scroll = true) {
       ui.modal = { kind: "ask" };
     }
     ({ overview: overviewPage, payday: paydayPage, decision: decisionPage, card: cardPage, live: livePage, review: reviewPage, finish: finishPage, accounts: accountsPage, goals: goalsPage, journal: journalPage })[page]();
-    if (ui.modal?.kind === "game") requestAnimationFrame(startGame);
+    if (ui.modal?.kind === "game" && (ui.flow?.mgState || "play") === "play") requestAnimationFrame(startGame);
     if (ui.modal?.cg?.st === "play") requestAnimationFrame(startCg);
     animateDice();
     if (ui.pendingSound) {
@@ -7842,7 +7954,7 @@ document.addEventListener("click", (e) => {
         }
         const u = URL.createObjectURL(new Blob([text], { type: "application/json" })), a = document.createElement("a");
         a.href = u;
-        a.download = `Adulting-Tycoon-${s2.age}\u5C81.json`;
+        a.download = saveName();
         a.click();
         setTimeout(() => URL.revokeObjectURL(u), 1e3);
         return update(false);
@@ -8046,12 +8158,20 @@ document.addEventListener("click", (e) => {
         return finishFlow(0);
       case "dec-game": {
         const d = decisions(s2).find((x) => x.id === ui.flow.id);
-        ui.flow = { ...ui.flow, game: d.throw.game, mg: mgNext() };
+        ui.flow = { ...ui.flow, game: d.throw.game, mg: mgNext(), mgState: "ready", result: null, bonus: 0 };
         ui.modal = { kind: "game" };
         return update(false);
       }
       case "game-stop":
         return gameRun?.stop();
+      case "game-start":
+        ui.flow.mgState = "play";
+        return update(false);
+      case "game-skip":
+        ui.flow.result = null;
+        return finishFlow(0);
+      case "game-continue":
+        return finishFlow(ui.flow.bonus || 0);
       case "close-dice":
         ui.modal = null;
         ui.flow = null;
@@ -8063,7 +8183,7 @@ document.addEventListener("click", (e) => {
         ui.flow = null;
         return commit(drawCard(s2));
       case "card-game":
-        ui.flow = { source: "card", game: s2.card.game, mg: mgNext() };
+        ui.flow = { source: "card", game: s2.card.game, mg: mgNext(), mgState: "ready", result: null, bonus: 0 };
         ui.modal = { kind: "game" };
         return update(false);
       case "card-roll":
